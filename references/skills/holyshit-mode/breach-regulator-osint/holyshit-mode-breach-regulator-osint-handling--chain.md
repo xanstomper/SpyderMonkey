@@ -1,0 +1,23 @@
+# Handling — chain composition
+
+- source canon: `holyshit-mode/breach-regulator-osint.md`
+- base technique: `holyshit-mode-breach-regulator-osint-handling.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+- Regulator-leak data is published journalism / public interest — accessing it is
+  legitimate OSINT. The SCOPE GATE for live probing is unchanged by it: history informs,
+  it does not authorize.
+- PII minimality: pull the minimum documents needed for the finding; report the CLASSES
+  exposed (passports, financials, personnel rosters) with counts, not the personal data
+  itself. Keep downloaded PDFs in /tmp scratch, not the workspace or reports.
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

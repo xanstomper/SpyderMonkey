@@ -1,0 +1,23 @@
+# N. IDENTITY / AUTH INFRA — chain composition
+
+- source canon: `holyshit-mode/vector-matrix.md`
+- base technique: `holyshit-mode-vector-matrix-n-identity-auth-infra.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+- SAML: XML signature wrapping, assertion replay, audience restriction bypass
+- OIDC: nonce/state validation, token exchange abuse, consent phishing surface
+- LDAP: anonymous bind, injection in search filters, credential caching on clients
+- Kerberos: delegation abuse (unconstrained/constrained/RBCD), ticket lifetime policy
+- SCIM: over-scoped provisioning tokens, bulk-user enumeration via SCIM endpoints
+- FIDO/WebAuthn: origin validation, attestation bypass, resident-key extraction
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

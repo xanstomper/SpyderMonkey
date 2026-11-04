@@ -1,0 +1,39 @@
+# Flaw-family key — chain composition
+
+- source canon: `3am-shinjitsu/vector-synthesis-matrix.md`
+- base technique: `3am-shinjitsu-vector-synthesis-matrix-flaw-family-key.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+| # | Family | Canonical primitive |
+|---|---|---|
+| 1 | Validation-order | gate runs after the protected step |
+| 2 | Trust-in-client-params | server adopts client-supplied claims |
+| 3 | Type-coercion | parser accepts what the validator counted differently |
+| 4 | Rate-limiter scope/keying | limiter keys on the wrong identity axis |
+| 5 | State-machine gaps | steps skippable / order-forgeable |
+| 6 | Identifier trust | client-controlled or predictable IDs |
+| 7 | Cache/edge separation | edge caches or mutates what origin didn't |
+| 8 | Session/cookie confusion | cookie scoping/semantics diverge from intent |
+| 9 | Header/parser differential | the two ends disagree on the message |
+| 10 | Entropy/forge | tokens/keys weaker than claimed |
+| 11 | Observable-oracle | errors/timing leak what should stay hidden |
+| 12 | LLM data-plane | model state leaks or mutates across callers |
+| 13 | **Cloud-misconfig** | identity/policy/object-store misconfiguration grants access |
+| 14 | **Network-protocol** | the service protocol trusts the anonymous client |
+| 15 | **Database-exposure** | a data engine is reachable without a valid identity |
+| 16 | **Mobile-device** | package/deep-link/update-path trust abuse |
+| 17 | **Firmware-hardware** | device trust-chain gaps (console, OTA, vendor defaults) |
+| 18 | **Wireless-RF** | the medium's trust assumptions (WPS, pairing, broadcast) |
+| 19 | **Collab-webhook** | app-to-app trust (webhooks, grants, bots) abused |
+| 20 | **Operational-planes** | monitoring/orchestration plane reachable unauthenticated |
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

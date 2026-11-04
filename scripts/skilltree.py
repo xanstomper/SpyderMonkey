@@ -307,6 +307,17 @@ DOMAIN_PLATFORMS = [
 ]
 DEFAULT_PLATFORMS = ["web-app", "api", "host"]
 AUTH_STATES = ("unauth", "low-priv", "high-priv")
+# the hardened state is REAL, not filler: it only applies to technique families
+# where a WAF/filter tier actually changes the probe shape
+_HARDENED_RE = re.compile(
+    r"injection|xss|ssti|traversal|xxe|sql|ldap|\bcmd\b|deserial|smuggl"
+    r"|prototype|brute|password|upload|shell", re.I)
+_HARDENED_ADJ = (
+    "a filter/WAF tier fronts the target: expect canonicalization and signature "
+    "matching on the raw request — the probe vocabulary's encodings (double-encode, "
+    "unicode, backslash, case-split) exist exactly for this tier; the differential "
+    "must clear the filter WITHOUT tripping it, or the finding is a WAF flag, not a "
+    "class confirmation. Low-and-slow: one variant per request, never a burst.")
 
 PLATFORM_ADJ = {
     "web-app": "strike through the browser/proxy path; the 3-gate differential runs on the reflected/accepted value",
@@ -371,8 +382,48 @@ def expand(json_mode=False, min_count=0):
         base_slug = _slug(f"{src}-{title}")
         d = OUT / src
         d.mkdir(parents=True, exist_ok=True)
+        roles = ("entry" if any(k in title.lower() for k in
+                 ("recon", "enumerate", "fingerprint", "backup", "info", "subdomain"))
+                 else "final" if any(k in title.lower() for k in
+                 ("takeover", "rce", "crown", "price", "harvest", "dump"))
+                 else "pivot")
+        # chain-composition companion (one per base technique, REAL pairing)
+        c_slug = f"{base_slug}--chain"
+        c_f = d / f"{c_slug}.md"
+        if c_f.resolve() not in used:
+            used[c_f.resolve()] = True
+            c_role = ("entry — this OPENS a chain: everything after pairs with it; "
+                      "chain detect looks for same-origin findings that follow"
+                      if any(k in title.lower() for k in
+                             ("recon", "enumerate", "fingerprint", "backup", "info",
+                              "subdomain", "harvest", "disclosure"))
+                      else "final — this CLOSES a chain: shukaku prices what it "
+                           "reaches; chain detect looks for the entries that feed it"
+                      if any(k in title.lower() for k in
+                             ("takeover", "rce", "crown", "price", "dump", "exfil",
+                              "destruction", "denial"))
+                      else "pivot — this BRIDGES a chain: an entry finding upstream "
+                           "plus this pivot plus a final downstream")
+            c_f.write_text(
+                f"# {title} — chain composition\n\n"
+                f"- source canon: `{src}.md`\n- base technique: `{base_slug}.md`\n"
+                f"- chain role: **{c_role}**\n\n"
+                f"## Pairing rule\n\n"
+                f"chain detect pairs same-origin findings (the `_origin()` key: "
+                f"scheme + netloc). This technique composes when a sibling finding "
+                f"shares that origin and the pattern's two legs match. Never invent a "
+                f"chain: both legs need their own baseline→attack→diff proof first.\n\n"
+                f"## Composition\n\n{body}\n\n"
+                f"## Walls\n\n- a chain is a SEVERITY judgment over proven findings — "
+                f"never new execution\n- every leg keeps its own ledger row and its own "
+                f"evidence\n")
+            made += 1
+            index.append(f"- [{title} — chain composition](skills/{src}/{c_slug}.md)"
+                         f" — `{src}` · {w} · {c} · {a} · {roles}")
         for plat in plats:
-            for auth in AUTH_STATES:
+            states = AUTH_STATES + (("hardened",) if _HARDENED_RE.search(
+                f"{title} {body}") else ())
+            for auth in states:
                 slug = f"{base_slug}--{plat}--{auth}"
                 f = d / f"{slug}.md"
                 if f.resolve() in used:      # slug truncation collision guard
@@ -392,7 +443,7 @@ def expand(json_mode=False, min_count=0):
                     f"- context: **{plat}** · auth **{auth}** · chain role **{roles}**\n\n"
                     f"## Context\n\n"
                     f"- platform: {PLATFORM_ADJ.get(plat, 'family probes cover the class')}\n"
-                    f"- auth state: {AUTH_ADJ[auth]}\n\n"
+                    f"- auth state: {AUTH_ADJ.get(auth, _HARDENED_ADJ)}\n\n"
                     f"## The technique\n\n{body}\n\n"
                     f"## Probe adjustment ({plat} × {auth})\n\n"
                     f"1. baseline first: the request/session with NOTHING changed\n"

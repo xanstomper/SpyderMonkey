@@ -1,0 +1,26 @@
+# PHASE 1 — PASSIVE RECON (no target contact) — chain composition
+
+- source canon: `holyshit-mode/full-teardown-playbook.md`
+- base technique: `holyshit-mode-full-teardown-playbook-phase-1-passive-recon-n.md`
+- chain role: **entry — this OPENS a chain: everything after pairs with it; chain detect looks for same-origin findings that follow**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+- **Certificate transparency**: crt.sh / censys on `%.target.tld` — subdomains the operator forgot.
+- **ASN/whois**: netblocks, hosting provider, named orgs, corporate acronyms.
+- **Wayback CDX**: `/cdx/search/cdx?url=<host>*&output=json&collapse=urlkey` — full asset
+  history. Old bundles, .well-known/, old ?v= query strings, deleted pages.
+- **Search-engine dorking**: site:, filetype:, inurl: — exposed configs, dumps, admin panels.
+- **GitHub/org leak hunting**: API keys, internal hostnames, CI configs, .env patterns in
+  operator-visible repos and gists referencing the target.
+- **Artifact-first**: operator's own vault/notes/baselines before anything else.
+- Deliverable: target map + forgotten-asset list. Forgotten assets = highest-yield entry.
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

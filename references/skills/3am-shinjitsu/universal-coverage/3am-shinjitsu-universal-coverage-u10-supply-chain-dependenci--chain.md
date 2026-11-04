@@ -1,0 +1,22 @@
+# U10 Supply chain & dependencies — chain composition
+
+- source canon: `3am-shinjitsu/universal-coverage.md`
+- base technique: `3am-shinjitsu-universal-coverage-u10-supply-chain-dependenci.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+- [ ] SBOM generated for every deployed artifact
+- [ ] Direct/transitive dependencies matched to current advisories
+- [ ] CI/CD permissions, runners, caches, artifacts, and deployment approvals reviewed
+- [ ] Source repo protections, signing, provenance, and secret scanning verified
+- [ ] Third-party packages/build actions pinned and reviewed
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

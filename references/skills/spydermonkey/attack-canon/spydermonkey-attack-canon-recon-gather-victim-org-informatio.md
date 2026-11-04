@@ -1,0 +1,16 @@
+# Recon Gather Victim Org Information (T1591)
+
+- source canon: `spydermonkey/attack-canon.md`
+- bindings: **WSTG-BUSL** · **CWE-200** · **ATT&CK T1005**
+- generated: 2026-11-04
+
+## The technique
+
+- class: org structure, locations, business rhythm — the social-engineering surface
+- probe: public filings, job posts, status pages; crown the exposure classes
+- wall: passive collection only, ledgered with source provenance
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

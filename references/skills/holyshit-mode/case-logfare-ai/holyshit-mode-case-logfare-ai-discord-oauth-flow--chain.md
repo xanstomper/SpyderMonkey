@@ -1,0 +1,22 @@
+# Discord OAuth Flow — chain composition
+
+- source canon: `holyshit-mode/case-logfare-ai.md`
+- base technique: `holyshit-mode-case-logfare-ai-discord-oauth-flow.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+- State cookie: HS256 JWT with `nonce` claim
+- Purpose: `discord_signup`
+- Expiry: 10 minutes
+- redirect_uri: Hardcoded server-side
+- alg:none attack: Rejected
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

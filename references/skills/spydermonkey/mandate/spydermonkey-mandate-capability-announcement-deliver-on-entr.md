@@ -16,8 +16,10 @@
   [ OK ] kairo      — the synthesizer: findings → attacks → chains → distributed
   [ OK ] kaisha     — the ladder: era-stack · privesc rungs · lateral (depth leg)
   [ OK ] shukaku    — the harvester: crown register · valuation · disclosure map
+  [ OK ] kage       — the mirror: confirmed attacks → detection rules (purple)
+  [ OK ] dojo       — the range: vulnerable replicas · lessons (lab-bound)
   [ OK ] shiki      — the command: assault · parallel · adaptive · resume · close
-  ⚡ THE FAMILY IS UP · awaiting P0: target · objective · authorization
+  ⚡ THE FAMILY IS UP · contracts verified · awaiting P0: target · objective · authorization
 ```
 
 ## Family use
