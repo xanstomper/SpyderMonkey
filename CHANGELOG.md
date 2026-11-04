@@ -3,6 +3,36 @@
 All notable changes to SPYDERMONKEY, newest first. Dates are UTC; versions are
 the dispatcher release (`SKILL.md` frontmatter).
 
+## v5.0.0 — SELF-KNOWLEDGE · SELF-PROTECTION · GROWTH (2026-11-04)
+
+- **`capabilities` — the mirror of self.** The live-introspected capability
+  registry: engines × presence, every confirmable class, per-tester battery
+  sizes, takeover fingerprints, executor inventory (real tools installed on THIS
+  machine), kernel directives, corpus size, learned priors. Read from the code,
+  never from a doc — the planner and any agent ground on it.
+- **`protect` — the family guards the OPERATOR.** `protect posture` prints what
+  this machine can leak (user · hostname · home · git emails · LAN IPs);
+  `protect scan [--target T | --all-campaigns]` walks every campaign artifact
+  and finds each operator string in it (git-email · lan-ip · home-path ·
+  identity leaks), rc=1 while anything leaks, state written for barbican
+  sanitize to strip — and protect re-proves it clean.
+- **Payload batteries + the 9th tester.** Every tester now carries a real
+  battery (INJECTION 14 markers: SQL error-oracles, SSTI families
+  {{}}/${}/<%}/#{}, command `;id`/`$(id)`/backticks, LDAP wildcard; TRAVERSAL 8
+  encodings incl. double-encoded + unicode; SSRF 7 targets incl. dword/hex/
+  decimal-host and IPv6 loopback; IDOR 6 swaps; AUTHZ 6 flips; AUTHN 8;
+  BIZLOGIC 6 incl. float-overflow) and the JWT tester joins (alg=none,
+  empty-signature, confused-deputy).
+- **Gate v2 — body differentials.** `--json-body` + `--attack-body` (JSON POST
+  baseline vs swapped attack body — the mass-assignment/price-tamper proof
+  shape) and `--cookie` riding both requests.
+- **`train` — SELF-PLAY.** The family attacks the dojo range (every replica
+  class), measures per-class hit rates, and writes the priors file; the
+  planner ORDERS PROBES BY WHAT WORKS. The family gets sharper every run.
+- **`memory` — ESTATE MEMORY.** Every completed loop writes what was confirmed
+  per target; the next campaign on that estate re-ranks the planner ("estate
+  memory: JWT confirmed here before — priority"). `--forget` wipes.
+
 ## v4.0.0 — THE CONTROL PLANE (2026-11-04)
 
 - **One scope authority.** New `scripts/scope_authority.py` is the single estate
