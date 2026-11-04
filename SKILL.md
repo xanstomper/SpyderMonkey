@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 1.2.0
+version: 1.3.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -28,7 +28,8 @@ sends you.
 | 3 | **UNDERCROFT** (v2.3) | The Descent | `run` = auto-engagement: bundle scan + JWT decode + live route probe + boundary id-swaps + auto-craft + report. 15 NO-GAIN probe plans, precision/entropy/stateflow/replay engines, 7 domain maps | Owns UNKNOWN: attacks what only the target's authors know; the only live autonomous engagement |
 | 4 | **HolyShit!** (v2.1) | The Finder | 31+ case files, queryable: `recipe` search, `dossier` assembly, `recon` checklists, `handoff` to the family, `vintage` decay flags | Owns KNOWN: the canon library; feeds the machine, consumes compiled recipes back |
 | 5 | **SHIKI** (v2.1) | The Command | `assault` = the whole family in sequence: gate → find ∥ descend (parallel) → forge → chain → war board + joint verdict; **adaptive re-tasking** (lanes update from live results); `--resume` idempotent; `--close` wipes | Owns TOGETHER: drives the family's REAL engines in order, under the shield |
-| 6 | **SHUKAKU** (v1.2) | The Harvester | `reason` (infer what SHOULD be harvestable from confirmed access) → `hunt` (read-only proofs: exact static probes or GET-only live surface probes) → `crown` register (evidence-chain enforced, ladder-priced) → `disclose` (6 playbook triggers) → `feed` (3AM vectors + undercroft surface + holyshit recipes → the loop closes) → `report`. Catalog-only: counts, never corpora | Owns AFTER/GAIN: turns compromises into business verdicts AND arms the family with what the harvest reveals |
+| 6 | **KAISHA** (v1.0) | The Ladder | `ladder --host H` builds R1–R5 from confirmed access: identity/surface inventories (read-only) → era-stack banner mapping → 4 privesc batteries (sudo/SUID/token-reuse/unit-trust) → lateral reuse plans (harvest-priced, one-shot, reversed). **No persistence, no implants, NO-GAIN** | Owns DEPTH: everything below the foothold — what it can SEE and BECOME |
+| 7 | **SHUKAKU** (v1.2) | The Harvester | `reason` (infer what SHOULD be harvestable from confirmed access) → `hunt` (read-only proofs: exact static probes or GET-only live surface probes) → `crown` register (evidence-chain enforced, ladder-priced) → `disclose` (6 playbook triggers) → `feed` (3AM vectors + undercroft surface + holyshit recipes → the loop closes) → `report`. Catalog-only: counts, never corpora | Owns AFTER/GAIN: turns compromises into business verdicts AND arms the family with what the harvest reveals |
 
 ## The Chain (how one engagement flows)
 
@@ -42,15 +43,35 @@ UNDERCROFT: live descent (scan/JWT/routes/boundary)   (what's UNKNOWN, proven re
 KAIRO: ingest → synthesize → expand → chains          (findings → attacks, compiled)
     ↓ distributed back to everyone
 3AM: perform the sweep, absorb the matrix, certify TAKEOVERs
-  ↓ confirmed compromises
+    ↓ confirmed footholds
+KAISHA: the ladder — era-stack · privesc rungs · lateral    (DEPTH below the foothold)
+    ↓ what the depth reaches
 SHUKAKU: crown register — catalog · price · disclose     (what the attacker GAINED)
-  ↓ the P5 impact layer
+    ↓ the P5 impact layer
 SHIKI conducts all of it in one `assault` · BARBICAN wipes at the end
 ```
 
 **One-liners:** Barbican shields you · HolyShit finds it · UNDERCROFT reads what's
-hidden · 3AM hits it fast · KAIRO turns every hit into everyone's weapons · SHUKAKU
-prices the gain · SHIKI conducts the whole war · SpyderMonkey routes it.
+hidden · 3AM hits it fast · KAIRO turns every hit into everyone's weapons · KAISHA
+climbs the ladder · SHUKAKU prices the gain · SHIKI conducts the whole war ·
+SpyderMonkey routes it.
+
+## The Scope Authority (v1.3.0 — the machine-checkable estate gate)
+
+`spydermonkey scope init --engagement E --in-scope "acme.com,10.0.0.0/24"` writes
+`~/.redteam/scope.json` — every live-probing engine (shiki gate · shukaku hunt
+--live · the run pipeline) checks it BEFORE firing. Domain-suffix + CIDR matching,
+default-deny, `--strict` mode closes everything undeclared:
+
+```
+$ spydermonkey scope check --value https://api.acme.com/x
+✓ IN SCOPE — https://api.acme.com/x under engagement 'E'
+$ spydermonkey scope check --value https://evil.com
+✗ OUT OF SCOPE — https://evil.com is not in the declared estate     # rc=1
+```
+
+Also new: `doctor` (full health check: engines · scope · corrupt states · canon
+stats) and `bench` (offline route-level accuracy — the first measurable metric).
 
 ## The Mandate Discipline (v1.1.0 — the Kimiko architecture, model-agnostic)
 
@@ -91,7 +112,14 @@ replaced the nullification — discipline without harm.
 - "arm / forge / vectors / weapons / chains" → **kairo** (forge from existing findings)
 - "harvest / crown / price / what could they take / disclose / impact" → **shukaku** (after confirmed compromises)
 - "everything / full assault / together / one command" → **shiki assault** (the pipeline)
-- no match → the STANDARD RELAY: barbican → holyshit → undercroft → kairo → 3AM → shukaku
+- no match → the STANDARD RELAY: barbican → holyshit → undercroft → kairo → 3AM → kaisha → shukaku
+
+## The Scope Authority
+
+`scope init` writes ~/.redteam/scope.json (the declared estate + rules); `scope
+check --value` matches domains/CIDRs — default-deny with --strict. Every
+live-probing engine honors it. `doctor` = the health check; `bench` = the offline
+route-accuracy benchmark.
 
 ## Tooling
 

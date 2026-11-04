@@ -9,7 +9,7 @@
 **The master dispatcher of the HolyShit offensive-security family —
 the tree, the router, and the full engagement pipeline in one stdlib-only CLI.**
 
-[![Version](https://img.shields.io/badge/version-1.2.0-blueviolet?style=for-the-badge)](#-the-cli)
+[![Version](https://img.shields.io/badge/version-1.3.0-blueviolet?style=for-the-badge)](#-the-cli)
 [![Python](https://img.shields.io/badge/python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](#quickstart)
 [![Platform](https://img.shields.io/badge/platform-Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](#quickstart)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?style=for-the-badge)](#why-its-so-powerful)
@@ -26,7 +26,8 @@ the tree, the router, and the full engagement pipeline in one stdlib-only CLI.**
 [![03 UNDERCROFT · the descent](https://img.shields.io/badge/03-UNDERCROFT%20·%20the%20descent-4B0082?style=for-the-badge)](https://github.com/xanstomper/undercroft)
 [![04 HOLYSHIT · the finder](https://img.shields.io/badge/04-HOLYSHIT%20·%20the%20finder-B8860B?style=for-the-badge)](https://github.com/xanstomper/HolyShit)
 [![05 SHIKI · the command](https://img.shields.io/badge/05-SHIKI%20·%20the%20command-111111?style=for-the-badge)](https://github.com/xanstomper/shiki)
-[![06 SHUKAKU · the harvester](https://img.shields.io/badge/06-SHUKAKU%20·%20the%20harvester-8B4513?style=for-the-badge)](https://github.com/xanstomper/shukaku)
+[![06 KAISHA · the ladder](https://img.shields.io/badge/06-KAISHA%20·%20the%20ladder-704214?style=for-the-badge)](https://github.com/xanstomper/kaisha)
+[![07 SHUKAKU · the harvester](https://img.shields.io/badge/07-SHUKAKU%20·%20the%20harvester-8B4513?style=for-the-badge)](https://github.com/xanstomper/shukaku)
 
 [How it works](#how-it-works) · [Why it's so powerful](#why-its-so-powerful) ·
 [Quickstart](#quickstart) · [The CLI](#the-cli) ·
@@ -38,7 +39,7 @@ the tree, the router, and the full engagement pipeline in one stdlib-only CLI.**
 
 ## What is this?
 
-SPYDERMONKEY is the spider at the center of the web. Around it, seven specialized
+SPYDERMONKEY is the spider at the center of the web. Around it, eight specialized
 offensive-security mandates — the **HolyShit family** — each owning exactly one
 axis of an engagement. None of them overlap. All of them compose.
 
@@ -67,7 +68,9 @@ UNDERCROFT: live descent (scan/JWT/routes/boundary)   (what's UNKNOWN, proven re
 KAIRO: ingest → synthesize → expand → chains          (findings → attacks, compiled)
     ↓ distributed back to everyone
 3AM: perform the sweep, absorb the matrix, certify TAKEOVERs
-    ↓ confirmed compromises
+    ↓ confirmed footholds
+KAISHA: the ladder — era-stack · privesc rungs · lateral    (DEPTH below the foothold)
+    ↓ what the depth reaches
 SHUKAKU: crown register — catalog · price · disclose     (what the attacker GAINED)
     ↓ the P5 impact layer
 SHIKI conducts all of it in one `assault` · BARBICAN wipes at the end
@@ -95,10 +98,25 @@ $ python3 scripts/spydermonkey.py route --goal "protect my ass"
 | attack · sweep · take over · exploit | **3AM** — the universal sweep |
 | arm · forge · vectors · weapons · chains | **kairo** — forge from existing findings |
 | harvest · crown · price · what could they take · disclose · impact | **shukaku** — the harvest, after confirmed compromises |
+| ladder · climb · deepen · privesc · lateral · foothold | **kaisha** — the depth leg: what the foothold becomes |
 | everything · full assault · together · one command | **shiki** — the entire pipeline as one assault |
-| *anything else* | the **STANDARD RELAY**: barbican → holyshit → undercroft → kairo → 3am → shukaku |
+| *anything else* | the **STANDARD RELAY**: barbican → holyshit → undercroft → kairo → 3am → kaisha → shukaku |
 
-### 3. The pipeline — one command, seven engines
+### 3. The scope authority — the machine-checkable estate gate
+
+```bash
+$ spydermonkey scope init --engagement acme-p1 --in-scope "acme.com,10.0.0.0/24"
+$ spydermonkey scope check --value https://api.acme.com/x
+✓ IN SCOPE — https://api.acme.com/x under engagement 'acme-p1'
+$ spydermonkey scope check --value https://evil.com
+✗ OUT OF SCOPE — https://evil.com is not in the declared estate      # rc=1
+```
+
+Every live-probing engine honors `~/.redteam/scope.json` — default-deny with
+`--strict`. Plus: **`doctor`** (full health check) and **`bench`** (offline
+route-accuracy benchmark — the family's first measurable metric).
+
+### 4. The pipeline — one command, eight engines
 
 `run` delegates to **SHIKI assault** — the proven path that drives every real
 engine in order, under the shield, with adaptive re-tasking:
@@ -118,9 +136,9 @@ assault idempotently; `--close` wipes the campaign at the end.
 
 ## Why it's so powerful
 
-- **One command, seven engines.** A single `run` conducts gate → recon ∥ descent →
-  forge → chain → sweep → harvest → closeout. You stop babysitting seven CLIs; the
-  conductor handles ordering, parallelism, and re-tasking from live results.
+- **One command, eight engines.** A single `run` conducts gate → recon ∥ descent →
+  forge → chain → sweep → ladder → harvest → closeout. You stop babysitting eight
+  CLIs; the conductor handles ordering, parallelism, and re-tasking from live results.
 - **One axis per mandate.** Unix philosophy applied to offensive security: each
   mandate does exactly one thing and hands off cleanly. Swap one engine and the
   family still works — the dispatcher only knows roles, not internals.

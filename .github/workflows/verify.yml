@@ -31,6 +31,11 @@ jobs:
           python3 $S mandate --file | grep -q 'mandate.md'
           python3 $S mandate | grep -q 'MANDATE: SPYDERMONKEY'
           python3 $S status | grep -q 'family status'
+          python3 $S scope init --engagement ci --in-scope "ci.example,10.0.0.0/24" --file "$RUNNER_TEMP/scope.json" | grep -q 'scope authority'
+          python3 $S scope check --value https://api.ci.example --file "$RUNNER_TEMP/scope.json" | grep -q 'IN SCOPE'
+          python3 $S scope check --value https://evil.com --file "$RUNNER_TEMP/scope.json" 2>/dev/null && exit 1 || test $? -eq 1
+          python3 $S doctor > /dev/null
+          python3 $S bench | grep -q 'route accuracy'
           test -f references/mandate.md
 
       - name: Stdlib-only check
