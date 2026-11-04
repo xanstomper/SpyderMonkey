@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 1.1.1
+version: 1.2.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -28,6 +28,7 @@ sends you.
 | 3 | **UNDERCROFT** (v2.3) | The Descent | `run` = auto-engagement: bundle scan + JWT decode + live route probe + boundary id-swaps + auto-craft + report. 15 NO-GAIN probe plans, precision/entropy/stateflow/replay engines, 7 domain maps | Owns UNKNOWN: attacks what only the target's authors know; the only live autonomous engagement |
 | 4 | **HolyShit!** (v2.1) | The Finder | 31+ case files, queryable: `recipe` search, `dossier` assembly, `recon` checklists, `handoff` to the family, `vintage` decay flags | Owns KNOWN: the canon library; feeds the machine, consumes compiled recipes back |
 | 5 | **SHIKI** (v2.1) | The Command | `assault` = the whole family in sequence: gate → find ∥ descend (parallel) → forge → chain → war board + joint verdict; **adaptive re-tasking** (lanes update from live results); `--resume` idempotent; `--close` wipes | Owns TOGETHER: drives the family's REAL engines in order, under the shield |
+| 6 | **SHUKAKU** (v1.1) | The Harvester | `ingest` confirmed findings → `crown` register (evidence-chain enforced, ladder-priced) → `disclose` (6 playbook triggers) → `report` (crown-entry standard + valuation summary + remediation prerequisites). Catalog-only: counts, never corpora | Owns AFTER/GAIN: turns compromises into business verdicts — what was reachable, what it's worth, who must be told |
 
 ## The Chain (how one engagement flows)
 
@@ -41,13 +42,15 @@ UNDERCROFT: live descent (scan/JWT/routes/boundary)   (what's UNKNOWN, proven re
 KAIRO: ingest → synthesize → expand → chains          (findings → attacks, compiled)
     ↓ distributed back to everyone
 3AM: perform the sweep, absorb the matrix, certify TAKEOVERs
-    ↓
+  ↓ confirmed compromises
+SHUKAKU: crown register — catalog · price · disclose     (what the attacker GAINED)
+  ↓ the P5 impact layer
 SHIKI conducts all of it in one `assault` · BARBICAN wipes at the end
 ```
 
 **One-liners:** Barbican shields you · HolyShit finds it · UNDERCROFT reads what's
-hidden · 3AM hits it fast · KAIRO turns every hit into everyone's weapons · SHIKI
-conducts the whole war · SpyderMonkey routes it.
+hidden · 3AM hits it fast · KAIRO turns every hit into everyone's weapons · SHUKAKU
+prices the gain · SHIKI conducts the whole war · SpyderMonkey routes it.
 
 ## The Mandate Discipline (v1.1.0 — the Kimiko architecture, model-agnostic)
 
@@ -86,8 +89,9 @@ replaced the nullification — discipline without harm.
 - "custom / bundle / logic / business rules / their code" → **undercroft** (run)
 - "attack / sweep / take over / exploit everything" → **3AM** (after the descent's findings)
 - "arm / forge / vectors / weapons / chains" → **kairo** (forge from existing findings)
+- "harvest / crown / price / what could they take / disclose / impact" → **shukaku** (after confirmed compromises)
 - "everything / full assault / together / one command" → **shiki assault** (the pipeline)
-- no match → the STANDARD RELAY: barbican → holyshit → undercroft → kairo → 3AM promote
+- no match → the STANDARD RELAY: barbican → holyshit → undercroft → kairo → 3AM → shukaku
 
 ## Tooling
 
@@ -96,7 +100,7 @@ replaced the nullification — discipline without harm.
 - `route --goal "<words>"` — goal → the mandate sequence to load/run
 - `run --target T --url U --domain D [--bundle P] [--boundary-url U2] [--probe-ids 1,2] [--parallel] [--resume] [--close] [--dry-run]` — the full pipeline (delegates to SHIKI assault, the proven path)
 - `status [--target T]` — family meta-status: every mandate's version + engine presence + campaign states
-- `verify` — the meta self-check: all six family engines verify
+- `verify` — the meta self-check: all seven family engines verify
 - `mandate [--file]` — print (or locate) the injectable persona contract
 
 ## Files

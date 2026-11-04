@@ -9,7 +9,7 @@
 **The master dispatcher of the HolyShit offensive-security family —
 the tree, the router, and the full engagement pipeline in one stdlib-only CLI.**
 
-[![Version](https://img.shields.io/badge/version-1.1.1-blueviolet?style=for-the-badge)](#-the-cli)
+[![Version](https://img.shields.io/badge/version-1.2.0-blueviolet?style=for-the-badge)](#-the-cli)
 [![Python](https://img.shields.io/badge/python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](#quickstart)
 [![Platform](https://img.shields.io/badge/platform-Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](#quickstart)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?style=for-the-badge)](#why-its-so-powerful)
@@ -26,6 +26,7 @@ the tree, the router, and the full engagement pipeline in one stdlib-only CLI.**
 [![03 UNDERCROFT · the descent](https://img.shields.io/badge/03-UNDERCROFT%20·%20the%20descent-4B0082?style=for-the-badge)](https://github.com/xanstomper/undercroft)
 [![04 HOLYSHIT · the finder](https://img.shields.io/badge/04-HOLYSHIT%20·%20the%20finder-B8860B?style=for-the-badge)](https://github.com/xanstomper/HolyShit)
 [![05 SHIKI · the command](https://img.shields.io/badge/05-SHIKI%20·%20the%20command-111111?style=for-the-badge)](https://github.com/xanstomper/shiki)
+[![06 SHUKAKU · the harvester](https://img.shields.io/badge/06-SHUKAKU%20·%20the%20harvester-8B4513?style=for-the-badge)](https://github.com/xanstomper/shukaku)
 
 [How it works](#how-it-works) · [Why it's so powerful](#why-its-so-powerful) ·
 [Quickstart](#quickstart) · [The CLI](#the-cli) ·
@@ -37,7 +38,7 @@ the tree, the router, and the full engagement pipeline in one stdlib-only CLI.**
 
 ## What is this?
 
-SPYDERMONKEY is the spider at the center of the web. Around it, six specialized
+SPYDERMONKEY is the spider at the center of the web. Around it, seven specialized
 offensive-security mandates — the **HolyShit family** — each owning exactly one
 axis of an engagement. None of them overlap. All of them compose.
 
@@ -66,13 +67,15 @@ UNDERCROFT: live descent (scan/JWT/routes/boundary)   (what's UNKNOWN, proven re
 KAIRO: ingest → synthesize → expand → chains          (findings → attacks, compiled)
     ↓ distributed back to everyone
 3AM: perform the sweep, absorb the matrix, certify TAKEOVERs
-    ↓
+    ↓ confirmed compromises
+SHUKAKU: crown register — catalog · price · disclose     (what the attacker GAINED)
+    ↓ the P5 impact layer
 SHIKI conducts all of it in one `assault` · BARBICAN wipes at the end
 ```
 
 **One-liners:** Barbican shields you · HolyShit finds it · UNDERCROFT reads what's
-hidden · 3AM hits it fast · KAIRO turns every hit into everyone's weapons · SHIKI
-conducts the whole war · SpyderMonkey routes it.
+hidden · 3AM hits it fast · KAIRO turns every hit into everyone's weapons · SHUKAKU
+prices the gain · SHIKI conducts the whole war · SpyderMonkey routes it.
 
 ### 2. The router — plain words in, mandate sequence out
 
@@ -91,10 +94,11 @@ $ python3 scripts/spydermonkey.py route --goal "protect my ass"
 | custom · bundle · logic · business · their code | **undercroft** — live auto-engagement |
 | attack · sweep · take over · exploit | **3AM** — the universal sweep |
 | arm · forge · vectors · weapons · chains | **kairo** — forge from existing findings |
+| harvest · crown · price · what could they take · disclose · impact | **shukaku** — the harvest, after confirmed compromises |
 | everything · full assault · together · one command | **shiki** — the entire pipeline as one assault |
-| *anything else* | the **STANDARD RELAY**: barbican → holyshit → undercroft → kairo → 3am |
+| *anything else* | the **STANDARD RELAY**: barbican → holyshit → undercroft → kairo → 3am → shukaku |
 
-### 3. The pipeline — one command, six engines
+### 3. The pipeline — one command, seven engines
 
 `run` delegates to **SHIKI assault** — the proven path that drives every real
 engine in order, under the shield, with adaptive re-tasking:
@@ -114,9 +118,9 @@ assault idempotently; `--close` wipes the campaign at the end.
 
 ## Why it's so powerful
 
-- **One command, six engines.** A single `run` conducts gate → recon ∥ descent →
-  forge → chain → sweep → closeout. You stop babysitting six CLIs; the conductor
-  handles ordering, parallelism, and re-tasking from live results.
+- **One command, seven engines.** A single `run` conducts gate → recon ∥ descent →
+  forge → chain → sweep → harvest → closeout. You stop babysitting seven CLIs; the
+  conductor handles ordering, parallelism, and re-tasking from live results.
 - **One axis per mandate.** Unix philosophy applied to offensive security: each
   mandate does exactly one thing and hands off cleanly. Swap one engine and the
   family still works — the dispatcher only knows roles, not internals.
@@ -127,6 +131,10 @@ assault idempotently; `--close` wipes the campaign at the end.
   1 confirmed finding into ~4 compiled attacks, chains them into multi-hop kill
   paths, and **distributes the weapons back to every other mandate**. Findings
   never die in one report.
+- **The business verdict.** SHUKAKU turns confirmed compromises into the numbers
+  that matter in the boardroom — what was reachable, what it's worth, who must be
+  told — with the evidence chain enforced in code: unsourced crowns refuse, and
+  the register keeps counts, never corpora.
 - **Model-agnostic discipline.** The `mandate` command prints an injectable
   persona contract — paste it as the system prompt of ANY LLM/agent and it
   operates the family under the same walls. The discipline travels; the model
@@ -166,6 +174,7 @@ git clone https://github.com/xanstomper/spydermonkey.git \
 > git clone https://github.com/xanstomper/3am-shinjitsu.git
 > git clone https://github.com/xanstomper/kairo.git
 > git clone https://github.com/xanstomper/shiki.git
+> git clone https://github.com/xanstomper/shukaku.git
 > python3 spydermonkey/scripts/spydermonkey.py verify   # → ALL PASS
 > ```
 
@@ -253,6 +262,7 @@ Every family skill is reachable from here; load per the router:
 [undercroft](https://github.com/xanstomper/undercroft) (descent) ·
 [3am-shinjitsu](https://github.com/xanstomper/3am-shinjitsu) (performer) ·
 [kairo](https://github.com/xanstomper/kairo) (synthesizer) ·
+[shukaku](https://github.com/xanstomper/shukaku) (harvester) ·
 [shiki](https://github.com/xanstomper/shiki) (command).
 
 ## License

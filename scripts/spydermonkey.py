@@ -27,6 +27,7 @@ FAMILY = {
     "undercroft": (SEC / "undercroft/scripts/undercroft.py", "The Descent — live auto-engagement on the target's own skin"),
     "3am": (SEC / "3am-shinjitsu/scripts/exploit-intel.py", "The Performer — universal sweep, takeover, growth loop"),
     "kairo": (SEC / "kairo/scripts/kairo.py", "The Synthesizer — findings → attacks for everyone"),
+    "shukaku": (SEC / "shukaku/scripts/shukaku.py", "The Harvester — post-compromise catalog · price · disclose (the P5 impact layer)"),
     "shiki": (SEC / "shiki/scripts/shiki.py", "The Command — conducts the whole family as one assault"),
 }
 
@@ -37,10 +38,12 @@ ROUTES = [
     ("business", "undercroft"), ("their code", "undercroft"),
     ("attack", "3am"), ("sweep", "3am"), ("take over", "3am"), ("exploit", "3am"),
     ("arm", "kairo"), ("forge", "kairo"), ("vectors", "kairo"), ("weapons", "kairo"), ("chains", "kairo"),
+    ("harvest", "shukaku"), ("crown", "shukaku"), ("price", "shukaku"), ("valuation", "shukaku"),
+    ("disclose", "shukaku"), ("impact", "shukaku"),
     ("everything", "shiki"), ("full assault", "shiki"), ("together", "shiki"), ("one command", "shiki"),
 ]
 
-RELAY = ["barbican", "holyshit", "undercroft", "kairo", "3am"]
+RELAY = ["barbican", "holyshit", "undercroft", "kairo", "3am", "shukaku"]
 
 CMDS = {
     "barbican": "barbican posture --target <t> --vantage vm --alias <alias>   (FIRST)",
@@ -48,6 +51,7 @@ CMDS = {
     "undercroft": "undercroft run --target <t> --domain <d> --url <u> [--bundle P]",
     "kairo": "kairo forge --target <t> --expand && kairo chain --target <t> --write",
     "3am": "3AM sweep per its SKILL.md §16; absorb kairo's distributed rows first",
+    "shukaku": "shukaku ingest --target <t> --finding <id> --proof <ref> && shukaku crown --target <t> … && shukaku report --target <t>",
     "shiki": "shiki assault --target <t> --url <u> --domain <d> [--bundle P] [--parallel] [--resume] [--close]",
 }
 
@@ -160,7 +164,7 @@ def cmd_verify(args):
             print("    the dispatcher needs the family on disk — clone each repo into")
             print("    ~/.hermes/skills/security/<name>/ (see README → Quickstart)")
         return 1
-    print("✓ SPYDERMONKEY verify: all six family engines — ALL PASS")
+    print("✓ SPYDERMONKEY verify: all seven family engines — ALL PASS")
     return 0
 
 
