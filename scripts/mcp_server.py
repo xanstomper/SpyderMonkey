@@ -21,7 +21,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-VERSION = "5.0.0"
+VERSION = "5.1.0"
 PROTOCOL = "2024-11-05"
 SM = str(Path(__file__).resolve().parent / "spydermonkey.py")
 NAME_RE = re.compile(r"^[a-z][a-z0-9_]{1,63}$")
@@ -183,6 +183,42 @@ def h_next_action(a):
 def h_kernel_absorb(a):
     _need(a, "target", "file")
     return _run_sm(["absorb", "--target", a["target"], "--file", a["file"]])
+
+
+def h_capabilities(a):
+    return _run_sm(["capabilities"])
+
+
+def h_protect_scan(a):
+    argv = ["protect", a.get("action") or "scan"]
+    if a.get("target"):
+        argv += ["--target", a["target"]]
+    if a.get("all_campaigns"):
+        argv += ["--all-campaigns"]
+    return _run_sm(argv, timeout=300)
+
+
+def h_takeover(a):
+    _need(a, "target", "domain")
+    argv = ["takeover", "--target", a["target"], "--domain", a["domain"]]
+    if a.get("subdomains"):
+        argv += ["--subdomains", a["subdomains"]]
+    return _run_sm(argv, timeout=300)
+
+
+def h_train(a):
+    argv = ["train", "--target", a.get("target") or "training"]
+    if a.get("classes"):
+        argv += ["--classes", a["classes"]]
+    return _run_sm(argv, timeout=600)
+
+
+def h_memory(a):
+    _need(a, "target")
+    argv = ["memory", "--target", a["target"]]
+    if a.get("forget"):
+        argv += ["--forget"]
+    return _run_sm(argv)
 
 
 def h_kernel_loop(a):
@@ -465,6 +501,20 @@ TOOLS = [
                            domain=_s("domain"), agent_cmd=_s("external agent command"),
                            max_steps=_i("loop cap (default 6)")),
      "required": ["target"]},
+    {"name": "capabilities", "description": "THE MIRROR OF SELF: live-introspected registry (engines · classes · batteries · executors · corpus · priors).",
+     "inputSchema": _props()},
+    {"name": "protect_scan", "description": "SELF-PROTECTION: operator posture + artifact leak scan (rc=1 while operator strings leak).",
+     "inputSchema": _props(action=_s("posture | scan"), target=_s("one campaign"),
+                           all_campaigns=_b("scan every campaign"))},
+    {"name": "takeover", "description": "THE TAKEOVER ENGINE: dangling CNAME fingerprints (read-only, NO-GAIN).",
+     "inputSchema": _props(target=_s("campaign"), domain=_s("domain to check"),
+                           subdomains=_s("file of subdomains")),
+     "required": ["target", "domain"]},
+    {"name": "train", "description": "SELF-PLAY: attack the dojo range, learn per-class priors (the planner orders by what works).",
+     "inputSchema": _props(target=_s("campaign"), classes=_s("comma list (default: all)"))},
+    {"name": "memory", "description": "ESTATE MEMORY: what the family knows about a target (--forget wipes).",
+     "inputSchema": _props(target=_s("campaign"), forget=_b("wipe the memory")),
+     "required": ["target"]},
     {"name": "ledger_add", "description": "Register a finding (scope-gated, deduped, evidence-gated).",
      "inputSchema": _props(target=_s("campaign"), title=_s("finding title"),
                            asset=_s("url/host"), proof=_s("baseline: … attack: … diff: …"),
@@ -556,6 +606,8 @@ HANDLERS = {
     "mandates_list": h_mandates_list, "mandates_verify": h_mandates_verify,
     "next_action": h_next_action, "ledger_add": h_ledger_add,
     "kernel_absorb": h_kernel_absorb, "kernel_loop": h_kernel_loop,
+    "capabilities": h_capabilities, "protect_scan": h_protect_scan,
+    "takeover": h_takeover, "train": h_train, "memory": h_memory,
     "ledger_list": h_ledger_list, "ledger_show": h_ledger_show,
     "ledger_triage": h_ledger_triage, "ledger_stats": h_ledger_stats,
     "ledger_verify": h_ledger_verify, "ledger_export": h_ledger_export,
