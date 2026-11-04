@@ -90,6 +90,7 @@ CMDS = {
     "shukaku": "shukaku ingest --target <t> --finding <id> --proof <ref> && shukaku reason --target <t> && shukaku hunt --target <t> [--live U] && shukaku crown … && shukaku feed --target <t> && shukaku report --target <t>",
     "shiki": "shiki assault --target <t> --url <u> --domain <d> [--bundle P] [--parallel] [--resume] [--close]",
     "kage": "kage mirror --target <t> && kage validate --target <t> && kage report --target <t>",
+    "arsenal": "arsenal list && arsenal plan --target <t> && arsenal run --target <t>",
 }
 
 
@@ -446,6 +447,19 @@ def _run(argv, timeout=60):
         return f"error: {e}", 1
 
 
+def _exec_arsenal(a):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "arsenal", str(Path(__file__).resolve().parent / "arsenal.py"))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    argv = [a.action] + (["--target", a.target] if a.target else []) \
+        + (["--only", a.only] if a.only else []) \
+        + (["--dry-run"] if getattr(a, "dry_run", False) else []) \
+        + (["--wordlist", a.wordlist] if a.wordlist else [])
+    return mod.main_with(argv)
+
+
 def main():
     ap = argparse.ArgumentParser(description="SPYDERMONKEY — master dispatcher of the HolyShit family")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -466,6 +480,12 @@ def main():
     s = sub.add_parser("status", help="family meta-status")
     s.add_argument("--target")
     sub.add_parser("verify", help="meta self-check")
+    ar = sub.add_parser("arsenal", help="scope-gated execution layer (real tools, 13 wrappers)")
+    ar.add_argument("action", choices=["list", "plan", "run", "verify"], nargs="?", default="list")
+    ar.add_argument("--target")
+    ar.add_argument("--only")
+    ar.add_argument("--dry-run", action="store_true")
+    ar.add_argument("--wordlist")
     md = sub.add_parser("mandate", help="print the injectable mandate (persona contract, model-agnostic)")
     md.add_argument("--file", action="store_true", help="print path only")
     sc = sub.add_parser("scope", help="the scope authority: init · check · show")
@@ -497,6 +517,8 @@ def main():
         return cmd_verify(a)
     if a.cmd == "mandate":
         return cmd_mandate(a)
+    if a.cmd == "arsenal":
+        return _exec_arsenal(a)
     if a.cmd == "scope":
         return cmd_scope(a)
     if a.cmd == "doctor":
