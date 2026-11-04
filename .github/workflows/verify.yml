@@ -11,40 +11,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compile
-        run: python3 -m py_compile scripts/spydermonkey.py
-
-      - name: CLI smoke tests
-        run: |
-          set -e
-          S=scripts/spydermonkey.py
-          python3 $S --help > /dev/null
-          python3 $S tree | grep -q BARBICAN
-          python3 $S tree | grep -q SHIKI
-          python3 $S route --goal "protect my ass" | grep -q barbican
-          python3 $S route --goal "take over their session" | grep -q 3am
-          python3 $S route --goal "forge the weapons" | grep -q kairo
-          python3 $S route --goal "price what they could take" | grep -q shukaku
-          python3 $S route --goal "full assault" | grep -q shiki
-          python3 $S route --goal "zzz unknown goal qqq" | grep -q 'barbican → holyshit → undercroft → kairo → 3am → kaisha → shukaku'
-          python3 $S run --target demo --url https://example.com --domain example.com --dry-run | grep -q 'shiki assault'
-          python3 $S mandate --file | grep -q 'mandate.md'
-          python3 $S mandate | grep -q 'MANDATE: SPYDERMONKEY'
-          python3 $S status | grep -q 'family status'
-          python3 $S scope init --engagement ci --in-scope "ci.example,10.0.0.0/24" --file "$RUNNER_TEMP/scope.json" | grep -q 'scope authority'
-          python3 $S scope check --value https://api.ci.example --file "$RUNNER_TEMP/scope.json" | grep -q 'IN SCOPE'
-          python3 $S scope check --value https://evil.com --file "$RUNNER_TEMP/scope.json" 2>/dev/null && exit 1 || test $? -eq 1
-          python3 $S doctor > /dev/null 2>&1 || test $? -eq 1   # engines missing on CI → ATTENTION NEEDED rc=1
-          python3 $S bench | grep -q 'route accuracy'
-          python3 scripts/skilltree.py --count | grep -qE '[0-9]+ technique'
-          test -f scripts/mcp_server.py
-          printf '{"jsonrpc":"2.0","id":1,"method":"tools/list"}\n' | python3 scripts/mcp_server.py | grep -q 'family_verify'
-          test -f references/mandate.md
-
-      - name: Stdlib-only check
-        run: |
-          ! grep -E '^[[:space:]]*(import|from)[[:space:]]+(requests|flask|httpx|aiohttp|urllib3)' scripts/spydermonkey.py
-
-      - name: Exit codes
-        run: |
-          python3 scripts/spydermonkey.py route 2>/dev/null && exit 1 || test $? -eq 2
+      - name: CI smoke suite (script = local truth)
+        run: bash scripts/ci_smoke.sh

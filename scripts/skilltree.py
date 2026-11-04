@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-SPYDERMONKEY SKILLTREE — generate the family's per-technique skill files from its
-REAL canon (3AM arsenal + vector-matrix, undercroft probe plans, kairo technique
-classes, shukaku ladder, kaisha rungs, barbican layers) with WSTG/CWE/ATT&CK
-bindings. One technique = one lazy-loaded skill file + a searchable index.
+SPYDERMONKEY SKILLTREE — generate the family's per-technique skill files from
+its REAL canon: every mandate's references/ dir that exists on disk (barbican,
+holyshit-mode, undercroft, 3am-shinjitsu, kairo, kaisha, shukaku, kage, dojo —
+plus the dispatcher's own references) with WSTG/CWE/ATT&CK bindings. One
+technique = one lazy-loaded skill file + a searchable index.
 
 Run:  python3 skilltree.py           # emit to references/skills/ + index.md
       python3 skilltree.py --count   # just count what would be generated
@@ -147,13 +148,14 @@ def _extract_blocks(text, headers):
 
 
 def collect_sources():
-    """Every (category, title, body) from the family's real canon — all eight
-    mandates' references/ dirs (the canon lives with its mandate)."""
+    """Every (category, title, body) from the family's real canon — every mandate
+    references/ dir present on disk (all ten mandates, where installed), plus the
+    dispatcher's own references."""
     srcs = []
     dirs = []
     sec = Path.home() / ".hermes/skills/security"
     for name in ("barbican", "holyshit-mode", "undercroft", "3am-shinjitsu",
-                 "kairo", "kaisha", "shukaku"):
+                 "kairo", "kaisha", "shukaku", "kage", "dojo"):
         d = sec / name / "references"
         if d.exists():
             dirs.append((name, d))
@@ -189,12 +191,34 @@ def collect_sources():
     return srcs
 
 
+def _existing_dates():
+    """Preserve the original 'generated' date of files that already exist, so
+    regeneration refreshes index + colliding slugs without touching 690+ files."""
+    dates = {}
+    try:
+        for p in OUT.rglob("*.md"):
+            try:
+                m = re.search(r"^- generated: (\d{4}-\d{2}-\d{2})$",
+                              p.read_text(errors="replace"), re.M)
+                if m:
+                    dates[p.resolve()] = m.group(1)
+            except Exception:
+                continue
+    except Exception:
+        pass
+    return dates
+
+
 def emit(args):
+    import hashlib
     srcs = collect_sources()
     if args.count:
         print(f"{len(srcs)} technique skill files would be generated")
         return 0
     made = 0
+    today = datetime.now(timezone.utc).date().isoformat()
+    existing_dates = _existing_dates()
+    used_paths = {}
     index = ["# SPYDERMONKEY SKILLTREE — the family's technique library",
              "",
              "_generated from the family's REAL canon — one technique per file,_",
@@ -202,14 +226,22 @@ def emit(args):
              ""]
     for src, title, body in sorted(srcs, key=lambda x: (x[0], x[1].lower())):
         slug = _slug(f"{src}-{title}")
-        w, c, a = _bindings(f"{title} {body}")
         d = OUT / src
-        d.mkdir(parents=True, exist_ok=True)
         f = d / f"{slug}.md"
+        # _slug truncates at 60 chars — on collision, append a stable hash so a
+        # later technique never silently overwrites an earlier one.
+        if f.resolve() in used_paths:
+            digest = hashlib.sha1(f"{src}\0{title}".encode()).hexdigest()[:8]
+            slug = f"{slug[:50]}-{digest}"
+            f = d / f"{slug}.md"
+        used_paths[f.resolve()] = True
+        w, c, a = _bindings(f"{title} {body}")
+        d.mkdir(parents=True, exist_ok=True)
+        generated = existing_dates.get(f.resolve(), today)
         f.write_text(
             f"# {title}\n\n"
             f"- source canon: `{src}.md`\n- bindings: **{w}** · **{c}** · **ATT&CK {a}**\n"
-            f"- generated: {datetime.now(timezone.utc).date().isoformat()}\n\n"
+            f"- generated: {generated}\n\n"
             f"## The technique\n\n{body}\n\n"
             f"## Family use\n\n- decisive-test shape lives in the source canon\n"
             f"- walls: validation-only · NO-GAIN · documented-class adaptation only\n")

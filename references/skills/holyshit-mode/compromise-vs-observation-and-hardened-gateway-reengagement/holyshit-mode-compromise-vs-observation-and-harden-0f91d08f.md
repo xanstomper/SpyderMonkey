@@ -1,0 +1,19 @@
+# 4. Confirm the ONE surviving compromise (bounded, never drain)
+
+- source canon: `holyshit-mode/compromise-vs-observation-and-hardened-gateway-reengagement.md`
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- generated: 2026-11-04
+
+## The technique
+
+The unauthenticated unlimited proxy is the crown jewel when the other compression classes
+hold. Re-verify it is STILL live with tiny max_tokens-capped bursts (3 x ~12 tokens) — the
+proof is the amount an attacker CAN burn, not the amount you burn. If still 200 no-key, 0
+429, max_tokens honored → the drain is a REAL compromise (financial+avail DoS of operator's
+own upstream billing accounts, which /status?json=1 already leak: crypto-billing, Anthropic
+fleet, etc.). Score it as a genuine compromise, not just "free AI."
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

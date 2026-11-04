@@ -1,4 +1,4 @@
-# Re-verification ladder (PTOK oracle first)
+# Final state
 
 - source canon: `holyshit-mode/case-obsidian-y-api-reengage5-provider-wiring.md`
 - bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
@@ -6,12 +6,10 @@
 
 ## The technique
 
-- Target live, `/pg/chat` still unauth on BOTH hosts (Render + Vercel), `/v1/models` 200.
-- **ling model now STATELESS** (ptok 26 constant across 4 identical requests) — the shared
-  cross-user buffer from re-engage #2 is GONE on ling at least. longcat ptok still varies
-  (3148→3019) but that's the live-timestamp in its injected Environment, not shared context.
-  Prior score-85 shared-context + score-95 poisoning findings should be treated as LIKELY
-  PATCHED until a fresh drift test proves otherwise. Finding decay confirmed empirically.
+- `http://localhost:8620` playground; `http://10.0.0.142:8620/v1` LAN API; any key works.
+- Hermes provider `obsidian-free` + 2-entry fallback chain. 30 live models, 27 tool-capable.
+- holyleadger next-actions for this target: treat pg_shared_context/poisoning as decayed —
+  re-verify with fresh PTOK drift before re-asserting.
 
 ## Family use
 
