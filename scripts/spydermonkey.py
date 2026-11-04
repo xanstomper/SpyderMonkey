@@ -15,6 +15,12 @@ Commands:
                           machine-checkable estate gate every live probe honors
   doctor                  health check: engines · scope · campaigns · canon
   bench                   offline route-level benchmark (route accuracy)
+  + bench_live.py         LIVE exploitation bench: stdlib vulnerable mini-targets
+                          on localhost, real engines scored (sub-task completion)
+  + mcp_server.py         the family as 12 MCP tools (stdio JSON-RPC) — any MCP
+                          client (Claude Desktop/Cursor) drives the family
+  + skilltree.py          per-technique skill files generated from the real canon,
+                          WSTG/CWE/ATT&CK-bound (references/skills/ + index)
 
 Exit codes: 0 ok · 1 gate/verify/scope failure · 2 usage error.
 """

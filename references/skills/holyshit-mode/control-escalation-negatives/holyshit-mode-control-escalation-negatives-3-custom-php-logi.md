@@ -1,0 +1,27 @@
+# 3. Custom-PHP login/control-center (luxeindubai.com)
+
+- source canon: `holyshit-mode/control-escalation-negatives.md`
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- generated: 2026-11-04
+
+## The technique
+
+- LiteSpeed `/_autoindex/` directory listing enabled site-wide enumerates a bespoke admin tree
+  (e.g. `config.php`, `control_center.php`, `add_property.php`, `login_form.php`, `uploads/`,
+  `phpmailer/`). Directory listing of an admin source tree = a real control-surface exposure finding.
+- Custom login (`login_form.php` POST email+password) rejected SQLi auth-bypass payloads
+  (`' OR '1'='1`, `admin' --`, `' OR 1=1-- -`) — all returned the Login Form, no bypass. control_center.php
+  correctly gates unauth (serves the login form). Parameterized/hashed.
+- **PHP `display_errors` infoleak:** POST to custom register without `g-recaptcha-response` →
+  `Notice: Undefined index: g-recaptcha-response in /home/<cpanel-user>/public_html/.../register_form.php`
+  on line N. Leaks the hosting account (`<cpanel-user>`) and cPanel `public_html` path = real finding.
+  The reCAPTCHA STILL holds (no account created) — do not spend budget defeating captcha to make a
+  test account unless the operator explicitly authorizes bootstrapping on that owned service.
+- Misleading backup filename: a file named `LXDB-2244(09).zip` looked like a DB dump but the archive
+  held only `.jpg` photos. **Always unzip/verify an exposed archive's member names before calling it
+  a credential/DB leak** — filename ≠ content.
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

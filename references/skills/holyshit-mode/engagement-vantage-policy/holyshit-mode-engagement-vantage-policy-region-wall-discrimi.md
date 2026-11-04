@@ -1,0 +1,24 @@
+# Region-wall discriminator (auth-plane 403 ≠ IP-quality)
+
+- source canon: `holyshit-mode/engagement-vantage-policy.md`
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- generated: 2026-11-04
+
+## The technique
+
+Datacenter vantage + `403 general.Forbidden` on auth endpoints while READ surfaces (feeds,
+sockets, configs) answer 200 = a RESTRICTED-MARKET geo block on the vantage, not IP-quality.
+Confirm via the target's own signal: the realtime socket pushes `blocked:{reason:"region_page",
+location:"de"}` naming the geolocated country. Never churn request variants on ONE route
+(signing modes, address casings, claimed country params) — they fail identically and the
+churn burns the vantage. DO sweep route BREADTH once per route: the region gate is
+PER-ROUTE, not per-host — one host answered `/auth/token` 201, `/auth/blockCheck` 200,
+`/auth/web3` 403, and `/auth/steam` + `/auth/google` 302 in the same engagement. The 302
+OAuth login starters (steam/google/discord) are the likeliest exemptions, so probe every
+login-method starter BEFORE declaring the auth plane walled. Gated routes need a
+residential unrestricted vantage; open starters do not — say once which is which.
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

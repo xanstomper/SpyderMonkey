@@ -1,0 +1,16 @@
+# 3.9 Strict-validator field enumeration (score 70)
+
+- source canon: `3am-shinjitsu/arsenal-03-api.md`
+- bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
+- generated: 2026-11-04
+
+## The technique
+
+- One valid-minimal body + ONE wrong-typed guess per request: `er_field_validation_<name>` /
+  Pydantic `loc` names the failing field → that param is REAL. Silent 201 = ignored/loosely
+  validated (retest truthy `"x"` as `true`). ~30-guess pass maps the whole filter vocabulary.
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

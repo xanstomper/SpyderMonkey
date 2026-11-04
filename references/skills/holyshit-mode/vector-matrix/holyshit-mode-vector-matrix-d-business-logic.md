@@ -1,0 +1,21 @@
+# D. BUSINESS LOGIC
+
+- source canon: `holyshit-mode/vector-matrix.md`
+- bindings: **WSTG-BUSL-06** · **CWE-294** · **ATT&CK T1550**
+- generated: 2026-11-04
+
+## The technique
+
+- Race conditions: parallel withdraw/redeem/transfer (single-packet attack — N requests, one connection)
+- Payment flows: negative/zero/decimal prices, currency confusion, coupon stacking, post-hoc price edits
+- Stateless verification: claim gates with no server-to-server callback (playbook §5)
+- Subscription/lifetime bypass: downgrade-with-features, trial re-spam via email tricks
+- Export/import: CSV injection (=cmd), formula injection in generated files
+- Referrer/CSRF: state-changing actions without CSRF tokens (SameSite=None paths)
+- Webhooks: unsigned payloads, signature-confusion, replay without timestamp/nonce
+- Introspection leaks: GraphQL, Swagger UI live, Spring Boot actuators, .git/.svn deployment
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

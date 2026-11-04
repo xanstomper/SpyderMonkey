@@ -1,0 +1,21 @@
+# 2026-11-03 3AM keep-going round: routes complete + drift oracle armed
+
+- source canon: `holyshit-mode/case-packdraw-com.md`
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- generated: 2026-11-04
+
+## The technique
+
+- Drift baseline: chunk 0lvv874ns6o2c.js sha1 = 0d48fa724bf3 (re-arm before any future
+  re-probe); checkpoint shell byte-stable (17385B 429 from VM).
+- /draw, /deals (10,905 products to $350K), /events (Daily Raffle $2,500 pool; winners
+  list PUBLIC with masked handles first3+last3, exact ticket counts, payouts; raffle RNG
+  not covered by the PF doc), /rewards (login-gated ladder: daily/weekly/monthly + free
+  packs L2-L100).
+- Google/Apple OAuth = server-action start (no client-side client_id/redirect_uri);
+  CORS clean (403 no reflection). OAuth/raffle-RNG items = operator-plane/inconclusive.
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

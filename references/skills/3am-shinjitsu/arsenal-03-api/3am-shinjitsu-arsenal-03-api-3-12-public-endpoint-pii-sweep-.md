@@ -1,0 +1,19 @@
+# 3.12 Public-endpoint PII sweep (score 80 — easy HIGH wins live here)
+
+- source canon: `3am-shinjitsu/arsenal-03-api.md`
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- generated: 2026-11-04
+
+## The technique
+
+- SET: `/api/leaderboard/*`, `/api/health`, `/api/models/status`, `/api/catalog`,
+  `/api/version`, `/api/ping`, `/profile/{username}/public`-shaped, bet feeds (`/ws/user/bets/live`).
+- CONFIRMED: cross-user PII, internal UUIDs + registration-ms + authRole alongside public
+  fields, per-user FINANCIALS (deposits/withdrawals/per-game profit) + username-enumeration
+  oracle (200/404/422).
+- Boolean payload flags lie until read at the CONSUMER — semantics live at the use site.
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

@@ -1,0 +1,19 @@
+# Post-Push Verification Checklist
+
+- source canon: `holyshit-mode/github-release-hygiene.md`
+- bindings: **WSTG-CONF-04** · **CWE-530** · **ATT&CK T1552**
+- generated: 2026-11-04
+
+## The technique
+
+1. `git ls-files | sort` — confirm no `.pyc`, `.env`, or unexpected files
+2. `curl https://raw.githubusercontent.com/<org>/<repo>/main/README.md | head -5` —
+   confirm README renders on the default branch
+3. `gh api repos/<org>/<repo>/actions/runs?per_page=1` — confirm latest run conclusion=success
+4. Leak scan: `grep -rniE "sk-[a-z0-9]{20,}|gho_[a-z0-9]{20,}|bearer [a-z0-9]{20,}" .`
+   (excluding `.env.example` and env-var names)
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only
