@@ -1,0 +1,41 @@
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile
+        run: python3 -m py_compile scripts/spydermonkey.py
+
+      - name: CLI smoke tests
+        run: |
+          set -e
+          S=scripts/spydermonkey.py
+          python3 $S --help > /dev/null
+          python3 $S tree | grep -q BARBICAN
+          python3 $S tree | grep -q SHIKI
+          python3 $S route --goal "protect my ass" | grep -q barbican
+          python3 $S route --goal "take over their session" | grep -q 3am
+          python3 $S route --goal "forge the weapons" | grep -q kairo
+          python3 $S route --goal "full assault" | grep -q shiki
+          python3 $S route --goal "zzz unknown goal qqq" | grep -q 'barbican → holyshit → undercroft → kairo → 3am'
+          python3 $S run --target demo --url https://example.com --domain example.com --dry-run | grep -q 'shiki assault'
+          python3 $S mandate --file | grep -q 'mandate.md'
+          python3 $S mandate | grep -q 'MANDATE: SPYDERMONKEY'
+          python3 $S status | grep -q 'family status'
+          test -f references/mandate.md
+
+      - name: Stdlib-only check
+        run: |
+          ! grep -E '^[[:space:]]*(import|from)[[:space:]]+(requests|flask|httpx|aiohttp|urllib3)' scripts/spydermonkey.py
+
+      - name: Exit codes
+        run: |
+          python3 scripts/spydermonkey.py route 2>/dev/null && exit 1 || test $? -eq 2

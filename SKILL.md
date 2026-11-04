@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 1.1.0
+version: 1.1.1
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -94,14 +94,17 @@ replaced the nullification — discipline without harm.
 `scripts/spydermonkey.py` — stdlib CLI:
 - `tree` — the family + roles + chain (this document, condensed)
 - `route --goal "<words>"` — goal → the mandate sequence to load/run
-- `run --target T --url U --domain D [--bundle P] [--boundary-url U2] [--probe-ids 1,2] [--parallel] [--resume] [--close]` — the full pipeline (delegates to SHIKI assault, the proven path)
+- `run --target T --url U --domain D [--bundle P] [--boundary-url U2] [--probe-ids 1,2] [--parallel] [--resume] [--close] [--dry-run]` — the full pipeline (delegates to SHIKI assault, the proven path)
 - `status [--target T]` — family meta-status: every mandate's version + engine presence + campaign states
 - `verify` — the meta self-check: all six family engines verify
+- `mandate [--file]` — print (or locate) the injectable persona contract
 
 ## Files
 
 - `SKILL.md` — this doctrine (the tree lives here)
-- `scripts/spydermonkey.py` — tree/route/run/status/verify CLI
+- `scripts/spydermonkey.py` — tree/route/run/status/verify/mandate CLI
+- `references/mandate.md` — the injectable persona contract
+- `README.md` — the public front page (badges, family buttons, how-it-works)
 
 ## Relations
 
