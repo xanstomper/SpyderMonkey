@@ -376,6 +376,72 @@ def cmd_mandate(args):
     return 0
 
 
+# ── v1.4.0 the agent fleet: one agent per mandate, dispatched in PARALLEL ─────
+
+FLEET_BRIEFS = {
+    "barbican":   ("THE SHIELD",   lambda a: ["assess", "--target", a["target"]]),
+    "holyshit":   ("THE FINDER",   lambda a: ["recon", "--domain", a["domain"]]),
+    "undercroft": ("THE DESCENT",  lambda a: ["probe"]),
+    "3am":        ("THE PERFORMER", lambda a: ["verify"]),
+    "kairo":      ("THE SYNTH",    lambda a: ["verify"]),
+    "kaisha":     ("THE LADDER",   lambda a: ["rungs", "--target", a["target"]]),
+    "shukaku":    ("THE HARVESTER", lambda a: ["verify"]),
+    "shiki":      ("THE COMMAND",  lambda a: ["board", "--org", a["target"]]),
+}
+
+
+def cmd_fleet(args):
+    """PARALLEL MULTI-AGENT DISPATCH: every mandate wakes as its own agent with
+    its brief, runs its capability pass concurrently, and the fleet reports."""
+    import threading
+    seq = list(RELAY)
+    for kw, mandate in ROUTES:
+        if mandate not in seq and _kw_hit(kw, args.goal.lower()):
+            seq.insert(0, mandate)          # matched mandates lead the fleet
+    if args.agents:
+        want = set(s.strip() for s in args.agents.split(",") if s.strip())
+        seq = [m for m in seq if m in want]
+    ctx = {"target": args.target, "domain": args.domain}
+    results = {}
+
+    def agent(name):
+        role, argv_f = FLEET_BRIEFS[name]
+        script = FAMILY[name][0]
+        if not script.exists():
+            results[name] = (role, f"engine missing — agent offline ({script})", 1)
+            return
+        out, rc = _run([sys.executable, str(script)] + argv_f(ctx))
+        results[name] = (role, out, rc)
+
+    print(f"═══ SPYDERMONKEY FLEET — {len(seq)} agent(s) dispatching in PARALLEL ═══")
+    print(f"  goal: '{args.goal}' · target: {args.target} · domain: {args.domain}")
+    threads = [threading.Thread(target=agent, args=(m,)) for m in seq]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    up = 0
+    for name in seq:
+        role, out, rc = results[name]
+        ok = rc == 0
+        up += ok
+        lines = [l for l in out.splitlines() if l.strip()][:8]
+        print(f"\n  ┌─ AGENT {name} — {role} [{'✓' if ok else '✗'}]")
+        for l in lines:
+            print(f"  │ {l[:100]}")
+        print(f"  └─ ({len(out.splitlines())} lines)")
+    print(f"\n═══ FLEET REPORT: {up}/{len(seq)} agent(s) up · joint goal: '{args.goal}' ═══")
+    return 0 if up == len(seq) else 1
+
+
+def _run(argv, timeout=60):
+    try:
+        r = subprocess.run(argv, capture_output=True, text=True, timeout=timeout)
+        return r.stdout + r.stderr, r.returncode
+    except Exception as e:
+        return f"error: {e}", 1
+
+
 def main():
     ap = argparse.ArgumentParser(description="SPYDERMONKEY — master dispatcher of the HolyShit family")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -409,6 +475,11 @@ def main():
     sc.add_argument("--strict", action="store_true", help="no scope authority → rc=1")
     doc = sub.add_parser("doctor", help="full health check: engines · scope · states · canon")
     bn = sub.add_parser("bench", help="offline route-level benchmark (route accuracy)")
+    fl = sub.add_parser("fleet", help="PARALLEL multi-agent dispatch: one agent per mandate")
+    fl.add_argument("--goal", required=True)
+    fl.add_argument("--target", required=True)
+    fl.add_argument("--domain", required=True)
+    fl.add_argument("--agents", help="comma subset (default: full relay)")
     a = ap.parse_args()
     if a.cmd == "tree":
         return cmd_tree(a)
@@ -428,6 +499,8 @@ def main():
         return cmd_doctor(a)
     if a.cmd == "bench":
         return cmd_bench(a)
+    if a.cmd == "fleet":
+        return cmd_fleet(a)
     return 2
 
 

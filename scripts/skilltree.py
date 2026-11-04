@@ -130,14 +130,15 @@ def _slug(s):
 
 
 def _extract_blocks(text, headers):
-    """Split a reference doc into (title, body) chunks by ## headers."""
+    """Split a reference doc into (title, body) chunks by ## AND ### headers —
+    the deeper the header, the denser the tree."""
     out = []
     cur_title, cur = None, []
     for line in text.splitlines():
-        if line.startswith("## "):
+        if line.startswith("## ") or line.startswith("### "):
             if cur_title and cur:
                 out.append((cur_title, "\n".join(cur).strip()))
-            cur_title, cur = line[3:].strip(), []
+            cur_title, cur = line.lstrip("#").strip(), []
         elif cur_title:
             cur.append(line)
     if cur_title and cur:
