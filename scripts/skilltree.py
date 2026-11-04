@@ -8,7 +8,11 @@ technique = one lazy-loaded skill file + a searchable index.
 
 Run:  python3 skilltree.py           # emit to references/skills/ + index.md
       python3 skilltree.py --count   # just count what would be generated
+      python3 skilltree.py --verify  # prove index ↔ files ↔ bindings are intact
+      python3 skilltree.py --count --json
 """
+from __future__ import annotations
+
 import argparse
 import json
 import re
@@ -213,7 +217,17 @@ def emit(args):
     import hashlib
     srcs = collect_sources()
     if args.count:
-        print(f"{len(srcs)} technique skill files would be generated")
+        payload = {
+            "count": len(srcs),
+            "sources": len({s for s, _, _ in srcs}),
+            "bindings": len(BINDINGS),
+            "generated": OUT.exists(),
+        }
+        if args.json:
+            print(json.dumps(payload, indent=2))
+        else:
+            print(f"{len(srcs)} technique skill files would be generated "
+                  f"from {payload['sources']} source docs ({len(BINDINGS)} binding keys)")
         return 0
     made = 0
     today = datetime.now(timezone.utc).date().isoformat()
@@ -248,15 +262,102 @@ def emit(args):
         made += 1
         index.append(f"- [{title}](skills/{src}/{slug}.md) — `{src}` · {w} · {c} · {a}")
     (REFS / "skilltree-index.md").write_text("\n".join(index) + "\n")
-    print(f"▸ skilltree: {made} technique skill files → {OUT}/")
-    print(f"▸ index: {REFS / 'skilltree-index.md'} ({len(BINDINGS)} binding keys)")
+    if args.json:
+        print(json.dumps({"count": made, "sources": len({s for s, _, _ in srcs}),
+                          "bindings": len(BINDINGS), "out": str(OUT),
+                          "index": str(REFS / "skilltree-index.md")}, indent=2))
+    else:
+        print(f"▸ skilltree: {made} technique skill files → {OUT}/")
+        print(f"▸ index: {REFS / 'skilltree-index.md'} ({len(BINDINGS)} binding keys)")
     return 0
+
+
+LINK_RE = re.compile(
+    r"^- \[(?P<title>.+?)\]\((?P<href>skills/[^)]+)\) — "
+    r"`(?P<source>[^`]+)` · (?P<wstg>[^ ·]+) · (?P<cwe>[^ ·]+) · (?P<attack>\S+)$",
+    re.M)
+
+
+def verify(json_mode=False):
+    """Check the generated tree is internally consistent: every index link
+    resolves, every file carries its provenance + bindings, and no orphan file
+    is left behind from an older generation run."""
+    errors, warnings = [], []
+    index_path = REFS / "skilltree-index.md"
+    if not index_path.exists():
+        errors.append("references/skilltree-index.md missing — run skilltree.py")
+        links = []
+    else:
+        text = index_path.read_text(errors="replace")
+        links = [m.groupdict() for m in LINK_RE.finditer(text)]
+        if len(links) < 1:
+            errors.append("index contains no technique links")
+        if "regenerate: skilltree.py" not in text:
+            warnings.append("index is missing its regeneration banner")
+    linked = {}
+    for item in links:
+        href = item["href"]
+        path = REFS / href
+        if href in linked:
+            errors.append(f"duplicate index link: {href}")
+            continue
+        linked[href] = item
+        if not path.exists():
+            errors.append(f"index link has no file: {href}")
+            continue
+        body = path.read_text(errors="replace")
+        for needle, label in (
+                ("- source canon:", "source canon"),
+                ("- bindings:", "bindings"),
+                ("## The technique", "technique body"),
+                ("## Family use", "family use")):
+            if needle not in body:
+                errors.append(f"{href}: missing {label}")
+        if not re.search(r"^- generated: \d{4}-\d{2}-\d{2}$", body, re.M):
+            errors.append(f"{href}: missing generated date")
+        if item["source"] not in body:
+            errors.append(f"{href}: source canon mismatch ({item['source']})")
+        for binding in (item["wstg"], item["cwe"], "ATT&CK " + item["attack"]):
+            if binding not in body:
+                errors.append(f"{href}: binding {binding} not present in file")
+    files = sorted(str(p.relative_to(REFS)) for p in OUT.rglob("*.md")) if OUT.exists() else []
+    orphans = [f for f in files if f not in linked]
+    if orphans:
+        warnings.append(f"{len(orphans)} orphan file(s) not in index "
+                        f"(e.g. {orphans[0]})")
+    payload = {
+        "ok": not errors,
+        "index": str(index_path),
+        "links": len(links),
+        "files": len(files),
+        "sources": len({i["source"] for i in links}),
+        "bindings": len(BINDINGS),
+        "orphans": len(orphans),
+        "errors": errors[:40],
+        "warnings": warnings[:20],
+    }
+    if json_mode:
+        print(json.dumps(payload, indent=2))
+    else:
+        print("═══ SPYDERMONKEY SKILLTREE VERIFY ═══")
+        print(f"  index links: {payload['links']} · files: {payload['files']} "
+              f"· sources: {payload['sources']} · orphans: {payload['orphans']}")
+        for e in payload["errors"]:
+            print(f"  ✗ {e}")
+        for w in payload["warnings"]:
+            print(f"  ! {w}")
+        print(f"═══ {'ALL PASS' if payload['ok'] else 'FAILED'} ═══")
+    return 0 if payload["ok"] else 1
 
 
 def main():
     ap = argparse.ArgumentParser(description="SPYDERMONKEY skilltree generator")
     ap.add_argument("--count", action="store_true")
+    ap.add_argument("--verify", action="store_true")
+    ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
+    if a.verify:
+        sys.exit(verify(json_mode=a.json))
     sys.exit(emit(a))
 
 
