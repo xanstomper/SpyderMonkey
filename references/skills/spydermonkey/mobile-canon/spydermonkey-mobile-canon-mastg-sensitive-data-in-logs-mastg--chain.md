@@ -1,0 +1,20 @@
+# MASTG Sensitive Data in Logs (MASTG-STORAGE-01) — chain composition
+
+- source canon: `spydermonkey/mobile-canon.md`
+- base technique: `spydermonkey-mobile-canon-mastg-sensitive-data-in-logs-mastg.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+- class: app logging credentials, tokens, PII to logcat
+- probe: read the app's own logs on a LAB device; grep for the test account's markers
+- wall: lab devices only; no third-party apps touched
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence
