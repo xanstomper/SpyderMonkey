@@ -38,29 +38,6 @@ Full client decode from the CURRENT build (`index-CW30_Dqt.js` era, rolldown-vit
   the sid dies (`Session ID unknown`); kit = `~/holyshit-mode/scripts/duel_kit.py` (phases:
   vantage/bundle/determinism/oracle/auth/replay/binding/state_forward/postauth_oracle).
 
-### 2026-11-02 exploit round: minted-Bearer bypass + room authz + full-spectrum sweep (all negative on compromise)
-
-- **Minted-token bearer bypass: HELD.** `/ws/user/bets/my`, `/ws/games/keno/history`,
-  `/ws/games/hilo/history`, `/ws/user/profile`, `/ws/user/transactions` all 403 with
-  minted `sub=user/admin/mod/system` JWTs in EVERY delivery variant (Bearer, `?token=`,
-  cookie). The /ws guard requires real wallet-login claims — the scope mint is inert on HTTP.
-- **Room authz: HOLDS.** Real vocabulary: `user:bet`/`user:bonus`/`user:notification`/
-  `user:update` personal channels, `internal:` = sportsbook CONTEST prefix (not admin),
-  `game:${id}`, `tournament:*`. Joining `internal:*` + `user:<harvested-uuid>` with elevated
-  subs returns only the global feed — silent empty joins = server-side membership check.
-- **16 unauth-200 endpoints mapped** (`endpoint_probe.json`): betradar odds/event feeds,
-  `config/levels` (full VIP economics), `games/v2/plinko` (full probability tables),
-  tap-trading bets/price-history, `leaderboard` (69KB standings w/ internal UUIDs + registered
-  ms + amounts — same leak class as bets/live). `/auth/blockCheck` = the region oracle
-  (`{reason:region_page,location:de}`; `?ip=` is client-display-only).
-- **Zero rate limiting** on `/auth/token` mint + `/ws/user/bets/live` (15-burst at 0.25s: all
-  201/200, no 429) — unthrottled anon minting + unthrottled feed scraping.
-- **Security headers: absent** (no HSTS/CSP/XFO/XCTO on root); duelbits.com cert = apex-only
-  SAN. Bundle secrets CLEAN (416 chunks, all key-pattern hits false positives).
-- **Unauth surface EXHAUSTED.** Every compromise-class vector now sits behind (a) the
-  restricted-region wall (residential unrestricted IP needed) or (b) a real wallet session.
-  The operator's console remains the unlock for the replay/binding/mass-assignment chain.
-
 ## Family use
 
 - decisive-test shape lives in the source canon

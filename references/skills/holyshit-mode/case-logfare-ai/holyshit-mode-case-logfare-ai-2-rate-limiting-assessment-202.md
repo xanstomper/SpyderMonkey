@@ -1,0 +1,24 @@
+# 2. Rate Limiting Assessment (2026-10-09 verified)
+
+- source canon: `holyshit-mode/case-logfare-ai.md`
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- generated: 2026-11-04
+
+## The technique
+
+**Login (`/v1/auth/login`):** 10 rapid sequential requests → all 401 (no 429), then 429 at request 11. Rate limiter is present but kicks in after 10 attempts.
+
+**Register (`/v1/auth/register`):** 429 after burst. Returns `retry-after: 45` header.
+
+**API endpoints (`/v1/chat/completions`, `/v1/models`):** No rate limit observed — 15 rapid requests all returned expected responses (401 for chat without valid key, 200 for /v1/models) with zero 429s.
+
+**Rate Limiter Behavior (2026-10-09):**
+- `/v1/auth/login`: 10 requests then 429 (retry-after header present)
+- `/v1/auth/register`: 429 after burst (retry-after: 45)
+- `/v1/chat/completions`: No rate limit on 15 rapid requests with Bearer token
+- `/v1/models`: No rate limit (public endpoint, 15/15 returned 200)
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

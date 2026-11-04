@@ -19,14 +19,6 @@
 
 **HolyShit** (`~/.redteam/synthesized-recipes.md`):
 ```markdown
-### SV-…-BOUNDARY — BOUNDARY (source: undercroft)
-- target: …
-- attack: …
-- proof: …
-- Δ: …
-```
-
-**KAIRO** (hardware vectors stay in the plane ledger — its own synthesis domain).
 
 ## Family use
 
