@@ -121,6 +121,11 @@ python3 $S absorb --target smoke-v4 --file "$HOME/result.json" | grep -qE 'absor
 expect_rc 2 python3 $S absorb --target smoke-v4 --file "$HOME/missing.json"
 python3 $S loop --target smoke-v4 --domain ci.example --plan-only | grep -q 'plan'
 
+echo "── v4.1 SURFACE ENGINE: crawl mines the map · two-role AUTHZ"
+python3 $S crawl --target smoke-v4 --url "http://127.0.0.1:9/x?org_id=acme" --json | grep -q '"endpoints"'
+python3 $S context set --target smoke-v4 --kind credentials --value "admin:tok-a" --value "user:tok-b" > /dev/null
+python3 $S testers --target smoke-v4 --demo | grep -qE '[0-9]+/8 tester'
+
 echo "── relay · refusal paths · usage errors"
 expect_rc 2 python3 $S relay exec --name ghost --cmd id
 python3 $S relay list | grep -qE 'RELAY|no relays'

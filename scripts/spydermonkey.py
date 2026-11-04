@@ -1771,7 +1771,16 @@ def _planner_directive(target, url=None, domain=None):
                  "phase active_recon: the descent probes the target's own skin",
                  "CONFIRMED seams in undercroft-state",
                  ["validation-only", "no-gain"])
-    # 5. the testers — one directive covers 8 differential classes
+    # 5. THE SURFACE ENGINE first — the kernel discovers its own strike map
+    if url and not _load_json(_camp(target) / "crawl-state.json", {}) \
+            and "crawl-surface" not in done_ids:
+        return d("crawl-surface", "active_recon", "spy", "crawl",
+                 ["crawl", "--target", target, "--url", url],
+                 "no surface map yet — the crawl mines endpoints/params from "
+                 "links, forms and JS, and autofills the session context",
+                 "crawl-state.json + context.endpoints filled",
+                 ["same-origin only", "in-scope only"])
+    # 6. the testers — one directive covers 8 differential classes over the MINED surface
     classes = {r["cls"] for r in ledger}
     if url and "testers-run" not in done_ids and "IDOR" not in classes:
         return d("testers-run", "authorization_testing", "spy", "testers",
@@ -2042,6 +2051,7 @@ def _autopilot_argv(dv):
                        "recon", "--domain", dm],
         "undercroft-run": [str(SEC / "undercroft/scripts/undercroft.py"),
                            "run", "--target", t, "--url", u, "--domain", dm],
+        "crawl-surface": [sm, "crawl", "--target", t, "--url", u],
         "testers-run": [sm, "testers", "--target", t, "--url", u],
         "gate-AUTHN": [sm, "gate", "--target", t, "--url", u,
                        "--attack-query", "token=", "--append-query"],
@@ -3747,6 +3757,109 @@ def _tester_verdict(t: dict, payload: str, b: dict, a: dict) -> tuple[bool, bool
     return True, True, "differential"
 
 
+# ── v4.1 THE SURFACE ENGINE — the kernel discovers its own attack surface ─────
+
+_JS_PATH_RE = re.compile(
+    r"""(?:fetch\(|axios[.(]|url\s*[:=]\s*|api\s*[:=]\s*)["'`](/[a-zA-Z0-9_\-./]{2,60})["'`]""")
+_FORM_INPUT_RE = re.compile(
+    r"<input[^>]+name=[\"']([a-zA-Z0-9_\-]{1,40})[\"']", re.I)
+_A_HREF_RE = re.compile(r'href=[\'"]([^#\'"]{2,200})[\'"]', re.I)
+_FORM_ACTION_RE = re.compile(r'<form[^>]+action=[\'"]([^\'"]{2,200})[\'"]', re.I)
+_PAGE_CAP = 20
+
+
+def cmd_crawl(args):
+    """THE SURFACE ENGINE (HackBrowser-equivalent, stdlib): same-origin BFS
+    crawl → links · forms · query params · JS-mined API paths → the session
+    context AUTO-FILLS. The testers strike what this finds — no hand-fed urls."""
+    json_mode = _json_mode(args)
+    depth = max(1, min(int(getattr(args, "depth", 2) or 2), 4))
+    base = args.url if "://" in args.url else "http://" + args.url
+    if not _scope_gate(base, quiet=json_mode):
+        return 1
+    from urllib.parse import urlsplit, urljoin, parse_qsl, urlencode
+    origin = "{0.scheme}://{0.netloc}".format(urlsplit(base))
+    seen, queue, mined = {base}, [base], []
+    pages = 0
+    while queue and pages < _PAGE_CAP:
+        url = queue.pop(0)
+        sp = urlsplit(url)
+        if "{0.scheme}://{0.netloc}".format(sp) != origin:
+            continue
+        r = _http(url, timeout=max(2, min(int(getattr(args, "timeout", 8) or 8), 30)))
+        if r["status"] != 200 or r["body"].startswith("__error__"):
+            continue
+        pages += 1
+        body = r["body"]
+        # links → the queue
+        for href in _A_HREF_RE.findall(body):
+            nxt = urljoin(url, href.split("#")[0])
+            if nxt.startswith(origin) and nxt not in seen and len(seen) < _PAGE_CAP * 3:
+                seen.add(nxt)
+                queue.append(nxt)
+        # forms → endpoints with param skeletons
+        for action in _FORM_ACTION_RE.findall(body):
+            mined.append((urljoin(url, action.split("?")[0]),
+                          _FORM_INPUT_RE.findall(
+                              body[body.find(action):body.find(action) + 600])))
+        # query params already on visited urls
+        for k, _ in parse_qsl(sp.query, keep_blank_values=True):
+            mined.append((url, [(k, "")]))
+        # JS api-path mining
+        for m in _JS_PATH_RE.findall(body):
+            mined.append((urljoin(url, m), []))
+    # dedupe into endpoint skeletons: path + ordered param names
+    eps = {}
+    for path, inputs in mined:
+        sp = urlsplit(path)
+        if sp.path in ("/", ""):
+            continue
+        params = list(dict.fromkeys(
+            [k for k, _ in parse_qsl(sp.query, keep_blank_values=True)]
+            + [n for n, _ in inputs]))
+        key = sp.path
+        eps[key] = sorted(set(eps.get(key, []) + params))
+    endpoint_rows = []
+    camp = _camp(args.target)
+    _ensure_campaign(args.target)
+    ctx = _load_json(camp / "context.json", {"endpoints": [], "roles": [],
+                                             "credentials": [], "functions": []})
+    for path in sorted(eps):
+        params = eps[path]
+        skel = path + ("?" + "&".join(f"{p}=" for p in params) if params else "")
+        endpoint_rows.append({"path": sp2_path(path), "skeleton": skel,
+                              "params": params})
+        if skel not in ctx["endpoints"] and len(ctx["endpoints"]) < 100:
+            ctx["endpoints"].append(skel)
+    import os as _os
+    tmp = camp / "context.json.tmp"
+    tmp.write_text(json.dumps(ctx, indent=2) + "\n")
+    _os.replace(tmp, camp / "context.json")
+    (camp / "crawl-state.json").write_text(json.dumps(
+        {"target": args.target, "base": base, "pages": pages,
+         "endpoints": endpoint_rows, "depth": depth, "at": _now()}, indent=2) + "\n")
+    payload = {"target": args.target, "base": base, "pages_crawled": pages,
+               "urls_seen": len(seen), "endpoints": len(endpoint_rows),
+               "params": sorted({p for e in endpoint_rows for p in e["params"]}),
+               "context_updated": True}
+    if json_mode:
+        _emit(args, payload)
+        return 0
+    print(f"═══ SURFACE MAP — {base} ═══")
+    print(f"  ▸ crawled {pages} page(s) · {len(seen)} url(s) seen · "
+          f"{len(endpoint_rows)} endpoint(s) mined")
+    for e in endpoint_rows[:15]:
+        print(f"    · {e['skeleton'][:90]}" + (f"  [{','.join(e['params'][:6])}]"
+                                               if e["params"] else ""))
+    print(f"  ▸ context.endpoints autofilled — testers now strike the mined surface")
+    return 0
+
+
+def sp2_path(path):
+    from urllib.parse import urlsplit
+    return urlsplit(path).path or path
+
+
 def cmd_testers(args):
     if not args.demo and not args.url:
         print("✗ testers need --url U (repeatable; declared targets) or --demo (lab replica)",
@@ -3814,6 +3927,33 @@ def cmd_testers(args):
                 if p not in params:
                     continue
                 orig = params[p]
+                # v4.1 — the two-role AUTHZ differential (CyberStrike's role &
+                # credential discovery, family-native): the context's FIRST
+                # credential is the privileged baseline, the SECOND is the
+                # low-priv attack. A 200-with-different-body on the low role
+                # is the authorization-bypass proof.
+                if t["name"] == "AUTHZ" and p == t["params"][0]:
+                    creds = [c for c in (ctx.get("credentials") or []) if ":" in c]
+                    if len(creds) >= 2:
+                        hi, lo = creds[0], creds[1]
+                        h_tok, l_tok = hi.split(":", 1)[1], lo.split(":", 1)[1]
+                        hb = _http(base + "?" + urlencode(params), timeout=timeout,
+                                   headers={"Authorization": f"Bearer {h_tok}"})
+                        ha = _http(base + "?" + urlencode(params), timeout=timeout,
+                                   headers={"Authorization": f"Bearer {l_tok}"})
+                        hit = (ha["status"] == 200 and hb["status"] == 200
+                               and (hb["status"], hb["sha256"]) != (ha["status"], ha["sha256"]))
+                        if hit:
+                            hits.append({"param": f"auth({lo.split(':')[0]})",
+                                         "original": f"Bearer {h_tok[:12]}…",
+                                         "payload": f"Bearer {l_tok[:12]}…",
+                                         "baseline": _gate_brief(hb),
+                                         "attack": _gate_brief(ha), "url": u,
+                                         "decisive": True,
+                                         "reason": "low-priv credential received a "
+                                                   "different 200 body on the same route",
+                                         "stable": True})
+                        continue
                 for atk in t["attacks"](orig):
                     b1 = _http(base + "?" + urlencode({**params, p: orig}), timeout=timeout)
                     b2 = _http(base + "?" + urlencode({**params, p: orig}), timeout=timeout)
@@ -4820,6 +4960,11 @@ def _build_parser() -> argparse.ArgumentParser:
     cx.add_argument("--kind", help="endpoint | role | credential | function")
     cx.add_argument("--value", action="append",
                     help="value(s) for set/remove (repeatable)")
+    cw = sub.add_parser("crawl", help="THE SURFACE ENGINE: mine endpoints/params from links, forms and JS")
+    cw.add_argument("--target", required=True)
+    cw.add_argument("--url", required=True)
+    cw.add_argument("--depth", type=int, default=2)
+    cw.add_argument("--timeout", type=int, default=8)
 
     ts = sub.add_parser("testers", help="8 parallel sub-testers over the session context")
     ts.add_argument("--target", required=True)
@@ -4965,6 +5110,8 @@ def _dispatch(a) -> int:
         return cmd_context(a)
     if a.cmd == "testers":
         return cmd_testers(a)
+    if a.cmd == "crawl":
+        return cmd_crawl(a)
     if a.cmd == "coverage":
         return cmd_coverage(a)
     if a.cmd == "report":
