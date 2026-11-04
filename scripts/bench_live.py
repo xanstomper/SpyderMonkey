@@ -109,10 +109,22 @@ def _classify_shukaku(finding):
         sys.path.insert(0, str(Path.home() / ".hermes/skills/security/shukaku/scripts"))
         import shukaku
         import re as _re
+        # shukaku's SIGNALS: flaw-mapped clues; its LADDER: class-keyed pricing
+        ladder = getattr(shukaku, "LADDER", {})
         for plane in getattr(shukaku, "SIGNALS", []):
-            if _re.search(plane.get("re", ""), finding, _re.I) and \
-                    plane.get("cls") == "BACKUP":
-                return "BACKUP"
+            if _re.search(plane.get("re", ""), finding, _re.I):
+                seam = plane.get("seam")
+                for cls in ladder:
+                    if cls.lower() in finding.lower() or \
+                            any(k in finding.lower() for k in
+                                getattr(shukaku, "CLASS_KW", {}).get(cls, [])
+                                if isinstance(getattr(shukaku, "CLASS_KW", {}), dict)):
+                        if cls in ladder:
+                            return cls
+                # flaw/seam evidence alone: fall through to ladder-keyword map
+        for cls in ladder:
+            if cls.lower() in finding.lower():
+                return cls
         for attr in ("VALUATION_CLASSES", "CROWN_CLASSES", "VALUATION"):
             spec = getattr(shukaku, attr, None)
             if isinstance(spec, dict):
