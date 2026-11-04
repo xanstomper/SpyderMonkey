@@ -180,6 +180,24 @@ def h_next_action(a):
     return _run_sm(["next", "--target", a["target"]])
 
 
+def h_kernel_absorb(a):
+    _need(a, "target", "file")
+    return _run_sm(["absorb", "--target", a["target"], "--file", a["file"]])
+
+
+def h_kernel_loop(a):
+    _need(a, "target")
+    argv = ["loop", "--target", a["target"]]
+    if a.get("url"):
+        argv += ["--url", a["url"]]
+    if a.get("domain"):
+        argv += ["--domain", a["domain"]]
+    if a.get("agent_cmd"):
+        argv += ["--agent-cmd", a["agent_cmd"]]
+    argv += ["--max-steps", str(int(a.get("max_steps") or 6))]
+    return _run_sm(argv, timeout=900)
+
+
 def h_ledger_add(a):
     _need(a, "target", "title", "asset")
     argv = ["ledger", "add", "--target", a["target"], "--title", a["title"],
@@ -437,7 +455,16 @@ TOOLS = [
     {"name": "mandates_verify", "description": "Verify the ten contracts exist and carry every section.",
      "inputSchema": _props()},
     {"name": "next_action", "description": "The one next action with the exact mandate command.",
-     "inputSchema": _props(target=_s("campaign name")), "required": ["target"]},
+     "inputSchema": _props(target=_s("campaign name"), url=_s("optional target url"),
+                           domain=_s("optional domain")), "required": ["target"]},
+    {"name": "kernel_absorb", "description": "Ingest a result JSON through the ledger gates and re-plan (the kernel loop closes here).",
+     "inputSchema": _props(target=_s("campaign"), file=_s("result json path")),
+     "required": ["target", "file"]},
+    {"name": "kernel_loop", "description": "THE AUTONOMOUS LOOP: plan → execute → absorb → repeat until complete (autopilot, or any model via agent_cmd).",
+     "inputSchema": _props(target=_s("campaign"), url=_s("target url"),
+                           domain=_s("domain"), agent_cmd=_s("external agent command"),
+                           max_steps=_i("loop cap (default 6)")),
+     "required": ["target"]},
     {"name": "ledger_add", "description": "Register a finding (scope-gated, deduped, evidence-gated).",
      "inputSchema": _props(target=_s("campaign"), title=_s("finding title"),
                            asset=_s("url/host"), proof=_s("baseline: … attack: … diff: …"),
@@ -528,6 +555,7 @@ HANDLERS = {
     "campaign_timeline": h_campaign_timeline,
     "mandates_list": h_mandates_list, "mandates_verify": h_mandates_verify,
     "next_action": h_next_action, "ledger_add": h_ledger_add,
+    "kernel_absorb": h_kernel_absorb, "kernel_loop": h_kernel_loop,
     "ledger_list": h_ledger_list, "ledger_show": h_ledger_show,
     "ledger_triage": h_ledger_triage, "ledger_stats": h_ledger_stats,
     "ledger_verify": h_ledger_verify, "ledger_export": h_ledger_export,

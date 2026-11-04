@@ -3,6 +3,64 @@
 All notable changes to SPYDERMONKEY, newest first. Dates are UTC; versions are
 the dispatcher release (`SKILL.md` frontmatter).
 
+## v4.0.0 — THE CONTROL PLANE (2026-11-04)
+
+- **One scope authority.** New `scripts/scope_authority.py` is the single estate
+  verdict for the dispatcher, Arsenal, the MCP server, the live bench, and every
+  live probe. Exact host, subdomain, `*` wildcard, CIDR, URL-path, and port
+  matching; deny precedence; expiry; lab allowance; rate rules; audit history;
+  atomic `0600` writes. `scope add|remove|extend|history` and `doctor --fix`
+  complete the lifecycle.
+- **Campaign lifecycle.** `campaign init|list|show|timeline|archive|purge|close`
+  with a manifest, append-only `events.jsonl`, timestamped archives, and a purge
+  that refuses without `--force`. Target names are normalized before any path is
+  built — traversal is closed.
+- **Ten machine-checked mandate contracts.** `references/mandates/00-barbican.md`
+  … `09-dojo.md`, each with axis · law · handoff · evidence · fleet · failure.
+  `mandates list|show|verify` checks presence, numbering, phase, and sections;
+  the same registry drives `tree`/`route`/`fleet`/`next`.
+- **Machine-readable by default.** `--json` works on any command in any position;
+  `--scope-file` and `--version` are global; structured errors stay on stderr.
+  Exit codes: `0` ok · `1` gate/scope/verify · `2` usage · `130` interrupted.
+- **Tamper-evident, exportable ledger.** Findings are hash-chained; `ledger
+  verify` checks integrity, `--strict` requires signatures, and `export` emits
+  JSON/JSONL/CSV/markdown/SARIF. Dedupe attaches evidence instead of dropping it;
+  scope-refused rows never enter the file.
+- **The kernel.** `next` emits the one state-driven directive (phase, mandate,
+  exact argv, why, expect, walls), `absorb` validates an agent result through
+  scope + ledger + evidence gates, and `loop` runs plan → execute → absorb with
+  the engines as the state machine. `--plan-only` is free. The old phase action
+  remains as `next-phase`.
+- **Self-test.** `selftest` runs 27 checks in a throwaway `HOME`: scope allow/
+  deny, ledger evidence/dedupe/integrity, a live 3-gate proof on the built-in
+  lab, testers, chains, phases, coverage, report, campaign lifecycle, contracts,
+  MCP, Arsenal, and the live bench. `selftest --quick` is the 14-check fast gate.
+- **Hardening and fixes.** `bench_live.py` now uses a throwaway `HOME` and a
+  dynamic port — it can never overwrite or delete the operator's real
+  `~/.redteam/scope.json`. Arsenal honors CIDR, deny rules, expiry, and
+  per-target normalization. The HTTP gate no longer follows redirects and caps
+  response bodies. Engine self-checks that collide on lab ports are retried
+  serially instead of reporting a healthy engine red. Reports default to the
+  campaign directory; `--output` still overrides.
+- **Surfaces.** MCP 18 → 43 tools (`--test`, `--list`, batching, notifications,
+  dispatcher/engine adapters, structured content; `kernel_absorb` + `kernel_loop`
+  expose the autonomous loop to any MCP client); `skilltree.py` gains
+  `--verify` and `--count --json` (722 links/files bindings verified) AND the
+  **context corpus**: `--expand` crosses every technique × applicable platform ×
+  auth state into 8.8k chain-role-tagged files (deterministic, git-stable,
+  sampled verification) — scale parity with the 7.6k-skill competitors, grown
+  from real canon instead of a community; `bench` is 29/29 (25 first-hop + 4
+  sequence); **`arsenal.py` v5**: 13 → 20 executors (ffuf · naabu · amass ·
+  katana · dalfox · tlsx · gau) wired into 4 feeding chains (recon · web ·
+  tls · net — subfinder's domains become dnsx's input, katana's urls become
+  dalfox's strikes, cap 50/stage) and `run --out` emits the kernel result
+  schema the loop absorbs; `arsenal verify` and `bench_live` are green with
+  and without engines.
+- **Docs and CI.** README, SKILL.md, the persona contract, and this changelog
+  describe v4; `ci_smoke.sh` exercises campaigns, contracts, JSON, the kernel,
+  the report default, skilltree verify, and the refusal paths; a new stdlib
+  `tests/test_spydermonkey.py` runs the same truth locally and in CI.
+
 ## v3.0.0 — THE INTELLIGENCE LAYER (2026-11-04)
 
 - **The engagement brain.** Derived from CyberStrike's methodology engine,

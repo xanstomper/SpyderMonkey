@@ -1,0 +1,35 @@
+# P. OBSERVABILITY / OPS — container / unauth
+
+- source canon: `holyshit-mode/vector-matrix.md`
+- base technique: `holyshit-mode-vector-matrix-p-observability-ops.md`
+- bindings: **WSTG-INPV** · **CWE-74** · **ATT&CK T1190**
+- context: **container** · auth **unauth** · chain role **pivot**
+
+## Context
+
+- platform: namespace/capability surface — read-only inventory, no escape execution
+- auth state: no credential material — the classic differential applies as-is; absent auth = the authn-bypass class
+
+## The technique
+
+- Monitoring: Grafana/Prometheus anonymous access, alert-rule poisoning
+- Logging: log-injection via crafted input, log-volume DoS on operator's own stack
+- Tracing: Jaeger/Zipkin exposure, trace-context spoofing
+- Alert fatigue: repetitive low-severity alerts masking real events (validate dedup logic)
+- Status pages: information leakage in incident post-mortems, timeline metadata
+
+## Probe adjustment (container × unauth)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

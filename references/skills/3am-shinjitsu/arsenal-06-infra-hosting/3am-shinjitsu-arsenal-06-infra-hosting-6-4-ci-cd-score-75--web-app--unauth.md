@@ -1,0 +1,32 @@
+# 6.4 CI/CD (score 75) — web-app / unauth
+
+- source canon: `3am-shinjitsu/arsenal-06-infra-hosting.md`
+- base technique: `3am-shinjitsu-arsenal-06-infra-hosting-6-4-ci-cd-score-75.md`
+- bindings: **WSTG-CONF-04** · **CWE-798** · **ATT&CK T1552**
+- context: **web-app** · auth **unauth** · chain role **pivot**
+
+## Context
+
+- platform: strike through the browser/proxy path; the 3-gate differential runs on the reflected/accepted value
+- auth state: no credential material — the classic differential applies as-is; absent auth = the authn-bypass class
+
+## The technique
+
+- Public workflow logs with secrets; self-hosted runner exposure; artifact signing gaps;
+  branch-protection bypass; deploy-key scope. Read-only: log pages + API reads of public repos.
+
+## Probe adjustment (web-app × unauth)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

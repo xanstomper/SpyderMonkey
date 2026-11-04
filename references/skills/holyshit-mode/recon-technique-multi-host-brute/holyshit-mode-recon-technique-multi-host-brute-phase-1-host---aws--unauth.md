@@ -1,0 +1,34 @@
+# Phase 1: Host Discovery — aws / unauth
+
+- source canon: `holyshit-mode/recon-technique-multi-host-brute.md`
+- base technique: `holyshit-mode-recon-technique-multi-host-brute-phase-1-host-.md`
+- bindings: **WSTG-CONF-09** · **CWE-350** · **ATT&CK T1584**
+- context: **aws** · auth **unauth** · chain role **pivot**
+
+## Context
+
+- platform: IAM/identity surface — read-only enumeration (shukaku hunt semantics)
+- auth state: no credential material — the classic differential applies as-is; absent auth = the authn-bypass class
+
+## The technique
+
+- Subdomain brute-force using a short AI-infra wordlist: `api`, `doc`, `internal`, `status`, `staging`, `metrics`, etc.
+- Hit: `internal.f***REDACTED***.org` → 107.173.46.170 (non-Cloudflare IP — separate infra tier, ports filtered)
+- Hits: `doc.`, `staging.`, `status.` → Cloudflare-protected hosts
+- Note: DNS resolution of internal/ staging/ status subdomains is itself an info leak (infra topology exposure)
+
+## Probe adjustment (aws × unauth)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

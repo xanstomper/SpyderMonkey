@@ -1,0 +1,46 @@
+# Round-based observables + the idle-game blocker — api / high-priv
+
+- source canon: `holyshit-mode/provably-fair-verification.md`
+- base technique: `holyshit-mode-provably-fair-verification-round-based-observa.md`
+- bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
+- context: **api** · auth **high-priv** · chain role **pivot**
+
+## Context
+
+- platform: strike the JSON body + query string; content-type and parameter placement change the probe shape
+- auth state: the baseline IS the privileged session; test downgrade paths (mass-assign, state-bypass)
+
+## The technique
+
+- Round-history/state feeds are often UNAUTH even when betting is session-gated:
+  `/ws/games/<game>/history` (round id + ticket + participants), `/ws/games/<game>/state`
+  (live round incl. other players' open bets), `/ws/games/<game>/seeds` (period seeds).
+  These are the observable source for the derivation test — no session needed.
+- **Seed-period model:** daily/global seed periods with `startRound` boundaries (roulette
+  pattern). Verify every closed period `sha256(serverSeed)==serverSeedHash`, then run the
+  direction test across periods.
+- **Idle-game blocker:** rounds with `participants==0` never draw a ticket — an idle game
+  yields zero observable outcomes and blocks the derivation test no matter the pagination.
+  Check `participants>0` in the captured window BEFORE planning the test; if the game is
+  idle, wait for played rounds or state the test is blocked on observables.
+- **Live-period display bug (never score as a leak):** the ACTIVE period's seed record often
+  carries the commitment hash in the `serverSeed` field (`serverSeed == serverSeedHash`).
+  Hash ≠ preimage — nothing is derivable. Real impact: player-side verification of the
+  active period fails → false-rigging dispute fodder. Report as a verification-flow bug:
+  the seed field must be null until the period closes.
+
+## Probe adjustment (api × high-priv)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

@@ -274,14 +274,159 @@ def emit(args):
 
 LINK_RE = re.compile(
     r"^- \[(?P<title>.+?)\]\((?P<href>skills/[^)]+)\) — "
-    r"`(?P<source>[^`]+)` · (?P<wstg>[^ ·]+) · (?P<cwe>[^ ·]+) · (?P<attack>\S+)$",
+    r"`(?P<source>[^`]+)` · (?P<wstg>[^ ·]+) · (?P<cwe>[^ ·]+) · (?P<attack>\S+?)"
+    r"(?: · (?P<role>entry|pivot|final))?$",
     re.M)
+
+# ── the corpus expander (scale): technique × platform × auth = the 7k+ library ─
+
+DOMAIN_PLATFORMS = [
+    (r"firmware|uart|flash|ota|\bble\b|radio|rfid|nfc|hardware|jtag",
+     ["android", "ios", "firmware", "iot"]),
+    (r"container|kubernetes|docker|kube|pod", ["container", "kubernetes", "cloud"]),
+    (r"kerberos|windows|active.?directory|domain controller",
+     ["windows", "host", "cloud"]),
+    (r"\baws\b|\bs3\b|bucket|azure|\bgcp\b|cloud|iam|lambda",
+     ["aws", "azure", "gcp", "kubernetes"]),
+    (r"graphql|api|websocket|jwt|session|auth|token|oauth|sso|cookie",
+     ["web-app", "api", "graphql", "websocket"]),
+    (r"sudo|suid|privesc|lateral|kernel|linux|\bssh\b|\bhost\b|systemd",
+     ["linux", "windows", "container"]),
+    (r"dns|subdomain|takeover|domtake|cname|edge|cache|cdn|header|smuggl",
+     ["edge", "dns", "web-app"]),
+    (r"cors|xss|csrf|clickjacking|prototype|dom\b", ["web-app", "api"]),
+    (r"sql|nosql|injection|ldap|\bcmd\b|ssti|deserial|upload|traversal|xxe",
+     ["web-app", "api", "container"]),
+    (r"payment|price|coupon|cart|logic|math|rounding|race|replay|idempoten",
+     ["web-app", "api", "mobile"]),
+    (r"backup|dump|\.env|\.git|secret|harvest|sourcemap|disclosure|info",
+     ["web-app", "api", "container"]),
+    (r"rate|brute|password|reset|\bmfa\b|\botp\b", ["web-app", "api", "mobile"]),
+    (r"sanitize|vantage|timeline|trail|opsec|anonym|alias|artifact",
+     ["external", "host"]),
+]
+DEFAULT_PLATFORMS = ["web-app", "api", "host"]
+AUTH_STATES = ("unauth", "low-priv", "high-priv")
+
+PLATFORM_ADJ = {
+    "web-app": "strike through the browser/proxy path; the 3-gate differential runs on the reflected/accepted value",
+    "api": "strike the JSON body + query string; content-type and parameter placement change the probe shape",
+    "graphql": "aliases and batched queries bypass field-level checks; type confusion lives in the schema",
+    "websocket": "state carries across frames — the replay/state-bypass classes apply frame-to-frame",
+    "android": "the check often lives client-side — frida/objection at the runtime, MASTG methodology",
+    "ios": "the check often lives client-side — runtime inspection, MASTG/MASVS methodology",
+    "firmware": "the check lives in the image — uart/flash/ota paths, no-gain read-only dumps",
+    "iot": "radio/serial surface — BLE/NFC/UART classes, lab hardware only",
+    "linux": "read-only inventory first (kaisha rungs), then the documented class match",
+    "windows": "token/session confusion classes; read-only enumeration, NO-GAIN",
+    "container": "namespace/capability surface — read-only inventory, no escape execution",
+    "kubernetes": "RBAC/service-account surface — read-only enumeration, crown the exposure",
+    "aws": "IAM/identity surface — read-only enumeration (shukaku hunt semantics)",
+    "azure": "identity surface — read-only enumeration (shukaku hunt semantics)",
+    "gcp": "IAM/service-account surface — read-only enumeration",
+    "cloud": "control-plane exposure — read-only, crown the class",
+    "edge": "rate/segmentation differences — masscan-class first, then the app layer",
+    "dns": "record/cname surface — the domtake chain starts here",
+    "external": "passive-first; the dossier feeds everything downstream",
+    "host": "era-stack banner mapping (kaisha cve) before any rung",
+}
+AUTH_ADJ = {
+    "unauth": "no credential material — the classic differential applies as-is; absent auth = the authn-bypass class",
+    "low-priv": "hold ONE low-priv principal; swap object ids/roles upward only (idor/authz classes)",
+    "high-priv": "the baseline IS the privileged session; test downgrade paths (mass-assign, state-bypass)",
+}
+CHAIN_ROLES = {
+    "entry": "opens the kill chain (first blood) — pairs with the info/harvest/recon findings",
+    "pivot": "combines with a prior finding — chain detect pairs same-origin findings",
+    "final": "the impact leg — shukaku prices what this rung reaches",
+}
+
+
+def _platforms_for(text):
+    t = text.lower()
+    for pat, plats in DOMAIN_PLATFORMS:
+        if re.search(pat, t):
+            return plats
+    return DEFAULT_PLATFORMS
+
+
+def expand(json_mode=False, min_count=0):
+    """THE CORPUS — every technique × applicable platform × auth state. Each
+    variant file is REAL: the canon body + context applicability + probe
+    adjustment + chain roles. Deterministic content (no run dates in files) so
+    regeneration is git-stable."""
+    import hashlib
+    srcs = collect_sources()
+    today = datetime.now(timezone.utc).date().isoformat()
+    made = 0
+    index = ["# SPYDERMONKEY EXPANDED CORPUS — technique × platform × auth",
+             "",
+             f"_generated {today} from the family's real canon. Deterministic:_",
+             "_regenerate any time, content is stable. lazy-loaded, one at a time._",
+             ""]
+    used = {}
+    for src, title, body in sorted(srcs, key=lambda x: (x[0], x[1].lower())):
+        plats = _platforms_for(f"{title} {body}")
+        w, c, a = _bindings(f"{title} {body}")
+        base_slug = _slug(f"{src}-{title}")
+        d = OUT / src
+        d.mkdir(parents=True, exist_ok=True)
+        for plat in plats:
+            for auth in AUTH_STATES:
+                slug = f"{base_slug}--{plat}--{auth}"
+                f = d / f"{slug}.md"
+                if f.resolve() in used:      # slug truncation collision guard
+                    digest = hashlib.sha1(f"{src}\0{title}\0{plat}\0{auth}".encode()).hexdigest()[:8]
+                    slug = f"{base_slug[:48]}-{digest}--{plat}--{auth}"
+                    f = d / f"{slug}.md"
+                used[f.resolve()] = True
+                roles = ("entry" if any(k in title.lower() for k in
+                         ("recon", "enumerate", "fingerprint", "backup", "info", "subdomain"))
+                         else "final" if any(k in title.lower() for k in
+                         ("takeover", "rce", "crown", "price", "harvest", "dump"))
+                         else "pivot")
+                f.write_text(
+                    f"# {title} — {plat} / {auth}\n\n"
+                    f"- source canon: `{src}.md`\n- base technique: `{base_slug}.md`\n"
+                    f"- bindings: **{w}** · **{c}** · **ATT&CK {a}**\n"
+                    f"- context: **{plat}** · auth **{auth}** · chain role **{roles}**\n\n"
+                    f"## Context\n\n"
+                    f"- platform: {PLATFORM_ADJ.get(plat, 'family probes cover the class')}\n"
+                    f"- auth state: {AUTH_ADJ[auth]}\n\n"
+                    f"## The technique\n\n{body}\n\n"
+                    f"## Probe adjustment ({plat} × {auth})\n\n"
+                    f"1. baseline first: the request/session with NOTHING changed\n"
+                    f"2. attack: the documented class probe, adjusted per context above\n"
+                    f"3. diff: measurable only — status/length/body — or it is not a finding\n\n"
+                    f"## Chain roles\n\n- {CHAIN_ROLES[roles]}\n"
+                    f"- pairs-with: see `skilltree-index.md` for the sibling techniques\n\n"
+                    f"## Walls\n\n- validation-only · NO-GAIN · documented-class adaptation only\n"
+                    f"- in-scope only: the scope authority refuses everything else (rc=1)\n")
+                made += 1
+                index.append(f"- [{title} — {plat}/{auth}](skills/{src}/{slug}.md)"
+                             f" — `{src}` · {w} · {c} · {a} · {roles}")
+    (REFS / "skilltree-expanded-index.md").write_text("\n".join(index) + "\n")
+    payload = {"expanded": made, "sources": len(srcs),
+               "index": str(REFS / "skilltree-expanded-index.md"),
+               "total_with_base": made + len(srcs)}
+    if json_mode:
+        print(json.dumps(payload, indent=2))
+    else:
+        print(f"▸ corpus expanded: {made} context variant(s) over {len(srcs)} base"
+              f" technique(s) → {payload['total_with_base']} total skill files")
+        print(f"▸ index: {payload['index']}")
+    if min_count and payload["total_with_base"] < min_count:
+        print(f"✗ corpus below the scale floor ({payload['total_with_base']} < {min_count})",
+              file=sys.stderr)
+        return 1
+    return 0
 
 
 def verify(json_mode=False):
     """Check the generated tree is internally consistent: every index link
     resolves, every file carries its provenance + bindings, and no orphan file
-    is left behind from an older generation run."""
+    is left behind from an older generation run. When the expanded corpus
+    exists, its index links resolve too (sampled content checks)."""
     errors, warnings = [], []
     index_path = REFS / "skilltree-index.md"
     if not index_path.exists():
@@ -321,14 +466,36 @@ def verify(json_mode=False):
             if binding not in body:
                 errors.append(f"{href}: binding {binding} not present in file")
     files = sorted(str(p.relative_to(REFS)) for p in OUT.rglob("*.md")) if OUT.exists() else []
-    orphans = [f for f in files if f not in linked]
+    # the expanded corpus: its own index, sampled link + content checks
+    exp_index = REFS / "skilltree-expanded-index.md"
+    expanded_links = []
+    if exp_index.exists():
+        etext = exp_index.read_text(errors="replace")
+        expanded_links = [m.groupdict() for m in LINK_RE.finditer(etext)]
+        if len(expanded_links) < 100:
+            errors.append("expanded index exists but holds <100 links — regenerate")
+        import random
+        rng = random.Random(1337)   # deterministic sampling
+        for item in rng.sample(expanded_links, min(20, len(expanded_links))):
+            p = REFS / item["href"]
+            if not p.exists():
+                errors.append(f"expanded link has no file: {item['href']}")
+                continue
+            body = p.read_text(errors="replace")
+            for needle in ("## Context", "## The technique", "## Probe adjustment",
+                           "## Chain roles", "## Walls", "- source canon:"):
+                if needle not in body:
+                    errors.append(f"{item['href']}: missing '{needle}'")
+    linked_all = linked | {i["href"]: i for i in expanded_links}
+    orphans = [f for f in files if f not in linked_all]
     if orphans:
-        warnings.append(f"{len(orphans)} orphan file(s) not in index "
+        warnings.append(f"{len(orphans)} orphan file(s) not in any index "
                         f"(e.g. {orphans[0]})")
     payload = {
         "ok": not errors,
         "index": str(index_path),
         "links": len(links),
+        "expanded_links": len(expanded_links),
         "files": len(files),
         "sources": len({i["source"] for i in links}),
         "bindings": len(BINDINGS),
@@ -340,7 +507,8 @@ def verify(json_mode=False):
         print(json.dumps(payload, indent=2))
     else:
         print("═══ SPYDERMONKEY SKILLTREE VERIFY ═══")
-        print(f"  index links: {payload['links']} · files: {payload['files']} "
+        print(f"  index links: {payload['links']} · expanded: {payload['expanded_links']}"
+              f" · files: {payload['files']} "
               f"· sources: {payload['sources']} · orphans: {payload['orphans']}")
         for e in payload["errors"]:
             print(f"  ✗ {e}")
@@ -353,11 +521,17 @@ def verify(json_mode=False):
 def main():
     ap = argparse.ArgumentParser(description="SPYDERMONKEY skilltree generator")
     ap.add_argument("--count", action="store_true")
+    ap.add_argument("--expand", action="store_true",
+                    help="generate the context corpus: technique × platform × auth")
+    ap.add_argument("--min", dest="min_count", type=int, default=0,
+                    help="scale floor for --expand (rc=1 below it)")
     ap.add_argument("--verify", action="store_true")
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
     if a.verify:
         sys.exit(verify(json_mode=a.json))
+    if a.expand:
+        sys.exit(expand(json_mode=a.json, min_count=a.min_count))
     sys.exit(emit(a))
 
 

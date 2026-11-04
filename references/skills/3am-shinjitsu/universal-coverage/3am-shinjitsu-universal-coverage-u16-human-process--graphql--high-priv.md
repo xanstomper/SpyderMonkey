@@ -1,0 +1,35 @@
+# U16 Human & process — graphql / high-priv
+
+- source canon: `3am-shinjitsu/universal-coverage.md`
+- base technique: `3am-shinjitsu-universal-coverage-u16-human-process.md`
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- context: **graphql** · auth **high-priv** · chain role **pivot**
+
+## Context
+
+- platform: aliases and batched queries bypass field-level checks; type confusion lives in the schema
+- auth state: the baseline IS the privileged session; test downgrade paths (mass-assign, state-bypass)
+
+## The technique
+
+- [ ] Authorization and approval chains documented; no unapproved human testing
+- [ ] Helpdesk, recovery, exception, and break-glass processes reviewed
+- [ ] Awareness/reporting controls assessed through documentation and tabletop
+- [ ] Third-party onboarding/offboarding and access reviews measured
+- [ ] Findings framed as process improvements, never as coercion or deception
+
+## Probe adjustment (graphql × high-priv)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

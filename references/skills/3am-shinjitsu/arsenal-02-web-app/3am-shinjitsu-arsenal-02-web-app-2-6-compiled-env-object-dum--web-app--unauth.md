@@ -1,0 +1,38 @@
+# 2.6 Compiled env-object dump (score 80) — web-app / unauth
+
+- source canon: `3am-shinjitsu/arsenal-02-web-app.md`
+- base technique: `3am-shinjitsu-arsenal-02-web-app-2-6-compiled-env-object-dum.md`
+- bindings: **WSTG-CONF-04** · **CWE-530** · **ATT&CK T1552**
+- context: **web-app** · auth **unauth** · chain role **final**
+
+## Context
+
+- platform: strike through the browser/proxy path; the 3-gate differential runs on the reflected/accepted value
+- auth state: no credential material — the classic differential applies as-is; absent auth = the authn-bypass class
+
+## The technique
+
+- DECISIVE: grep every chunk for `VITE_[A-Z_0-9]+:` (backtick-aware: Vite compiles strings as
+  template literals — plain quote-greps return EMPTY and you conclude "no surface" falsely).
+- CONFIRMED WHEN: prod payment test-mode flags ON, New Relic license keys, internal bot names,
+  `VITE_SUPABASE_*`, unshipped feature flags.
+- Next analog: grep chunks for `NEXT_PUBLIC_[A-Z_0-9]+` — build-inlined by definition, so
+  hunt the VALUE around each name, not the name. FP DISCRIMINATOR: the
+  `...env.NEXT_PUBLIC_X && !1` spread idiom is a dev-only guard (spreads `false` in prod) —
+  the secret did NOT ship; never report it as an embedded credential.
+
+## Probe adjustment (web-app × unauth)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- the impact leg — shukaku prices what this rung reaches
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)
