@@ -1,0 +1,20 @@
+# T+25 — auth plane (high-value first, ceiling 15 req)
+
+- source canon: `3am-shinjitsu/arsenal-index.md`
+- bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
+- generated: 2026-11-04
+
+## The technique
+
+| # | Probe | Test | Confirmed-when |
+|---|---|---|---|
+| 22 | GoTrue settings | `curl -H 'apikey: <anon>' /auth/v1/settings /auth/v1/health` | providers, autoconfirm flags, version = full auth surface |
+| 23 | OAuth state binding | 2× /start → state A,B; `callback?state=A&code=fake` with cookie B | `Invalid OAuth state` = hardened (negative, ledger it) |
+| 24 | redirect_uri override | `curl -s -o /dev/null -w '%{redirect_url}' '/auth/v1/authorize?provider=discord&redirect_uri=https://evil.com/cb'` | Location carries attacker URI verbatim → live-intercept (`arsenal-04` §3.2) |
+| 25 | Auth-chain rate sweep | 15-20 rapid garbage POSTs per auth endpoint, `-w '%{http_code}'` | zero 429 = brute surface open |
+| 26 | WS handshake+frames | real frame exchange (socket+ssl), NOT curl 101 | CLOSE 1008 on first frame = gate works (negative) |
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

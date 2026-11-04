@@ -1,0 +1,23 @@
+# 4. WP REST `_embed` user-enum bypass (beat stop-user-enumeration)
+
+- source canon: `holyshit-mode/wordpress-cloudflare-origin-bypass.md`
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- generated: 2026-11-04
+
+## The technique
+
+`/wp-json/wp/v2/users`, `/?author=N`, `?rest_route=/wp/v2/users` are all blocked by the
+stop-user-enumeration plugin. BUT REST-embedded author objects still leak the admin:
+```
+GET /wp-json/wp/v2/posts?per_page=20&_embed
+→ _embedded.author[] = {"id":1,"name":"":".../author/geo/"}
+```
+The `slug` is the **WordPress username** (here: sole admin `geo`). Scan posts/pages/any public
+content type with `_embed` and collect every distinct `slug`. Always check the WP REST route
+index first: `GET /wp-json/` returns every namespace + route + method (huge recon goldmine —
+844 routes on
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

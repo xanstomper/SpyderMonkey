@@ -118,6 +118,15 @@ route-accuracy benchmark — the family's first measurable metric).
 
 ### 4. The pipeline — one command, eight engines
 
+Also since v1.3: **`bench_live.py`** — the LIVE exploitation benchmark: stdlib
+vulnerable mini-targets (IDOR · replay · exposed-backup) spun up on localhost,
+the family's real engines engage them, sub-task completion scored (3/3 verified).
+And **`mcp_server.py`** — the whole family exposed as 12 MCP tools (stdio
+JSON-RPC, zero deps): Claude Desktop, Cursor, or any MCP client drives it. And
+**`skilltree.py`** — generates the technique library from the family's real
+canon: 600+ per-technique skill files, WSTG/CWE/ATT&CK-bound, lazy-loaded via
+`references/skilltree-index.md`.
+
 `run` delegates to **SHIKI assault** — the proven path that drives every real
 engine in order, under the shield, with adaptive re-tasking:
 
