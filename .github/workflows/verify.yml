@@ -26,7 +26,7 @@ jobs:
           python3 $S route --goal "forge the weapons" | grep -q kairo
           python3 $S route --goal "price what they could take" | grep -q shukaku
           python3 $S route --goal "full assault" | grep -q shiki
-          python3 $S route --goal "zzz unknown goal qqq" | grep -q 'barbican → holyshit → undercroft → kairo → 3am → shukaku'
+          python3 $S route --goal "zzz unknown goal qqq" | grep -q 'barbican → holyshit → undercroft → kairo → 3am → kaisha → shukaku'
           python3 $S run --target demo --url https://example.com --domain example.com --dry-run | grep -q 'shiki assault'
           python3 $S mandate --file | grep -q 'mandate.md'
           python3 $S mandate | grep -q 'MANDATE: SPYDERMONKEY'
