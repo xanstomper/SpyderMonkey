@@ -51,7 +51,7 @@ CMDS = {
     "undercroft": "undercroft run --target <t> --domain <d> --url <u> [--bundle P]",
     "kairo": "kairo forge --target <t> --expand && kairo chain --target <t> --write",
     "3am": "3AM sweep per its SKILL.md §16; absorb kairo's distributed rows first",
-    "shukaku": "shukaku ingest --target <t> --finding <id> --proof <ref> && shukaku crown --target <t> … && shukaku report --target <t>",
+    "shukaku": "shukaku ingest --target <t> --finding <id> --proof <ref> && shukaku reason --target <t> && shukaku hunt --target <t> [--live U] && shukaku crown … && shukaku feed --target <t> && shukaku report --target <t>",
     "shiki": "shiki assault --target <t> --url <u> --domain <d> [--bundle P] [--parallel] [--resume] [--close]",
 }
 

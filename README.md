@@ -131,10 +131,12 @@ assault idempotently; `--close` wipes the campaign at the end.
   1 confirmed finding into ~4 compiled attacks, chains them into multi-hop kill
   paths, and **distributes the weapons back to every other mandate**. Findings
   never die in one report.
-- **The business verdict.** SHUKAKU turns confirmed compromises into the numbers
-  that matter in the boardroom — what was reachable, what it's worth, who must be
-  told — with the evidence chain enforced in code: unsourced crowns refuse, and
-  the register keeps counts, never corpora.
+- **The business verdict — and the loop.** SHUKAKU turns confirmed compromises into
+  the numbers that matter in the boardroom — what was reachable, what it's worth,
+  who must be told — with the evidence chain enforced in code. And it doesn't stop
+  at pricing: `reason` infers what else SHOULD be harvestable, `hunt` proves it
+  read-only, and `feed` hands every discovery back to 3AM/undercroft/holyshit as
+  attack material. The register keeps counts, never corpora.
 - **Model-agnostic discipline.** The `mandate` command prints an injectable
   persona contract — paste it as the system prompt of ANY LLM/agent and it
   operates the family under the same walls. The discipline travels; the model
