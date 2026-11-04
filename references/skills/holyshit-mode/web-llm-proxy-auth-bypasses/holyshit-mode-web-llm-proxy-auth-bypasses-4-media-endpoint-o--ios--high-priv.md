@@ -1,0 +1,44 @@
+# 4. ★ Media-endpoint oracle bypass (the big one) — ios / high-priv
+
+- source canon: `holyshit-mode/web-llm-proxy-auth-bypasses.md`
+- base technique: `holyshit-mode-web-llm-proxy-auth-bypasses-4-media-endpoint-o.md`
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- context: **ios** · auth **high-priv** · chain role **pivot**
+
+## Context
+
+- platform: the check often lives client-side — runtime inspection, MASTG/MASVS methodology
+- auth state: the baseline IS the privileged session; test downgrade paths (mass-assign, state-bypass)
+
+## The technique
+
+When the main chat endpoint (`/api/chat`) is gated by turnstile/"human verification":
+- The MEDIA endpoints (`/api/media/audio/transcriptions`, `/speech`, `/images/generations`)
+  often skip the chat gate AND the email-verification middleware.
+- `/api/media/audio/transcriptions` is frequently a GENERIC any-file→model proxy:
+  send a TEXT FILE as `file=@/tmp/q.txt;type=text/plain` + `model=<provider/model>` and the
+  model answers the question as text. Full completions, code gen, reasoning all work.
+- Verified live: Gemini 3.5 Flash text/vision (image upload + question), Cloudflare
+  FLUX-1-schnell 1024px images, Google TTS → WAV. All with an UNVERIFIED session, no API key.
+- Headers: `X-Chat-Auth-Mode: account` + `X-Website-Route: chat-app` + Bearer session.
+- Model catalog: unauth `GET /api/models/bootstrap` lists everything (provider, id,
+  modalities, freeTier). Filter `outputModalities` to find image/audio/text models.
+- Failures to expect: `unsupported_provider` (bad model prefix format — use `provider/model`),
+  upstream 401/404 for providers whose keys are dead (unorouter), `turnstile_required` only
+  on Gratisfy-PROVIDED chat models (media path exempt).
+
+## Probe adjustment (ios × high-priv)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

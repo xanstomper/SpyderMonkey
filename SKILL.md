@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 3.0.0
+version: 4.0.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -22,16 +22,16 @@ sends you.
 
 | # | Mandate | Role | How it works | Why different (the axis it owns) |
 |---|---|---|---|---|
-| 0 | **BARBICAN** (v1.1) | The Shield — FIRST LAYER | `assess` exposure audit (exit IP, identity leaks, artifact strings) · `posture` synthesizes vantage+alias · `sanitize` strips operator strings · `vantage check` verifies VM/VPN exits · `wipe` at closeout. **HARD GATE**: no verified exit → rc=1, nothing runs | Owns BEFORE. Attacks nothing — it protects the operator. Zero-document gate is its canon |
-| 1 | **3AM Shinjitsu** (v1.11) | The Performer | Universal sweep (U01–U16), 59-pair synthesis matrix, time-decay scoring, takeover T1–T7, `converge`/`learn`/`drift`/`promote` | Owns KNOWABLE + the **growth loop**: the only mandate that gets permanently smarter per engagement |
-| 2 | **KAIRO** (v2.1) | The Synthesizer | `ingest` (all family states) → 8 technique classes + five-gene → **generative op expansion** (1 finding = 4 attacks) → `chain` (multi-hop kill chains) → `distribute` (compiled attacks to every consumer) | Owns MANUFACTURING: its output is the others' weapons; hardware is one domain of it |
-| 3 | **UNDERCROFT** (v2.3) | The Descent | `run` = auto-engagement: bundle scan + JWT decode + live route probe + boundary id-swaps + auto-craft + report. 15 NO-GAIN probe plans, precision/entropy/stateflow/replay engines, 7 domain maps | Owns UNKNOWN: attacks what only the target's authors know; the only live autonomous engagement |
-| 4 | **HolyShit!** (v2.1) | The Finder | 31+ case files, queryable: `recipe` search, `dossier` assembly, `recon` checklists, `handoff` to the family, `vintage` decay flags | Owns KNOWN: the canon library; feeds the machine, consumes compiled recipes back |
-| 5 | **SHIKI** (v2.1) | The Command | `assault` = the whole family in sequence: gate → find ∥ descend (parallel) → forge → chain → war board + joint verdict; **adaptive re-tasking** (lanes update from live results); `--resume` idempotent; `--close` wipes | Owns TOGETHER: drives the family's REAL engines in order, under the shield |
-| 6 | **KAISHA** (v1.1) | The Ladder | `ladder --host H` builds R1–R5 from confirmed access: identity/surface inventories (read-only) → era-stack banner mapping → 4 privesc batteries (sudo/SUID/token-reuse/unit-trust) → lateral reuse plans (harvest-priced, one-shot, reversed) · `revert` records the reversal evidence — the no-persistence wall, machine-checked. **No persistence, no implants, NO-GAIN** | Owns DEPTH: everything below the foothold — what it can SEE and BECOME |
-| 7 | **SHUKAKU** (v1.2) | The Harvester | `reason` (infer what SHOULD be harvestable from confirmed access) → `hunt` (read-only proofs: exact static probes or GET-only live surface probes) → `crown` register (evidence-chain enforced, ladder-priced) → `disclose` (6 playbook triggers) → `feed` (3AM vectors + undercroft surface + holyshit recipes → the loop closes) → `report`. Catalog-only: counts, never corpora | Owns AFTER/GAIN: turns compromises into business verdicts AND arms the family with what the harvest reveals |
-| 8 | **KAGE** (v2.0) | The Mirror — the purple layer | `mirror --target C` — every CONFIRMED attack becomes a REAL Sigma rule (15 patterns · stable ids · falsepositives) · `export` writes .yml files · `validate` (rc=1 while any rule lacks live telemetry) · `refire` RE-FIRES the attack and requires the rule to fire (FIRED = purple loop closed) · `report` (the defense deliverable) | Owns DETECTABLE: the offense, proven visible — the family hands the defender the eyes |
-| 9 | **DOJO** (v2.0) | The Range | `catalog`/`build --class C`/`bench --class C`/`teach --class C` — 15 buildable vulnerable replicas (BOUNDARY/REPLAY/HARVEST/TRAVERSAL/DIRECTORY/XSS/REDIRECT/CRYPTO/NETWORK/MASSASSIGN/INJECTION/SSRF/JWT/AUTHN/SESSION), lab-bound 127.0.0.1, every replica SELF-VERIFIES (bench strikes it and requires the flaw to confirm), each lesson ends in a kage rule | Owns TRAINING: the bench ground — where the family drills before it hunts |
+| 0 | **BARBICAN** | The Shield — FIRST LAYER | `assess` exposure audit (exit IP, identity leaks, artifact strings) · `posture` synthesizes vantage+alias · `sanitize` strips operator strings · `vantage check` verifies VM/VPN exits · `wipe --confirm` at closeout. **HARD GATE**: no verified exit → rc=1, nothing runs | Owns BEFORE. Attacks nothing — it protects the operator. Zero-document gate is its canon |
+| 1 | **HOLYSHIT!** | The Finder | 31+ case files, queryable: `recipe` search, `dossier` assembly, `recon` checklists, `handoff` to the family, `vintage` decay flags | Owns KNOWN: the canon library; feeds the machine, consumes compiled recipes back |
+| 2 | **UNDERCROFT** | The Descent | `run` = auto-engagement: bundle scan + JWT decode + live route probe + boundary id-swaps + auto-craft + report. 15 NO-GAIN probe plans, precision/entropy/stateflow/replay engines, 7 domain maps | Owns UNKNOWN: examines what only the target's authors know; read-only by default |
+| 3 | **3AM Shinjitsu** | The Performer | Universal sweep (U01–U16), 59-pair synthesis matrix, time-decay scoring, takeover T1–T7, `converge`/`learn`/`drift`/`promote` | Owns KNOWABLE + the **growth loop**: the only mandate that gets permanently smarter per engagement |
+| 4 | **KAIRO** | The Synthesizer | `ingest` (all family states) → 8 technique classes + five-gene → **generative op expansion** (1 finding = 4 attacks) → `chain` (multi-hop kill chains) → `distribute` (compiled attacks to every consumer) | Owns MANUFACTURING: its output is the others' weapons; hardware is one domain of it |
+| 5 | **KAISHA** | The Ladder | `ladder --host H` builds R1–R5 from confirmed access: identity/surface inventories (read-only) → era-stack banner mapping → 4 privesc batteries (sudo/SUID/token-reuse/unit-trust) → lateral reuse plans (harvest-priced, one-shot, reversed) · `revert` records the reversal evidence — the no-persistence wall, machine-checked. **No persistence, no implants, NO-GAIN** | Owns DEPTH: everything below the foothold — what it can SEE and BECOME |
+| 6 | **SHUKAKU** | The Harvester | `reason` (infer what SHOULD be harvestable from confirmed access) → `hunt` (read-only proofs: exact static probes or GET-only live surface probes) → `crown` register (evidence-chain enforced, ladder-priced) → `disclose` (6 playbook triggers) → `feed` (3AM vectors + undercroft surface + holyshit recipes → the loop closes) → `report`. Catalog-only: counts, never corpora | Owns AFTER/GAIN: turns compromises into business verdicts AND arms the family with what the harvest reveals |
+| 7 | **SHIKI** | The Command | `assault` = the whole family in sequence: gate → find ∥ descend (parallel) → forge → chain → war board + joint verdict; **adaptive re-tasking** (lanes update from live results); `--resume` idempotent; `--close` records the closeout | Owns TOGETHER: drives the family's REAL engines in order, under the shield |
+| 8 | **KAGE** | The Mirror — the purple layer | `mirror --target C` — every CONFIRMED attack becomes a REAL Sigma rule (15 patterns · stable ids · falsepositives) · `export` writes .yml files · `validate` (rc=1 while any rule lacks live telemetry) · `refire` RE-FIRES the attack and requires the rule to fire (FIRED = purple loop closed) · `report` (the defense deliverable) | Owns DETECTABLE: the offense, proven visible — the family hands the defender the eyes |
+| 9 | **DOJO** | The Range | `catalog`/`build --class C`/`bench --class C`/`teach --class C` — 15 buildable vulnerable replicas (BOUNDARY/REPLAY/HARVEST/TRAVERSAL/DIRECTORY/XSS/REDIRECT/CRYPTO/NETWORK/MASSASSIGN/INJECTION/SSRF/JWT/AUTHN/SESSION), lab-bound 127.0.0.1, every replica SELF-VERIFIES (bench strikes it and requires the flaw to confirm), each lesson ends in a kage rule | Owns TRAINING: the bench ground — where the family drills before it hunts |
 
 ## The Chain (how one engagement flows)
 
@@ -60,26 +60,67 @@ hidden · 3AM hits it fast · KAIRO turns every hit into everyone's weapons · K
 climbs the ladder · SHUKAKU prices the gain · KAGE mirrors it · DOJO drills it ·
 SHIKI conducts the whole war · SpyderMonkey routes it.
 
-## The Scope Authority (v1.3.0 — the machine-checkable estate gate)
+## The Scope Authority (v4 — one verdict, every engine)
 
-`spydermonkey scope init --engagement E --in-scope "acme.com,10.0.0.0/24"` writes
-`~/.redteam/scope.json` — every live-probing engine (shiki gate · shukaku hunt
---live · the run pipeline) checks it BEFORE firing. Domain-suffix + CIDR matching,
-default-deny, `--strict` mode closes everything undeclared:
+`spydermonkey scope init --engagement E --in-scope "acme.com,*.api.acme.com,10.0.0.0/24"`
+writes `~/.redteam/scope.json` (0600, atomic). **One shared module**
+(`scripts/scope_authority.py`) is imported by the dispatcher, Arsenal, the MCP
+server, the live bench, and every live probe. There is no engine-specific bypass.
+
+Matching covers exact hosts, subdomains, `*` wildcards, CIDRs, URL paths, and
+ports. Deny always wins; expiry is enforced; the loopback lab is the only
+implicit allowance. `scope add|remove|extend|history` maintain the estate and its
+audit trail. `--strict` makes a missing authority a refusal (rc=1):
 
 ```
 $ spydermonkey scope check --value https://api.acme.com/x
 ✓ IN SCOPE — https://api.acme.com/x under engagement 'E'
+$ spydermonkey scope check --value https://billing.acme.com/x
+✗ OUT OF SCOPE — denied by rule 'billing.acme.com'                  # rc=1
 $ spydermonkey scope check --value https://evil.com
-✗ OUT OF SCOPE — https://evil.com is not in the declared estate     # rc=1
+✗ OUT OF SCOPE — not in the declared estate                         # rc=1
 ```
 
-Also in the toolbox: `doctor` (full health check: engines · scope · corrupt states ·
-canon stats) · `bench` (offline route-level accuracy — 11/11 at v1.8.0) · `arsenal`
-(v1.6.0 — the execution layer: 13 scope-gated tool wrappers, findings canon-classified)
-· `fleet` (v1.4.0 — parallel multi-agent dispatch, one agent per mandate) ·
-`bench_live.py` (exploitation-level bench, localhost lab) · `mcp_server.py` (the
-family as 12 MCP tools) · `skilltree.py` (722-file technique library).
+## The Control Plane (v4 — campaigns · contracts · JSON · proof)
+
+The dispatcher is now a control plane, not just a router:
+
+- **Campaign lifecycle** — `campaign init --target T` writes a manifest; every
+  engine event lands in `events.jsonl`; `show` and `timeline` read it;
+  `archive` writes a timestamped `tar.gz`; `purge` refuses without `--force`;
+  `close` records the verdict. State is in `~/.redteam/campaigns/<target>/`.
+- **Ten mandate contracts** — `references/mandates/00-barbican.md` …
+  `09-dojo.md`, each with `## axis` · `## law` · `## handoff` · `## evidence` ·
+  `## fleet` · `## failure`. `mandates verify` checks all ten, their numbering,
+  their phase, and their required sections. The same registry drives
+  `tree`/`route`/`fleet`/`next`.
+- **Machine-readable everywhere** — `--json` works on any command in any
+  position; errors stay on stderr and preserve exit codes: `0` ok, `1`
+  gate/scope/verify failure, `2` usage, `130` interrupted.
+- **Tamper-evident ledger** — every finding is hash-chained to the previous row;
+  `ledger verify` checks the chain; `--strict` requires every row to be signed.
+  Dedupe attaches evidence instead of deleting it. Evidence remains
+  `baseline: … attack: … diff: …` or the row is downgraded to hypothesis.
+- **Self-test** — `selftest` runs 27 checks in a throwaway `HOME`: scope allow/
+  deny, ledger evidence/dedupe/integrity, live 3-gate proof, testers, chains,
+  phases, coverage, report, campaign lifecycle, mandate contracts, MCP, Arsenal,
+  and the live bench. `selftest --quick` is the fast gate.
+- **Kernel** — `next` emits the one state-driven directive (exact argv + walls);
+  `absorb` validates a result through the same scope, ledger, and evidence
+  gates; `loop` repeats plan → execute → absorb with the engines as the state
+  machine. `--plan-only` shows the battle plan.
+- **Diagnostics** — `doctor --fix` tightens scope permissions, renames corrupt
+  state JSON, and removes stale temp files; `verify` retries port-colliding
+  engine self-checks serially so a healthy engine is never reported red.
+
+Also in the toolbox: `bench` (offline route-level accuracy — 29/29 at v4.0.0) ·
+`arsenal` (20 scope-gated tool wrappers + 4 feeding chains — recon/web/tls/net —
+structured run records, kernel `--out` results the loop absorbs) · `fleet`
+(parallel multi-agent dispatch, one agent per mandate) · `bench_live.py`
+(exploitation-level bench, throwaway HOME, localhost lab) · `mcp_server.py`
+(the family as 43 MCP tools) · `skilltree.py` (the technique library: 722 base
+files + the CONTEXT CORPUS — `--expand` generates 8.8k technique × platform ×
+auth files with chain-role tags, deterministic, `--verify` checks both indexes).
 
 ## The Mandate Discipline (v1.1.0 — the Kimiko architecture, model-agnostic)
 
@@ -124,25 +165,29 @@ replaced the nullification — discipline without harm.
 - "everything / full assault / together / one command" → **shiki assault** (the pipeline)
 - no match → the STANDARD RELAY: barbican → holyshit → undercroft → kairo → 3AM → kaisha → shukaku → kage → dojo
 
-## The Intelligence Layer (v3.0.0 — CyberStrike-derived, family-native)
+## The Intelligence Layer (v3, hardened in v4 — CyberStrike-derived, family-native)
 
-The proven engines keep firing; the dispatcher now owns the engagement BRAIN
-around them. Derived from CyberStrike's methodology engine, rewritten natively:
-stdlib-only, walls as exit codes, scope authority default-deny, no-gain proofs.
+The proven engines keep firing; the dispatcher owns the engagement BRAIN around
+them. Derived from CyberStrike's methodology engine, rewritten natively:
+stdlib-only, walls as exit codes, one scope authority, no-gain proofs. v4 adds
+the hash chain, `ledger verify`/`export`, campaign-scoped reports, and the
+selftest that exercises each engine for real.
 
 - **`phases --target T`** — the 13-phase methodology board. Statuses are
   COMPUTED from real deliverables in the family's state files (never declared):
   `scope.json` exists → scope_analysis done; undercroft surface rows →
   active_recon; ledger has AUTHN findings → authentication_testing; and so on.
   Prerequisites gate the order; the board always names the next mandate to run.
-- **`ledger add|list|show|triage`** — the finding ledger
-  (`~/.redteam/campaigns/<c>/ledger.jsonl`). Every entry is scope-checked
-  (an out-of-estate asset is REFUSED, rc=1), deduped by class+asset+normalized
+- **`ledger add|list|show|triage|verify|stats|export|update|sync`** — the
+  finding ledger (`~/.redteam/campaigns/<c>/ledger.jsonl`). Every row is
+  hash-chained to the previous one (tamper-evident), scope-checked (an
+  out-of-estate asset is REFUSED, rc=1), deduped by class+asset+normalized
   title (duplicate evidence attaches to the existing record — nothing is lost),
   and evidence-gated: proof needs `baseline: … attack: … diff: …`; anything less
   is DOWNGRADED to hypothesis conf=0.4 — never suppressed. `triage` runs the
   triager gates: severity-impact match, reproducible evidence, in-scope,
-  duplicates → blocking violations exit 1.
+  duplicates → blocking violations exit 1. `export` writes JSON/JSONL/CSV/
+  markdown/SARIF; `verify --strict` requires every row to be signed.
 - **`gate --url U --attack-query Q [--confirm TOKEN]`** — the 3-GATE
   CONFIRMATION engine: G1 baseline request → G2 attack request → G3 a
   measurable diff (status/length/body) AND the confirm token present. CONFIRMED
@@ -160,13 +205,15 @@ stdlib-only, walls as exit codes, scope authority default-deny, no-gain proofs.
   · MASSASSIGN · INJECTION · AUTHN · BIZLOGIC · SSRF · FILEATTACK), each a
   differential probe with gate semantics, deduped into the ledger. `--demo`
   spins the built-in lab replica (127.0.0.1, self-terminating) so the layer
-  proves itself with zero setup — 7/8 testers confirm on it out of the box.
+  proves itself with zero setup — confirmed testers register, the rest register
+  as hypotheses with the evidence they actually produced.
 - **`coverage --target T`** — phase × deliverable matrix, findings histogram,
   chain count, and the GAP LIST: what has NOT been tested, and which mandate
   closes it.
-- **`report --target T`** — the joint WAR REPORT: exec summary (findings ·
-  confirmed · severity mix), every finding with its 3-gate proof, attack
-  chains, phase coverage, kage rule count, shukaku crown pricing — one markdown.
+- **`report --target T [--format md|json|sarif] [--output F]`** — the joint WAR
+  REPORT: exec summary (findings · confirmed · severity mix), every finding with
+  its 3-gate proof, attack chains, phase coverage, kage rule count, shukaku
+  crown pricing. It defaults to the campaign directory; `--output` overrides.
 - **`relay init|list|exec|remove`** — REMOTE EXECUTION NODES (Bolt-equivalent):
   Ed25519 keypair per node (ssh-keygen), `ssh-copy-id` one-liner to pair, exec
   streams over ssh. Every exec scope-checks the node's host AND every
@@ -175,60 +222,66 @@ stdlib-only, walls as exit codes, scope authority default-deny, no-gain proofs.
   scope gate → fleet (10 agents parallel) → ledger triage → chain detect →
   coverage → war report (→ barbican wipe with --close).
 
-**The live-fire rule (v3):** gate/testers fire at 127.0.0.1/localhost freely
-(the lab — dojo replicas, CI). ANY other host requires a scope authority
-containing it: no authority or out-of-scope → rc=1 refusal. `verify` now ends
-with a LIVE GATE PROOF: it spins the lab replica, runs a real 3-gate
-confirmation, and requires CONFIRMED — the engine is exercised, not asserted.
-
-## The Scope Authority
-
-`scope init` writes ~/.redteam/scope.json (the declared estate + rules); `scope
-check --value` matches domains/CIDRs — default-deny with --strict. Every
-live-probing engine honors it. `doctor` = the health check; `bench` = the offline
-route-accuracy benchmark.
+**The live-fire rule (v4):** gate/testers fire at 127.0.0.1/localhost freely
+(the lab — dojo replicas, CI). ANY other host requires the shared scope
+authority containing it: no authority or out-of-scope → rc=1 refusal. `verify`
+ends with a LIVE GATE PROOF and a 27-check selftest: it spins the lab replica,
+runs a real 3-gate confirmation, and requires CONFIRMED — the engine is
+exercised, not asserted.
 
 ## Tooling
 
-`scripts/spydermonkey.py` — stdlib CLI:
-- `tree` — the family + roles + chain (this document, condensed)
+`scripts/spydermonkey.py` — stdlib CLI (every command accepts `--json`):
+- `tree` · `version` — the family + roles + chain; version, schema, paths, engines
 - `route --goal "<words>"` — goal → the mandate sequence to load/run
-- `run --target T --url U --domain D [--bundle P] [--boundary-url U2] [--probe-ids 1,2] [--parallel] [--resume] [--close] [--dry-run]` — the full pipeline (delegates to SHIKI assault, the proven path)
-- `mission --target T --url U --domain D [--skip-fleet] [--close]` — v3 one command: fleet + the intelligence layer + the war report
+- `run --target T --url U --domain D [--bundle P] [--boundary-url U2] [--probe-ids 1,2] [--parallel] [--resume] [--close] [--dry-run]` — the full pipeline (delegates to SHIKI assault)
+- `mission --target T --url U --domain D [--skip-fleet] [--plan] [--resume] [--close]` — one command: fleet + intelligence layer + war report
+- `campaign init|list|show|timeline|archive|purge|close --target T` — the campaign lifecycle (manifest · events · closeout · guarded purge)
+- `mandates list|show|verify [--name N]` — the ten machine-checked contracts
+- `next --target T [--url U] [--domain D]` — the kernel's one state-driven directive
+- `absorb --target T --file result.json` — validate a result through scope + ledger + evidence
+- `loop --target T [--agent-cmd '…'] [--plan-only] [--max-steps N]` — plan → execute → absorb
+- `next-phase --target T` — the next 13-phase board action
 - `phases --target T [--set-phase P --phase-status S]` — the 13-phase methodology board (computed from real deliverables)
-- `ledger add|list|show|triage --target T` — the finding ledger (scope-blocked · deduped · evidence-gated)
+- `ledger add|list|show|triage|verify|stats|export|update|sync --target T` — the hash-chained finding ledger (scope-blocked · deduped · evidence-gated)
 - `gate --target T --url U --attack-query Q [--confirm TOK] [--prove SPY-NNN]` — the 3-gate confirmation engine
 - `chain detect|plan --target T [--id CH-NNN]` — the 8-pattern chain detection engine
 - `context set|show --target T [--kind K --value V]` — session context (endpoints · roles · credentials · functions)
 - `testers --target T --url U [--url U2 …] | --demo` — the 8 parallel sub-testers
 - `coverage --target T` — coverage matrix + gap list
-- `report --target T [--output F]` — the joint war report
+- `report --target T [--format md|json|sarif] [--output F]` — the joint war report (campaign dir by default)
 - `relay init|list|exec|remove` — remote execution nodes (Ed25519 ssh pairs, scope-gated)
-- `status [--target T]` — family meta-status: every mandate's version + engine presence + campaign states + ledger counts
-- `verify` — the meta self-check: all ten family engines verify + the LIVE gate proof
+- `status [--target T] [--fast]` — family meta-status: versions + engine presence + campaign states + ledger counts
+- `verify [--fast] [--no-selftest]` — meta self-check: subcommands · contracts · ten engines · selftest · LIVE gate proof
+- `selftest [--quick]` — 27-check end-to-end test in a throwaway HOME
 - `mandate [--file]` — print (or locate) the injectable persona contract
-- `scope init|check|show` — the estate gate (`~/.redteam/scope.json`); default-deny with `--strict`
-- `doctor` — full health check (engines · scope · corrupt states · canon · ledger · relays)
-- `bench` — offline route-level benchmark (13/13 at v3.0.0)
-- `arsenal list|plan|run|verify` — the execution layer: 13 tool wrappers (nmap · masscan · httpx · nuclei · gobuster · testssl · dnsx · subfinder · whatweb · wafw00f · nikto · dig · curl), scope-gated (rc=1 refusal), canon-classified
-- `fleet --goal G --target T --domain D [--agents a,b]` — one agent per mandate, dispatched in PARALLEL
+- `scope init|check|show|add|remove|extend|history` — the shared estate gate (matching · deny precedence · expiry · audit)
+- `doctor [--fix]` — health check (engines · scope perms · corrupt states · canon · ledger · relays)
+- `bench` — offline route-level benchmark (29/29 = 100% at v4.0.0)
+- `arsenal list|plan|run|verify` — 20 tool wrappers + 4 feeding chains (recon · web · tls · net) behind the shared scope authority; `run --chain C --out result.json` emits the kernel result schema (`absorb` ingests it)
+- `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` — one agent per mandate, dispatched in parallel
 
 Companion scripts (stdlib too):
-- `scripts/bench_live.py` — exploitation-level bench: stdlib vulnerable mini-targets on localhost, real engines scored
-- `scripts/mcp_server.py` — the family as 18 MCP tools (stdio JSON-RPC); any MCP client drives it
-- `scripts/skilltree.py` — regenerate `references/skills/` + `references/skilltree-index.md` from the family canon (722 technique files)
+- `scripts/scope_authority.py` — the one estate gate (exact/subdomain/wildcard/CIDR/URL/port · deny · expiry · rate · audit · atomic writes)
+- `scripts/bench_live.py` — exploitation-level bench: throwaway HOME, dynamic port, localhost mini-targets
+- `scripts/mcp_server.py` — the family as 43 MCP tools (stdio JSON-RPC; batch + notifications; `--test`/`--list`)
+- `scripts/skilltree.py` — regenerate + `--verify` `references/skills/` + `references/skilltree-index.md` (722 technique files)
 
 ## Files
 
 - `SKILL.md` — this doctrine (the tree lives here)
 - `CHANGELOG.md` — release notes
-- `scripts/spydermonkey.py` — the dispatcher CLI
-- `scripts/arsenal.py` — the execution layer (13 scope-gated tool wrappers)
+- `scripts/spydermonkey.py` — the control-plane CLI
+- `scripts/scope_authority.py` — the shared estate gate
+- `scripts/arsenal.py` — the execution layer (20 scope-gated tool wrappers · 4 feeding chains)
 - `scripts/bench_live.py` — the exploitation-level bench
 - `scripts/mcp_server.py` — the family as MCP tools (stdio JSON-RPC)
-- `scripts/skilltree.py` — the technique-library generator
+- `scripts/skilltree.py` — the technique-library generator + verifier
+- `scripts/ci_smoke.sh` — local truth = CI truth
 - `references/mandate.md` — the injectable persona contract
+- `references/mandates/` — 00-barbican.md … 09-dojo.md (machine-checked)
 - `references/skilltree-index.md` + `references/skills/` — the 722-file technique library
+- `tests/test_spydermonkey.py` — stdlib test suite
 - `README.md` — the public front page (badges, family buttons, how-it-works)
 
 ## Relations

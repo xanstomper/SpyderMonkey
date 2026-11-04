@@ -1,0 +1,39 @@
+# 6. Code-interpreter sandbox triage — `meituan/longcat-2.0` (NEGATIVE, good coverage) — linux / low-priv
+
+- source canon: `holyshit-mode/case-obsidian-y-api-dataplane.md`
+- base technique: `holyshit-mode-case-obsidian-y-api-dataplane-6-code-interpret.md`
+- bindings: **WSTG-BUSL-01** · **CWE-681** · **ATT&CK T1565**
+- context: **linux** · auth **low-priv** · chain role **pivot**
+
+## Context
+
+- platform: read-only inventory first (kaisha rungs), then the documented class match
+- auth state: hold ONE low-priv principal; swap object ids/roles upward only (idor/authz classes)
+
+## The technique
+
+Model executes Python but hardened jail:
+- ALLOWED: `math, random, json, re, datetime, collections, itertools, functools, string, base64,
+  hashlib, hmac, struct, codecs`. `print(2+2)`→4, list-comprehension works.
+- BLOCKED: `os, sys, subprocess`, networking (`urllib, socket, requests`), fs (`open, pathlib`),
+  `globals/locals/dir/__builtins__`, `getattr(__builtins__,...)` trickery, `__subclasses__()`
+  class-hierarchy escape. The model itself narrates "blocked for security reasons."
+- Each execution isolated — variables do NOT persist across turns (sandbox reset per call).
+- Conclusion: "can execute code" ≠ sandbox escape. No host RCE. Escalation to host = would be
+  Holy Shit; not found.
+
+## Probe adjustment (linux × low-priv)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

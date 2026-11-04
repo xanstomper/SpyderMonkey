@@ -175,10 +175,14 @@ v4 turns the dispatcher from a router into a **control plane**:
 ### 5. The pipeline — one command, ten engines
 
 Also in the toolbox: **`fleet`** dispatches every mandate as its own parallel
-agent with a real brief; **`arsenal`** wraps 13 external tools
+agent with a real brief; **`arsenal`** wraps 20 external tools in 4 feeding chains
 (nmap, masscan, httpx, nuclei, gobuster, testssl, dnsx, subfinder, whatweb,
-wafw00f, nikto, dig, curl) behind the same scope authority and a structured
-`run` record; **`dojo`** builds the lab replicas; **`kage`** mirrors every
+wafw00f, nikto, dig, curl, ffuf, naabu, amass, katana, dalfox, tlsx, gau) behind
+the same scope authority; chain stages feed each other (subfinder's domains →
+dnsx → httpx → nuclei) and `--out` emits the kernel result schema the loop
+absorbs; **`skilltree --expand`** generates the 8.8k-file context corpus
+(technique × platform × auth, chain-role-tagged, deterministic); **`dojo`** builds
+the lab replicas; **`kage`** mirrors every
 confirmed attack into Sigma.
 
 **`bench_live.py`** — the LIVE exploitation benchmark: stdlib vulnerable
@@ -310,28 +314,37 @@ git clone https://github.com/xanstomper/spydermonkey.git \
 | Command | What it does |
 |---|---|
 | `tree` | the family + roles + the chain (the doctrine, condensed) |
+| `version` | dispatcher version, schema, data root, scope path, engine summary |
 | `route --goal "<words>"` | plain-language goal → the mandate sequence to load/run |
 | `run --target T --url U --domain D [--bundle P] [--boundary-url U2] [--probe-ids 1,2] [--parallel] [--resume] [--close] [--dry-run]` | the full pipeline — delegates to SHIKI assault |
-| `mission --target T --url U --domain D [--skip-fleet] [--close]` | **v3 one command**: scope gate → fleet (10 agents, parallel) → ledger triage → chain detect → coverage → the war report |
-| `phases --target T` | the 13-phase methodology board — statuses computed from real deliverables, never declared |
-| `ledger add\|list\|show\|triage --target T` | the finding ledger — scope-blocked, deduped, evidence-gated (`baseline:/attack:/diff:` or downgraded to hypothesis, never suppressed) |
+| `mission --target T --url U --domain D [--skip-fleet] [--plan] [--resume] [--close]` | **one command**: scope gate → fleet (10 agents, parallel) → ledger triage → chain detect → coverage → the war report |
+| `campaign init\|list\|show\|timeline\|archive\|purge\|close --target T` | the **campaign lifecycle**: manifest · events · closeout · guarded purge |
+| `mandates list\|show\|verify [--name N]` | the **ten mandate contracts** — axis · law · handoff · evidence · fleet · failure |
+| `next --target T [--url U] [--domain D]` | **kernel**: the one state-driven directive, exact argv, walls |
+| `absorb --target T --file result.json` | **kernel**: validate a result through scope + ledger + evidence gates |
+| `loop --target T [--agent-cmd '…'] [--plan-only] [--max-steps N]` | **kernel**: plan → execute → absorb → repeat |
+| `next-phase --target T` | the next 13-phase board action, with the exact command |
+| `phases --target T [--set-phase P --phase-status S]` | the 13-phase methodology board — statuses computed from real deliverables, never declared |
+| `ledger add\|list\|show\|triage\|verify\|stats\|export\|update\|sync --target T` | the finding ledger — scope-blocked, hash-chained, deduped, evidence-gated (`baseline:/attack:/diff:` or downgraded to hypothesis, never suppressed) |
 | `gate --target T --url U --attack-query Q [--confirm TOK] [--prove SPY-NNN]` | the **3-gate confirmation engine**: baseline → attack → measurable diff (+ token) → CONFIRMED |
 | `chain detect\|plan --target T [--id CH-NNN]` | **8 chain patterns** — low findings on one origin combine into high-impact kill chains with testing plans |
 | `context set\|show --target T` | session context: endpoints · roles · credentials · functions |
 | `testers --target T --url U [--url U2 …] \| --demo` | the **8 parallel sub-testers** (IDOR · AUTHZ · MASSASSIGN · INJECTION · AUTHN · BIZLOGIC · SSRF · FILEATTACK), differential + deduped into the ledger |
 | `coverage --target T` | phase × deliverable matrix + findings histogram + the gap list |
-| `report --target T [--output F]` | the joint **war report** (markdown): findings + proofs + chains + coverage + detection + pricing |
+| `report --target T [--format md\|json\|sarif] [--output F]` | the joint **war report**: findings + proofs + chains + coverage + detection + pricing (defaults to the campaign dir) |
 | `relay init\|list\|exec\|remove` | remote execution nodes (Bolt-equivalent): Ed25519 ssh pairs, every exec scope-checked |
-| `status [--target T]` | every mandate's engine presence + verify state + campaign files + ledger counts |
-| `verify` | the meta self-check: subcommands, mandate file, all ten engines **+ the live gate proof** |
+| `status [--target T] [--fast]` | every mandate's engine presence + verify state + campaign files + ledger counts |
+| `verify [--fast] [--no-selftest]` | the meta self-check: subcommands, contracts, all ten engines, self-test, **+ the live gate proof** |
+| `selftest [--quick]` | the end-to-end 27-check self-test in a throwaway `HOME` |
 | `mandate [--file]` | print (or locate) the injectable persona contract |
-| `scope init\|check\|show` | the estate gate — `~/.redteam/scope.json`, domain-suffix/CIDR match, default-deny with `--strict` |
-| `doctor` | full health check: engines · scope · corrupt states · canon · ledger · relays |
-| `bench` | offline route-level benchmark (route accuracy; 13/13 at v3.0.0) |
-| `arsenal list\|plan\|run\|verify` | the execution layer — 13 tool wrappers, scope-gated, canon-classified findings |
-| `fleet --goal G --target T --domain D [--agents a,b]` | one agent per mandate, dispatched in parallel |
+| `scope init\|check\|show\|add\|remove\|extend\|history` | the estate gate — shared matching, deny precedence, expiry, audit history |
+| `doctor [--fix]` | full health check: engines · scope perms · corrupt states · canon · ledger · relays |
+| `bench` | offline route-level benchmark (29/29 = 100% at v4.0.0) |
+| `arsenal list\|plan\|run\|verify` | the execution layer — 13 tool wrappers, shared scope authority, structured results |
+| `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` | one agent per mandate, dispatched in parallel |
 
-Exit codes: `0` ok · `1` gate/verify failure · `2` usage error.
+Every command accepts `--json` in any position. Exit codes: `0` ok · `1`
+gate/scope/verify failure · `2` usage error · `130` interrupted.
 
 ---
 
@@ -388,15 +401,19 @@ spydermonkey/
 ├── SKILL.md                  # the doctrine — the tree lives here
 ├── CHANGELOG.md              # release notes
 ├── scripts/
-│   ├── spydermonkey.py       # tree · route · run · status · verify · mandate · scope · doctor · bench · arsenal · fleet
-│   ├── arsenal.py            # the execution layer — 13 tool wrappers, scope-gated
-│   ├── bench_live.py         # the exploitation-level bench (localhost lab)
-│   ├── mcp_server.py         # the family as 12 MCP tools (stdio JSON-RPC)
-│   └── skilltree.py          # regenerate references/skills/ from the family canon
+│   ├── spydermonkey.py       # the control plane: tree · route · run · campaign · kernel · ledger · gate · report · doctor · verify
+│   ├── scope_authority.py    # ONE estate gate: matching · deny precedence · expiry · rate · audit · atomic writes
+│   ├── arsenal.py            # the execution layer — 13 tool wrappers, shared scope authority
+│   ├── bench_live.py         # the exploitation-level bench (throwaway HOME, localhost lab)
+│   ├── mcp_server.py         # the family as 43 MCP tools (stdio JSON-RPC)
+│   ├── skilltree.py          # regenerate + verify references/skills/ from the family canon
+│   └── ci_smoke.sh           # local truth = CI truth
 ├── references/
 │   ├── mandate.md            # the injectable persona contract (any model)
+│   ├── mandates/             # 00-barbican.md … 09-dojo.md (machine-checked contracts)
 │   ├── skilltree-index.md    # the generated technique library index (722 entries)
 │   └── skills/               # 722 lazy-loaded technique files (WSTG/CWE/ATT&CK-bound)
+├── tests/test_spydermonkey.py # stdlib test suite (scope · ledger · contracts · CLI)
 ├── .github/workflows/verify.yml
 └── assets/
     └── spyder.gif            # the spider at the center of the web

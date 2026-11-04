@@ -1,0 +1,36 @@
+# The alias policy (v1.2 — `alias`) — iot / unauth
+
+- source canon: `barbican/protection-playbook.md`
+- base technique: `barbican-protection-playbook-the-alias-policy-v1-2-alias.md`
+- bindings: **WSTG-SESS** · **CWE-384** · **ATT&CK T1550**
+- context: **iot** · auth **unauth** · chain role **pivot**
+
+## Context
+
+- platform: radio/serial surface — BLE/NFC/UART classes, lab hardware only
+- auth state: no credential material — the classic differential applies as-is; absent auth = the authn-bypass class
+
+## The technique
+
+- Derivation: `ghost-` + first 6 hex of sha256(`target#epoch`) — deterministic
+  per target+epoch, stable across sessions, no randomness to lose.
+- Rotation: `--rotate` bumps the epoch → new alias per engagement window. The
+  posture's `--alias` (human-chosen) always wins over the derived suggestion.
+- Artifacts carry the alias, NEVER the operator identity — and `sanitize` is the
+  enforcement pass that makes it true on disk.
+
+## Probe adjustment (iot × unauth)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

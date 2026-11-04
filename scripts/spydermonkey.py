@@ -1753,8 +1753,10 @@ def _planner_directive(target, url=None, domain=None):
                  "no verified vantage — barbican hard-gates the family",
                  "posture recorded; exit vantage verified",
                  ["zero documents"])
-    # 3. passive recon — the finder
-    if not _phase_deliverable(target, PHASES[1]) and "holy-recon" not in done_ids:
+    # 3. passive recon — the finder (real domains only: the finder classifies
+    #    domains by industry; lab campaigns skip straight to the descent)
+    if not _is_lab(url or "") and not _phase_deliverable(target, PHASES[1]) \
+            and "holy-recon" not in done_ids:
         return d("holy-recon", "passive_recon", "holyshit", "recon",
                  ["holyshit-recon", "--target", target,
                   "--domain", domain or (url or "CHANGE.ME")],
@@ -1809,8 +1811,8 @@ def _planner_directive(target, url=None, domain=None):
                  "confirmed findings priced for the business verdict",
                  "crown rows with classes + pricing",
                  ["counts, never corpora"])
-    # 10. the war report
-    if "war-report" not in done_ids and ledger:
+    # 10. the war report — every engagement closes with the joint deliverable
+    if "war-report" not in done_ids:
         return d("war-report", "reporting", "spy", "report",
                  ["report", "--target", target],
                  "every engagement closes with the joint deliverable",
@@ -2022,18 +2024,22 @@ def cmd_loop(args):
 
 
 def _autopilot_argv(dv):
-    """Kernel directive ids → the REAL engine argv (own processes, real states)."""
+    """Kernel directive ids → the REAL engine argv (own processes, real states).
+    Engines always run via sys.executable — script exec-bits are not a given."""
     t = dv["target"]
     u = dv.get("url")
     dm = dv.get("domain") or u or t
     sm = str(Path(__file__).resolve())
+    lab = u and _is_lab(u)
     m = {
         "scope-init": [sm, "scope", "init", "--engagement", t,
                        "--in-scope", dm],
         "barbican-posture": [str(SEC / "barbican/scripts/barbican.py"),
-                             "posture", "--target", t, "--vantage", "direct"],
-        "holyshit-recon": [str(SEC / "holyshit-mode/scripts/finder.py"),
-                           "recon", "--domain", dm],
+                             "posture", "--target", t,
+                             "--vantage", "lab" if lab else "vm",
+                             "--alias", f"op-{t}"],
+        "holy-recon": [str(SEC / "holyshit-mode/scripts/finder.py"),
+                       "recon", "--domain", dm],
         "undercroft-run": [str(SEC / "undercroft/scripts/undercroft.py"),
                            "run", "--target", t, "--url", u, "--domain", dm],
         "testers-run": [sm, "testers", "--target", t, "--url", u],
@@ -2051,7 +2057,10 @@ def _autopilot_argv(dv):
                            "--proof", "autopilot ledger pass"],
         "war-report": [sm, "report", "--target", t],
     }
-    return m.get(dv["directive_id"])
+    argv = m.get(dv["directive_id"])
+    if argv is None:
+        return None
+    return [sys.executable] + [str(a) for a in argv]
 
 
 # ════════════════════════════════════════════════════════════════════════════

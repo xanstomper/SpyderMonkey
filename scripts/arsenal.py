@@ -36,7 +36,7 @@ from urllib.parse import urlsplit
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "4.0.0"
+VERSION = "5.0.0"
 
 # tool → (capability, canon classes it feeds, plan line, args builder)
 ARSENAL = {
@@ -82,10 +82,57 @@ ARSENAL = {
     "curl":      ("http fetch", ("web",),
                   "header/body fetch (always present)",
                   lambda t, extra=None: ["-sSI", "-m", "10", t]),
+    # v5 — the seven new executors (uniform builder signatures, scheme-aware)
+    "ffuf":      ("content discovery", ("web", "harvest"),
+                  "dir fuzz with autofilter (needs a wordlist)",
+                  lambda t, extra=None: ["-u", t.rstrip("/") + "/FUZZ", "-w",
+                                         str(extra or "/usr/share/wordlists/dirb/common.txt"),
+                                         "-mc", "all", "-ac", "-s"]),
+    "naabu":     ("fast port scan", ("network", "services"),
+                  "top-1000 tcp syn scan",
+                  lambda t, extra=None: ["-host", t, "-top-ports", "1000", "-silent"]),
+    "amass":     ("passive subdomain enum", ("dns", "domtake"),
+                  "passive-only osint subdomain discovery",
+                  lambda t, extra=None: ["enum", "-passive", "-d", t]),
+    "katana":    ("crawler/url discovery", ("web", "api"),
+                  "depth-3 crawl, urls out",
+                  lambda t, extra=None: ["-u", t, "-d", "3", "-silent"]),
+    "dalfox":    ("xss scanner", ("web", "xss"),
+                  "documented-PoC xss parameter scan",
+                  lambda t, extra=None: ["url", t, "--no-color", "--no-banner", "-silence"]),
+    "tlsx":      ("tls posture", ("crypto", "config"),
+                  "cert/san/cn grab",
+                  lambda t, extra=None: ["-u", t, "-san", "-cn", "-silent"]),
+    "gau":       ("known-url collection", ("web", "harvest"),
+                  "passive url corpus (wayback/otx/otx)",
+                  lambda t, extra=None: [t]),
 }
 
-TAKES_EXTRA = {"nuclei", "gobuster", "testssl", "nikto", "masscan"}
-HTTP_TOOLS = {"curl", "httpx", "nuclei", "gobuster", "nikto", "whatweb", "wafw00f"}
+# v5 — the chains: stages feed each other (subfinder's domains become dnsx's
+# input, katana's urls become dalfox's strikes). Every stage is scope-gated.
+CHAINS = {
+    "recon": ["subfinder", "dnsx", "httpx", "nuclei"],
+    "web":   ["katana", "gau", "dalfox", "ffuf", "nikto"],
+    "tls":   ["tlsx", "testssl"],
+    "net":   ["naabu", "nmap"],
+}
+FEED_PARSE = {
+    "subfinder": lambda out: [l.strip() for l in out.splitlines() if l.strip() and "." in l],
+    "amass":     lambda out: [l.strip() for l in out.splitlines() if l.strip() and "." in l],
+    "dnsx":      lambda out: [l.strip() for l in out.splitlines() if l.strip() and "." in l],
+    "naabu":     lambda out: [l.split(":")[0] for l in out.splitlines()
+                              if l.strip() and ":" in l],
+    "httpx":     lambda out: [l.split()[0] for l in out.splitlines() if l.strip()],
+    "katana":    lambda out: [l.strip() for l in out.splitlines()
+                              if l.strip().startswith("http")],
+    "gau":       lambda out: [l.strip() for l in out.splitlines()
+                              if l.strip().startswith("http")],
+}
+FEED_CAP = 50
+
+TAKES_EXTRA = {"nuclei", "gobuster", "testssl", "nikto", "masscan", "ffuf"}
+HTTP_TOOLS = {"curl", "httpx", "nuclei", "gobuster", "nikto", "whatweb", "wafw00f",
+              "ffuf", "katana", "dalfox", "tlsx", "gau"}
 CANON_KW = {
     "BOUNDARY": ("idor", "unauthorized access", "403"),
     "REPLAY": ("replay", "idempoten"),
@@ -214,7 +261,102 @@ def cmd_plan(args):
     return 0 if ok else 1
 
 
+def cmd_run_chain(args, inv, why, ok):
+    """v5 CHAIN EXECUTION — stages feed each other. subfinder's domains become
+    dnsx's input; katana/gau's urls become dalfox's strikes. Every stage is
+    scope-gated (the chain refuses as one)."""
+    stages = [t for t in CHAINS[args.chain] if t in inv]
+    skipped = [t for t in CHAINS[args.chain] if t not in inv]
+    started = datetime.now(timezone.utc).isoformat()
+    timeout = max(5, min(int(getattr(args, "timeout", 300) or 300), 3600))
+    rows, findings = [], []
+    targets = [args.target]
+    if not getattr(args, "json", False):
+        print(f"═══ ARSENAL CHAIN '{args.chain}' — {args.target} (scope: {why}) ═══")
+        print(f"  stages: {' → '.join(stages)}"
+              + (f"  (skipped: {', '.join(skipped)})" if skipped else ""))
+    for tool in stages:
+        cap, classes, plan, builder = ARSENAL[tool]
+        stage_out = []
+        for tgt in targets[:FEED_CAP]:
+            t2 = _url(tgt) if tool in HTTP_TOOLS else _host(tgt)
+            argv = [tool] + builder(t2, args.wordlist)
+            row = {"tool": tool, "target": tgt, "argv": argv, "rc": None,
+                   "hits": [], "output": ""}
+            if getattr(args, "dry_run", False):
+                row["skipped"] = "dry-run"
+                rows.append(row)
+                if not getattr(args, "json", False):
+                    print(f"  ▸ [dry] {tool:10s} ← {tgt[:40]}")
+                continue
+            try:
+                r = subprocess.run(argv, capture_output=True, text=True,
+                                   timeout=timeout)
+                out = (r.stdout + r.stderr).strip()
+                hits = [cls for cls, kws in CANON_KW.items()
+                        if any(k in out.lower() for k in kws)]
+                row.update({"rc": r.returncode, "hits": hits, "output": out[:12000]})
+                findings.extend({"tool": tool, "class": c, "target": t2}
+                                for c in hits)
+                stage_out.append(out)
+                if not getattr(args, "json", False):
+                    first = out.splitlines()[0][:50] if out else "(no output)"
+                    print(f"  ✓ {tool:10s} ← {tgt[:36]:36s} rc={r.returncode}"
+                          f" canon={len(hits)}  {first}")
+            except subprocess.TimeoutExpired:
+                row.update({"rc": 124, "error": f"timeout {timeout}s"})
+                if not getattr(args, "json", False):
+                    print(f"  ⚠ {tool:10s} timeout — stage continues")
+            except Exception as e:
+                row.update({"rc": 1, "error": str(e)})
+                if not getattr(args, "json", False):
+                    print(f"  ✗ {tool:10s} {e}")
+            rows.append(row)
+        feed = FEED_PARSE.get(tool)
+        if feed and not getattr(args, "dry_run", False):
+            new = []
+            for out in stage_out:
+                new += feed(out)
+            targets = [t for t in dict.fromkeys(new) if t][:FEED_CAP]
+            if not getattr(args, "json", False):
+                print(f"    ↳ feeds {len(targets)} target(s) into the next stage")
+    payload = {"version": VERSION, "target": args.target, "chain": args.chain,
+               "scope_ok": ok, "scope": why, "dry_run": bool(args.dry_run),
+               "ran": sum(1 for r in rows if r.get("rc") is not None),
+               "stages": rows, "findings": findings, "started": started}
+    _record(args.target, {"at": started, "chain": args.chain, "scope": why,
+                          "ran": payload["ran"],
+                          "hits": [f["class"] for f in findings]})
+    if getattr(args, "out", None):
+        result = {
+            "step": 0, "directive_id": f"arsenal-chain-{args.chain}",
+            "exit": 0 if payload["ran"] else 1,
+            "findings": [{"title": f"{f['tool']} {f['class']}-class candidate",
+                          "cls": f["class"], "asset": f["target"],
+                          "severity": "low",
+                          "proof": (f"arsenal {f['tool']} output matched"
+                                    f" {f['class']} signatures — needs a 3-gate"
+                                    f" confirmation (hypothesis-grade)")}
+                         for f in findings],
+            "context": {}, "notes": f"arsenal v5 chain '{args.chain}': "
+                         f"{payload['ran']} stage run(s) · feeds: {CHAINS[args.chain]}"}
+        Path(args.out).write_text(json.dumps(result, indent=2) + "\n")
+        payload["out"] = args.out
+    if getattr(args, "json", False):
+        _emit(args, payload)
+    else:
+        print(f"═══ chain '{args.chain}': {payload['ran']} stage run(s) · "
+              f"{len(findings)} canon candidate(s) · walls intact ═══")
+    return 0 if payload["ran"] or payload["dry_run"] else 1
+
+
 def cmd_run(args):
+    if getattr(args, "chain", None):
+        ok, why = scope_verdict(args.target, getattr(args, "scope_file", None))
+        if not ok:
+            print(f"✗ CHAIN REFUSED — scope gate: {why}", file=sys.stderr)
+            return 1
+        return cmd_run_chain(args, installed(), why, ok)
     ok, why = scope_verdict(args.target, getattr(args, "scope_file", None))
     if not ok:
         print(f"✗ EXECUTION REFUSED — scope gate: {why}", file=sys.stderr)
@@ -314,8 +456,10 @@ def cmd_verify(args):
     for want in ("list", "plan", "run", "verify"):
         if want not in help_out:
             bad.append(want)
-    if len(ARSENAL) < 13:
+    if len(ARSENAL) < 20:
         bad.append("arsenal-inventory")
+    if set(CHAINS) != {"recon", "web", "tls", "net"}:
+        bad.append("chains")
     with tempfile.TemporaryDirectory(prefix="arsenal-verify-") as td:
         absent = str(Path(td) / "no-scope.json")
         r = subprocess.run([sys.executable, str(self), "run", "--target",
@@ -336,11 +480,24 @@ def cmd_verify(args):
                 bad.append("json-list")
         except Exception:
             bad.append("json-list")
+        # v5: a lab dry-run chain must emit a kernel-schema result via --out
+        outf = Path(td) / "chain-result.json"
+        r = subprocess.run([sys.executable, str(self), "run", "--target",
+                            "http://127.0.0.1:9", "--chain", "net", "--dry-run",
+                            "--out", str(outf)], capture_output=True, text=True)
+        try:
+            res = json.loads(outf.read_text())
+            for k in ("step", "exit", "findings", "context", "notes",
+                      "directive_id"):
+                if k not in res:
+                    bad.append(f"chain-out {k}")
+        except Exception:
+            bad.append("chain-out file")
     if bad:
         print(f"✗ ARSENAL verify FAILED: {bad}")
         return 1
-    print("✓ ARSENAL verify: compile · commands · 13 tools · shared-scope refusal"
-          " · JSON surface — ALL PASS")
+    print(f"✓ ARSENAL verify: compile · commands · {len(ARSENAL)} tools · "
+          "4 chains · shared-scope refusal · kernel --out schema — ALL PASS")
     return 0
 
 
@@ -380,8 +537,10 @@ def main(argv=None):
     r = sub.add_parser("run", help="execute (scope-gated)")
     r.add_argument("--target", required=True)
     r.add_argument("--only", help="comma-separated tool list")
+    r.add_argument("--chain", help="execute a feeding chain: recon | web | tls | net")
+    r.add_argument("--out", help="write the kernel result-schema JSON (spydermonkey absorb ingests it)")
     r.add_argument("--dry-run", action="store_true")
-    r.add_argument("--wordlist", help="gobuster wordlist path")
+    r.add_argument("--wordlist", help="gobuster/ffuf wordlist path")
     r.add_argument("--timeout", type=int, default=300)
     r.add_argument("--output-dir")
     sub.add_parser("verify", help="self-check")

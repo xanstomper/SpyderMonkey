@@ -1,0 +1,44 @@
+# 2026-11-03 3AM-shinjitsu sweep (P3 prepared-exploit + P5 closeout) — ios / unauth
+
+- source canon: `holyshit-mode/case-packdraw-com.md`
+- base technique: `holyshit-mode-case-packdraw-com-2026-11-03-3am-shinjitsu-swe.md`
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- context: **ios** · auth **unauth** · chain role **pivot**
+
+## Context
+
+- platform: the check often lives client-side — runtime inspection, MASTG/MASVS methodology
+- auth state: no credential material — the classic differential applies as-is; absent auth = the authn-bypass class
+
+## The technique
+
+- **CVE-2025-29927 (Next middleware bypass): BLOCKED** — identical statuses with/without
+  `x-middleware-subrequest` on /en-us/account + 7 route guesses; Vercel platform fix.
+- **_next/image optimizer SSRF: BLOCKED** — 400 on any non-allow-listed host (allow-list =
+  imagekit etc.; Vercel metadata-IP block upstream).
+- **postMessage surface: none** in loaded client chunks.
+- **Breach-context brief (cartel class):** no hack/leak of PackDraw; but no gambling
+  license; federal litigation (MN 25-cv-4128, Sept-2026 order) alleges PackDraw built
+  with misappropriated Partnership code (The House/WowDAO/Packs.com/Packs Protocol
+  brands) delivered into Roobet orbit; PDCC Services Ltd entity; minor-recruitment
+  suits MN+NY; $500K-impersonation laundering suit defendant; ~$259M deposits by
+  Apr-2025; Trustpilot 3.9/5 with unauthorized-charge + odds-tightening complaints.
+- **§8 coverage verdict:** all 10 classes probed or N/A for the unauth plane; every
+  finding ledgered; remaining account-plane tests = operator ask (seed-rotation 2-open
+  test, cross-user pusher with session, create-pack EV, battle hash verify).
+
+## Probe adjustment (ios × unauth)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)
