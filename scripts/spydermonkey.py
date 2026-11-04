@@ -96,7 +96,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "5.0.0"
+VERSION = "5.1.0"
 SCHEMA = 4
 
 
@@ -595,7 +595,7 @@ def cmd_verify(args):
                  "ledger", "gate", "chain", "context", "testers", "coverage",
                  "report", "relay", "campaign", "mandates", "next", "selftest",
                  "crawl", "takeover", "capabilities", "protect", "train",
-                 "memory", "version"):
+                 "memory", "watch", "serve", "version"):
         if want not in help_out:
             bad.append(f"subcommand {want}")
     mandate = self.parent.parent / "references" / "mandate.md"
@@ -4043,6 +4043,10 @@ def cmd_memory(args):
             print(f"▸ estate memory wiped: {args.target}")
         return 0
     if not mem:
+        mem = {"target": args.target, "classes": [], "history": []}
+        if _json_mode(args):
+            _emit(args, mem)
+            return 0
         print(f"· no estate memory for '{args.target}' — first contact (train/loop builds it)")
         return 0
     if _json_mode(args):
@@ -4061,8 +4065,14 @@ def cmd_train(args):
     ordering) forever. This is how spydermonkey gets better every run."""
     import importlib.util
     dojo = Path.home() / ".hermes/skills/security/dojo/scripts/dojo.py"
-    repo_dojo = Path(__file__).resolve().parent.parent.parent.parent / "dojo/scripts/dojo.py"
-    dojo = dojo if dojo.exists() else repo_dojo
+    repo_dojo = Path(__file__).resolve().parent.parent.parent / "dojo/scripts/dojo.py"
+    env_dojo = os.environ.get("SM_DOJO")  # the smoke pins the range for isolated HOMEs
+    for cand in (env_dojo, str(dojo), str(repo_dojo)):
+        if cand and Path(cand).exists():
+            dojo = Path(cand)
+            break
+    else:
+        dojo = repo_dojo
     if not dojo.exists():
         print("✗ dojo engine not on disk — training needs the range", file=sys.stderr)
         return 1
@@ -4076,7 +4086,7 @@ def cmd_train(args):
     pr = _priors()
     port = args.port
     rows = []
-    print(f"═══ SPYDERMONKEY TRAINING — {len(classes)} class(es) × self-play ═══")
+    print(f"═══ SPYDERMONKEY TRAINING — {len(classes)} class(es) × self-play ═══") if not _json_mode(args) else None
     for cls in classes:
         spec_c = dj.CLASSES[cls]
         probe = spec_c["probe"]
@@ -4103,12 +4113,19 @@ def cmd_train(args):
         d["hits"] += hit
         d["runs"] += 1
         rows.append((cls, hit, sorted(got)))
-        print(f"  {'✓' if hit else '✗'} {cls:10s} → testers confirmed: "
-              f"{', '.join(sorted(got)) or 'nothing'}")
+        if not _json_mode(args):
+            print(f"  {'✓' if hit else '✗'} {cls:10s} → testers confirmed: "
+                  f"{', '.join(sorted(got)) or 'nothing'}")
     MEM_ROOT.mkdir(parents=True, exist_ok=True)
     (MEM_ROOT / "spydermonkey-priors.json").write_text(
         json.dumps(pr, indent=2) + "\n")
     hits = sum(h for _, h, _ in rows)
+    if _json_mode(args):
+        _emit(args, {"target": args.target, "rows": [
+            {"cls": c, "hit": h, "confirmed": g} for c, h, g in rows],
+            "priors": pr, "hit_rate": round(hits / max(1, len(rows)), 2),
+            "priors_file": str(MEM_ROOT / "spydermonkey-priors.json")})
+        return 0
     print(f"═══ training pass: {hits}/{len(rows)} class(es) confirmed by the testers "
           f"· priors written ({MEM_ROOT / 'spydermonkey-priors.json'}) ═══")
     print("  the planner now orders probes by what works — the family gets sharper every run")
@@ -4116,10 +4133,115 @@ def cmd_train(args):
 
 
 def _selfplay_strike(target, url):
-    """Run the differential testers against one replica probe (in-process)."""
+    """Run the differential testers against one replica probe (in-process, silent)."""
+    import io, contextlib
     args = type("A", (), {"target": target, "url": [url], "demo": False,
-                          "json": True, "timeout": 6})()
-    return cmd_testers(args)
+                          "json": False, "timeout": 6})()
+    with contextlib.redirect_stdout(io.StringIO()):
+        return cmd_testers(args)
+
+
+def cmd_watch(args):
+    """THE UNATTENDED RUNNER — the campaign daemon: every cycle = one kernel
+    loop pass + the war report + estate memory + an optional notify command.
+    Re-engages the SAME estate using its memory (the growth loop, on a clock)."""
+    print(f"═══ SPYDERMONKEY WATCH — '{args.target}' every {args.every_mins} min "
+          f"(max {args.max_cycles or '∞'} cycle(s)) ═══")
+    sm = str(Path(__file__).resolve())
+    cycle = 0
+    while True:
+        cycle += 1
+        print(f"\n▸ cycle {cycle}: the loop pass")
+        r = subprocess.run([sys.executable, sm, "loop", "--target", args.target,
+                            "--url", args.url, "--domain", args.domain,
+                            "--max-steps", str(args.max_steps)],
+                           timeout=args.cycle_timeout * 60)
+        if r.returncode not in (0, 5):
+            print(f"  ⚠ loop exited {r.returncode} — watch continues (the walls held)")
+        subprocess.run([sys.executable, sm, "report", "--target", args.target])
+        mem = _estate_memory(args.target)
+        print(f"  ▸ estate memory: {', '.join(mem.get('classes', [])) or 'nothing confirmed yet'}")
+        if args.notify_cmd:
+            subprocess.run(args.notify_cmd.split() +
+                           [f"spydermonkey watch cycle {cycle} done: "
+                            f"{len(_ledger_load(args.target))} findings"], timeout=60)
+        if args.max_cycles and cycle >= args.max_cycles:
+            print(f"═══ watch complete: {cycle} cycle(s) ═══")
+            return 0
+        time.sleep(args.every_mins * 60)
+
+
+def cmd_serve(args):
+    """THE WAR BOARD — the family's localhost dashboard: campaigns, the ledger,
+    chains, the 13-phase board, kernel steps, estate memory. Bound to 127.0.0.1
+    ONLY (the wall: the board never faces the network)."""
+    from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
+
+    class Board(BaseHTTPRequestHandler):
+        def log_message(self, *a):
+            pass
+
+        def _send(self, code, body, ctype="text/html"):
+            b = body.encode()
+            self.send_response(code)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Length", str(len(b)))
+            self.end_headers()
+            self.wfile.write(b)
+
+        def do_GET(self):
+            if self.path == "/":
+                camp_root = Path.home() / ".redteam" / "campaigns"
+                camps = ([d.name for d in camp_root.iterdir() if d.is_dir()]
+                         if camp_root.exists() else [])
+                rows = "".join(f'<a href="/{c}">{c}</a><br>' for c in camps) or "no campaigns"
+                self._send(200, f"<html><head><title>SPYDERMONKEY</title></head>"
+                                f"<body style='background:#0d1117;color:#e6edf3;"
+                                f"font-family:monospace'><h1>🕷 SPYDERMONKEY — war board</h1>"
+                                f"<h3>{len(camps)} campaign(s)</h3>{rows}</body></html>")
+                return
+            parts = self.path.strip("/").split("/")
+            target = parts[0]
+            if len(parts) == 2 and parts[1] == "json":
+                rows = _ledger_load(target)
+                self._send(200, json.dumps({"target": target, "findings": rows,
+                                            "chains": _load_json(
+                                                _camp(target) / "chain-state.json", {}),
+                                            "phases": _load_json(
+                                                _camp(target) / "phases-state.json", {}),
+                                            "kernel": _kernel_state(target),
+                                            "estate": _estate_memory(target)},
+                                           indent=2), "application/json")
+                return
+            rows = _ledger_load(target)
+            chains = _load_json(_camp(target) / "chain-state.json", {}).get("chains", [])
+            mem = _estate_memory(target)
+            tr = "".join(f"<tr><td>{r['id']}</td><td>{r['cls']}</td>"
+                         f"<td style='color:{'#3fb950' if r['status'] == 'CONFIRMED' else '#d29922'}'>"
+                         f"{r['status']}</td><td>{r['severity']}</td>"
+                         f"<td>{r['title'][:60]}</td></tr>" for r in rows)
+            ch = "".join(f"<li>{c['id']} [{c['pattern']}] {c['severity']} — "
+                         f"{c['impact'][:80]}</li>" for c in chains) or "<li>—</li>"
+            self._send(200,
+                       f"<html><head><title>{target} — war board</title></head>"
+                       f"<body style='background:#0d1117;color:#e6edf3;font-family:monospace'>"
+                       f"<h1>🕷 {target} — war board</h1>"
+                       f"<h2>ledger ({len(rows)})</h2><table border=1 cellpadding=4>"
+                       f"<tr><th>id</th><th>class</th><th>status</th><th>sev</th>"
+                       f"<th>title</th></tr>{tr}</table>"
+                       f"<h2>chains ({len(chains)})</h2><ul>{ch}</ul>"
+                       f"<h2>estate memory</h2><p>{', '.join(mem.get('classes', [])) or '—'}</p>"
+                       f"<p><a href='/{target}/json' style='color:#58a6ff'>json</a></p>"
+                       f"</body></html>")
+
+    srv = ThreadingHTTPServer(("127.0.0.1", args.port), Board)
+    print(f"═══ SPYDERMONKEY WAR BOARD — http://127.0.0.1:{args.port} (localhost only) ═══")
+    try:
+        srv.serve_forever()
+    except KeyboardInterrupt:
+        srv.shutdown()
+        print("▸ board closed")
+    return 0
 
 
 def _estate_write_from_ledger(target):
@@ -4242,6 +4364,7 @@ _JS_PATH_RE = re.compile(
     r"""(?:fetch\(|axios[.(]|url\s*[:=]\s*|api\s*[:=]\s*)["'`](/[a-zA-Z0-9_\-./]{2,60})["'`]""")
 _FORM_INPUT_RE = re.compile(
     r"<input[^>]+name=[\"']([a-zA-Z0-9_\-]{1,40})[\"']", re.I)
+_FORM_BLOCK_RE = re.compile(r"<form\b([^>]*)>((?:(?!</form>).)*)</form>", re.I | re.S)
 _A_HREF_RE = re.compile(r'href=[\'"]([^#\'"]{2,200})[\'"]', re.I)
 _FORM_ACTION_RE = re.compile(r'<form[^>]+action=[\'"]([^\'"]{2,200})[\'"]', re.I)
 _PAGE_CAP = 20
@@ -4259,6 +4382,7 @@ def cmd_crawl(args):
     from urllib.parse import urlsplit, urljoin, parse_qsl, urlencode
     origin = "{0.scheme}://{0.netloc}".format(urlsplit(base))
     seen, queue, mined = {base}, [base], []
+    post_forms = []
     pages = 0
     while queue and pages < _PAGE_CAP:
         url = queue.pop(0)
@@ -4276,14 +4400,21 @@ def cmd_crawl(args):
             if nxt.startswith(origin) and nxt not in seen and len(seen) < _PAGE_CAP * 3:
                 seen.add(nxt)
                 queue.append(nxt)
-        # forms → endpoints with param skeletons
-        for action in _FORM_ACTION_RE.findall(body):
-            mined.append((urljoin(url, action.split("?")[0]),
-                          _FORM_INPUT_RE.findall(
-                              body[body.find(action):body.find(action) + 600])))
+        # forms → endpoints with param skeletons (v5.1: the WHOLE form block —
+        # method + every input — so POST surfaces feed the mass-assign tester)
+        for fmatch in _FORM_BLOCK_RE.finditer(body):
+            open_tag, inner = fmatch.group(1), fmatch.group(2)
+            action_m = re.search(r"action=[\"']([^\"']{2,200})[\"']", open_tag)
+            action = action_m.group(1) if action_m else url
+            method_m = re.search(r"method=[\"']([a-z]+)[\"']", open_tag, re.I)
+            method = (method_m.group(1) if method_m else "get").lower()
+            fields = re.findall(r"name=[\"']([a-zA-Z0-9_\-]{1,40})[\"']", inner)
+            mined.append((urljoin(url, action.split("?")[0]), fields))
+            if method == "post":
+                post_forms.append(urljoin(url, action.split("?")[0]))
         # query params already on visited urls
         for k, _ in parse_qsl(sp.query, keep_blank_values=True):
-            mined.append((url, [(k, "")]))
+            mined.append((url, [k]))
         # JS api-path mining
         for m in _JS_PATH_RE.findall(body):
             mined.append((urljoin(url, m), []))
@@ -4295,7 +4426,7 @@ def cmd_crawl(args):
             continue
         params = list(dict.fromkeys(
             [k for k, _ in parse_qsl(sp.query, keep_blank_values=True)]
-            + [n for n, _ in inputs]))
+            + [n if isinstance(n, str) else n[0] for n in inputs]))
         key = sp.path
         eps[key] = sorted(set(eps.get(key, []) + params))
     endpoint_rows = []
@@ -4316,9 +4447,11 @@ def cmd_crawl(args):
     _os.replace(tmp, camp / "context.json")
     (camp / "crawl-state.json").write_text(json.dumps(
         {"target": args.target, "base": base, "pages": pages,
-         "endpoints": endpoint_rows, "depth": depth, "at": _now()}, indent=2) + "\n")
+         "endpoints": endpoint_rows, "post_forms": sorted(set(post_forms)),
+         "depth": depth, "at": _now()}, indent=2) + "\n")
     payload = {"target": args.target, "base": base, "pages_crawled": pages,
                "urls_seen": len(seen), "endpoints": len(endpoint_rows),
+               "post_forms": len(set(post_forms)),
                "params": sorted({p for e in endpoint_rows for p in e["params"]}),
                "context_updated": True}
     if json_mode:
@@ -5458,9 +5591,12 @@ def _build_parser() -> argparse.ArgumentParser:
     tk = sub.add_parser("takeover", help="THE TAKEOVER ENGINE: dangling CNAME fingerprints (read-only, NO-GAIN)")
     tk.add_argument("--target", required=True)
     tk.add_argument("--domain", required=True)
+    tk.add_argument("--json", action="store_true")
     tk.add_argument("--subdomains", help="file of subdomains (else the finder state + the domain)")
     cp = sub.add_parser("capabilities", help="THE MIRROR OF SELF: live-introspected capability registry")
+    cp.add_argument("--json", action="store_true")
     pt = sub.add_parser("protect", help="SELF-PROTECTION: operator posture · artifact leak scan · wipe proof")
+    pt.add_argument("--json", action="store_true")
     pt.add_argument("action", choices=("posture", "scan"))
     pt.add_argument("--target", help="one campaign (or --all-campaigns)")
     pt.add_argument("--all-campaigns", dest="all_campaigns", action="store_true")
@@ -5468,9 +5604,25 @@ def _build_parser() -> argparse.ArgumentParser:
     tr.add_argument("--target", default="training")
     tr.add_argument("--classes", help="comma list (default: every dojo class)")
     tr.add_argument("--port", type=int, default=8850)
+    tr.add_argument("--json", action="store_true")
     mm = sub.add_parser("memory", help="ESTATE MEMORY: what the family knows about a target")
     mm.add_argument("--target", required=True)
     mm.add_argument("--forget", action="store_true")
+    mm.add_argument("--json", action="store_true")
+    wt = sub.add_parser("watch", help="THE UNATTENDED RUNNER: loop → report → memory, on a clock")
+    wt.add_argument("--target", required=True)
+    wt.add_argument("--url", required=True)
+    wt.add_argument("--domain", required=True)
+    wt.add_argument("--every-mins", dest="every_mins", type=int, default=30)
+    wt.add_argument("--max-cycles", dest="max_cycles", type=int, default=0, help="0 = until Ctrl-C")
+    wt.add_argument("--max-steps", dest="max_steps", type=int, default=12)
+    wt.add_argument("--cycle-timeout", dest="cycle_timeout", type=int, default=10)
+    wt.add_argument("--notify-cmd", dest="notify_cmd", help='external notifier, e.g. "notify-send"')
+
+    # ── serve: the localhost war board ────────────────────────────────────────
+    sv = sub.add_parser("serve", help="THE WAR BOARD: localhost dashboard (ledger · chains · phases · kernel)")
+    wt.add_argument("--json", action="store_true")
+    sv.add_argument("--port", type=int, default=9644)
 
     ts = sub.add_parser("testers", help="8 parallel sub-testers over the session context")
     ts.add_argument("--target", required=True)
@@ -5628,6 +5780,10 @@ def _dispatch(a) -> int:
         return cmd_train(a)
     if a.cmd == "memory":
         return cmd_memory(a)
+    if a.cmd == "watch":
+        return cmd_watch(a)
+    if a.cmd == "serve":
+        return cmd_serve(a)
     if a.cmd == "coverage":
         return cmd_coverage(a)
     if a.cmd == "report":

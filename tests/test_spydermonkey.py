@@ -122,7 +122,7 @@ class CliTests(unittest.TestCase):
 
     def test_version_and_tree(self):
         v = self.j(["version", "--json"])
-        self.assertEqual(v["version"], "5.0.0")
+        self.assertEqual(v["version"], "5.1.0")
         self.assertEqual(v["schema"], 4)
         t = self.j(["tree", "--json"])
         self.assertEqual(len(t["mandates"]), 10)
@@ -244,7 +244,7 @@ class CliTests(unittest.TestCase):
         r = run([str(SCRIPTS / "mcp_server.py"), "--test"], self.env)
         self.assertEqual(r.returncode, 0, r.stderr)
         data = json.loads(r.stdout)
-        self.assertEqual(data["version"], "5.0.0")
+        self.assertEqual(data["version"], "5.1.0")
         self.assertGreaterEqual(len(data["tools"]), 43)
         self.assertIn("skilltree_verify", data["tools"])
 
@@ -261,7 +261,7 @@ class CliTests(unittest.TestCase):
         lines = [json.loads(l) for l in r.stdout.splitlines() if l.strip()]
         self.assertEqual(len(lines), 2)
         self.assertGreaterEqual(len(lines[0]["result"]["tools"]), 43)
-        self.assertIn("5.0.0", json.dumps(lines[1]["result"]))
+        self.assertIn("5.1.0", json.dumps(lines[1]["result"]))
 
 
 if __name__ == "__main__":
