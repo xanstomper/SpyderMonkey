@@ -247,7 +247,8 @@ exercised, not asserted.
 - `gate --target T --url U --attack-query Q [--confirm TOK] [--prove SPY-NNN]` — the 3-gate confirmation engine
 - `chain detect|plan --target T [--id CH-NNN]` — the 8-pattern chain detection engine
 - `context set|show --target T [--kind K --value V]` — session context (endpoints · roles · credentials · functions)
-- `testers --target T --url U [--url U2 …] | --demo` — the 8 parallel sub-testers
+- `testers --target T --url U [--url U2 …] | --demo` — the 8 parallel sub-testers over the session context — **two-role AUTHZ differential**: the context's first credential is the privileged baseline, the second is the low-priv attack; a different 200 on the low role IS the bypass proof
+- `crawl --target T --url U [--depth N]` — **THE SURFACE ENGINE** (HackBrowser-equivalent, stdlib): same-origin BFS crawl mining links · forms · query params · JS `fetch/axios` API paths → the session context AUTO-FILLS — the testers strike what it finds, no hand-fed urls
 - `coverage --target T` — coverage matrix + gap list
 - `report --target T [--format md|json|sarif] [--output F]` — the joint war report (campaign dir by default)
 - `relay init|list|exec|remove` — remote execution nodes (Ed25519 ssh pairs, scope-gated)
