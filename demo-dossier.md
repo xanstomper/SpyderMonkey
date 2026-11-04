@@ -1,6 +1,6 @@
 # HOLYSHIT DOSSIER — demo
 
-assembled: 2026-11-04T07:17:36.860888+00:00
+assembled: 2026-11-04T07:26:11.981328+00:00
 
 ## Case canon
 - case-packdraw-com.md — Case: packdraw.com — Vercel/Next.js pack-opening platform (day-1 recon) (5 mentions)

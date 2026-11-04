@@ -43,6 +43,7 @@ FAMILY = {
     "shukaku": (SEC / "shukaku/scripts/shukaku.py", "The Harvester — post-compromise catalog · price · disclose (the P5 impact layer)"),
     "shiki": (SEC / "shiki/scripts/shiki.py", "The Command — conducts the whole family as one assault"),
     "kage": (SEC / "kage/scripts/kage.py", "The Mirror — a detection rule for every confirmed attack (the purple layer)"),
+    "dojo": (SEC / "dojo/scripts/dojo.py", "The Range — buildable vulnerable replicas of every technique class (where the family trains)"),
 }
 
 ROUTES = [
@@ -57,10 +58,11 @@ ROUTES = [
     ("ladder", "kaisha"), ("climb", "kaisha"), ("deepen", "kaisha"), ("privesc", "kaisha"),
     ("lateral", "kaisha"), ("foothold", "kaisha"),
     ("detect", "kage"), ("mirror", "kage"), ("detection", "kage"), ("purple", "kage"), ("defend", "kage"), ("sigma", "kage"),
+    ("train", "dojo"), ("range", "dojo"), ("replica", "dojo"), ("lab", "dojo"), ("lesson", "dojo"),
     ("everything", "shiki"), ("full assault", "shiki"), ("together", "shiki"), ("one command", "shiki"),
 ]
 
-RELAY = ["barbican", "holyshit", "undercroft", "kairo", "3am", "kaisha", "shukaku", "kage"]
+RELAY = ["barbican", "holyshit", "undercroft", "kairo", "3am", "kaisha", "shukaku", "kage", "dojo"]
 
 # stem-matching exceptions: noun forms that must NOT trigger the verb keyword
 STEM_BLOCK = {"find": ("ings",)}
@@ -91,6 +93,7 @@ CMDS = {
     "shiki": "shiki assault --target <t> --url <u> --domain <d> [--bundle P] [--parallel] [--resume] [--close]",
     "kage": "kage mirror --target <t> && kage validate --target <t> && kage report --target <t>",
     "arsenal": "arsenal list && arsenal plan --target <t> && arsenal run --target <t>",
+    "dojo": "dojo catalog && dojo build --class <C> --port <p>",
 }
 
 
@@ -193,7 +196,7 @@ def cmd_verify(args):
             print("    the dispatcher needs the family on disk — clone each repo into")
             print("    ~/.hermes/skills/security/<name>/ (see README → Quickstart)")
         return 1
-    print("✓ SPYDERMONKEY verify: all nine family engines — ALL PASS")
+    print("✓ SPYDERMONKEY verify: all ten family engines — ALL PASS")
     return 0
 
 
@@ -388,6 +391,7 @@ FLEET_BRIEFS = {
     "undercroft": ("THE DESCENT",  lambda a: ["probe"]),
     "3am":        ("THE PERFORMER", lambda a: ["verify"]),
     "kage":       ("THE MIRROR",   lambda a: ["mirror", "--target", a["target"]]),
+    "dojo":       ("THE RANGE",    lambda a: ["catalog"]),
     "kairo":      ("THE SYNTH",    lambda a: ["verify"]),
     "kaisha":     ("THE LADDER",   lambda a: ["rungs", "--target", a["target"]]),
     "shukaku":    ("THE HARVESTER", lambda a: ["verify"]),
