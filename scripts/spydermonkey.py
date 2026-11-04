@@ -42,6 +42,7 @@ FAMILY = {
     "kaisha": (SEC / "kaisha/scripts/kaisha.py", "The Ladder — depth below the foothold (era-stack · privesc · lateral)"),
     "shukaku": (SEC / "shukaku/scripts/shukaku.py", "The Harvester — post-compromise catalog · price · disclose (the P5 impact layer)"),
     "shiki": (SEC / "shiki/scripts/shiki.py", "The Command — conducts the whole family as one assault"),
+    "kage": (SEC / "kage/scripts/kage.py", "The Mirror — a detection rule for every confirmed attack (the purple layer)"),
 }
 
 ROUTES = [
@@ -55,10 +56,11 @@ ROUTES = [
     ("disclose", "shukaku"), ("impact", "shukaku"),
     ("ladder", "kaisha"), ("climb", "kaisha"), ("deepen", "kaisha"), ("privesc", "kaisha"),
     ("lateral", "kaisha"), ("foothold", "kaisha"),
+    ("detect", "kage"), ("mirror", "kage"), ("detection", "kage"), ("purple", "kage"), ("defend", "kage"), ("sigma", "kage"),
     ("everything", "shiki"), ("full assault", "shiki"), ("together", "shiki"), ("one command", "shiki"),
 ]
 
-RELAY = ["barbican", "holyshit", "undercroft", "kairo", "3am", "kaisha", "shukaku"]
+RELAY = ["barbican", "holyshit", "undercroft", "kairo", "3am", "kaisha", "shukaku", "kage"]
 
 # stem-matching exceptions: noun forms that must NOT trigger the verb keyword
 STEM_BLOCK = {"find": ("ings",)}
@@ -87,6 +89,7 @@ CMDS = {
     "kaisha": "kaisha ladder --target <t> --host <h> --access <confirmed> && kaisha lateral --target <t> --from <h>",
     "shukaku": "shukaku ingest --target <t> --finding <id> --proof <ref> && shukaku reason --target <t> && shukaku hunt --target <t> [--live U] && shukaku crown … && shukaku feed --target <t> && shukaku report --target <t>",
     "shiki": "shiki assault --target <t> --url <u> --domain <d> [--bundle P] [--parallel] [--resume] [--close]",
+    "kage": "kage mirror --target <t> && kage validate --target <t> && kage report --target <t>",
 }
 
 
@@ -189,7 +192,7 @@ def cmd_verify(args):
             print("    the dispatcher needs the family on disk — clone each repo into")
             print("    ~/.hermes/skills/security/<name>/ (see README → Quickstart)")
         return 1
-    print("✓ SPYDERMONKEY verify: all eight family engines — ALL PASS")
+    print("✓ SPYDERMONKEY verify: all nine family engines — ALL PASS")
     return 0
 
 
@@ -383,6 +386,7 @@ FLEET_BRIEFS = {
     "holyshit":   ("THE FINDER",   lambda a: ["recon", "--domain", a["domain"]]),
     "undercroft": ("THE DESCENT",  lambda a: ["probe"]),
     "3am":        ("THE PERFORMER", lambda a: ["verify"]),
+    "kage":       ("THE MIRROR",   lambda a: ["mirror", "--target", a["target"]]),
     "kairo":      ("THE SYNTH",    lambda a: ["verify"]),
     "kaisha":     ("THE LADDER",   lambda a: ["rungs", "--target", a["target"]]),
     "shukaku":    ("THE HARVESTER", lambda a: ["verify"]),
