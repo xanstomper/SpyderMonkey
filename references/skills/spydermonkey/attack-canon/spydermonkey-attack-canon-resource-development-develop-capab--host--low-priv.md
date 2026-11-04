@@ -1,0 +1,33 @@
+# Resource Development Develop Capabilities (T1587) — host / low-priv
+
+- source canon: `spydermonkey/attack-canon.md`
+- base technique: `spydermonkey-attack-canon-resource-development-develop-capab.md`
+- bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
+- context: **host** · auth **low-priv** · chain role **final**
+
+## Context
+
+- platform: era-stack banner mapping (kaisha cve) before any rung
+- auth state: hold ONE low-priv principal; swap object ids/roles upward only (idor/authz classes)
+
+## The technique
+
+- class: malware/exploit/cert development
+- probe: the family's "capabilities" are validators and provers, never payloads
+- wall: NO-GAIN — every shipped script is read-only toward the operator's targets
+
+## Probe adjustment (host × low-priv)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- the impact leg — shukaku prices what this rung reaches
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

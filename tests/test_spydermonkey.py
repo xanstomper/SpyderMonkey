@@ -237,7 +237,7 @@ class CliTests(unittest.TestCase):
         # base + expanded corpus = every file indexed (the context corpus is
         # committed, so expanded_links must hold the 7k+ scale floor)
         self.assertEqual(data["links"] + data["expanded_links"], data["files"])
-        self.assertGreaterEqual(data["expanded_links"], 7000)
+        self.assertGreaterEqual(data["expanded_links"], 10000)
         self.assertEqual(data["orphans"], 0)
 
     def test_mcp_surface(self):

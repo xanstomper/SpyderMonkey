@@ -1,0 +1,20 @@
+# T+40 — decision point — chain composition
+
+- source canon: `3am-shinjitsu/arsenal-index.md`
+- base technique: `3am-shinjitsu-arsenal-index-t-40-decision-point.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+Every probe above → ledger entry (`campaign-state.json`). Re-score. Remaining time goes to
+the highest-Score' hypothesis from `arsenal-03` (API) and `arsenal-04` (auth), NOT to
+wordlist spraying. Exhausted class = N/A'd with the exact test string, never re-probed.
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

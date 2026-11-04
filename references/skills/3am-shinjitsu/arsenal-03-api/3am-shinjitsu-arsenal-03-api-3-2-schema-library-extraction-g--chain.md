@@ -1,0 +1,23 @@
+# 3.2 Schema-library extraction → gate-order proof (score 90, no session needed) — chain composition
+
+- source canon: `3am-shinjitsu/arsenal-03-api.md`
+- base technique: `3am-shinjitsu-arsenal-03-api-3-2-schema-library-extraction-g.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+- The bundle ships the server's zod/io-ts validation chunk: every param name, enum, refinement.
+- Build COMPLETE valid shapes → fire the authz matrix → uniform "Invalid parameters" becomes
+  explicit ("Not logged in") = validation runs BEFORE auth (gate-order proof).
+- Trust vocabulary: `*_requested` naming + optional client fields (`userExpectedFeeCoins`) =
+  server treats client figures as advisory. NO cross-user identifier in a shape = IDOR
+  structurally impossible there — negative, ledger it.
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

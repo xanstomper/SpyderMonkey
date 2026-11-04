@@ -163,8 +163,8 @@ python3 scripts/bench_live.py --json --no-engine > "$HOME/bench_live.json"
 python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); assert d["accuracy"] >= 90, d' "$HOME/bench_live.json"
 python3 scripts/skilltree.py --count --json | grep -q '"count"'
 python3 scripts/skilltree.py --verify --json > "$HOME/skilltree.json"
-python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); assert d["ok"] and d["links"] + d["expanded_links"] == d["files"] and d["expanded_links"] >= 7000, d' "$HOME/skilltree.json"
-test "$(grep -c '^- \[' references/skilltree-expanded-index.md)" -ge 7000
+python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); assert d["ok"] and d["links"] + d["expanded_links"] == d["files"] and d["expanded_links"] >= 10000, d' "$HOME/skilltree.json"
+test "$(grep -c '^- \[' references/skilltree-expanded-index.md)" -ge 10000
 printf '{"jsonrpc":"2.0","id":1,"method":"tools/list"}\n{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"version","arguments":{}}}\n' \
   | python3 scripts/mcp_server.py > "$HOME/mcp.jsonl"
 python3 -c 'import json,sys; rows=[json.loads(l) for l in open(sys.argv[1]) if l.strip()]; assert len(rows) == 2; assert len(rows[0]["result"]["tools"]) >= 43; assert "5.1.0" in json.dumps(rows[1])' "$HOME/mcp.jsonl"

@@ -1,0 +1,21 @@
+# Rate-limit measurement pattern — chain composition
+
+- source canon: `holyshit-mode/web-auth-chain-playbook.md`
+- base technique: `holyshit-mode-web-auth-chain-playbook-rate-limit-measurement.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+Foreground shells refuse `&` backgrounding; use execute_code with
+concurrent.futures.ThreadPoolExecutor spawning subprocess curl per worker, then
+Counter() the status codes (e.g. 30 parallel → 21×200, 9 timeouts, zero 429 = no
+effective limit). Log req/s, lockout presence, captcha presence.
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

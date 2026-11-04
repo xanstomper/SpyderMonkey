@@ -1,0 +1,35 @@
+# MODULE 2 — NETWORK TRADECRAFT — chain composition
+
+- source canon: `holyshit-mode/detection-evasion-modules.md`
+- base technique: `holyshit-mode-detection-evasion-modules-module-2-network-tra.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+**Objective**: validate network detection of C2 and exfiltration channels.
+
+**Techniques**:
+- **Domain fronting**: route C2 through CDN with front domain (aws.amazon.com class) and
+  custom domain. Validate: does the proxy inspect the Host header or only the SNI?
+- **DNS tunneling**: encode data in TXT/NULL queries with low-and-slow timing (1 query/30s).
+  Validate: does DNS analytics flag entropy/volume or only known-bad domains?
+- **HTTPS beacon jitter**: vary sleep 30–90s, randomize URI paths, mimic browser JA3.
+  Validate: does the NDR flag periodicity, JA3 anomalies, or URI entropy?
+- **ICMP/SMB exfil**: tunnel data through ICMP echo or SMB named pipes on isolated segments.
+  Validate: does the IDS inspect non-HTTP protocols or only port 80/443?
+- **Dead-drop resolvers**: store C2 instructions in public paste/gist, poll infrequently.
+  Validate: does egress filtering flag paste sites or only known C2 domains?
+
+**Detection surface to report**: NDR flow analytics, JA3/JA3S fingerprinting, DNS analytics,
+egress allow-listing, TLS inspection coverage, protocol anomaly detection.
+
+---
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

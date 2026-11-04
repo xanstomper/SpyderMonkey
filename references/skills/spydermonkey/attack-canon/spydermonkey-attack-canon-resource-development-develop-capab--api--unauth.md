@@ -1,0 +1,33 @@
+# Resource Development Develop Capabilities (T1587) — api / unauth
+
+- source canon: `spydermonkey/attack-canon.md`
+- base technique: `spydermonkey-attack-canon-resource-development-develop-capab.md`
+- bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
+- context: **api** · auth **unauth** · chain role **final**
+
+## Context
+
+- platform: strike the JSON body + query string; content-type and parameter placement change the probe shape
+- auth state: no credential material — the classic differential applies as-is; absent auth = the authn-bypass class
+
+## The technique
+
+- class: malware/exploit/cert development
+- probe: the family's "capabilities" are validators and provers, never payloads
+- wall: NO-GAIN — every shipped script is read-only toward the operator's targets
+
+## Probe adjustment (api × unauth)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- the impact leg — shukaku prices what this rung reaches
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)
