@@ -9,7 +9,7 @@
 **The master dispatcher of the HolyShit offensive-security family —
 the tree, the router, and the full engagement pipeline in one stdlib-only CLI.**
 
-[![Version](https://img.shields.io/badge/version-3.0.0-blueviolet?style=for-the-badge)](#-the-cli)
+[![Version](https://img.shields.io/badge/version-4.0.0-blueviolet?style=for-the-badge)](#-the-cli)
 [![Python](https://img.shields.io/badge/python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](#quickstart)
 [![Platform](https://img.shields.io/badge/platform-Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](#quickstart)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?style=for-the-badge)](#why-its-so-powerful)
@@ -21,13 +21,13 @@ the tree, the router, and the full engagement pipeline in one stdlib-only CLI.**
 **THE FAMILY** — ten mandates, one axis each, one click away:
 
 [![00 BARBICAN · the shield](https://img.shields.io/badge/00-BARBICAN%20·%20the%20shield-2E4057?style=for-the-badge)](https://github.com/xanstomper/barbican)
-[![01 3AM · the performer](https://img.shields.io/badge/01-3AM%20·%20the%20performer-8B0000?style=for-the-badge)](https://github.com/xanstomper/3am-shinjitsu)
-[![02 KAIRO · the synthesizer](https://img.shields.io/badge/02-KAIRO%20·%20the%20synthesizer-6B8E23?style=for-the-badge)](https://github.com/xanstomper/kairo)
-[![03 UNDERCROFT · the descent](https://img.shields.io/badge/03-UNDERCROFT%20·%20the%20descent-4B0082?style=for-the-badge)](https://github.com/xanstomper/undercroft)
-[![04 HOLYSHIT · the finder](https://img.shields.io/badge/04-HOLYSHIT%20·%20the%20finder-B8860B?style=for-the-badge)](https://github.com/xanstomper/HolyShit)
-[![05 SHIKI · the command](https://img.shields.io/badge/05-SHIKI%20·%20the%20command-111111?style=for-the-badge)](https://github.com/xanstomper/shiki)
-[![06 KAISHA · the ladder](https://img.shields.io/badge/06-KAISHA%20·%20the%20ladder-704214?style=for-the-badge)](https://github.com/xanstomper/kaisha)
-[![07 SHUKAKU · the harvester](https://img.shields.io/badge/07-SHUKAKU%20·%20the%20harvester-8B4513?style=for-the-badge)](https://github.com/xanstomper/shukaku)
+[![01 HOLYSHIT · the finder](https://img.shields.io/badge/01-HOLYSHIT%20·%20the%20finder-B8860B?style=for-the-badge)](https://github.com/xanstomper/HolyShit)
+[![02 UNDERCROFT · the descent](https://img.shields.io/badge/02-UNDERCROFT%20·%20the%20descent-4B0082?style=for-the-badge)](https://github.com/xanstomper/undercroft)
+[![03 3AM · the performer](https://img.shields.io/badge/03-3AM%20·%20the%20performer-8B0000?style=for-the-badge)](https://github.com/xanstomper/3am-shinjitsu)
+[![04 KAIRO · the synthesizer](https://img.shields.io/badge/04-KAIRO%20·%20the%20synthesizer-6B8E23?style=for-the-badge)](https://github.com/xanstomper/kairo)
+[![05 KAISHA · the ladder](https://img.shields.io/badge/05-KAISHA%20·%20the%20ladder-704214?style=for-the-badge)](https://github.com/xanstomper/kaisha)
+[![06 SHUKAKU · the harvester](https://img.shields.io/badge/06-SHUKAKU%20·%20the%20harvester-8B4513?style=for-the-badge)](https://github.com/xanstomper/shukaku)
+[![07 SHIKI · the command](https://img.shields.io/badge/07-SHIKI%20·%20the%20command-111111?style=for-the-badge)](https://github.com/xanstomper/shiki)
 [![08 KAGE · the mirror](https://img.shields.io/badge/08-KAGE%20·%20the%20mirror-3A3A3A?style=for-the-badge)](https://github.com/xanstomper/kage)
 [![09 DOJO · the range](https://img.shields.io/badge/09-DOJO%20·%20the%20range-4a5d23?style=for-the-badge)](https://github.com/xanstomper/dojo)
 
@@ -49,10 +49,16 @@ SPYDERMONKEY is the piece that knows the whole tree:
 
 - **routes** any goal, in plain words, to the right mandate sequence,
 - **runs** the full pipeline end-to-end with one command,
+- **owns the CONTROL PLANE** (v4): one shared scope authority, campaign
+  lifecycle, the ten machine-checkable mandate contracts, tamper-evident
+  ledgers, JSON on every command, and an end-to-end self-test,
 - **owns the INTELLIGENCE LAYER** (v3): the 13-phase methodology board, the
   finding ledger with triager gates, the 3-gate confirmation engine, the
   8 parallel sub-testers, the chain detector, coverage, the war report, and
   remote execution nodes,
+- **drives the KERNEL** (v4): `next` emits the one state-driven directive,
+  `absorb` validates a result through the same gates, and `loop` runs the
+  plan → execute → absorb cycle with the engines as the state machine,
 - **reports** the family's state (versions, engines, campaign states),
 - **carries the persona contract** that puts ANY model under the family's discipline.
 
@@ -113,40 +119,80 @@ $ python3 scripts/spydermonkey.py route --goal "protect my ass"
 | everything · full assault · together · one command | **shiki** — the entire pipeline as one assault |
 | *anything else* | the **STANDARD RELAY**: barbican → holyshit → undercroft → kairo → 3am → kaisha → shukaku → kage → dojo |
 
-### 3. The scope authority — the machine-checkable estate gate
+### 3. The scope authority — one verdict, every engine
+
+`~/.redteam/scope.json` is the declared estate. **One shared module**
+(`scripts/scope_authority.py`) is imported by the dispatcher, Arsenal, the MCP
+server, the live bench, and every live probe. There is no second opinion and no
+engine-specific bypass.
 
 ```bash
-$ spydermonkey scope init --engagement acme-p1 --in-scope "acme.com,10.0.0.0/24"
-$ spydermonkey scope check --value https://api.acme.com/x
-✓ IN SCOPE — https://api.acme.com/x under engagement 'acme-p1'
+$ spydermonkey scope init --engagement acme-p1 \
+    --in-scope "acme.com,*.api.acme.com,10.0.0.0/24" \
+    --out-of-scope "billing.acme.com,vendor.example" --expires-days 14
+$ spydermonkey scope check --value https://api.acme.com/v1/orders
+✓ IN SCOPE — https://api.acme.com/v1/orders (engagement 'acme-p1')
+$ spydermonkey scope check --value https://billing.acme.com/x
+✗ OUT OF SCOPE — denied by rule 'billing.acme.com'                    # rc=1
 $ spydermonkey scope check --value https://evil.com
-✗ OUT OF SCOPE — https://evil.com is not in the declared estate      # rc=1
+✗ OUT OF SCOPE — not in the declared estate                           # rc=1
 ```
 
-Every live-probing engine honors `~/.redteam/scope.json` — default-deny with
-`--strict`. Plus: **`doctor`** (full health check) and **`bench`** (offline
-route-accuracy benchmark — the family's first measurable metric).
+Matching covers exact hosts, subdomains, `*` wildcards, CIDRs, URL paths and
+ports; deny always wins; expiry is enforced; the loopback lab is the only
+implicit allowance. `scope add|remove|extend|history` maintain the estate and
+its audit trail, and writes are atomic with `0600` permissions.
 
-### 4. The pipeline — one command, ten engines
+### 4. The control plane — campaigns, contracts, JSON, proof
 
-Also since v1.3: **`scope`/`doctor`/`bench`** — the estate gate, the health check,
-and the offline route-accuracy benchmark. Since v1.4: **`fleet`** — every mandate
-dispatched as its own parallel agent with a live brief. Since v1.5: **`kage`** —
-every confirmed attack becomes a defender's detection rule (the purple layer).
-Since v1.6: **`arsenal`** — the execution layer: 13 tool wrappers (nmap, masscan,
-httpx, nuclei, gobuster, testssl, dnsx, subfinder, whatweb, wafw00f, nikto, dig,
-curl), scope-gated (rc=1 refusal), findings canon-classified. Since v1.7:
-**`dojo`** — the range: buildable vulnerable replicas of every technique class,
-lab-bound on 127.0.0.1.
+v4 turns the dispatcher from a router into a **control plane**:
+
+- **Campaign lifecycle** — `campaign init` writes a manifest; every engine event
+  lands in `events.jsonl`; `show`/`timeline` read it; `archive` writes a
+  timestamped `tar.gz`; `purge` refuses without `--force`; `close` records the
+  verdict. State lives in `~/.redteam/campaigns/<target>/`.
+- **Mandate contracts** — `references/mandates/00-barbican.md` … `09-dojo.md`
+  are machine-checked (`mandates verify`): each names its axis, law, handoff,
+  evidence, fleet command, and failure path. The registry behind
+  `tree`/`route`/`fleet`/`next` is the same registry behind the contracts.
+- **Machine-readable everywhere** — add `--json` to any command, in any
+  position. Errors stay on stderr and keep their exit codes: `0` ok, `1`
+  gate/scope/verify failure, `2` usage, `130` interrupted.
+- **Tamper-evident ledger** — each finding is hash-chained to the previous row;
+  `ledger verify` checks the chain; `--strict` requires every row to be signed;
+  evidence remains `baseline: … attack: … diff: …` or the row is downgraded to
+  hypothesis. Dedupe attaches new evidence instead of deleting the old row.
+- **Self-test** — `selftest` runs 27 checks in a throwaway `HOME`: scope allow/
+  deny, ledger evidence/dedupe/integrity, a live 3-gate proof on the built-in
+  lab, testers, chains, phases, coverage, report, campaign lifecycle, mandate
+  contracts, MCP, Arsenal, and the live bench. `selftest --quick` is the fast
+  gate. Nothing touches the operator's real estate.
+- **Kernel** — `next` returns the single state-driven directive (with the exact
+  argv and the walls); `absorb` validates an agent result through the same scope,
+  ledger, and evidence gates; `loop` repeats plan → execute → absorb with the
+  engines as the state machine. `--plan-only` shows the battle plan.
+
+### 5. The pipeline — one command, ten engines
+
+Also in the toolbox: **`fleet`** dispatches every mandate as its own parallel
+agent with a real brief; **`arsenal`** wraps 13 external tools
+(nmap, masscan, httpx, nuclei, gobuster, testssl, dnsx, subfinder, whatweb,
+wafw00f, nikto, dig, curl) behind the same scope authority and a structured
+`run` record; **`dojo`** builds the lab replicas; **`kage`** mirrors every
+confirmed attack into Sigma.
 
 **`bench_live.py`** — the LIVE exploitation benchmark: stdlib vulnerable
 mini-targets (IDOR · replay · exposed-backup) spun up on localhost, the family's
-real engines engage them, sub-task completion scored (3/3 verified).
-**`mcp_server.py`** — the whole family exposed as 12 MCP tools (stdio
-JSON-RPC, zero deps): Claude Desktop, Cursor, or any MCP client drives it.
+real engines engage them, sub-task completion scored (10/10 with engines, 9/9
+without). It always uses a throwaway `HOME` and a dynamic port, so it can never
+overwrite the operator's real scope or collide with a running daemon.
+**`mcp_server.py`** — the whole family exposed as 43 MCP tools (stdio
+JSON-RPC, zero deps, batch/notification support): Claude Desktop, Cursor, or any
+MCP client drives it. `--test` and `--list` are built in.
 **`skilltree.py`** — generates the technique library from the family's real
 canon: 722 per-technique skill files, WSTG/CWE/ATT&CK-bound, lazy-loaded via
-`references/skilltree-index.md`.
+`references/skilltree-index.md`; `--verify` proves index ↔ files ↔ bindings,
+and `--count --json` is the machine-readable count.
 
 `run` delegates to **SHIKI assault** — the proven path that drives every real
 engine in order, under the shield, with adaptive re-tasking:
@@ -166,6 +212,13 @@ assault idempotently; `--close` wipes the campaign at the end.
 
 ## Why it's so powerful
 
+- **The control plane (v4).** One scope authority for every engine · campaign
+  lifecycle with manifests, events, archives and a guarded purge · ten
+  machine-checked mandate contracts · `--json` on every command · a
+  hash-chained, deduping, evidence-gated ledger · `selftest` in a throwaway
+  `HOME` · and a kernel (`next`/`absorb`/`loop`) that makes the engines the
+  state machine. The family is now operable by a model, a script, or an MCP
+  client without a second interpretation of the rules.
 - **The intelligence layer (v3).** CyberStrike-style engagement brain, family-native:
   a **13-phase methodology board** computed from real deliverables (never declared),
   a **finding ledger** with triager gates (scope · evidence · duplicates — downgraded,
@@ -175,9 +228,12 @@ assault idempotently; `--close` wipes the campaign at the end.
   a **chain detector** (8 patterns turning low findings into high-impact kill chains),
   **coverage** with the gap list, the joint **war report**, and **remote execution
   nodes** (Ed25519 ssh relays, scope-checked). `mission` runs all of it in one command.
-- **Proven, not asserted.** `verify` now ends with a LIVE GATE PROOF: it spins the
-  built-in lab replica and requires a real baseline→attack→diff CONFIRMED before it
-  says PASS. `testers --demo` strikes the same replica with zero setup.
+- **Proven, not asserted.** `verify` ends with a LIVE GATE PROOF and a 27-check
+  self-test in a throwaway `HOME`: it spins the built-in lab replica and requires
+  a real baseline→attack→diff CONFIRMED before it says PASS. `testers --demo`
+  strikes the same replica with zero setup. Engine self-checks that collide on
+  lab ports are retried serially, so a healthy engine cannot be reported red by
+  a race.
 - **One command, ten engines.** A single `run` conducts gate → recon ∥ descent →
   forge → chain → sweep → ladder → harvest → mirror → drill → closeout. You stop
   babysitting ten CLIs; the conductor handles ordering, parallelism, and re-tasking
@@ -205,11 +261,13 @@ assault idempotently; `--close` wipes the campaign at the end.
 - **The gate.** BARBICAN hard-gates the pipeline on a verified exit vantage and
   strips operator strings before anything runs. No verified exit → rc=1 and
   **nothing** executes. OpSec is not a step; it's a precondition.
-- **Zero dependencies.** Pure Python stdlib. The dispatcher is one file
-  (~24 KB); the companion scripts (`arsenal` · `bench_live` · `mcp_server` ·
-  `skilltree`) are stdlib too — no venv, no pip, no supply chain.
+- **Zero dependencies.** Pure Python stdlib. The dispatcher is one file; the
+  companion scripts (`scope_authority` · `arsenal` · `bench_live` · `mcp_server`
+  · `skilltree`) are stdlib too — no venv, no pip, no supply chain.
 - **Idempotent & resumable.** Interrupted engagement? `--resume` re-enters
-  without double-firing. Done? `--close` wipes. Campaign state lives on disk in
+  without double-firing. Done? `campaign close` records the verdict;
+  `campaign archive` writes a verifiable closeout; barbican `wipe --confirm`
+  removes operator artifacts. Campaign state lives on disk in
   `~/.redteam/campaigns/`.
 
 ---

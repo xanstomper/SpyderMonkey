@@ -2,13 +2,23 @@
 """
 SPYDERMONKEY — master dispatcher of the HolyShit family. stdlib-only.
 
-v3.0 — THE INTELLIGENCE LAYER. The family's proven engines keep firing; the
-dispatcher now owns the engagement brain around them (CyberStrike-derived,
-family-native: walls as exit codes, scope authority default-deny, no-gain):
+v4.0 — THE CONTROL PLANE. The v3 intelligence layer (phases, ledger, gate,
+testers, chains, coverage, report, fleet) is now a hardened, machine-readable
+engagement control plane: one shared scope authority, tamper-evident ledgers,
+campaign lifecycle, JSON everywhere, a self-test that exercises the engines,
+and real per-mandate contracts.
 
 Commands:
   tree                    the family + roles + chain
   route    --goal "..."   goal → the mandate sequence to load/run
+  version                 version + paths + engine summary
+  campaign init|list|show|timeline|archive|purge
+                          the engagement lifecycle (manifest · events · closeout)
+  mandates list|show|verify
+                          the ten mandate contracts (axis · commands · handoff)
+  next     --target T     the one next action, with the exact command
+  selftest                end-to-end self-test in a throwaway HOME (no estate)
+  json mode               add --json to ANY command for machine output
   run      --target T --url U --domain D [--bundle P] [--boundary-url U2]
            [--probe-ids 1,2] [--parallel] [--resume] [--close] [--dry-run]
                           the full pipeline (delegates to SHIKI assault)
@@ -50,23 +60,53 @@ Commands:
   + skilltree.py          per-technique skill files generated from the real canon,
                           WSTG/CWE/ATT&CK-bound (references/skills/ + index)
 
-Live-fire rule (v3): a live HTTP engine (gate/testers) fires at 127.0.0.1/localhost
-freely (the lab — dojo replicas, CI). ANY other host requires a scope authority
-containing it: no authority or out-of-scope → rc=1 refusal. The walls are exit codes.
+Live-fire rule (v4): a live HTTP engine (gate/testers/mission) fires at
+127.0.0.1/localhost freely (the lab — dojo replicas, CI). ANY other host requires
+a scope authority containing it: no authority or out-of-scope → rc=1 refusal.
+The shared scope module is scripts/scope_authority.py — the dispatcher, arsenal,
+MCP server and live bench all use the same verdict.
 
-Exit codes: 0 ok · 1 gate/verify/scope failure · 2 usage error.
+Exit codes: 0 ok · 1 gate/verify/scope failure · 2 usage error · 130 interrupted.
 """
+from __future__ import annotations
+
 import argparse
+import contextlib
+import csv
+import hashlib
+import io
 import json
+import os
 import re
+import shutil
 import subprocess
 import sys
+import tarfile
+import tempfile
 import threading
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
+
+# The shared estate gate (same directory, stdlib-only). Imported by path so the
+# dispatcher still works when invoked through a symlink or from any cwd.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import scope_authority as sa  # noqa: E402
+
+VERSION = "4.0.0"
+SCHEMA = 4
+
+
+class UsageError(Exception):
+    """Bad invocation — translated to rc=2 by main()."""
+
+
+class ScopeDenied(Exception):
+    """The estate gate refused the action — translated to rc=1 by main()."""
+
 
 SEC = Path.home() / ".hermes/skills/security"
 FAMILY = {
@@ -82,25 +122,117 @@ FAMILY = {
     "dojo": (SEC / "dojo/scripts/dojo.py", "The Range — buildable vulnerable replicas of every technique class (where the family trains)"),
 }
 
+# The mandate contracts: axis, phase, the real engine command the dispatcher
+# hands off to, and the fleet's capability pass. Single registry behind
+# route/tree/fleet/mandates/next.
+MANDATES = {
+    "barbican": {
+        "n": 0, "role": "THE SHIELD", "axis": "BEFORE — posture, vantage, identity, wipe",
+        "phase": "scope_analysis",
+        "handoff": "barbican posture --target <t> --vantage vm --alias <alias>   (FIRST)",
+        "fleet": ["assess", "--target", "{target}"],
+        "contract": "00-barbican.md",
+    },
+    "holyshit": {
+        "n": 1, "role": "THE FINDER", "axis": "KNOWN — case canon, recon, dossiers, handoffs",
+        "phase": "passive_recon",
+        "handoff": "holyshit recon --domain <d> && holyshit dossier --target <t> → handoff",
+        "fleet": ["dossier", "--target", "{target}"],
+        "contract": "01-holyshit.md",
+    },
+    "undercroft": {
+        "n": 2, "role": "THE DESCENT", "axis": "UNKNOWN — live auto-engagement, bundle/JWT/routes/boundary",
+        "phase": "active_recon",
+        "handoff": "undercroft run --target <t> --domain <d> --url <u> [--bundle P]",
+        "fleet": ["probe"],
+        "contract": "02-undercroft.md",
+    },
+    "3am": {
+        "n": 3, "role": "THE PERFORMER", "axis": "KNOWABLE — universal sweep, takeover, growth loop",
+        "phase": "authentication_testing",
+        "handoff": "3AM sweep per its SKILL.md §16; absorb kairo's distributed rows first",
+        "fleet": ["status", "--target", "{target}"],
+        "contract": "03-3am.md",
+    },
+    "kairo": {
+        "n": 4, "role": "THE SYNTHESIZER", "axis": "MANUFACTURING — findings → attacks → chains → distribution",
+        "phase": "api_security",
+        "handoff": "kairo forge --target <t> --expand && kairo chain --target <t> --write",
+        "fleet": ["armory", "--target", "{target}"],
+        "contract": "04-kairo.md",
+    },
+    "kaisha": {
+        "n": 5, "role": "THE LADDER", "axis": "DEPTH — era-stack, privesc rungs, lateral movement",
+        "phase": "infrastructure",
+        "handoff": "kaisha ladder --target <t> --host <h> --access <confirmed> && kaisha lateral --target <t> --from <h>",
+        "fleet": ["rungs", "--target", "{target}"],
+        "contract": "05-kaisha.md",
+    },
+    "shukaku": {
+        "n": 6, "role": "THE HARVESTER", "axis": "AFTER/GAIN — catalog, price, disclose, feed",
+        "phase": "data_protection",
+        "handoff": "shukaku ingest --target <t> --finding <id> --proof <ref> && shukaku reason --target <t> && shukaku hunt --target <t> [--live U] && shukaku crown … && shukaku feed --target <t> && shukaku report --target <t>",
+        "fleet": ["ladder"],
+        "contract": "06-shukaku.md",
+    },
+    "shiki": {
+        "n": 7, "role": "THE COMMAND", "axis": "TOGETHER — the whole family as one assault",
+        "phase": "reporting",
+        "handoff": "shiki assault --target <t> --url <u> --domain <d> [--bundle P] [--parallel] [--resume] [--close]",
+        "fleet": ["board", "--org", "{target}"],
+        "contract": "07-shiki.md",
+    },
+    "kage": {
+        "n": 8, "role": "THE MIRROR", "axis": "DETECTABLE — every confirmed attack becomes a detection rule",
+        "phase": "reporting",
+        "handoff": "kage mirror --target <t> && kage validate --target <t> && kage report --target <t>",
+        "fleet": ["mirror", "--target", "{target}"],
+        "contract": "08-kage.md",
+    },
+    "dojo": {
+        "n": 9, "role": "THE RANGE", "axis": "TRAINING — vulnerable replicas and lessons, lab-bound",
+        "phase": "reporting",
+        "handoff": "dojo catalog && dojo build --class <C> --port <p>",
+        "fleet": ["catalog"],
+        "contract": "09-dojo.md",
+    },
+}
+
 ROUTES = [
-    ("protect", "barbican"), ("opsec", "barbican"), ("anonymous", "barbican"), ("vantage", "barbican"),
-    ("find", "holyshit"), ("recon", "holyshit"), ("dossier", "holyshit"), ("known", "holyshit"),
-    ("custom", "undercroft"), ("bundle", "undercroft"), ("logic", "undercroft"),
-    ("business", "undercroft"), ("their code", "undercroft"),
+    ("protect", "barbican"), ("opsec", "barbican"), ("anonymous", "barbican"),
+    ("vantage", "barbican"), ("posture", "barbican"), ("footprint", "barbican"),
+    ("find", "holyshit"), ("recon", "holyshit"), ("dossier", "holyshit"),
+    ("known", "holyshit"), ("case canon", "holyshit"), ("osint", "holyshit"),
+    ("custom", "undercroft"), ("bundle", "undercroft"), ("business", "undercroft"),
+    ("their code", "undercroft"), ("their logic", "undercroft"), ("api", "undercroft"),
+    ("jwt", "undercroft"), ("surface", "undercroft"),
     ("attack", "3am"), ("sweep", "3am"), ("take over", "3am"), ("exploit", "3am"),
-    ("arm", "kairo"), ("forge", "kairo"), ("vectors", "kairo"), ("weapons", "kairo"), ("chains", "kairo"),
-    ("harvest", "shukaku"), ("crown", "shukaku"), ("price", "shukaku"), ("valuation", "shukaku"),
-    ("disclose", "shukaku"), ("impact", "shukaku"),
-    ("ladder", "kaisha"), ("climb", "kaisha"), ("deepen", "kaisha"), ("privesc", "kaisha"),
-    ("lateral", "kaisha"), ("foothold", "kaisha"),
-    ("detect", "kage"), ("mirror", "kage"), ("detection", "kage"), ("purple", "kage"), ("defend", "kage"), ("sigma", "kage"),
-    ("train", "dojo"), ("range", "dojo"), ("replica", "dojo"), ("lab", "dojo"), ("lesson", "dojo"),
-    ("everything", "shiki"), ("full assault", "shiki"), ("together", "shiki"), ("one command", "shiki"),
-    ("confirm", "spy"), ("baseline", "spy"), ("diff", "spy"), ("ledger", "spy"), ("coverage", "spy"),
-    ("phase", "spy"), ("report", "spy"), ("remote", "spy"), ("relay", "spy"), ("node", "spy"),
+    ("takeover", "3am"), ("session", "3am"),
+    ("arm", "kairo"), ("forge", "kairo"), ("vectors", "kairo"), ("weapons", "kairo"),
+    ("chains", "kairo"), ("synthesize", "kairo"),
+    ("harvest", "shukaku"), ("crown", "shukaku"), ("price", "shukaku"),
+    ("valuation", "shukaku"), ("disclose", "shukaku"), ("impact", "shukaku"),
+    ("what could they take", "shukaku"), ("exfil", "shukaku"),
+    ("ladder", "kaisha"), ("climb", "kaisha"), ("deepen", "kaisha"),
+    ("privesc", "kaisha"), ("privilege", "kaisha"), ("lateral", "kaisha"),
+    ("foothold", "kaisha"), ("post-exploit", "kaisha"),
+    ("detect", "kage"), ("mirror", "kage"), ("detection", "kage"),
+    ("purple", "kage"), ("defend", "kage"), ("sigma", "kage"),
+    ("blue team", "kage"), ("remediat", "kage"), ("harden", "kage"),
+    ("train", "dojo"), ("range", "dojo"), ("replica", "dojo"), ("lab", "dojo"),
+    ("lesson", "dojo"), ("practice", "dojo"),
+    ("everything", "shiki"), ("full assault", "shiki"), ("together", "shiki"),
+    ("one command", "shiki"), ("conduct", "shiki"),
+    ("nmap", "arsenal"), ("nuclei", "arsenal"), ("tool", "arsenal"),
+    ("scan", "arsenal"), ("port scan", "arsenal"), ("subdomain", "arsenal"),
+    ("confirm", "spy"), ("baseline", "spy"), ("diff", "spy"), ("ledger", "spy"),
+    ("coverage", "spy"), ("phase", "spy"), ("report", "spy"), ("remote", "spy"),
+    ("relay", "spy"), ("node", "spy"), ("triage", "spy"), ("evidence", "spy"),
+    ("campaign", "spy"), ("mission", "spy"),
 ]
 
-RELAY = ["barbican", "holyshit", "undercroft", "kairo", "3am", "kaisha", "shukaku", "kage", "dojo"]
+RELAY = ["barbican", "holyshit", "undercroft", "kairo", "3am", "kaisha",
+         "shukaku", "kage", "dojo"]
 
 # stem-matching exceptions: noun forms that must NOT trigger the verb keyword
 STEM_BLOCK = {"find": ("ings", "ing", "er")}
@@ -120,45 +252,204 @@ def _kw_hit(kw, goal):
     return re.search(r"\s+".join(parts), goal) is not None
 
 
-CMDS = {
-    "barbican": "barbican posture --target <t> --vantage vm --alias <alias>   (FIRST)",
-    "holyshit": "holyshit recon --domain <d> && holyshit dossier --target <t> → handoff",
-    "undercroft": "undercroft run --target <t> --domain <d> --url <u> [--bundle P]",
-    "kairo": "kairo forge --target <t> --expand && kairo chain --target <t> --write",
-    "3am": "3AM sweep per its SKILL.md §16; absorb kairo's distributed rows first",
-    "kaisha": "kaisha ladder --target <t> --host <h> --access <confirmed> && kaisha lateral --target <t> --from <h>",
-    "shukaku": "shukaku ingest --target <t> --finding <id> --proof <ref> && shukaku reason --target <t> && shukaku hunt --target <t> [--live U] && shukaku crown … && shukaku feed --target <t> && shukaku report --target <t>",
-    "shiki": "shiki assault --target <t> --url <u> --domain <d> [--bundle P] [--parallel] [--resume] [--close]",
-    "kage": "kage mirror --target <t> && kage validate --target <t> && kage report --target <t>",
-    "arsenal": "arsenal list && arsenal plan --target <t> && arsenal run --target <t>",
-    "dojo": "dojo catalog && dojo build --class <C> --port <p>",
-    "spy": "spydermonkey gate run … | testers run … | ledger triage --target <t> | mission …",
-}
+CMDS = {name: meta["handoff"] for name, meta in MANDATES.items()}
+CMDS["arsenal"] = "arsenal list && arsenal plan --target <t> && arsenal run --target <t>"
+CMDS["spy"] = "spydermonkey gate run … | testers run … | ledger triage --target <t> | mission …"
+
+
+# ── v4 core: paths · JSON · campaign lifecycle · routing ─────────────────────
+
+def _json_mode(args) -> bool:
+    return bool(getattr(args, "json", False))
+
+
+def _emit(args, payload, text: str | None = None) -> None:
+    """Machine output when --json is set, human output otherwise."""
+    if _json_mode(args):
+        print(json.dumps(payload, indent=2, sort_keys=False))
+    elif text is not None:
+        print(text)
+
+
+def _root() -> Path:
+    """The one data root: $SPYDERMONKEY_HOME or ~/.redteam."""
+    return sa.redteam_home()
+
+
+def _campaigns_root() -> Path:
+    return sa.campaigns_root()
+
+
+def _camp(target: str, create: bool = True) -> Path:
+    try:
+        name = sa.safe_name(target, "target")
+    except sa.ScopeError as e:
+        raise UsageError(str(e)) from e
+    p = _campaigns_root() / name
+    if create:
+        p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
+def _atomic_write(path: Path, text: str, mode: int | None = None) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + f".tmp.{os.getpid()}.{threading.get_ident()}")
+    tmp.write_text(text)
+    if mode is not None:
+        try:
+            os.chmod(tmp, mode)
+        except OSError:
+            pass
+    os.replace(tmp, path)
+
+
+def _now() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _sha(text: str) -> str:
+    return hashlib.sha256((text or "").encode("utf-8", "replace")).hexdigest()
+
+
+def _parse_ts(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        dt = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+
+def _event(target: str, kind: str, detail: str = "", **extra) -> None:
+    """Append to the campaign's tamper-apparent timeline. Never fatal."""
+    try:
+        row = {"at": _now(), "kind": kind, "detail": detail, **extra}
+        p = _camp(target) / "events.jsonl"
+        with p.open("a") as f:
+            f.write(json.dumps(row) + "\n")
+    except Exception:
+        pass
+
+
+def _manifest(target: str) -> dict:
+    return _load_json(_camp(target) / "manifest.json", {})
+
+
+def _save_manifest(target: str, data: dict) -> None:
+    data = dict(data)
+    data.update({"target": target, "version": VERSION, "updated": _now()})
+    data.setdefault("created", data["updated"])
+    _atomic_write(_camp(target) / "manifest.json",
+                  json.dumps(data, indent=2) + "\n", mode=0o600)
+
+
+def _ensure_campaign(target: str, url: str | None = None,
+                     domain: str | None = None, objective: str = "") -> dict:
+    m = _manifest(target)
+    if not m:
+        scope = sa.load_scope()
+        m = {"engagement": (scope or {}).get("engagement", ""),
+             "url": url or "", "domain": domain or "", "objective": objective,
+             "created": _now(), "version": VERSION}
+        _save_manifest(target, m)
+        _event(target, "campaign.created", objective or "engagement opened")
+    else:
+        changed = False
+        for k, v in (("url", url), ("domain", domain), ("objective", objective)):
+            if v and not m.get(k):
+                m[k] = v
+                changed = True
+        if changed:
+            _save_manifest(target, m)
+    return m
+
+
+def _route_goal(goal: str) -> dict:
+    """Score the goal against the route table. Returns the sequence + evidence."""
+    g = (goal or "").lower()
+    matched = []
+    for kw, mandate in ROUTES:
+        if _kw_hit(kw, g) and mandate not in [m[0] for m in matched]:
+            matched.append((mandate, kw))
+    seq = [m for m, _ in matched]
+    override = None
+    if "everything" in g or _kw_hit("assault", g) or _kw_hit("one command", g):
+        override = "shiki"
+        seq = ["shiki"]
+    elif not seq:
+        seq = list(RELAY)
+    return {
+        "goal": goal,
+        "sequence": seq,
+        "primary": seq[0],
+        "matched": [{"mandate": m, "keyword": k} for m, k in matched],
+        "override": override,
+        "relay": seq == RELAY,
+        "commands": [CMDS.get(m, "") for m in seq],
+    }
+
+
+def cmd_version(args):
+    engines = {}
+    for name, (script, _) in FAMILY.items():
+        engines[name] = {"present": script.exists(), "path": str(script)}
+    payload = {
+        "name": "spydermonkey",
+        "version": VERSION,
+        "schema": SCHEMA,
+        "python": sys.version.split()[0],
+        "home": str(_root()),
+        "scope": str(sa.scope_path()),
+        "engines_present": sum(1 for e in engines.values() if e["present"]),
+        "engines_total": len(engines),
+        "engines": engines,
+    }
+    if _json_mode(args):
+        _emit(args, payload)
+    else:
+        print(f"SPYDERMONKEY v{VERSION} (schema {SCHEMA}) · python {payload['python']}")
+        print(f"  home:  {payload['home']}")
+        print(f"  scope: {payload['scope']}")
+        print(f"  engines: {payload['engines_present']}/{payload['engines_total']} present")
+    return 0
 
 
 def cmd_tree(args):
     sk = Path(__file__).resolve().parent.parent / "SKILL.md"
-    text = sk.read_text()
+    if _json_mode(args):
+        _emit(args, {"mandates": [
+            {"name": n, "n": m["n"], "role": m["role"], "axis": m["axis"],
+             "phase": m["phase"], "handoff": m["handoff"]}
+            for n, m in MANDATES.items()], "relay": RELAY})
+        return 0
+    try:
+        text = sk.read_text()
+    except OSError:
+        text = ""
     start = text.find("| # |")
     end = text.find("## The Router")
-    print(text[start:end] if start >= 0 and end > start else "tree table not found — read SKILL.md")
+    if start >= 0 and end > start:
+        print(text[start:end])
+    else:
+        print("═══ THE FAMILY — ten mandates, one axis each ═══")
+        for name, m in MANDATES.items():
+            print(f"  {m['n']}  {name:10s} {m['role']:16s} {m['axis']}")
+        print("  relay: " + " → ".join(RELAY))
     return 0
 
 
 def cmd_route(args):
-    goal = args.goal.lower()
-    seq = []
-    for kw, mandate in ROUTES:
-        if mandate not in seq and _kw_hit(kw, goal):
-            seq.append(mandate)
-    if "everything" in goal or _kw_hit("assault", goal):
-        seq = ["shiki"]                     # the one-command override
-    elif not seq:
-        seq = list(RELAY)                   # documented STANDARD RELAY
+    result = _route_goal(args.goal)
+    if _json_mode(args):
+        _emit(args, result)
+        return 0
     print(f"▸ goal: '{args.goal}'")
-    print(f"  → load + run, in order: {' → '.join(seq)}")
-    for m in seq:
-        print(f"  command: {CMDS[m]}")
+    print(f"  → load + run, in order: {' → '.join(result['sequence'])}")
+    if result["override"]:
+        print(f"  (one-command override: {result['override']})")
+    for m in result["sequence"]:
+        print(f"  command: {CMDS.get(m, '')}")
     print("  always: barbican posture BEFORE, barbican wipe AFTER (closeout)")
     return 0
 
@@ -180,295 +471,957 @@ def cmd_run(args):
         argv += ["--resume"]
     if args.close:
         argv += ["--close"]
-    print("▸ SPYDERMONKEY runs the family: shiki assault")
     if args.dry_run:
-        print("  dry-run — the command that would execute:")
-        print("    " + " ".join(argv))
+        payload = {"command": argv, "dry_run": True, "executed": False}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print("▸ SPYDERMONKEY runs the family: shiki assault")
+            print("  dry-run — the command that would execute:")
+            print("    " + " ".join(argv))
         return 0
+    for value in (args.url, args.domain):
+        if not _scope_gate(value):
+            return 1
+    _ensure_campaign(args.target, url=args.url, domain=args.domain)
+    if not _json_mode(args):
+        print("▸ SPYDERMONKEY runs the family: shiki assault")
+    _event(args.target, "run.start", "shiki assault", argv=argv)
+    if not shiki.exists():
+        payload = {"command": argv, "dry_run": False, "executed": False,
+                   "rc": 1, "error": f"engine missing: {shiki}"}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"✗ shiki engine missing: {shiki}", file=sys.stderr)
+        return 1
     r = subprocess.run(argv)
+    _event(args.target, "run.end", f"rc={r.returncode}", rc=r.returncode)
+    if _json_mode(args):
+        _emit(args, {"command": argv, "dry_run": False, "executed": True,
+                     "rc": r.returncode})
     return r.returncode
 
 
-def cmd_status(args):
-    print("═══ SPYDERMONKEY — family status ═══")
-    for name, (script, role) in FAMILY.items():
-        if not script.exists():
-            print(f"  ✗ {name:10s} MISSING — {role}")
-            continue
+def _engine_verify(name: str, script: Path, timeout: int = 25) -> dict:
+    if not script.exists():
+        return {"name": name, "ok": False, "missing": True, "first": "MISSING",
+                "role": FAMILY[name][1]}
+    try:
         v = subprocess.run([sys.executable, str(script), "verify"],
-                           capture_output=True, text=True)
-        ok = "✓" if v.returncode == 0 else "✗"
-        first = v.stdout.splitlines()[0] if v.stdout else ""
-        print(f"  {ok} {name:10s} {first[:70]}")
-        print(f"      {role}")
+                           capture_output=True, text=True, timeout=timeout)
+        first = (v.stdout or v.stderr or "").splitlines()
+        return {"name": name, "ok": v.returncode == 0, "missing": False,
+                "first": first[0][:160] if first else "",
+                "role": FAMILY[name][1]}
+    except subprocess.TimeoutExpired:
+        return {"name": name, "ok": False, "missing": False,
+                "first": f"verify timed out after {timeout}s", "role": FAMILY[name][1]}
+
+
+def _engine_status_all(fast: bool = False) -> list[dict]:
+    if fast:
+        return [{"name": n, "ok": p.exists(), "missing": not p.exists(),
+                 "first": "present" if p.exists() else "MISSING", "role": role}
+                for n, (p, role) in FAMILY.items()]
+    out = {}
+    threads = []
+
+    def worker(name, script):
+        out[name] = _engine_verify(name, script)
+
+    for name, (script, _) in FAMILY.items():
+        t = threading.Thread(target=worker, args=(name, script), daemon=True)
+        t.start()
+        threads.append(t)
+    for t in threads:
+        t.join(timeout=30)
+    rows = [out.get(n, {"name": n, "ok": False, "missing": True, "first": "no result",
+                        "role": FAMILY[n][1]}) for n in FAMILY]
+    # Engine self-checks may build lab replicas on fixed loopback ports. Running
+    # all ten in parallel can make two healthy engines collide (the classic
+    # dojo/kage race). Re-run failures one at a time: a real failure stays red,
+    # a port collision goes green.
+    if any(not e["ok"] and not e["missing"] for e in rows):
+        for i, e in enumerate(rows):
+            if e["ok"] or e["missing"]:
+                continue
+            retry = _engine_verify(e["name"], FAMILY[e["name"]][0])
+            if retry["ok"]:
+                retry["first"] = (retry.get("first") or "") + " (passed on serial retry)"
+            rows[i] = retry
+    return rows
+
+
+def cmd_status(args):
+    engines = _engine_status_all(fast=getattr(args, "fast", False))
+    payload = {"version": VERSION, "engines": engines,
+               "engines_up": sum(1 for e in engines if e["ok"]),
+               "engines_total": len(engines)}
+    if not _json_mode(args):
+        print("═══ SPYDERMONKEY — family status ═══")
+        print(f"  dispatcher v{VERSION} · home {_root()}")
+        for e in engines:
+            mark = "✓" if e["ok"] else "✗"
+            print(f"  {mark} {e['name']:10s} {e['first'][:78]}")
+            print(f"      {e['role']}")
     if args.target:
-        camp = Path.home() / ".redteam" / "campaigns" / args.target
-        states = [f.name for f in camp.glob("*.json")] if camp.exists() else []
-        print(f"  campaign '{args.target}': {states or 'no states yet'}")
-        ld = _camp(args.target) / "ledger.jsonl"
-        if ld.exists():
-            rows = [l for l in ld.read_text().splitlines() if l.strip()]
-            conf = sum(1 for l in rows if '"CONFIRMED"' in l)
-            print(f"  ledger: {len(rows)} finding(s) · {conf} confirmed")
+        _camp(args.target)
+        m = _manifest(args.target)
+        states = sorted(f.name for f in _camp(args.target).glob("*state*.json"))
+        rows = _ledger_load(args.target)
+        conf = sum(1 for l in rows if l.get("status") == "CONFIRMED")
+        payload["campaign"] = {
+            "target": args.target, "manifest": m, "states": states,
+            "ledger_rows": len(rows), "confirmed": conf,
+            "ledger_integrity": _ledger_integrity(args.target),
+        }
+        if not _json_mode(args):
+            print(f"  campaign '{args.target}': {', '.join(states) or 'no states yet'}")
+            print(f"  ledger: {len(rows)} finding(s) · {conf} confirmed"
+                  f" · integrity {'✓' if not payload['campaign']['ledger_integrity'] else '✗'}")
+    if _json_mode(args):
+        _emit(args, payload)
     return 0
 
 
 def cmd_verify(args):
-    missing, broken = [], []
+    bad, warnings = [], []
     self = Path(__file__).resolve()
     help_out = subprocess.run([sys.executable, str(self), "--help"],
                               capture_output=True, text=True).stdout
-    bad = []
     for want in ("tree", "route", "run", "status", "verify", "mandate", "scope",
                  "doctor", "bench", "fleet", "arsenal", "mission", "phases",
                  "ledger", "gate", "chain", "context", "testers", "coverage",
-                 "report", "relay"):
+                 "report", "relay", "campaign", "mandates", "next", "selftest",
+                 "version"):
         if want not in help_out:
             bad.append(f"subcommand {want}")
     mandate = self.parent.parent / "references" / "mandate.md"
     if not mandate.exists():
         bad.append("mandate file")
+    for meta in MANDATES.values():
+        contract = self.parent.parent / "references" / "mandates" / meta["contract"]
+        if not contract.exists():
+            bad.append(f"mandate contract {meta['contract']}")
     if len(PHASES) != 13:
         bad.append("phases != 13")
     if len(CHAIN_PATTERNS) < 8:
         bad.append("chain patterns")
     if len(TESTERS) != 8:
         bad.append("testers != 8")
-    for name, (script, _) in FAMILY.items():
-        if not script.exists():
-            missing.append(name)
-            continue
-        r = subprocess.run([sys.executable, str(script), "verify"],
-                           capture_output=True, text=True)
-        if r.returncode != 0:
-            broken.append(f"{name} engine")
-    # the LIVE gate proof: the 3-gate engine vs the built-in lab replica
-    live_ok, live_line = _verify_gate_live()
-    if not live_ok:
-        bad.append("live gate proof")
-    if bad or broken or missing:
-        print(f"✗ SPYDERMONKEY verify FAILED: {bad + broken}")
-        if missing:
-            print(f"  ⚠ engines not installed: {', '.join(missing)}")
-            print("    the dispatcher needs the family on disk — clone each repo into")
-            print("    ~/.hermes/skills/security/<name>/ (see README → Quickstart)")
-        return 1
-    print(f"✓ SPYDERMONKEY verify: all ten family engines — ALL PASS ({live_line})")
-    return 0
+    # docs must carry the same version as the code
+    for doc in ("README.md", "SKILL.md", "CHANGELOG.md"):
+        p = self.parent.parent / doc
+        if p.exists() and VERSION not in p.read_text(errors="replace"):
+            warnings.append(f"{doc} does not mention v{VERSION}")
+
+    engines = _engine_status_all(fast=getattr(args, "fast", False))
+    missing = [e["name"] for e in engines if e["missing"]]
+    broken = [e["name"] for e in engines if not e["missing"] and not e["ok"]]
+    if missing:
+        bad.append(f"engines missing: {', '.join(missing)}")
+    if broken:
+        bad.append(f"engines failing: {', '.join(broken)}")
+
+    selftest = {"ok": True, "checks": []}
+    if not getattr(args, "no_selftest", False):
+        selftest = _run_selftest(quick=bool(getattr(args, "fast", False)))
+        if not selftest["ok"]:
+            bad.append("selftest")
+    live = {"ok": True, "detail": "skipped (--fast)"}
+    if not getattr(args, "fast", False):
+        ok, detail = _verify_gate_live()
+        live = {"ok": ok, "detail": detail}
+        if not ok:
+            bad.append("live gate proof")
+
+    payload = {
+        "version": VERSION, "ok": not bad, "errors": bad, "warnings": warnings,
+        "engines": engines, "selftest": selftest, "live_gate": live,
+    }
+    if _json_mode(args):
+        _emit(args, payload)
+    else:
+        if bad:
+            print(f"✗ SPYDERMONKEY verify FAILED: {bad}")
+            if missing:
+                print(f"  ⚠ engines not installed: {', '.join(missing)}")
+                print("    the dispatcher needs the family on disk — clone each repo into")
+                print("    ~/.hermes/skills/security/<name>/ (see README → Quickstart)")
+        else:
+            print(f"✓ SPYDERMONKEY verify: v{VERSION} · all ten family engines — ALL PASS"
+                  f" · selftest {selftest.get('passed', '?')}/{selftest.get('total', '?')}")
+        for w in warnings:
+            print(f"  ⚠ {w}")
+        if not selftest.get("ok", False):
+            for c in selftest.get("checks", []):
+                if not c.get("ok"):
+                    print(f"  ✗ selftest: {c.get('name')} — {c.get('detail', '')}")
+    return 0 if not bad else 1
 
 
-# ── v1.3.0 the scope authority · doctor · bench ───────────────────────────────
-
-SCOPE_PATH = Path.home() / ".redteam" / "scope.json"
-
+# ── v1.3.0 the scope authority · v4 shared module + lifecycle ─────────────────
 
 def _load_scope(path=None):
-    f = Path(path) if path else SCOPE_PATH
-    if not f.exists():
-        return None
     try:
-        return json.loads(f.read_text())
-    except Exception:
+        return sa.load_scope(path)
+    except sa.ScopeError:
         return None
 
 
 def _scope_match(scope, value):
-    """Domain-suffix or CIDR matching for a domain/URL/host. Returns True/False."""
-    import ipaddress
-    from urllib.parse import urlparse
-    v = value.strip().lower()
-    host = v
-    if "://" in v:
-        host = urlparse(v).hostname or ""
-    try:
-        ip = ipaddress.ip_address(host)
-        for net in scope.get("in_scope", []):
-            try:
-                if ip in ipaddress.ip_network(net, strict=False):
-                    return True
-            except ValueError:
-                continue
-        for net in scope.get("out_of_scope", []):
-            try:
-                if ip in ipaddress.ip_network(net, strict=False):
-                    return False
-            except ValueError:
-                continue
+    """Backward-compatible boolean wrapper around the shared matcher."""
+    if scope is None:
         return False
-    except ValueError:
-        pass
-    for o in scope.get("out_of_scope", []):
-        if host == o.lower() or host.endswith("." + o.lower()):
-            return False
-    for i in scope.get("in_scope", []):
-        i = i.lower()
-        if "://" in i:
-            ih = urlparse(i)
-            if host == (ih.hostname or "") or (ih.hostname or "").endswith("." + (ih.hostname or "")):
-                return True
-            if host == i:
-                return True
-        elif host == i or host.endswith("." + i):
-            return True
-    return False
+    ok, _ = sa.match(scope, value)
+    return ok
 
 
 def _is_lab(value):
-    """localhost-family targets are always lab-legal (dojo replicas, CI)."""
-    from urllib.parse import urlparse
-    v = value.strip().lower()
-    host = urlparse(v).hostname or v if "://" in v else v
-    return host in ("127.0.0.1", "localhost", "::1", "0.0.0.0")
+    return sa.is_lab(value)
 
 
 def _scope_gate(value, quiet=False):
-    """The live-fire gate. Lab hosts: always allowed. Everything else: a scope
-    authority containing the host is REQUIRED — default-deny. Returns bool."""
-    if _is_lab(value):
-        return True
-    scope = _load_scope()
-    if scope is None:
-        if not quiet:
-            print(f"✗ LIVE-FIRE REFUSED — {value}: no scope authority", file=sys.stderr)
-            print("  init one: spydermonkey scope init --engagement E --in-scope <host,CIDR>", file=sys.stderr)
-        return False
-    if _scope_match(scope, value):
-        return True
-    if not quiet:
-        print(f"✗ LIVE-FIRE REFUSED — {value} is not in the declared estate", file=sys.stderr)
-    return False
+    """The live-fire gate. Lab hosts are lab-legal; everything else needs a
+    non-expired scope authority containing it — default-deny. Returns bool."""
+    ok, reason, _ = sa.check(value, strict=True, audit=not quiet, allow_lab=True)
+    if not ok and not quiet:
+        print(f"✗ LIVE-FIRE REFUSED — {value}: {reason}", file=sys.stderr)
+        print("  init one: spydermonkey scope init --engagement E --in-scope <host,CIDR>",
+              file=sys.stderr)
+    return ok
+
+
+def _split_values(raw: str | None) -> list[str]:
+    return [s.strip() for s in (raw or "").split(",") if s.strip()]
 
 
 def cmd_scope(args):
-    if args.action == "init":
+    action = args.action
+    f = args.file
+    if action == "init":
+        if not args.engagement:
+            raise UsageError("scope init needs --engagement")
         scope = {
+            "schema": sa.SCHEMA,
             "engagement": args.engagement,
-            "in_scope": [s.strip() for s in (args.in_scope or "").split(",") if s.strip()],
-            "out_of_scope": [s.strip() for s in (args.out_of_scope or "").split(",") if s.strip()],
-            "rules": {"max_rate_rps": args.max_rate or 10, "passive_first": True,
-                      "no_destructive": True, "require_scope_check": True},
-            "created": datetime.now(timezone.utc).isoformat(),
+            "in_scope": _split_values(args.in_scope),
+            "out_of_scope": _split_values(args.out_of_scope),
+            "rules": {
+                "max_rate_rps": args.max_rate if args.max_rate is not None else 10,
+                "passive_first": True,
+                "no_destructive": True,
+                "require_scope_check": True,
+                "allow_lab": True,
+            },
+            "expires": args.expires,
+            "created": _now(),
+            "updated": _now(),
         }
-        f = Path(args.file) if args.file else SCOPE_PATH
-        f.parent.mkdir(parents=True, exist_ok=True)
-        f.write_text(json.dumps(scope, indent=2) + "\n")
-        print(f"▸ scope authority written: {f}")
-        print(f"  engagement: {scope['engagement']} · in-scope: {len(scope['in_scope'])}"
-              f" · out-of-scope: {len(scope['out_of_scope'])}")
-        print("  every live-probing engine checks this before firing")
+        if args.expires_days:
+            from datetime import timedelta
+            scope["expires"] = (datetime.now(timezone.utc)
+                                + timedelta(days=args.expires_days)).isoformat()
+        try:
+            path = sa.save_scope(scope, f, force=args.force)
+        except sa.ScopeError as e:
+            print(f"✗ {e}", file=sys.stderr)
+            return 1
+        payload = {"path": str(path), **sa.summary(scope)}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"▸ scope authority written: {path}")
+            print(f"  engagement: {scope['engagement']} · in-scope: {len(scope['in_scope'])}"
+                  f" · out-of-scope: {len(scope['out_of_scope'])}"
+                  + (f" · expires {scope['expires']}" if scope["expires"] else ""))
+            print("  every live-probing engine checks this before firing (shared module)")
+        _event(args.engagement or "scope", "scope.init", str(path))
         return 0
-    if args.action == "check":
-        scope = _load_scope(args.file)
+    if action == "check":
+        if not args.value:
+            raise UsageError("scope check needs --value")
+        ok, reason, scope = sa.check(args.value, file=f, strict=True, audit=True)
+        payload = {"value": args.value, "in_scope": ok, "reason": reason,
+                   "engagement": (scope or {}).get("engagement"),
+                   "expires": (scope or {}).get("expires")}
+        if _json_mode(args):
+            _emit(args, payload)
+        elif ok:
+            print(f"✓ IN SCOPE — {args.value} ({reason}; engagement"
+                  f" '{(scope or {}).get('engagement', '?')}')")
+        else:
+            print(f"✗ OUT OF SCOPE — {args.value}: {reason}", file=sys.stderr)
+        return 0 if ok else 1
+    if action in ("show", "history"):
+        if action == "history":
+            rows = sa.history(args.limit or 40, file=f)
+            if _json_mode(args):
+                _emit(args, {"history": rows})
+            elif not rows:
+                print("· no scope audit history yet")
+            else:
+                print(f"═══ SCOPE AUDIT — last {len(rows)} verdict(s) ═══")
+                for r in rows:
+                    print(f"  {r.get('at', '')[:19]}  {r.get('verdict', '?'):3s}"
+                          f"  {str(r.get('value', ''))[:52]:52s}  {r.get('reason', '')[:48]}")
+            return 0
+        try:
+            scope = sa.load_scope(f)
+        except sa.ScopeError as e:
+            print(f"✗ {e}", file=sys.stderr)
+            return 1
         if scope is None:
-            if args.strict:
-                print("✗ SCOPE CLOSED — no scope authority (spydermonkey scope init)",
-                      file=sys.stderr)
-                return 1
-            if _is_lab(args.value):
-                print(f"✓ LAB TARGET — {args.value} (localhost is always lab-legal)")
-                return 0
-            print("· no scope authority — engines run ungated (init one: scope init)")
+            if _json_mode(args):
+                _emit(args, {"scope": None})
+            else:
+                print("· no scope authority — init: spydermonkey scope init")
             return 0
-        ok = _scope_match(scope, args.value)
-        if ok:
-            print(f"✓ IN SCOPE — {args.value} under engagement '{scope.get('engagement', '?')}'")
-            return 0
-        print(f"✗ OUT OF SCOPE — {args.value} is not in the declared estate", file=sys.stderr)
-        return 1
-    if args.action == "show":
-        scope = _load_scope(args.file)
-        if scope is None:
-            print("· no scope authority — init: spydermonkey scope init")
-            return 0
-        print(json.dumps(scope, indent=2))
+        if _json_mode(args):
+            _emit(args, {"scope": scope, "summary": sa.summary(scope)})
+        else:
+            print(json.dumps(scope, indent=2))
+            s = sa.summary(scope)
+            print(f"\n  {s['engagement']}: {s['in_scope']} allow / {s['out_of_scope']} deny"
+                  f" · max {s['rules'].get('max_rate_rps', '?')} rps"
+                  + (" · EXPIRED" if s["expired"] else ""))
+        return 0
+    if action in ("add", "remove"):
+        values = _split_values(args.value)
+        if not values:
+            raise UsageError(f"scope {action} needs --value (comma-separated)")
+        kind = "out_of_scope" if args.kind in ("out", "out_of_scope", "deny") else "in_scope"
+
+        def mutate(scope):
+            if action == "add":
+                for v in values:
+                    if v not in scope[kind]:
+                        scope[kind].append(v)
+            else:
+                scope[kind] = [x for x in scope[kind] if x not in values]
+
+        try:
+            scope = sa.update_scope(mutate, f)
+        except sa.ScopeError as e:
+            print(f"✗ {e}", file=sys.stderr)
+            return 1
+        payload = {"action": action, "kind": kind, "values": values,
+                   "summary": sa.summary(scope)}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"▸ scope {action}: {kind} {values}")
+            print(f"  {scope['engagement']}: {len(scope['in_scope'])} allow /"
+                  f" {len(scope['out_of_scope'])} deny")
+        return 0
+    if action == "extend":
+        if not args.expires and not args.expires_days:
+            raise UsageError("scope extend needs --expires ISO or --expires-days N")
+        expires = args.expires
+        if args.expires_days:
+            from datetime import timedelta
+            expires = (datetime.now(timezone.utc)
+                       + timedelta(days=args.expires_days)).isoformat()
+
+        def mutate(scope):
+            scope["expires"] = expires
+
+        try:
+            scope = sa.update_scope(mutate, f)
+        except sa.ScopeError as e:
+            print(f"✗ {e}", file=sys.stderr)
+            return 1
+        if _json_mode(args):
+            _emit(args, {"expires": expires, "scope": scope})
+        else:
+            print(f"▸ scope authority extended to {expires}")
         return 0
     return 2
 
 
-def cmd_doctor(args):
-    print("═══ SPYDERMONKEY DOCTOR ═══")
-    ok = True
-    import platform
-    pv = platform.python_version()
-    print(f"  python: {pv}" + ("  ✓" if tuple(map(int, pv.split('.')[:2])) >= (3, 8) else "  ✗ (<3.8)"))
-    if tuple(map(int, pv.split('.')[:2])) < (3, 8):
-        ok = False
-    v = subprocess.run([sys.executable, str(Path(__file__).resolve()), "verify"],
-                       capture_output=True, text=True)
-    engines = [ln for ln in v.stdout.splitlines() if "family engines" in ln]
-    print(f"  engines: {engines[0].strip() if engines else ('FAIL — ' + '; '.join(v.stdout.splitlines()[0:1]))}")
-    ok = ok and v.returncode == 0
-    scope = _load_scope()
-    if scope:
-        print(f"  scope:   '{scope.get('engagement', '?')}' in={len(scope.get('in_scope', []))}"
-              f" out={len(scope.get('out_of_scope', []))} rules={len(scope.get('rules', {}))}  ✓")
-    else:
-        print("  scope:   no authority (scope init — recommended)")
-    camp = Path.home() / ".redteam" / "campaigns"
-    if camp.exists():
-        n = len([d for d in camp.iterdir() if d.is_dir()])
-        print(f"  campaigns: {n} dir(s)")
-        stale = 0
-        for d in camp.iterdir():
-            for f in d.glob("*state*.json"):
+def _campaign_dirs() -> list[Path]:
+    root = _campaigns_root()
+    if not root.exists():
+        return []
+    out = []
+    for d in sorted(root.iterdir()):
+        if not d.is_dir():
+            continue
+        try:
+            sa.safe_name(d.name, "campaign")
+        except sa.ScopeError:
+            continue
+        out.append(d)
+    return out
+
+
+def _campaign_summary(d: Path) -> dict:
+    m = _load_json(d / "manifest.json", {})
+    try:
+        rows = _ledger_load(d.name)
+    except Exception:
+        rows = []
+    try:
+        board = _phase_board(d.name)
+    except Exception:
+        board = []
+    done = sum(1 for r in board if r.get("status") == "completed")
+    events = 0
+    ev = d / "events.jsonl"
+    if ev.exists():
+        events = sum(1 for line in ev.read_text(errors="replace").splitlines()
+                     if line.strip())
+    states = sorted(p.name for p in d.glob("*state*.json"))
+    return {
+        "target": d.name,
+        "path": str(d),
+        "engagement": m.get("engagement", ""),
+        "objective": m.get("objective", ""),
+        "url": m.get("url", ""),
+        "domain": m.get("domain", ""),
+        "status": m.get("status", "open"),
+        "created": m.get("created", ""),
+        "updated": m.get("updated", ""),
+        "ledger_rows": len(rows),
+        "confirmed": sum(1 for r in rows if r.get("status") == "CONFIRMED"),
+        "phases_complete": done,
+        "phases_total": len(board),
+        "events": events,
+        "state_files": states,
+    }
+
+
+def cmd_campaign(args):
+    action = args.action
+    if action == "init":
+        if not args.target:
+            raise UsageError("campaign init needs --target")
+        camp = _camp(args.target)
+        exists = (camp / "manifest.json").exists()
+        if exists and not getattr(args, "force", False):
+            raise UsageError(f"campaign '{args.target}' already exists (use --force to update it)")
+        scope = _load_scope()
+        engagement = getattr(args, "engagement", None) or (scope or {}).get("engagement", "")
+        data = {
+            "engagement": engagement,
+            "url": args.url or "",
+            "domain": args.domain or "",
+            "objective": args.objective or "",
+            "status": "open",
+            "created": _now(),
+        }
+        if exists and getattr(args, "force", False):
+            old = _manifest(args.target)
+            old.update({k: v for k, v in data.items() if v or k in ("created", "status")})
+            data = old
+        _save_manifest(args.target, data)
+        _event(args.target, "campaign.init" if not exists else "campaign.reinit",
+               args.objective or "engagement opened")
+        payload = {"campaign": _campaign_summary(camp), "created": not exists}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            verb = "opened" if not exists else "updated"
+            print(f"▸ campaign {verb}: '{args.target}'")
+            print(f"  engagement: {engagement or '—'} · objective: {args.objective or '—'}")
+            print(f"  path: {camp}")
+        return 0
+    if action == "list":
+        rows = [_campaign_summary(d) for d in _campaign_dirs()]
+        payload = {"campaigns": rows, "count": len(rows),
+                   "root": str(_campaigns_root())}
+        if _json_mode(args):
+            _emit(args, payload)
+        elif not rows:
+            print("· no campaigns yet — campaign init --target <name>")
+        else:
+            print(f"═══ CAMPAIGNS — {len(rows)} engagement(s) ═══")
+            for r in rows:
+                print(f"  ▸ {r['target']:24s} [{r['status']:6s}]"
+                      f" {r['ledger_rows']:3d} finding(s) ·"
+                      f" {r['phases_complete']}/{r['phases_total'] or 13} phases"
+                      f" · {r['objective'][:48] or '—'}")
+            print(f"  root: {payload['root']}")
+        return 0
+    if action == "show":
+        if not args.target:
+            raise UsageError("campaign show needs --target")
+        camp = _camp(args.target, create=False)
+        if not camp.exists() or (not (camp / "manifest.json").exists()
+                                 and not any(camp.iterdir())):
+            print(f"✗ no campaign '{args.target}'", file=sys.stderr)
+            return 2
+        _ensure_campaign(args.target)
+        rows = _ledger_load(args.target)
+        payload = {
+            "campaign": _campaign_summary(camp),
+            "manifest": _manifest(args.target),
+            "states": sorted(p.name for p in camp.glob("*state*.json")),
+            "ledger": _ledger_stats(rows),
+            "ledger_integrity": _ledger_integrity_details(args.target),
+            "phases": _phase_board(args.target),
+            "events_tail": _load_events(args.target, 10),
+        }
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            c = payload["campaign"]
+            print(f"═══ CAMPAIGN — {args.target} ═══")
+            print(f"  status:    {c['status']} · engagement: {c['engagement'] or '—'}")
+            print(f"  objective: {c['objective'] or '—'}")
+            print(f"  url:       {c['url'] or '—'} · domain: {c['domain'] or '—'}")
+            print(f"  created:   {c['created']} · updated: {c['updated']}")
+            print(f"  findings:  {c['ledger_rows']} ({c['confirmed']} confirmed)"
+                  f" · phases {c['phases_complete']}/{c['phases_total'] or 13}")
+            print(f"  states:    {', '.join(payload['states']) or 'none'}")
+            print(f"  ledger:    {'signed chain ✓' if not payload['ledger_integrity']['errors'] else 'integrity ✗'}")
+        return 0
+    if action == "timeline":
+        if not args.target:
+            raise UsageError("campaign timeline needs --target")
+        _camp(args.target)
+        rows = _load_events(args.target, getattr(args, "limit", 100) or 100)
+        payload = {"target": args.target, "events": rows, "count": len(rows)}
+        if _json_mode(args):
+            _emit(args, payload)
+        elif not rows:
+            print("· no campaign events yet")
+        else:
+            print(f"═══ CAMPAIGN TIMELINE — {args.target} ({len(rows)}) ═══")
+            for r in rows:
+                print(f"  {str(r.get('at', ''))[:19]}  {str(r.get('kind', '?')):24s}"
+                      f" {str(r.get('detail', ''))[:76]}")
+        return 0
+    if action == "archive":
+        if not args.target:
+            raise UsageError("campaign archive needs --target")
+        camp = _camp(args.target)
+        if not camp.exists() or not any(camp.iterdir()):
+            print(f"✗ no campaign '{args.target}'", file=sys.stderr)
+            return 2
+        arch = _root() / "archives"
+        arch.mkdir(parents=True, exist_ok=True)
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        out = arch / f"{sa.safe_name(args.target)}-{stamp}.tar.gz"
+        with tarfile.open(out, "w:gz") as tf:
+            tf.add(camp, arcname=camp.name)
+        os.chmod(out, 0o600)
+        removed = False
+        if getattr(args, "remove", False):
+            if not getattr(args, "force", False):
+                raise UsageError("campaign archive --remove also needs --force")
+            shutil.rmtree(camp)
+            removed = True
+            _audit_campaign(args.target, "archive+remove", str(out))
+        payload = {"target": args.target, "archive": str(out),
+                   "bytes": out.stat().st_size, "removed": removed}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"▸ campaign archived: {out} ({out.stat().st_size} bytes)"
+                  + (" · source removed" if removed else " · source kept"))
+        return 0
+    if action == "purge":
+        if not args.target:
+            raise UsageError("campaign purge needs --target")
+        if not getattr(args, "force", False):
+            raise UsageError("campaign purge is destructive — add --force")
+        camp = _camp(args.target, create=False)
+        root = _campaigns_root().resolve()
+        try:
+            camp.resolve().relative_to(root)
+        except ValueError:
+            raise UsageError("refusing to purge a path outside the campaigns root")
+        if not camp.exists():
+            print(f"✗ no campaign '{args.target}'", file=sys.stderr)
+            return 2
+        shutil.rmtree(camp)
+        _audit_campaign(args.target, "purge", "operator --force")
+        if _json_mode(args):
+            _emit(args, {"target": args.target, "purged": True})
+        else:
+            print(f"▸ campaign purged: '{args.target}' (audit recorded)")
+        return 0
+    if action == "close":
+        if not args.target:
+            raise UsageError("campaign close needs --target")
+        _ensure_campaign(args.target)
+        m = _manifest(args.target)
+        m["status"] = "closed"
+        m["closed"] = _now()
+        if getattr(args, "note", None):
+            m["close_note"] = args.note
+        _save_manifest(args.target, m)
+        _event(args.target, "campaign.close", args.note or "engagement closed")
+        if _json_mode(args):
+            _emit(args, {"target": args.target, "status": "closed",
+                         "manifest": m})
+        else:
+            print(f"▸ campaign closed: '{args.target}'"
+                  + (f" — {args.note}" if getattr(args, 'note', None) else ""))
+        return 0
+    return 2
+
+
+def _load_events(target: str, limit: int = 100) -> list[dict]:
+    p = _camp(target) / "events.jsonl"
+    if not p.exists():
+        return []
+    rows = []
+    for line in p.read_text(errors="replace").splitlines():
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+            if isinstance(row, dict):
+                rows.append(row)
+        except Exception:
+            continue
+    return rows[-limit:]
+
+
+def _audit_campaign(target: str, action: str, detail: str) -> None:
+    try:
+        row = {"at": _now(), "target": target, "action": action, "detail": detail}
+        p = _root() / "campaign-audit.jsonl"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with p.open("a") as f:
+            f.write(json.dumps(row) + "\n")
+        try:
+            os.chmod(p, 0o600)
+        except OSError:
+            pass
+    except OSError:
+        pass
+
+
+def _iter_json_files(root: Path):
+    for p in root.glob("*.json"):
+        yield p
+
+
+def _doctor_scope(fix: bool = False) -> dict:
+    path = sa.scope_path()
+    if not path.exists():
+        return {"ok": True, "warning": "no scope authority (scope init recommended)",
+                "path": str(path)}
+    try:
+        scope = sa.load_scope()
+    except sa.ScopeError as e:
+        return {"ok": False, "error": str(e), "path": str(path)}
+    s = sa.summary(scope)
+    problems, warnings = [], []
+    if s["expired"]:
+        problems.append(f"expired at {s['expires']}")
+    mode = oct(path.stat().st_mode & 0o777)
+    if mode != "0o600":
+        if fix:
+            try:
+                path.chmod(0o600)
+                warnings.append(f"scope permissions tightened {mode} → 0o600")
+                mode = "0o600"
+            except OSError as e:
+                problems.append(f"mode {mode} (expected 0o600; chmod failed: {e})")
+        else:
+            problems.append(f"mode {mode} (expected 0o600; run doctor --fix)")
+    return {"ok": not problems, "path": str(path), "summary": s,
+            "problems": problems, "warnings": warnings}
+
+
+def _doctor_campaigns(fix: bool = False) -> dict:
+    out = {"campaigns": [], "errors": [], "warnings": [], "ledger_rows": 0}
+    for d in _campaign_dirs():
+        entry = {"target": d.name, "json_files": 0, "corrupt": [],
+                 "ledger_rows": 0, "integrity": [], "events": 0}
+        for p in _iter_json_files(d):
+            entry["json_files"] += 1
+            try:
+                json.loads(p.read_text())
+            except Exception as e:
+                entry["corrupt"].append({"file": p.name, "error": str(e)[:160]})
+                out["errors"].append(f"{d.name}/{p.name}: {e}")
+                if fix:
+                    try:
+                        p.rename(p.with_name(p.name + f".corrupt-{int(time.time())}"))
+                    except OSError:
+                        pass
+        rows = _ledger_load(d.name)
+        entry["ledger_rows"] = len(rows)
+        out["ledger_rows"] += len(rows)
+        entry["integrity"] = _ledger_integrity(d.name)
+        for e in entry["integrity"]:
+            out["errors"].append(f"{d.name}/ledger: {e}")
+        ev = d / "events.jsonl"
+        if ev.exists():
+            entry["events"] = sum(1 for l in ev.read_text(errors="replace").splitlines()
+                                  if l.strip())
+        for tmp in list(d.glob("*.tmp.*")):
+            out["warnings"].append(f"{d.name}/{tmp.name}: stale temp file")
+            if fix:
                 try:
-                    json.loads(f.read_text())
-                except Exception:
-                    stale += 1
-        if stale:
-            print(f"  ! {stale} corrupt state file(s)")
-            ok = False
-        lrows = sum(1 for d in camp.iterdir()
-                    if (d / "ledger.jsonl").exists()
-                    for l in (d / "ledger.jsonl").read_text().splitlines() if l.strip())
-        print(f"  ledger:  {lrows} finding row(s) across campaigns")
-    lv = Path.home() / ".redteam" / "learned-vectors.jsonl"
+                    tmp.unlink()
+                except OSError:
+                    pass
+        out["campaigns"].append(entry)
+    return out
+
+
+def _doctor_skilltree() -> dict:
+    root = Path(__file__).resolve().parent.parent
+    idx = root / "references" / "skilltree-index.md"
+    skills = root / "references" / "skills"
+    if not idx.exists():
+        return {"ok": False, "error": "references/skilltree-index.md missing"}
+    text = idx.read_text(errors="replace")
+    links = re.findall(r"\]\((skills/[^)]+\.md)\)", text)
+    missing = [l for l in links if not (root / "references" / l).exists()]
+    files = list(skills.rglob("*.md")) if skills.exists() else []
+    return {"ok": not missing, "index_links": len(links), "files": len(files),
+            "missing": missing[:20],
+            "error": f"{len(missing)} broken link(s)" if missing else ""}
+
+
+def _doctor_relays() -> dict:
+    rd = _root() / "relays"
+    if not rd.exists():
+        return {"ok": True, "nodes": []}
+    nodes, problems = [], []
+    for f in sorted(rd.glob("*/relay.json")):
+        try:
+            r = json.loads(f.read_text())
+            nodes.append({"name": r.get("name"), "host": r.get("host")})
+        except Exception as e:
+            problems.append(f"{f}: {e}")
+            continue
+        key = Path(r.get("key", ""))
+        if not key.exists():
+            problems.append(f"{f.parent.name}: key missing ({key})")
+        else:
+            mode = oct(key.stat().st_mode & 0o777)
+            if mode != "0o600":
+                problems.append(f"{f.parent.name}: key mode {mode} (expected 0o600)")
+    return {"ok": not problems, "nodes": nodes, "problems": problems}
+
+
+def _doctor_compile() -> dict:
+    scripts = [Path(__file__).resolve()] + [
+        Path(__file__).resolve().parent / n
+        for n in ("arsenal.py", "bench_live.py", "mcp_server.py",
+                  "skilltree.py", "scope_authority.py")]
+    bad = []
+    for p in scripts:
+        r = subprocess.run([sys.executable, "-m", "py_compile", str(p)],
+                           capture_output=True, text=True)
+        if r.returncode != 0:
+            bad.append(f"{p.name}: {r.stderr.strip()[:160]}")
+    return {"ok": not bad, "scripts": len(scripts), "errors": bad}
+
+
+def _doctor_mcp() -> dict:
+    p = Path(__file__).resolve().parent / "mcp_server.py"
+    try:
+        r = subprocess.run([sys.executable, str(p), "--test"],
+                           capture_output=True, text=True, timeout=20)
+        if r.returncode != 0:
+            return {"ok": False, "error": (r.stderr or r.stdout)[:200]}
+        data = json.loads(r.stdout)
+        return {"ok": True, "tools": len(data.get("tools", [])),
+                "version": data.get("version", "?")}
+    except Exception as e:
+        return {"ok": False, "error": str(e)[:200]}
+
+
+def cmd_doctor(args):
+    import platform
+    checks = {}
+    errors, warnings = [], []
+    pv = platform.python_version()
+    py_ok = tuple(map(int, pv.split(".")[:2])) >= (3, 8)
+    checks["python"] = {"ok": py_ok, "version": pv}
+    if not py_ok:
+        errors.append(f"python {pv} < 3.8")
+
+    checks["compile"] = _doctor_compile()
+    if not checks["compile"]["ok"]:
+        errors.extend(checks["compile"]["errors"])
+
+    engines = _engine_status_all(fast=getattr(args, "fast", False))
+    checks["engines"] = {
+        "ok": all(e["ok"] for e in engines),
+        "up": sum(1 for e in engines if e["ok"]), "total": len(engines),
+        "items": engines,
+    }
+    if not checks["engines"]["ok"]:
+        errors.extend(f"engine {e['name']}: {e['first']}" for e in engines if not e["ok"])
+
+    checks["scope"] = _doctor_scope(fix=getattr(args, "fix", False))
+    if not checks["scope"]["ok"]:
+        errors.append("scope: " + "; ".join(checks["scope"].get("problems", [])
+                                            or [checks["scope"].get("error", "invalid")]))
+    if checks["scope"].get("warning"):
+        warnings.append(checks["scope"]["warning"])
+    warnings.extend(checks["scope"].get("warnings", []))
+
+    checks["campaigns"] = _doctor_campaigns(fix=getattr(args, "fix", False))
+    errors.extend(checks["campaigns"]["errors"])
+    warnings.extend(checks["campaigns"]["warnings"])
+
+    checks["skilltree"] = _doctor_skilltree()
+    if not checks["skilltree"]["ok"]:
+        errors.append("skilltree: " + checks["skilltree"].get("error", "broken"))
+
+    checks["relays"] = _doctor_relays()
+    if not checks["relays"]["ok"]:
+        errors.extend(checks["relays"]["problems"])
+
+    checks["mcp"] = _doctor_mcp()
+    if not checks["mcp"]["ok"]:
+        errors.append("mcp: " + checks["mcp"].get("error", "failed"))
+
+    lv = _root() / "learned-vectors.jsonl"
+    canon = 0
+    canon_bad = 0
     if lv.exists():
-        rows = [l for l in lv.read_text().splitlines() if l.strip()]
-        print(f"  canon:   {len(rows)} learned-vector row(s) (3AM promote-ready)")
-    rd = Path.home() / ".redteam" / "relays"
-    if rd.exists():
-        relays = list(rd.glob("*/relay.json"))
-        print(f"  relays:  {len(relays)} remote node(s)")
-    print(f"═══ {'HEALTHY' if ok else 'ATTENTION NEEDED'} ═══")
-    return 0 if ok else 1
+        for line in lv.read_text(errors="replace").splitlines():
+            if not line.strip():
+                continue
+            canon += 1
+            try:
+                json.loads(line)
+            except Exception:
+                canon_bad += 1
+    checks["canon"] = {"ok": canon_bad == 0, "rows": canon, "corrupt": canon_bad}
+    if canon_bad:
+        errors.append(f"canon: {canon_bad} corrupt learned-vector row(s)")
+
+    try:
+        du = shutil.disk_usage(_root() if _root().exists() else Path.home())
+        checks["disk"] = {"ok": du.free > 512 * 1024 * 1024,
+                          "free_gb": round(du.free / (1024 ** 3), 2),
+                          "total_gb": round(du.total / (1024 ** 3), 2)}
+        if not checks["disk"]["ok"]:
+            warnings.append(f"low disk: {checks['disk']['free_gb']} GB free")
+    except OSError:
+        checks["disk"] = {"ok": True, "error": "unavailable"}
+
+    payload = {"version": VERSION, "ok": not errors, "errors": errors,
+               "warnings": warnings, "checks": checks}
+    if _json_mode(args):
+        _emit(args, payload)
+    else:
+        print("═══ SPYDERMONKEY DOCTOR ═══")
+        print(f"  python:    {pv} {'✓' if py_ok else '✗'}")
+        print(f"  compile:   {checks['compile']['scripts']} script(s) "
+              f"{'✓' if checks['compile']['ok'] else '✗'}")
+        eng = checks["engines"]
+        print(f"  engines:   {eng['up']}/{eng['total']} up {'✓' if eng['ok'] else '✗'}")
+        s = checks["scope"]
+        if s.get("summary"):
+            print(f"  scope:     '{s['summary']['engagement']}'"
+                  f" in={s['summary']['in_scope']} out={s['summary']['out_of_scope']}"
+                  f" {'✓' if s['ok'] else '✗'}")
+        else:
+            print(f"  scope:     {'no authority (recommended: scope init)'}")
+        c = checks["campaigns"]
+        print(f"  campaigns: {len(c['campaigns'])} dir(s) · {c['ledger_rows']} ledger row(s)")
+        for e in c["campaigns"]:
+            if e["corrupt"] or e["integrity"]:
+                print(f"    ✗ {e['target']}: {len(e['corrupt'])} corrupt ·"
+                      f" {len(e['integrity'])} ledger issue(s)")
+        st = checks["skilltree"]
+        print(f"  skilltree: {st.get('files', 0)} file(s) · {st.get('index_links', 0)} index link(s)"
+              f" {'✓' if st['ok'] else '✗'}")
+        print(f"  canon:     {checks['canon']['rows']} learned-vector row(s)"
+              f" {'✓' if checks['canon']['ok'] else '✗'}")
+        print(f"  relays:    {len(checks['relays'].get('nodes', []))} node(s)"
+              f" {'✓' if checks['relays']['ok'] else '✗'}")
+        print(f"  mcp:       {checks['mcp'].get('tools', 0)} tool(s)"
+              f" {'✓' if checks['mcp']['ok'] else '✗'}")
+        print(f"  disk:      {checks['disk'].get('free_gb', '?')} GB free")
+        for w in warnings:
+            print(f"  ⚠ {w}")
+        for e in errors:
+            print(f"  ✗ {e}")
+        print(f"═══ {'HEALTHY' if not errors else 'ATTENTION NEEDED'} ═══")
+    return 0 if not errors else 1
 
 
 # canned route-level benchmark: goal → expected mandate sequence (first mandate)
 BENCH_CASES = [
     ("protect my opsec", "barbican"),
+    ("check my vantage before anything", "barbican"),
     ("recon the domain", "holyshit"),
+    ("what do we know in the case canon", "holyshit"),
     ("their custom bundle logic", "undercroft"),
+    ("probe the api and jwt surface", "undercroft"),
     ("take over the session", "3am"),
+    ("attack and exploit the login", "3am"),
     ("forge weapons from findings", "kairo"),
+    ("synthesize chains from the vectors", "kairo"),
     ("climb the ladder on the host", "kaisha"),
+    ("privesc and move lateral", "kaisha"),
     ("price what they could take", "shukaku"),
+    ("harvest and disclose the crown jewels", "shukaku"),
     ("full assault everything", "shiki"),
+    ("conduct the whole war in one command", "shiki"),
     ("detect the intrusion and write the rule", "kage"),
+    ("blue team sigma detection", "kage"),
     ("train on a vulnerable replica in the lab", "dojo"),
+    ("practice the lesson on the range", "dojo"),
     ("run the 3-gate confirm on the probe", "spy"),
     ("triage the finding ledger", "spy"),
+    ("scan with nmap and nuclei", "arsenal"),
+    ("subdomain enum with the tools", "arsenal"),
     ("zzz unmapped goal qqq", "barbican"),  # relay head
+]
+
+BENCH_SEQUENCES = [
+    ("recon the domain then attack the session", ["holyshit", "3am"]),
+    ("protect my opsec and recon", ["barbican", "holyshit"]),
+    ("find the api and forge weapons", ["holyshit", "undercroft", "kairo"]),
+    ("detect the intrusion then train on a replica", ["kage", "dojo"]),
 ]
 
 
 def cmd_bench(args):
-    print("═══ SPYDERMONKEY BENCH (offline, route-level) ═══")
+    results = []
     hits = 0
     for goal, want in BENCH_CASES:
-        r = subprocess.run([sys.executable, str(Path(__file__).resolve()),
-                            "route", "--goal", goal], capture_output=True, text=True)
-        first = ""
-        for ln in r.stdout.splitlines():
-            if "load + run" in ln:
-                first = ln.split(":")[-1].strip().split(" → ")[0]
-                break
-        mark = "✓" if first == want else "✗"
-        hits += mark == "✓"
-        print(f"  {mark} '{goal[:38]}' → {first} (want {want})")
-    pct = 100.0 * hits / len(BENCH_CASES)
-    print(f"═══ route accuracy: {hits}/{len(BENCH_CASES)} = {pct:.1f}% ═══")
-    print("  (route-level only — see bench_live.py for the exploitation-level bench)")
+        r = _route_goal(goal)
+        got = r["primary"]
+        ok = got == want
+        hits += ok
+        results.append({"goal": goal, "want": want, "got": got,
+                        "sequence": r["sequence"], "ok": ok})
+    seq_hits = 0
+    for goal, want in BENCH_SEQUENCES:
+        r = _route_goal(goal)
+        ok = all(m in r["sequence"] for m in want)
+        seq_hits += ok
+        results.append({"goal": goal, "want_sequence": want,
+                        "sequence": r["sequence"], "ok": ok})
+    total = len(BENCH_CASES) + len(BENCH_SEQUENCES)
+    passed = hits + seq_hits
+    pct = 100.0 * passed / total
+    payload = {"passed": passed, "total": total, "accuracy": round(pct, 1),
+               "route_hits": hits, "route_total": len(BENCH_CASES),
+               "sequence_hits": seq_hits, "sequence_total": len(BENCH_SEQUENCES),
+               "results": results, "ok": pct >= 90}
+    if _json_mode(args):
+        _emit(args, payload)
+    else:
+        print("═══ SPYDERMONKEY BENCH (offline, route-level) ═══")
+        for r in results:
+            mark = "✓" if r["ok"] else "✗"
+            if "want_sequence" in r:
+                print(f"  {mark} '{r['goal'][:38]}' → {' → '.join(r['sequence'])}"
+                      f" (want all of {r['want_sequence']})")
+            else:
+                print(f"  {mark} '{r['goal'][:38]}' → {r['got']} (want {r['want']})")
+        print(f"═══ route accuracy: {passed}/{total} = {pct:.1f}%"
+              f" ({hits}/{len(BENCH_CASES)} first-hop · {seq_hits}/{len(BENCH_SEQUENCES)} sequence) ═══")
+        print("  (route-level only — see bench_live.py for the exploitation-level bench)")
     return 0 if pct >= 90 else 1
 
 
@@ -481,62 +1434,229 @@ def cmd_mandate(args):
     return 0
 
 
-# ── v1.4.0 the agent fleet: one agent per mandate, dispatched in PARALLEL ─────
+MANDATE_SECTIONS = ("axis", "law", "handoff", "evidence", "fleet", "failure")
 
-FLEET_BRIEFS = {
-    "barbican":   ("THE SHIELD",   lambda a: ["assess", "--target", a["target"]]),
-    "holyshit":   ("THE FINDER",   lambda a: ["dossier", "--target", a["target"]]),
-    "undercroft": ("THE DESCENT",  lambda a: ["probe"]),
-    "3am":        ("THE PERFORMER", lambda a: ["verify"]),
-    "kage":       ("THE MIRROR",   lambda a: ["mirror", "--target", a["target"]]),
-    "dojo":       ("THE RANGE",    lambda a: ["catalog"]),
-    "kairo":      ("THE SYNTH",    lambda a: ["verify"]),
-    "kaisha":     ("THE LADDER",   lambda a: ["rungs", "--target", a["target"]]),
-    "shukaku":    ("THE HARVESTER", lambda a: ["verify"]),
-    "shiki":      ("THE COMMAND",  lambda a: ["board", "--org", a["target"]]),
-}
+
+def _mandate_contract_path(name: str) -> Path:
+    meta = MANDATES.get(name)
+    if not meta:
+        raise UsageError(f"unknown mandate '{name}' (one of: {', '.join(MANDATES)})")
+    return Path(__file__).resolve().parent.parent / "references" / "mandates" / meta["contract"]
+
+
+def cmd_mandates(args):
+    action = args.action
+    if action == "list":
+        rows = []
+        for name, meta in MANDATES.items():
+            p = _mandate_contract_path(name)
+            rows.append({"name": name, "n": meta["n"], "role": meta["role"],
+                         "axis": meta["axis"], "phase": meta["phase"],
+                         "contract": meta["contract"], "contract_path": str(p),
+                         "present": p.exists()})
+        payload = {"mandates": rows, "count": len(rows),
+                   "complete": all(r["present"] for r in rows)}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"═══ MANDATE CONTRACTS — {len(rows)} contracts ═══")
+            for r in rows:
+                print(f"  {'✓' if r['present'] else '✗'} {r['n']} {r['name']:10s}"
+                      f" {r['role']:16s} phase={r['phase']:22s} {r['contract']}")
+        return 0
+    if action == "show":
+        if not args.name:
+            raise UsageError("mandates show needs --name")
+        name = args.name.lower()
+        meta = MANDATES.get(name)
+        if not meta:
+            raise UsageError(f"unknown mandate '{args.name}'")
+        p = _mandate_contract_path(name)
+        text = p.read_text() if p.exists() else ""
+        payload = {"name": name, **meta, "contract_path": str(p),
+                   "present": p.exists(), "content": text}
+        if _json_mode(args):
+            _emit(args, payload)
+        elif not p.exists():
+            print(f"✗ contract missing: {p}", file=sys.stderr)
+            return 2
+        else:
+            print(text)
+        return 0 if p.exists() else 2
+    if action == "verify":
+        errors, warnings = [], []
+        if len(MANDATES) != 10:
+            errors.append(f"{len(MANDATES)} mandates registered (expected 10)")
+        nums = sorted(m["n"] for m in MANDATES.values())
+        if nums != list(range(10)):
+            errors.append(f"mandate numbering is not 0..9: {nums}")
+        for name, meta in MANDATES.items():
+            p = _mandate_contract_path(name)
+            if not p.exists():
+                errors.append(f"{name}: contract missing ({p})")
+                continue
+            text = p.read_text(errors="replace").lower()
+            missing = [s for s in MANDATE_SECTIONS if f"## {s}" not in text]
+            if missing:
+                errors.append(f"{name}: contract missing section(s): {', '.join(missing)}")
+            if name.split("-")[0] not in text:
+                warnings.append(f"{name}: contract does not name the mandate")
+            if meta["phase"] not in {p["id"] for p in PHASES}:
+                errors.append(f"{name}: unknown phase '{meta['phase']}'")
+        payload = {"ok": not errors, "errors": errors, "warnings": warnings,
+                   "count": len(MANDATES)}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"═══ MANDATE CONTRACT VERIFY — {len(MANDATES)} contracts ═══")
+            for e in errors:
+                print(f"  ✗ {e}")
+            for w in warnings:
+                print(f"  ⚠ {w}")
+            print(f"═══ {'ALL CONTRACTS VALID' if not errors else 'CONTRACT ERRORS'} ═══")
+        return 0 if not errors else 1
+    return 2
+
+
+# ── v1.4.0 the agent fleet · v4 real briefs + plan + state ───────────────────
+
+FLEET_BRIEFS = {name: (meta["role"], meta["fleet"])
+                for name, meta in MANDATES.items()}
+
+
+def _clean_out(text: str, limit: int = 20000) -> str:
+    text = re.sub(r"\x1b\[[0-9;]*[A-Za-z]", "", text or "")
+    return text[:limit]
+
+
+def _fleet_seq(goal: str, agents: str | None) -> list[str]:
+    routed = _route_goal(goal)
+    matched = [m for m in routed["sequence"] if m in FAMILY]
+    seq = list(dict.fromkeys(matched + list(RELAY)))
+    if agents:
+        want = [s.strip() for s in agents.split(",") if s.strip()]
+        unknown = [w for w in want if w not in FAMILY]
+        if unknown:
+            raise UsageError(f"unknown agent(s): {', '.join(unknown)}")
+        seq = [m for m in seq if m in want]
+    return seq
+
+
+def _fleet_plan(seq: list[str], ctx: dict) -> list[dict]:
+    plan = []
+    for name in seq:
+        role, brief = FLEET_BRIEFS[name]
+        script = FAMILY[name][0]
+        try:
+            args = [a.format(**ctx) for a in brief]
+        except KeyError as e:
+            args = list(brief)
+            plan.append({"agent": name, "role": role, "error": f"bad brief {e}"})
+            continue
+        plan.append({"agent": name, "role": role, "engine": str(script),
+                     "present": script.exists(), "argv": args,
+                     "command": " ".join([str(script)] + args)})
+    return plan
 
 
 def cmd_fleet(args):
     """PARALLEL MULTI-AGENT DISPATCH: every mandate wakes as its own agent with
-    its brief, runs its capability pass concurrently, and the fleet reports."""
-    seq = list(RELAY)
-    for kw, mandate in ROUTES:
-        if mandate in FAMILY and mandate not in seq and _kw_hit(kw, args.goal.lower()):
-            seq.insert(0, mandate)          # matched mandates lead the fleet
-    if args.agents:
-        want = set(s.strip() for s in args.agents.split(",") if s.strip())
-        seq = [m for m in seq if m in want]
+    its real engine brief, runs its capability pass, and the fleet reports."""
+    _camp(args.target)
+    _ensure_campaign(args.target, domain=args.domain, objective=args.goal)
+    seq = _fleet_seq(args.goal, args.agents)
     ctx = {"target": args.target, "domain": args.domain}
+    plan = _fleet_plan(seq, ctx)
+    if getattr(args, "dry_run", False):
+        payload = {"goal": args.goal, "target": args.target, "domain": args.domain,
+                   "plan": plan, "executed": False}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"═══ SPYDERMONKEY FLEET PLAN — {len(plan)} agent(s), nothing executes ═══")
+            for p in plan:
+                mark = "✓" if p.get("present") else "✗"
+                print(f"  {mark} {p['agent']:10s} {p['role']:16s} {p.get('command', '')[:110]}")
+        return 0
+    if _json_mode(args):
+        # JSON mode still executes, then emits one structured document.
+        pass
+    else:
+        mode = "SEQUENTIAL" if getattr(args, "sequential", False) else "PARALLEL"
+        print(f"═══ SPYDERMONKEY FLEET — {len(seq)} agent(s) dispatching {mode} ═══")
+        print(f"  goal: '{args.goal}' · target: {args.target} · domain: {args.domain}")
     results = {}
+    started = time.time()
 
     def agent(name):
-        role, argv_f = FLEET_BRIEFS[name]
+        role, _ = FLEET_BRIEFS[name]
         script = FAMILY[name][0]
+        plan_row = next((p for p in plan if p["agent"] == name), {})
         if not script.exists():
-            results[name] = (role, f"engine missing — agent offline ({script})", 1)
+            results[name] = {"agent": name, "role": role, "ok": False, "rc": 1,
+                             "output": f"engine missing — agent offline ({script})",
+                             "elapsed": 0.0}
             return
-        out, rc = _run([sys.executable, str(script)] + argv_f(ctx))
-        results[name] = (role, out, rc)
+        argv = [sys.executable, str(script)] + plan_row["argv"]
+        t0 = time.time()
+        out, rc = "", 1
+        for attempt in range((getattr(args, "retries", 0) or 0) + 1):
+            out, rc = _run(argv, timeout=getattr(args, "timeout", 45) or 45)
+            if rc == 0:
+                break
+        results[name] = {"agent": name, "role": role, "ok": rc == 0, "rc": rc,
+                         "output": _clean_out(out),
+                         "elapsed": round(time.time() - t0, 2),
+                         "command": " ".join(argv)}
 
-    print(f"═══ SPYDERMONKEY FLEET — {len(seq)} agent(s) dispatching in PARALLEL ═══")
-    print(f"  goal: '{args.goal}' · target: {args.target} · domain: {args.domain}")
-    threads = [threading.Thread(target=agent, args=(m,)) for m in seq]
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
+    if getattr(args, "sequential", False):
+        for name in seq:
+            agent(name)
+    else:
+        threads = [threading.Thread(target=agent, args=(m,), daemon=True) for m in seq]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+    out_rows = []
     up = 0
     for name in seq:
-        role, out, rc = results[name]
-        ok = rc == 0
-        up += ok
-        lines = [l for l in out.splitlines() if l.strip()][:8]
-        print(f"\n  ┌─ AGENT {name} — {role} [{'✓' if ok else '✗'}]")
-        for l in lines:
-            print(f"  │ {l[:100]}")
-        print(f"  └─ ({len(out.splitlines())} lines)")
-    print(f"\n═══ FLEET REPORT: {up}/{len(seq)} agent(s) up · joint goal: '{args.goal}' ═══")
+        r = results.get(name, {"agent": name, "role": FLEET_BRIEFS[name][0],
+                               "ok": False, "rc": 1, "output": "no result",
+                               "elapsed": 0.0})
+        up += r["ok"]
+        lines = [l for l in r["output"].splitlines() if l.strip()]
+        r["key_lines"] = lines[:8]
+        out_rows.append(r)
+        if not _json_mode(args):
+            print(f"\n  ┌─ AGENT {name} — {r['role']} [{'✓' if r['ok'] else '✗'}]"
+                  f" {r['elapsed']}s")
+            for l in lines[:8]:
+                print(f"  │ {l[:110]}")
+            print(f"  └─ ({len(lines)} lines)")
+    elapsed = round(time.time() - started, 2)
+    payload = {"goal": args.goal, "target": args.target, "domain": args.domain,
+               "agents": out_rows, "up": up, "total": len(seq),
+               "elapsed": elapsed, "ok": up == len(seq)}
+    try:
+        st = _load_json(_camp(args.target) / "fleet-state.json", {"history": []})
+        st.setdefault("history", []).append(
+            {"at": _now(), "goal": args.goal, "up": up, "total": len(seq),
+             "elapsed": elapsed, "agents": [{"agent": r["agent"], "ok": r["ok"],
+                                             "rc": r["rc"], "elapsed": r["elapsed"]}
+                                            for r in out_rows]})
+        st["history"] = st["history"][-25:]
+        _atomic_write(_camp(args.target) / "fleet-state.json",
+                      json.dumps(st, indent=2) + "\n")
+    except Exception:
+        pass
+    _event(args.target, "fleet.run", f"{up}/{len(seq)} up", ok=up == len(seq),
+           elapsed=elapsed)
+    if _json_mode(args):
+        _emit(args, payload)
+    else:
+        print(f"\n═══ FLEET REPORT: {up}/{len(seq)} agent(s) up in {elapsed}s"
+              f" · joint goal: '{args.goal}' ═══")
     return 0 if up == len(seq) else 1
 
 
@@ -544,6 +1664,8 @@ def _run(argv, timeout=60):
     try:
         r = subprocess.run(argv, capture_output=True, text=True, timeout=timeout)
         return r.stdout + r.stderr, r.returncode
+    except subprocess.TimeoutExpired:
+        return f"error: timed out after {timeout}s", 1
     except Exception as e:
         return f"error: {e}", 1
 
@@ -554,22 +1676,387 @@ def _exec_arsenal(a):
         "arsenal", str(Path(__file__).resolve().parent / "arsenal.py"))
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
-    argv = [a.action] + (["--target", a.target] if a.target else []) \
-        + (["--only", a.only] if a.only else []) \
-        + (["--dry-run"] if getattr(a, "dry_run", False) else []) \
-        + (["--wordlist", a.wordlist] if a.wordlist else [])
+    argv = [a.action]
+    if a.action in ("plan", "run"):
+        if not getattr(a, "target", None):
+            raise UsageError(f"arsenal {a.action} needs --target")
+        argv += ["--target", a.target]
+    if a.action in ("plan", "run") and getattr(a, "wordlist", None):
+        argv += ["--wordlist", a.wordlist]
+    if a.action == "run":
+        if getattr(a, "only", None):
+            argv += ["--only", a.only]
+        if getattr(a, "dry_run", False):
+            argv += ["--dry-run"]
+        if getattr(a, "timeout", None):
+            argv += ["--timeout", str(a.timeout)]
+        if getattr(a, "output_dir", None):
+            argv += ["--output-dir", a.output_dir]
+    if getattr(a, "json", False):
+        argv += ["--json"]
     return mod.main_with(argv)
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# v4.0 — THE AUTONOMOUS KERNEL (the engine is the state machine; ANY model is
+# a swappable reasoning cell). next → directive · absorb → validated ingest ·
+# loop → the brrrr (autopilot without a model, or --agent-cmd with any model)
+# ════════════════════════════════════════════════════════════════════════════
+
+KERNEL_EXIT = {"continue": 0, "blocked": 1, "usage": 2, "complete": 5}
+
+
+def _kernel_state(target):
+    camp = _camp(target)
+    st = _load_json(camp / "kernel-state.json",
+                    {"target": target, "steps": [], "created": _now()})
+    st.setdefault("steps", [])
+    return st
+
+
+def _kernel_save(target, st):
+    (_camp(target) / "kernel-state.json").write_text(json.dumps(st, indent=2) + "\n")
+
+
+def _planner_directive(target, url=None, domain=None):
+    """THE PLANNER — deterministic, state-driven. Reads every family state and
+    returns the ONE next action that closes the biggest gap. No model needed:
+    the reasoning is policy in code; a model only adds judgment on top."""
+    camp = _camp(target)
+    scope = _load_scope()
+    board = _load_json(camp / "phases-state.json", {})
+    ledger = _ledger_load(target)
+    ctx = _load_json(camp / "context.json", {"endpoints": [], "roles": [],
+                                             "credentials": [], "functions": []})
+    chains = _load_json(camp / "chain-state.json", {}).get("chains", [])
+    kstate = _kernel_state(target)
+    done_ids = {s.get("directive_id") for s in kstate["steps"] if s.get("absorbed")}
+
+    def d(did, phase, mandate, action, argv, why, expect, walls):
+        return {"directive_id": did, "step": len(kstate["steps"]) + 1,
+                "phase": phase, "mandate": mandate, "action": action,
+                "argv": argv, "why": why, "expect": expect, "walls": walls,
+                "target": target, "url": url, "domain": domain}
+
+    # 1. the estate gate comes first — nothing plans without a scope authority
+    if scope is None:
+        return d("scope-init", "scope_analysis", "barbican", "scope",
+                 ["scope", "init", "--engagement", target,
+                  "--in-scope", (domain or url or "CHANGE.ME")],
+                 "no scope authority — the live-fire rule closes every engine",
+                 "scope.json written; engines unlock",
+                 ["declared estates only"])
+    # 2. the shield — posture before anything
+    if "barbican-posture" not in done_ids:
+        return d("barbican-posture", "scope_analysis", "barbican", "posture",
+                 ["barbican-posture", "--target", target],
+                 "no verified vantage — barbican hard-gates the family",
+                 "posture recorded; exit vantage verified",
+                 ["zero documents"])
+    # 3. passive recon — the finder
+    if not _phase_deliverable(target, PHASES[1]) and "holy-recon" not in done_ids:
+        return d("holy-recon", "passive_recon", "holyshit", "recon",
+                 ["holyshit-recon", "--target", target,
+                  "--domain", domain or (url or "CHANGE.ME")],
+                 "phase passive_recon has no deliverable — the dossier feeds everyone",
+                 "dossier + context endpoints registered",
+                 ["passive-first"])
+    # 4. active recon — the descent (real engine, real url needed)
+    if url and not _phase_deliverable(target, PHASES[2]) and "undercroft-run" not in done_ids:
+        return d("undercroft-run", "active_recon", "undercroft", "run",
+                 ["undercroft-run", "--target", target, "--url", url,
+                  "--domain", domain or "CHANGE.ME"],
+                 "phase active_recon: the descent probes the target's own skin",
+                 "CONFIRMED seams in undercroft-state",
+                 ["validation-only", "no-gain"])
+    # 5. the testers — one directive covers 8 differential classes
+    classes = {r["cls"] for r in ledger}
+    if url and "testers-run" not in done_ids and "IDOR" not in classes:
+        return d("testers-run", "authorization_testing", "spy", "testers",
+                 ["testers", "--target", target, "--url", url],
+                 "no access-control findings yet — 8 differential testers, one pass",
+                 "0-8 ledger rows (deduped, evidence-gated)",
+                 ["in-scope only", "documented-PoC payloads"])
+    # 6. targeted class holes → a focused gate run each
+    for cls, probe_q, token in (("AUTHN", "token=", None), ("BIZLOGIC", "amount=-1", None),
+                                ("SSRF", "url=http://127.0.0.1:9/", None)):
+        if url and cls not in classes and f"gate-{cls}" not in done_ids:
+            return d(f"gate-{cls}", "input_validation", "spy", "gate",
+                     ["gate", "--target", target, "--url", url,
+                      "--attack-query", probe_q, "--append-query"],
+                     f"ledger hole: no {cls}-class finding — a focused 3-gate run",
+                     "CONFIRMED / HYPOTHESIS / or DISPROVEN (all are results)",
+                     ["in-scope only", "validation-only"])
+    # 7. chains — findings combine into kill chains
+    if len([r for r in ledger if r["status"] == "CONFIRMED"]) >= 2 and not chains \
+            and "chain-detect" not in done_ids:
+        return d("chain-detect", "business_logic", "kairo", "chain",
+                 ["chain", "detect", "--target", target],
+                 "2+ confirmed findings — low findings may chain into high impact",
+                 "chain-state.json with candidates + plans",
+                 ["no novel exploitation"])
+    # 8. detection — the purple leg
+    if any(r["status"] == "CONFIRMED" for r in ledger) and "kage-mirror" not in done_ids:
+        return d("kage-mirror", "reporting", "kage", "mirror",
+                 ["kage-mirror", "--target", target],
+                 "confirmed attacks get mirrored as Sigma rules (the purple leg)",
+                 "kage rules + refire evidence",
+                 ["detection-only"])
+    # 9. harvest pricing
+    if any(r["status"] == "CONFIRMED" for r in ledger) and "shukaku-ingest" not in done_ids:
+        return d("shukaku-ingest", "data_protection", "shukaku", "ingest",
+                 ["shukaku-ingest", "--target", target],
+                 "confirmed findings priced for the business verdict",
+                 "crown rows with classes + pricing",
+                 ["counts, never corpora"])
+    # 10. the war report
+    if "war-report" not in done_ids and ledger:
+        return d("war-report", "reporting", "spy", "report",
+                 ["report", "--target", target],
+                 "every engagement closes with the joint deliverable",
+                 "the war report md with findings + chains + coverage",
+                 ["zero documents"])
+    # 11. coverage guard — anything still open goes to the loop's next pass
+    return None
+
+
+_RESULT_SCHEMA = {
+    "step": int, "exit": int,
+    "findings": list,   # [{title, cls, asset, severity, proof, cwe?}]
+    "context": dict,    # {endpoints: [], credentials: [], roles: [], functions: []}
+    "notes": str,
+}
+
+
+def cmd_absorb(args):
+    """THE ABSORBER — validate a result through the family's gates, ingest it,
+    and hand back the next directive. The loop closes here."""
+    st = _kernel_state(args.target)
+    try:
+        res = json.loads(Path(args.file).read_text())
+    except Exception as e:
+        print(f"✗ unreadable result: {e}", file=sys.stderr)
+        return KERNEL_EXIT["usage"]
+    bad = []
+    for k, t in _RESULT_SCHEMA.items():
+        if k not in res:
+            bad.append(k)
+        elif not isinstance(res[k], t) and not (t is int and isinstance(res[k], float)):
+            bad.append(f"{k}!={t.__name__}")
+    if bad:
+        print(f"✗ result schema violations: {', '.join(bad)} — see next --json", file=sys.stderr)
+        return KERNEL_EXIT["usage"]
+    did = res.get("directive_id") or f"step-{res.get('step')}"
+    # ingest findings through the LEDGER's own gates (scope · dedupe · evidence)
+    ingested = 0
+    for f in res.get("findings", []):
+        try:
+            e = _cmd_ledger_internal(args.target,
+                                     f.get("title", "agent finding"),
+                                     f.get("cls", "GENERAL"),
+                                     f.get("asset", ""),
+                                     f.get("severity", "medium"),
+                                     f.get("proof", ""), f.get("cwe"))
+            if e:
+                ingested += 1
+        except ScopeDenied as ex:
+            print(f"  ✗ finding REFUSED by the ledger: {ex}", file=sys.stderr)
+        except Exception as ex:
+            print(f"  ⚠ finding not ingested: {type(ex).__name__}: {ex}", file=sys.stderr)
+    # merge context
+    camp = _camp(args.target)
+    ctx = _load_json(camp / "context.json", {"endpoints": [], "roles": [],
+                                             "credentials": [], "functions": []})
+    merged = 0
+    for k, vals in (res.get("context") or {}).items():
+        if k in ctx:
+            for v in vals:
+                if v and v not in ctx[k]:
+                    ctx[k].append(v)
+                    merged += 1
+    (camp / "context.json").write_text(json.dumps(ctx, indent=2) + "\n")
+    # record the step
+    st["steps"].append({"directive_id": did, "step": res.get("step"),
+                        "exit": res.get("exit"), "absorbed": True,
+                        "findings": ingested, "context": merged,
+                        "notes": (res.get("notes") or "")[:200], "at": _now()})
+    _kernel_save(args.target, st)
+    ledger = _ledger_load(args.target)
+    print(f"═══ ABSORBED — step {res.get('step')} ({did}) ═══")
+    print(f"  ▸ {ingested} finding(s) through the ledger gates · {merged} context row(s)")
+    print(f"  ▸ ledger now {len(ledger)} row(s) · "
+          f"{sum(1 for r in ledger if r['status'] == 'CONFIRMED')} confirmed")
+    if res.get("exit") not in (0, None):
+        print(f"  ⚠ directive exited {res.get('exit')} — recorded; the planner adapts")
+    dv = _planner_directive(args.target, url=args.url, domain=args.domain)
+    if dv is None:
+        print("✓ MISSION COMPLETE — no open directives remain", file=sys.stderr)
+        return KERNEL_EXIT["complete"]
+    print(f"  next directive: spydermonkey next --target {args.target}"
+          f"   ({dv['directive_id']} [{dv['phase']}])")
+    return KERNEL_EXIT["continue"]
+
+
+_AGENT_PROMPT = """You are the reasoning cell of the SPYDERMONKEY autonomous kernel \
+(HolyShit offensive-security family). The ENGINE owns planning, scope gates, and \
+evidence discipline — you own judgment and execution.
+
+DIRECTIVE (step {step}) [{phase}] via {mandate}:
+  execute:  spydermonkey {argv}
+  why: {why}
+  expect: {expect}
+  walls: {walls}
+
+After running it, write a result JSON to {result_path} with EXACTLY this shape:
+{{"step": {step}, "directive_id": "{did}", "exit": <exit code>, "findings": [], \
+"context": {{"endpoints": [], "credentials": [], "roles": [], "functions": []}}, \
+"notes": "one paragraph"}}
+Findings you discovered beyond the directive belong in findings[] — the absorber \
+runs them through the same evidence gates (proof needs "baseline: … attack: … diff: …")."""
+
+
+def cmd_loop(args):
+    """THE BRRRR — the engine drives. Without --agent-cmd the engines execute
+    their own directives (autopilot). With --agent-cmd, ANY model becomes the
+    reasoning cell: the engine plans → the agent executes → the absorber
+    validates through the gates → repeat, until coverage is complete."""
+    url = args.url
+    domain = args.domain
+    st = _kernel_state(args.target)
+    total_findings = 0
+    print(f"═══ SPYDERMONKEY KERNEL LOOP — target '{args.target}' "
+          f"(max {args.max_steps} steps, agent: {args.agent_cmd or 'AUTOPILOT (engines direct)'}) ═══")
+    if args.plan_only:
+        n = 0
+        while True:
+            dv = _planner_directive(args.target, url=url, domain=domain)
+            if dv is None:
+                break
+            n += 1
+            print(f"  {n:2d}. [{dv['phase']:22s}] {dv['directive_id']:18s} "
+                  f"spydermonkey {' '.join(dv['argv'])[:80]}")
+            st["steps"].append({"directive_id": dv["directive_id"],
+                                "step": dv["step"], "exit": None,
+                                "absorbed": False, "planned": True, "at": _now()})
+            if n >= args.max_steps:
+                break
+        _kernel_save(args.target, st)
+        print(f"═══ battle plan: {n} directive(s) — loop without --plan-only to fire ═══")
+        return KERNEL_EXIT["continue"]
+    for step in range(1, args.max_steps + 1):
+        dv = _planner_directive(args.target, url=url, domain=domain)
+        if dv is None:
+            print(f"═══ LOOP COMPLETE — {step - 1} step(s) executed · "
+                  f"{total_findings} finding(s) · mission done ═══")
+            return KERNEL_EXIT["complete"]
+        argv_str = " ".join(dv["argv"])
+        print(f"\n▸ step {step}: [{dv['phase']}] {dv['directive_id']} — {argv_str[:90]}")
+        result_path = str(_camp(args.target) / f"result-step{step}.json")
+        exit_code = 0
+        if args.agent_cmd:
+            prompt = _AGENT_PROMPT.format(step=step, phase=dv["phase"],
+                                          mandate=dv["mandate"], argv=argv_str,
+                                          why=dv["why"], expect=dv["expect"],
+                                          walls=" · ".join(dv["walls"]),
+                                          result_path=result_path, did=dv["directive_id"])
+            try:
+                r = subprocess.run(args.agent_cmd.split() + [prompt],
+                                   timeout=args.agent_timeout)
+                exit_code = r.returncode
+            except subprocess.TimeoutExpired:
+                print(f"  ✗ agent timed out after {args.agent_timeout}s — stopping",
+                      file=sys.stderr)
+                return KERNEL_EXIT["blocked"]
+            if not Path(result_path).exists():
+                print(f"  ✗ agent produced no result at {result_path} — the loop"
+                      f" requires the contract; stopping (nothing is lost: the"
+                      f" step is recorded)", file=sys.stderr)
+                st["steps"].append({"directive_id": dv["directive_id"],
+                                    "step": step, "exit": exit_code,
+                                    "absorbed": False, "at": _now()})
+                _kernel_save(args.target, st)
+                return KERNEL_EXIT["blocked"]
+        else:
+            # AUTOPILOT: the engine executes its own directive
+            argv = _autopilot_argv(dv)
+            if argv is None:
+                print(f"  ⚠ no autopilot for {dv['directive_id']} — needs an agent"
+                      f" (--agent-cmd); stopping")
+                return KERNEL_EXIT["blocked"]
+            try:
+                r = subprocess.run(argv, timeout=args.agent_timeout)
+                exit_code = r.returncode
+            except FileNotFoundError:
+                print(f"  ✗ engine not on disk: {argv[0]} — install the family"
+                      f" (see README → Quickstart); stopping", file=sys.stderr)
+                st["steps"].append({"directive_id": dv["directive_id"],
+                                    "step": step, "exit": 1,
+                                    "absorbed": False, "at": _now()})
+                _kernel_save(args.target, st)
+                return KERNEL_EXIT["blocked"]
+            except subprocess.TimeoutExpired:
+                print(f"  ✗ engine timed out after {args.agent_timeout}s — stopping",
+                      file=sys.stderr)
+                st["steps"].append({"directive_id": dv["directive_id"],
+                                    "step": step, "exit": 124,
+                                    "absorbed": False, "at": _now()})
+                _kernel_save(args.target, st)
+                return KERNEL_EXIT["blocked"]
+            Path(result_path).write_text(json.dumps(
+                {"step": step, "directive_id": dv["directive_id"],
+                 "exit": exit_code, "findings": [], "context": {},
+                 "notes": f"autopilot: {argv_str}"}) + "\n")
+        rc = cmd_absorb(type("A", (), {"target": args.target, "file": result_path,
+                                       "url": url, "domain": domain})())
+        # count what the pass produced
+        total_findings = len(_ledger_load(args.target))
+        if rc == KERNEL_EXIT["complete"]:
+            print(f"═══ LOOP COMPLETE — {step} step(s) · {total_findings} finding(s)"
+                  f" in the ledger · mission done ═══")
+            return KERNEL_EXIT["complete"]
+        if rc != KERNEL_EXIT["continue"]:
+            print(f"═══ LOOP BLOCKED at step {step} (rc={rc}) ═══")
+            return rc
+    print(f"═══ LOOP MAX-STEPS ({args.max_steps}) — resume with the same command ═══")
+    return KERNEL_EXIT["continue"]
+
+
+def _autopilot_argv(dv):
+    """Kernel directive ids → the REAL engine argv (own processes, real states)."""
+    t = dv["target"]
+    u = dv.get("url")
+    dm = dv.get("domain") or u or t
+    sm = str(Path(__file__).resolve())
+    m = {
+        "scope-init": [sm, "scope", "init", "--engagement", t,
+                       "--in-scope", dm],
+        "barbican-posture": [str(SEC / "barbican/scripts/barbican.py"),
+                             "posture", "--target", t, "--vantage", "direct"],
+        "holyshit-recon": [str(SEC / "holyshit-mode/scripts/finder.py"),
+                           "recon", "--domain", dm],
+        "undercroft-run": [str(SEC / "undercroft/scripts/undercroft.py"),
+                           "run", "--target", t, "--url", u, "--domain", dm],
+        "testers-run": [sm, "testers", "--target", t, "--url", u],
+        "gate-AUTHN": [sm, "gate", "--target", t, "--url", u,
+                       "--attack-query", "token=", "--append-query"],
+        "gate-BIZLOGIC": [sm, "gate", "--target", t, "--url", u,
+                          "--attack-query", "amount=-1", "--append-query"],
+        "gate-SSRF": [sm, "gate", "--target", t, "--url", u,
+                      "--attack-query", "url=http://127.0.0.1:9/",
+                      "--append-query"],
+        "chain-detect": [sm, "chain", "detect", "--target", t],
+        "kage-mirror": [str(SEC / "kage/scripts/kage.py"), "mirror", "--target", t],
+        "shukaku-ingest": [str(SEC / "shukaku/scripts/shukaku.py"),
+                           "ingest", "--target", t, "--finding", "kernel",
+                           "--proof", "autopilot ledger pass"],
+        "war-report": [sm, "report", "--target", t],
+    }
+    return m.get(dv["directive_id"])
 
 
 # ════════════════════════════════════════════════════════════════════════════
 # v3.0 — THE INTELLIGENCE LAYER (CyberStrike-derived, family-native)
 # ════════════════════════════════════════════════════════════════════════════
-
-def _camp(c):
-    p = Path.home() / ".redteam" / "campaigns" / c
-    p.mkdir(parents=True, exist_ok=True)
-    return p
-
 
 def _load_json(p, default):
     try:
@@ -619,113 +2106,358 @@ def _phase_deliverable(target, ph):
     d = ph["deliverable"]
     camp = _camp(target)
     if d == "scope":
-        return _load_scope() is not None
+        try:
+            scope = sa.load_scope()
+        except sa.ScopeError:
+            return False
+        return scope is not None and not sa.summary(scope)["expired"]
     if d == "context":
         return bool(_load_json(camp / "context.json", {}).get("endpoints"))
     if d == "report":
-        return any(camp.glob("*spydermonkey-report.md"))
+        return any(camp.glob("*spydermonkey-report.*")) or (camp / "report.md").exists()
     if d == "ladder:era":
         l = _load_json(camp / "ladder-state.json", {})
-        return any(h.get("era") for h in l.get("hosts", []))
+        return any(h.get("era") or h.get("era_stack") for h in l.get("hosts", []))
     if d == "ladder:hosts":
         l = _load_json(camp / "ladder-state.json", {})
         return bool(l.get("hosts"))
     if d.startswith("ledger:"):
-        want = d.split(":", 1)[1]
+        want = d.split(":", 1)[1].upper()
         ld = camp / "ledger.jsonl"
         if not ld.exists():
             return False
-        for line in ld.read_text().splitlines():
+        for line in ld.read_text(errors="replace").splitlines():
             if not line.strip():
                 continue
             try:
                 e = json.loads(line)
             except Exception:
                 continue
-            if want in (e.get("cls") or "") or want in (e.get("title", "").upper()):
+            if want in (e.get("cls") or "").upper() or want in (e.get("title", "").upper()):
                 return True
         return False
     if ":" in d:
         fname, key = d.split(":", 1)
         st = _load_json(camp / fname, {})
+        if not st and fname == "undercroft-state.json":
+            st = _load_json(camp / "kenshi-state.json", {})
         return bool(st.get(key))
     return False
 
 
-def cmd_phases(args):
-    camp = _camp(args.target)
-    board = _load_json(camp / "phases-state.json", {})
-    if args.set_phase and args.phase_status:
-        board[args.set_phase] = args.phase_status
-        (camp / "phases-state.json").write_text(json.dumps(board, indent= 2) + "\n")
-        print(f"▸ phase {args.set_phase} → {args.phase_status}")
-        return 0
-    done = {p["id"]: _phase_deliverable(args.target, p) for p in PHASES}
-    print(f"═══ SPYDERMONKEY PHASES — engagement '{args.target}' (13-phase methodology) ═══")
-    n_done = 0
+def _phase_board(target: str, board: dict | None = None) -> list[dict]:
+    board = board if board is not None else _load_json(_camp(target) / "phases-state.json", {})
+    done = {p["id"]: _phase_deliverable(target, p) for p in PHASES}
+    rows = []
     for p in PHASES:
         manual = board.get(p["id"])
+        pre_ok = all(done.get(q, False) for q in p["pre"])
         if manual in ("completed", "blocked", "in_progress", "not_started"):
             status = manual
         else:
-            ok = all(done[q] for q in p["pre"])
-            status = "completed" if done[p["id"]] else ("in_progress" if ok else "blocked")
-        mark = {"completed": "✓", "in_progress": "▸", "blocked": "·", "not_started": "·"}[status]
-        n_done += status == "completed"
-        print(f"  {mark} {p['id']:22s} [{status:11s}] {p['mandate']:9s} — {p['name']}")
-    nxt = next((p for p in PHASES
-                if (board.get(p["id"]) or ("completed" if _phase_deliverable(args.target, p) else "in_progress"))
-                != "completed"), None)
-    print(f"═══ {n_done}/13 phases complete ═══")
+            status = "completed" if done[p["id"]] else ("in_progress" if pre_ok else "blocked")
+        rows.append({"id": p["id"], "name": p["name"], "mandate": p["mandate"],
+                     "status": status, "deliverable": done[p["id"]],
+                     "pre_ok": pre_ok, "manual": bool(manual),
+                     "command": CMDS.get(p["mandate"], "")})
+    return rows
+
+
+def _next_phase(target: str, board: dict | None = None) -> dict | None:
+    rows = _phase_board(target, board)
+    for r in rows:
+        if r["status"] != "completed":
+            return r
+    return None
+
+
+def cmd_phases(args):
+    camp = _camp(args.target)
+    _ensure_campaign(args.target)
+    board = _load_json(camp / "phases-state.json", {})
+    if args.clear_override:
+        board.pop(args.clear_override, None)
+        _atomic_write(camp / "phases-state.json", json.dumps(board, indent=2) + "\n")
+        print(f"▸ phase override cleared: {args.clear_override}")
+        _event(args.target, "phases.override_cleared", args.clear_override)
+        return 0
+    if args.set_phase and args.phase_status:
+        if args.set_phase not in {p["id"] for p in PHASES}:
+            raise UsageError(f"unknown phase: {args.set_phase}")
+        board[args.set_phase] = args.phase_status
+        _atomic_write(camp / "phases-state.json", json.dumps(board, indent=2) + "\n")
+        print(f"▸ phase {args.set_phase} → {args.phase_status} (manual override recorded)")
+        _event(args.target, "phases.override", f"{args.set_phase}={args.phase_status}")
+        return 0
+    rows = _phase_board(args.target, board)
+    n_done = sum(1 for r in rows if r["status"] == "completed")
+    nxt = _next_phase(args.target, board)
+    payload = {"target": args.target, "phases": rows, "complete": n_done,
+               "total": len(rows), "percent": round(100.0 * n_done / len(rows), 1),
+               "next": nxt}
+    if _json_mode(args):
+        _emit(args, payload)
+        return 0
+    print(f"═══ SPYDERMONKEY PHASES — engagement '{args.target}' (13-phase methodology) ═══")
+    for r in rows:
+        mark = {"completed": "✓", "in_progress": "▸", "blocked": "·",
+                "not_started": "·"}[r["status"]]
+        extra = " (manual)" if r["manual"] else ""
+        print(f"  {mark} {r['id']:22s} [{r['status']:11s}] {r['mandate']:9s}"
+              f" — {r['name']}{extra}")
+    print(f"═══ {n_done}/{len(rows)} phases complete ({payload['percent']}%) ═══")
     if nxt:
-        print(f"  next: {nxt['id']} — run the {nxt['mandate']} mandate"
-              + (f" ({CMDS.get(nxt['mandate'], '')[:80]})" if CMDS.get(nxt["mandate"]) else ""))
+        print(f"  next: {nxt['id']} — run the {nxt['mandate']} mandate")
+        if nxt["command"]:
+            print(f"        {nxt['command'][:120]}")
     return 0
 
 
-# ── 3.2 the finding ledger (scope-blocked · deduped · evidence-gated) ─────────
+def cmd_next_phase(args):
+    """The phase-board view (no kernel directives): the next 13-phase action."""
+    _ensure_campaign(args.target)
+    nxt = _next_phase(args.target)
+    payload = {"target": args.target, "next": nxt, "done": nxt is None}
+    if _json_mode(args):
+        _emit(args, payload)
+    elif nxt is None:
+        print("✓ every phase has a real deliverable — the board is complete")
+    else:
+        print(f"▸ next for '{args.target}': {nxt['id']} [{nxt['status']}]"
+              f" via {nxt['mandate']}")
+        print(f"  {nxt['command'] or 'see the mandate contract'}")
+        if nxt["status"] == "blocked":
+            print("  (prerequisites missing — run the earlier phases first)")
+    return 0
+
+
+def cmd_next(args):
+    """THE DIRECTIVE — the planner decides the one next action from real state
+    (kernel: argv · why · expect · walls); falls back to the phase board. JSON
+    via the shared --json mode."""
+    _ensure_campaign(args.target)
+    dv = _planner_directive(args.target, url=getattr(args, "url", None),
+                            domain=getattr(args, "domain", None))
+    nxt = _next_phase(args.target)
+    if dv is not None:
+        real = _autopilot_argv(dv)
+        dv = {**dv,
+              "id": dv["directive_id"], "status": "planned",
+              "command": (" ".join(real) if real
+                          else "spydermonkey " + " ".join(dv["argv"]))}
+        payload = {"target": args.target, "next": dv, "done": False}
+    elif nxt is not None:
+        payload = {"target": args.target, "next": nxt, "done": False}
+    else:
+        payload = {"target": args.target, "next": None, "done": True}
+    if _json_mode(args):
+        _emit(args, payload)
+        return 0 if not payload["done"] else KERNEL_EXIT["complete"]
+    if payload["done"]:
+        print("✓ every phase has a real deliverable and no open directives — complete")
+        return KERNEL_EXIT["complete"]
+    nxt = payload["next"]
+    print(f"▸ next for '{args.target}': {nxt['id']} [{nxt['status']}]"
+          f" via {nxt['mandate']}")
+    if nxt.get("command"):
+        print(f"  {nxt['command']}")
+    if nxt.get("why"):
+        print(f"  why:   {nxt['why']}")
+    if nxt.get("walls"):
+        print(f"  walls: {' · '.join(nxt['walls'])}")
+        print(f"  then:  spydermonkey absorb --target {args.target} --file result.json")
+    elif nxt.get("status") == "blocked":
+        print("  (prerequisites missing — run the earlier phases first)")
+    return 0
+
+
+# ── 3.2 the finding ledger (v4: signed · deduped · evidence-gated) ───────────
 
 _STOP = set("the a an of on in at to for with and or is are be been it its this that".split())
+LEDGER_STATUSES = ("HYPOTHESIS", "CONFIRMED", "FALSE_POSITIVE",
+                   "REMEDIATED", "ACCEPTED_RISK")
+STATUS_TRANSITIONS = {
+    "HYPOTHESIS": {"CONFIRMED", "FALSE_POSITIVE", "ACCEPTED_RISK"},
+    "CONFIRMED": {"REMEDIATED", "FALSE_POSITIVE", "ACCEPTED_RISK"},
+    "FALSE_POSITIVE": {"HYPOTHESIS"},
+    "REMEDIATED": {"CONFIRMED"},
+    "ACCEPTED_RISK": {"CONFIRMED", "REMEDIATED"},
+}
+SEVERITY_SCORE = {"info": 0.0, "low": 2.5, "medium": 5.5, "high": 8.0, "critical": 9.5}
+
+# class → (WSTG, CWE, ATT&CK) — the report/export binding, family canon style
+CLASS_BINDINGS = {
+    "IDOR": ("WSTG-ATHZ-04", "CWE-639", "T1068"),
+    "BOUNDARY": ("WSTG-ATHZ-04", "CWE-639", "T1068"),
+    "AUTHZ": ("WSTG-ATHZ-01", "CWE-285", "T1068"),
+    "MASSASSIGN": ("WSTG-BUSL-02", "CWE-915", "T1068"),
+    "INJECTION": ("WSTG-INPV-05", "CWE-89", "T1190"),
+    "AUTHN": ("WSTG-ATHN-01", "CWE-287", "T1111"),
+    "BIZLOGIC": ("WSTG-BUSL-01", "CWE-840", "T1565"),
+    "SSRF": ("WSTG-INPV-10", "CWE-918", "T1190"),
+    "TRAVERSAL": ("WSTG-PATH-01", "CWE-22", "T1005"),
+    "REPLAY": ("WSTG-BUSL-06", "CWE-294", "T1550"),
+    "HARVEST": ("WSTG-CONF-04", "CWE-530", "T1552"),
+    "XSS": ("WSTG-INPV-02", "CWE-79", "T1189"),
+    "REDIRECT": ("WSTG-INPV-06", "CWE-601", "T1190"),
+    "CRYPTO": ("WSTG-CRYP", "CWE-326", "T1040"),
+    "NETWORK": ("PTES-NET", "CWE-284", "T1046"),
+    "DOMTAKE": ("WSTG-CONF-09", "CWE-350", "T1584"),
+    "DIRECTORY": ("WSTG-CONF-03", "CWE-548", "T1083"),
+}
 
 
 def _norm_title(t):
-    words = re.sub(r"[^a-z0-9 ]", " ", t.lower()).split()
+    words = re.sub(r"[^a-z0-9 ]", " ", (t or "").lower()).split()
     return " ".join(w for w in words if w not in _STOP)[:6]
 
 
 def _dedupe_key(cls, asset, title):
-    return f"{cls}|{asset}|{_norm_title(title)}"
+    from urllib.parse import urlsplit
+    a = (asset or "").strip().lower()
+    if "://" in a:
+        sp = urlsplit(a)
+        a = f"{sp.scheme}://{sp.netloc}{sp.path}".rstrip("/")
+    return f"{(cls or '').upper()}|{a}|{_norm_title(title)}"
 
 
-def _ledger_load(c):
-    ld = _camp(c) / "ledger.jsonl"
-    rows = []
-    if ld.exists():
-        for line in ld.read_text().splitlines():
-            if line.strip():
-                try:
-                    rows.append(json.loads(line))
-                except Exception:
-                    pass
+def _ledger_path(c) -> Path:
+    return _camp(c) / "ledger.jsonl"
+
+
+def _ledger_read_unlocked(ld: Path) -> tuple[list[dict], list[str]]:
+    rows, errors = [], []
+    if not ld.exists():
+        return rows, errors
+    for n, line in enumerate(ld.read_text(errors="replace").splitlines(), 1):
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+            if not isinstance(row, dict) or not row.get("id"):
+                raise ValueError("not a finding object")
+            rows.append(row)
+        except Exception as e:
+            errors.append(f"line {n}: {e}")
+    return rows, errors
+
+
+def _ledger_load(c) -> list[dict]:
+    rows, _ = _ledger_read_unlocked(_ledger_path(c))
     return rows
 
 
-def _ledger_append(c, entry):
-    ld = _camp(c) / "ledger.jsonl"
-    with ld.open("a") as f:
-        f.write(json.dumps(entry) + "\n")
+def _entry_hash(entry: dict) -> str:
+    base = {k: v for k, v in entry.items() if k not in ("hash", "prev")}
+    base["prev"] = entry.get("prev", "")
+    return _sha(json.dumps(base, sort_keys=True, separators=(",",":"), ensure_ascii=False))
 
 
-def _evidence_gate(proof):
-    """CyberStrike's evidence rule: a finding needs (1) baseline request/response,
-    (2) attack request/response, (3) a one-sentence diff. Anything else is NOT
-    suppressed — it is DOWNGRADED to hypothesis confidence 0.4."""
-    p = (proof or "").lower()
-    has = lambda m: m in p
-    if has("baseline:") and has("attack:") and (has("diff:") or has("diff ")):
+def _ledger_rehash(rows: list[dict]) -> None:
+    prev = ""
+    for r in rows:
+        r["v"] = 2
+        r["prev"] = prev
+        r["hash"] = _entry_hash(r)
+        prev = r["hash"]
+
+
+@contextlib.contextmanager
+def _file_lock(path: Path):
+    lock = path.with_name(path.name + ".lock")
+    lock.parent.mkdir(parents=True, exist_ok=True)
+    fh = lock.open("a+")
+    try:
+        try:
+            import fcntl
+            fcntl.flock(fh.fileno(), fcntl.LOCK_EX)
+        except Exception:
+            pass
+        yield
+    finally:
+        try:
+            import fcntl
+            fcntl.flock(fh.fileno(), fcntl.LOCK_UN)
+        except Exception:
+            pass
+        fh.close()
+
+
+def _ledger_mutate(c, fn):
+    ld = _ledger_path(c)
+    with _file_lock(ld):
+        rows, errors = _ledger_read_unlocked(ld)
+        if errors:
+            raise UsageError(f"refusing to rewrite a corrupt ledger: {errors[0]}")
+        result = fn(rows)
+        _ledger_rehash(rows)
+        _atomic_write(ld, "\n".join(json.dumps(r, ensure_ascii=False) for r in rows) + "\n",
+                      mode=0o600)
+    return result
+
+
+def _ledger_integrity(c) -> list[str]:
+    """Return hard integrity errors (tamper, duplicate ids, broken chain)."""
+    d = _ledger_integrity_details(c)
+    return d["errors"]
+
+
+def _ledger_integrity_details(c) -> dict:
+    ld = _ledger_path(c)
+    rows, parse_errors = _ledger_read_unlocked(ld)
+    errors = list(parse_errors)
+    unsigned = 0
+    ids, keys = set(), {}
+    prev = ""
+    for i, r in enumerate(rows):
+        rid = r.get("id")
+        if rid in ids:
+            errors.append(f"duplicate id {rid}")
+        ids.add(rid)
+        key = r.get("dedupe") or _dedupe_key(r.get("cls", ""), r.get("asset", ""),
+                                             r.get("title", ""))
+        if key in keys:
+            errors.append(f"duplicate dedupe key {key!r} ({keys[key]} and {rid})")
+        keys[key] = rid
+        if not r.get("hash"):
+            unsigned += 1
+            prev = ""
+            continue
+        if r.get("prev", "") != prev:
+            errors.append(f"{rid}: broken hash chain (prev mismatch)")
+        if r["hash"] != _entry_hash(r):
+            errors.append(f"{rid}: content hash mismatch (tampered)")
+        prev = r["hash"]
+    return {"errors": errors, "rows": len(rows), "unsigned": unsigned,
+            "signed": len(rows) - unsigned}
+
+
+def _next_id(rows: list[dict]) -> str:
+    nums = [int(m.group(1)) for r in rows
+            if (m := re.search(r"(\d+)$", str(r.get("id", ""))))]
+    return f"SPY-{(max(nums) + 1) if nums else 1:03d}"
+
+
+def _evidence_sections(proof: str) -> dict:
+    sections, matches = {}, list(re.finditer(r"(?i)\b(baseline|attack|diff)\s*:\s*", proof or ""))
+    for i, m in enumerate(matches):
+        end = matches[i + 1].start() if i + 1 < len(matches) else len(proof)
+        sections[m.group(1).lower()] = proof[m.end():end].strip(" ;\n\t")
+    return sections
+
+
+def _evidence_gate(proof: str) -> tuple[str, float, str | None]:
+    """A finding is CONFIRMED only when the proof carries three non-empty
+    sections: baseline, attack and a measurable diff. Everything else is
+    DOWNGRADED to hypothesis — never suppressed."""
+    s = _evidence_sections(proof)
+    missing = [k for k in ("baseline", "attack", "diff") if len(s.get(k, "")) < 2]
+    if not missing:
         return "confirmed", 0.95, None
-    if has("diff:") or has("diff "):
-        return "hypothesis", 0.4, "evidence incomplete: need baseline: + attack: + diff:"
+    if "diff" in s and len(s["diff"]) >= 2:
+        return "hypothesis", 0.4, (
+            "evidence incomplete: need non-empty baseline: + attack: (missing "
+            + ", ".join(missing) + ")")
     return "hypothesis", 0.4, "no 3-gate evidence: need baseline: + attack: + diff:"
 
 
@@ -741,217 +2473,774 @@ def _impact_to_severity(title, proof):
     return "medium"
 
 
+def _default_bindings(cls: str, title: str) -> tuple[str, str, str]:
+    c = (cls or "").upper()
+    if c in CLASS_BINDINGS:
+        return CLASS_BINDINGS[c]
+    for key, val in CLASS_BINDINGS.items():
+        if key.lower() in (title or "").lower():
+            return val
+    return ("", "", "")
+
+
+def _severity_from_cvss(score: float) -> str:
+    if score >= 9.0:
+        return "critical"
+    if score >= 7.0:
+        return "high"
+    if score >= 4.0:
+        return "medium"
+    if score > 0:
+        return "low"
+    return "info"
+
+
+def _entry_new(rows, title, cls, asset, severity, proof, cwe=None,
+               cvss=None, attack=None, wstg=None, status=None, confidence=None,
+               request_meta=None, evidence_quality="3-gate",
+               force_status=None) -> dict:
+    cls = (cls or "GENERAL").upper()
+    status, conf, _ = _evidence_gate(proof)
+    if status != "confirmed":
+        confidence = 0.4
+    elif confidence is None:
+        confidence = conf
+    if force_status:
+        status = force_status.lower()
+        confidence = 0.4 if status != "confirmed" else (confidence or 0.95)
+    sev = severity or _impact_to_severity(title, proof)
+    if cvss is None:
+        cvss = SEVERITY_SCORE.get(sev, 5.5)
+    d_wstg, d_cwe, d_attack = _default_bindings(cls, title)
+    return {
+        "v": 2,
+        "id": _next_id(rows),
+        "title": title,
+        "cls": cls,
+        "asset": asset,
+        "severity": sev,
+        "cvss": round(float(cvss), 1),
+        "status": status.upper(),
+        "confidence": round(float(confidence if confidence is not None else conf), 2),
+        "evidence_quality": evidence_quality,
+        "proof": proof,
+        "cwe": cwe or d_cwe,
+        "wstg": wstg or d_wstg,
+        "attack": attack or d_attack,
+        "dedupe": _dedupe_key(cls, asset, title),
+        "evidence": [{"proof": proof, "at": _now(), "sha256": _sha(proof)}],
+        "request": request_meta or {},
+        "at": _now(),
+        "updated": _now(),
+    }
+
+
+def _ledger_register(c, title, cls, asset, severity=None, proof="", cwe=None,
+                     cvss=None, attack=None, wstg=None,
+                     require_scope=True, dry_run=False, **kw) -> dict:
+    if require_scope and not _is_lab(asset):
+        try:
+            scope = sa.load_scope()
+        except sa.ScopeError as e:
+            raise ScopeDenied(f"LEDGER REFUSED — scope authority is unreadable: {e}") from e
+        if scope is None:
+            raise ScopeDenied(
+                f"LEDGER REFUSED — no scope authority for {asset} (scope init first)")
+        ok, reason = sa.match(scope, asset)
+        if not ok:
+            raise ScopeDenied(f"LEDGER REFUSED — {asset}: {reason}")
+    result = {}
+    force_status = kw.get("force_status")
+
+    def mutate(rows):
+        key = _dedupe_key(cls, asset, title)
+        dup = next((r for r in rows
+                    if (r.get("dedupe") or _dedupe_key(r.get("cls", ""),
+                                                       r.get("asset", ""),
+                                                       r.get("title", ""))) == key), None)
+        status, conf, reason = _evidence_gate(proof)
+        if force_status and force_status.lower() != "confirmed":
+            status, conf = force_status.lower(), 0.4
+        if dup:
+            dup.setdefault("evidence", []).append(
+                {"proof": proof, "at": _now(), "sha256": _sha(proof)})
+            if status == "confirmed" and dup.get("status") != "CONFIRMED":
+                dup["status"], dup["confidence"] = "CONFIRMED", conf
+                dup["evidence_quality"] = "3-gate"
+            elif force_status and force_status.lower() != "confirmed" \
+                    and dup.get("status") != "CONFIRMED":
+                dup["status"], dup["confidence"] = force_status.upper(), 0.4
+            dup["updated"] = _now()
+            if cvss is not None:
+                dup["cvss"] = round(float(cvss), 1)
+            result.update({"entry": dup, "duplicate": True, "reason": reason,
+                           "status": dup.get("status"), "confidence": dup.get("confidence")})
+            return
+        entry = _entry_new(rows, title, cls, asset, severity, proof, cwe,
+                           cvss, attack, wstg, **kw)
+        rows.append(entry)
+        result.update({"entry": entry, "duplicate": False, "reason": reason,
+                       "status": entry["status"], "confidence": entry["confidence"]})
+
+    if dry_run:
+        rows = _ledger_load(c)
+        key = _dedupe_key(cls, asset, title)
+        dup = next((r for r in rows
+                    if (r.get("dedupe") or _dedupe_key(r.get("cls", ""),
+                                                       r.get("asset", ""),
+                                                       r.get("title", ""))) == key), None)
+        entry = dup or _entry_new(rows, title, cls, asset, severity, proof, cwe,
+                                  cvss, attack, wstg, **kw)
+        return {"entry": entry, "duplicate": bool(dup), "dry_run": True,
+                "status": entry.get("status"), "confidence": entry.get("confidence"),
+                "reason": _evidence_gate(proof)[2]}
+    _ledger_mutate(c, mutate)
+    return result
+
+
+def _cmd_ledger_internal(target, title, cls, asset, severity, proof, cwe=None,
+                         force_hypothesis=False, quiet=False, **kw):
+    """Register a finding through the ledger's own gates (used by gate/testers)."""
+    if force_hypothesis:
+        proof = proof + "\ncontrol: differential is not specific (hypothesis-grade)"
+    res = _ledger_register(target, title, cls, asset, severity, proof, cwe,
+                           force_status="hypothesis" if force_hypothesis else None,
+                           **kw)
+    e = res["entry"]
+    if not quiet:
+        if res["duplicate"]:
+            print(f"  ▸ ledger: evidence attached to {e['id']} (dedupe)")
+        else:
+            print(f"  ▸ ledger: {e['id']} [{res['status']} {e['severity']}"
+                  f" conf={e['confidence']:.2f}] {title[:52]}")
+        if res.get("reason"):
+            print(f"    ⚠ downgraded (never suppressed): {res['reason']}")
+    _event(target, "ledger.add", f"{e['id']} {res['status']} {title[:80]}",
+           cls=cls, asset=asset)
+    return e
+
+
+def _ledger_rows_filtered(rows, args) -> list[dict]:
+    out = rows
+    statuses = {s.upper() for s in _split_values(getattr(args, "status", None))}
+    if statuses:
+        out = [r for r in out if r.get("status") in statuses]
+    clss = {s.upper() for s in _split_values(getattr(args, "cls_filter", None))}
+    if clss:
+        out = [r for r in out if (r.get("cls") or "").upper() in clss]
+    sevs = {s.lower() for s in _split_values(getattr(args, "severity", None))}
+    if sevs:
+        out = [r for r in out if (r.get("severity") or "").lower() in sevs]
+    q = (getattr(args, "search", None) or "").lower().strip()
+    if q:
+        out = [r for r in out if q in json.dumps(r).lower()]
+    sort = getattr(args, "sort", "id") or "id"
+    keys = {
+        "id": lambda r: r.get("id", ""),
+        "severity": lambda r: SEVERITY_ORDER.get(r.get("severity", "medium"), 2),
+        "cvss": lambda r: float(r.get("cvss") or 0),
+        "confidence": lambda r: float(r.get("confidence") or 0),
+        "class": lambda r: r.get("cls", ""),
+        "updated": lambda r: r.get("updated", r.get("at", "")),
+    }
+    out = sorted(out, key=keys.get(sort, keys["id"]), reverse=sort in
+                 ("severity", "cvss", "confidence"))
+    limit = getattr(args, "limit", None)
+    return out[:limit] if limit else out
+
+
+def _ledger_stats(rows) -> dict:
+    by_status, by_sev, by_cls = {}, {}, {}
+    for r in rows:
+        by_status[r.get("status", "?")] = by_status.get(r.get("status", "?"), 0) + 1
+        by_sev[r.get("severity", "?")] = by_sev.get(r.get("severity", "?"), 0) + 1
+        by_cls[r.get("cls", "?")] = by_cls.get(r.get("cls", "?"), 0) + 1
+    conf = [r for r in rows if r.get("status") == "CONFIRMED"]
+    scores = [float(r.get("cvss") or 0) for r in rows]
+    risk = round(sum(SEVERITY_SCORE.get(r.get("severity", "medium"), 5.5)
+                     for r in rows if r.get("status") in ("CONFIRMED", "HYPOTHESIS")), 1)
+    return {"rows": len(rows), "confirmed": len(conf),
+            "confirmed_ratio": round(len(conf) / len(rows), 3) if rows else 0.0,
+            "by_status": by_status, "by_severity": by_sev, "by_class": by_cls,
+            "cvss_avg": round(sum(scores) / len(scores), 2) if scores else 0.0,
+            "cvss_max": max(scores) if scores else 0.0,
+            "risk_score": risk,
+            "oldest": min((r.get("at", "") for r in rows), default=""),
+            "newest": max((r.get("updated", r.get("at", "")) for r in rows), default="")}
+
+
+def _ledger_to_sarif(target: str, rows: list[dict]) -> dict:
+    rules, rule_ids = [], {}
+    for r in rows:
+        rid = f"{(r.get('cls') or 'GENERAL').upper()}-{(r.get('cwe') or 'CWE-200')}"
+        if rid not in rule_ids:
+            rule_ids[rid] = len(rules)
+            rules.append({
+                "id": rid,
+                "name": r.get("cls", "GENERAL"),
+                "shortDescription": {"text": r.get("cls", "finding")},
+                "properties": {"cwe": r.get("cwe", ""), "wstg": r.get("wstg", ""),
+                               "attack": r.get("attack", "")},
+            })
+    results = []
+    for r in rows:
+        level = {"critical": "error", "high": "error", "medium": "warning",
+                 "low": "note", "info": "note"}.get(r.get("severity"), "warning")
+        rid = f"{(r.get('cls') or 'GENERAL').upper()}-{(r.get('cwe') or 'CWE-200')}"
+        results.append({
+            "ruleId": rid,
+            "ruleIndex": rule_ids[rid],
+            "level": level,
+            "message": {"text": f"{r.get('title')} [{r.get('status')} conf={r.get('confidence')}]"},
+            "locations": [{"physicalLocation": {"artifactLocation": {
+                "uri": r.get("asset", "")}}}],
+            "properties": {"confidence": r.get("confidence"),
+                           "status": r.get("status"),
+                           "severity": r.get("severity"),
+                           "cvss": r.get("cvss"),
+                           "proof": r.get("proof", "")[:800]},
+        })
+    return {
+        "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+        "version": "2.1.0",
+        "runs": [{
+            "tool": {"driver": {"name": "SPYDERMONKEY", "version": VERSION,
+                                "informationUri": "https://github.com/xanstomper/spydermonkey",
+                                "rules": rules}},
+            "results": results,
+            "properties": {"campaign": target, "generated": _now()},
+        }],
+    }
+
+
 def cmd_ledger(args):
     camp = _camp(args.target)
-    if args.action == "add":
-        if not _scope_gate(args.asset, quiet=True):
-            # the ledger refuses to REGISTER findings about out-of-scope assets
-            scope = _load_scope()
-            if scope is not None and not _scope_match(scope, args.asset):
-                print(f"✗ LEDGER REFUSED — {args.asset} is out of the declared estate", file=sys.stderr)
-                return 1
-        status, conf, reason = _evidence_gate(args.proof)
-        if status != "confirmed" and args.confirmed:
-            status, conf = "confirmed", 0.95
-            reason = None
-        rows = _ledger_load(args.target)
-        key = _dedupe_key(args.cls, args.asset, args.title)
-        dup = next((r for r in rows if r.get("dedupe") == key), None)
-        if dup:
-            dup.setdefault("evidence", []).append({"proof": args.proof, "at": _now()})
-            if status == "confirmed" and dup["status"] != "CONFIRMED":
-                dup["status"], dup["confidence"] = "CONFIRMED", conf
-            _ledger_rewrite(args.target, rows)
-            print(f"▸ DUPLICATE — matched {dup['id']} (same class+asset+title): evidence"
-                  f" attached in place, no new record ({len(dup['evidence'])} evidence item(s))")
-            return 0
-        eid = f"SPY-{len(rows) + 1:03d}"
-        entry = {"id": eid, "title": args.title, "cls": args.cls, "asset": args.asset,
-                 "severity": args.severity, "status": status.upper(),
-                 "confidence": conf, "proof": args.proof, "cwe": args.cwe or "",
-                 "dedupe": key, "evidence": [{"proof": args.proof, "at": _now()}],
-                 "at": _now()}
-        _ledger_append(args.target, entry)
-        line = f"▸ {eid} [{status.upper()} {args.severity} conf={conf:.2f}] {args.title[:56]} @ {args.asset[:40]}"
-        print(line)
-        if reason:
-            print(f"  ⚠ downgraded (never suppressed): {reason}")
+    _ensure_campaign(args.target)
+    action = args.action
+    if action == "add":
+        proof = args.proof or ""
+        if getattr(args, "proof_file", None):
+            try:
+                proof = Path(args.proof_file).read_text()
+            except OSError as e:
+                print(f"✗ cannot read --proof-file: {e}", file=sys.stderr)
+                return 2
+        if not args.title or not args.asset:
+            raise UsageError("ledger add needs --title and --asset")
+        severity = args.severity
+        if getattr(args, "cvss", None) is not None:
+            if not 0 <= args.cvss <= 10:
+                raise UsageError("--cvss must be between 0 and 10")
+            severity = severity or _severity_from_cvss(args.cvss)
+        severity = severity or _impact_to_severity(args.title, proof)
+        res = _ledger_register(args.target, args.title, args.cls, args.asset,
+                               severity, proof, args.cwe, getattr(args, "cvss", None),
+                               getattr(args, "attack", None),
+                               getattr(args, "wstg", None),
+                               dry_run=getattr(args, "dry_run", False))
+        e = res["entry"]
+        payload = {"finding": e, "duplicate": res["duplicate"],
+                   "reason": res.get("reason"), "dry_run": bool(getattr(args, "dry_run", False))}
+        if _json_mode(args):
+            _emit(args, payload)
+        elif res["duplicate"]:
+            print(f"▸ DUPLICATE — matched {e['id']} (same class+asset+title): evidence"
+                  f" attached in place, no new record ({len(e.get('evidence', []))}"
+                  f" evidence item(s))")
+        else:
+            print(f"▸ {e['id']} [{e['status']} {e['severity']} conf={e['confidence']:.2f}]"
+                  f" {e['title'][:56]} @ {e['asset'][:40]}")
+            if res.get("reason"):
+                print(f"  ⚠ downgraded (never suppressed): {res['reason']}")
+        if not res["duplicate"] and not getattr(args, "dry_run", False):
+            _event(args.target, "ledger.add", f"{e['id']} {e['status']} {e['title'][:80]}",
+                   cls=e["cls"], asset=e["asset"])
         return 0
-    if args.action == "list":
-        rows = _ledger_load(args.target)
+    if action == "list":
+        rows = _ledger_rows_filtered(_ledger_load(args.target), args)
+        if _json_mode(args):
+            _emit(args, {"target": args.target, "findings": rows, "count": len(rows)})
+            return 0
         if not rows:
-            print("· ledger empty — ledger add --target <t> --title ... --proof 'baseline:… attack:… diff:…'")
+            print("· ledger empty (or no rows match) — ledger add --target <t> --title ..."
+                  " --proof 'baseline:… attack:… diff:…'")
             return 0
         print(f"═══ FINDING LEDGER — {args.target} ({len(rows)} finding(s)) ═══")
         for r in rows:
-            print(f"  {r['id']} [{r['status']:9s} {r['severity']:8s} conf={r['confidence']:.2f}]"
-                  f" {r['title'][:52]} @ {r['asset'][:44]} ({r['cls']})")
+            print(f"  {r['id']} [{r.get('status','?'):13s} {r.get('severity','?'):8s}"
+                  f" cvss={float(r.get('cvss') or 0):.1f} conf={float(r.get('confidence') or 0):.2f}]"
+                  f" {r.get('title','')[:52]} @ {r.get('asset','')[:44]} ({r.get('cls','')})")
         return 0
-    if args.action == "show":
+    if action == "show":
         rows = _ledger_load(args.target)
-        r = next((x for x in rows if x["id"] == args.id), None)
+        r = next((x for x in rows if x.get("id") == args.id), None)
         if not r:
             print(f"✗ no finding {args.id}", file=sys.stderr)
             return 2
-        print(json.dumps(r, indent=2))
+        if _json_mode(args):
+            _emit(args, {"finding": r})
+        else:
+            print(json.dumps(r, indent=2, ensure_ascii=False))
         return 0
-    if args.action == "triage":
+    if action == "triage":
         rows = _ledger_load(args.target)
         if not rows:
-            print("· ledger empty — nothing to triage")
+            if _json_mode(args):
+                _emit(args, {"target": args.target, "findings": [], "blocking": [],
+                             "warnings": []})
+            else:
+                print("· ledger empty — nothing to triage")
             return 0
         scope = _load_scope()
-        blocking, warnings = [], []
-        print(f"═══ LEDGER TRIAGE — {args.target} ═══")
+        blocking, warnings, items = [], [], []
         for r in rows:
             vs = []
-            want = _impact_to_severity(r["title"], r["proof"])
-            if SEVERITY_ORDER.get(r["severity"], 2) < SEVERITY_ORDER[want] - 1:
+            want = _impact_to_severity(r.get("title", ""), r.get("proof", ""))
+            if SEVERITY_ORDER.get(r.get("severity", "medium"), 2) < SEVERITY_ORDER[want] - 1:
                 vs.append(("severity-impact", "warning",
-                           f"claims {r['severity']} but impact words say {want}"))
-            if r["status"] != "CONFIRMED" and r["confidence"] < 0.9 and "baseline" not in r["proof"].lower():
+                           f"claims {r.get('severity')} but impact words say {want}"))
+            if r.get("status") == "CONFIRMED" and _evidence_gate(r.get("proof", ""))[0] != "confirmed":
+                vs.append(("evidence", "blocking",
+                           "CONFIRMED without a complete 3-gate proof"))
+            if r.get("status") != "CONFIRMED" and _evidence_gate(r.get("proof", ""))[0] != "confirmed":
                 vs.append(("evidence", "warning", "no reproducible 3-gate evidence"))
-            if scope is not None and not _is_lab(r["asset"]) and not _scope_match(scope, r["asset"]):
-                vs.append(("scope", "blocking", f"asset {r['asset']} out of the declared estate"))
-            dups = [x["id"] for x in rows if x["id"] != r["id"]
-                    and _dedupe_key(x["cls"], x["asset"], x["title"]) == r["dedupe"]]
+            if scope is not None and not _is_lab(r.get("asset", "")) \
+                    and not _scope_match(scope, r.get("asset", "")):
+                vs.append(("scope", "blocking",
+                           f"asset {r.get('asset')} out of the declared estate"))
+            dups = [x.get("id") for x in rows if x.get("id") != r.get("id")
+                    and x.get("dedupe") == r.get("dedupe")]
             if dups:
                 vs.append(("duplicate", "warning", f"same key as {','.join(dups)}"))
+            at = _parse_ts(r.get("updated") or r.get("at"))
+            if at and (datetime.now(timezone.utc) - at).days > 90:
+                vs.append(("stale", "warning", "older than 90 days — re-verify"))
+            items.append({"id": r.get("id"), "title": r.get("title"),
+                          "violations": [{"gate": g, "level": sev, "message": m}
+                                         for g, sev, m in vs]})
             for g, sev, msg in vs:
-                (blocking if sev == "blocking" else warnings).append(f"{r['id']} {g}: {msg}")
-            mark = "✗" if any(g == "blocking" for g, _, _ in vs) else ("⚠" if vs else "✓")
-            print(f"  {mark} {r['id']} {r['title'][:46]} — "
-                  + ("; ".join(f"{g}:{m[:44]}" for g, _, m in vs) if vs else "clean"))
-        print(f"═══ {len(rows)} finding(s): {len(blocking)} blocking · {len(warnings)} warning(s) ═══")
-        for b in blocking:
-            print(f"  ✗ BLOCKING {b}")
+                (blocking if sev == "blocking" else warnings).append(
+                    f"{r.get('id')} {g}: {msg}")
+            if not _json_mode(args):
+                mark = "✗" if any(g == "blocking" for g, _, _ in vs) else ("⚠" if vs else "✓")
+                print(f"  {mark} {r.get('id')} {r.get('title', '')[:46]} — "
+                      + ("; ".join(f"{g}:{m[:44]}" for g, _, m in vs) if vs else "clean"))
+        payload = {"target": args.target, "findings": items,
+                   "blocking": blocking, "warnings": warnings,
+                   "ok": not blocking}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"═══ {len(rows)} finding(s): {len(blocking)} blocking"
+                  f" · {len(warnings)} warning(s) ═══")
+            for b in blocking:
+                print(f"  ✗ BLOCKING {b}")
         return 1 if blocking else 0
+    if action == "verify":
+        d = _ledger_integrity_details(args.target)
+        strict = getattr(args, "strict", False)
+        errors = list(d["errors"])
+        if strict and d["unsigned"]:
+            errors.append(f"{d['unsigned']} unsigned legacy row(s) — run ledger add or update to sign")
+        payload = {"target": args.target, **d, "errors": errors,
+                   "strict": strict, "ok": not errors}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"═══ LEDGER VERIFY — {args.target} ═══")
+            print(f"  rows {d['rows']} · signed {d['signed']} · unsigned {d['unsigned']}")
+            for e in errors:
+                print(f"  ✗ {e}")
+            print(f"═══ {'INTEGRITY OK' if not errors else 'INTEGRITY FAILED'} ═══")
+        return 0 if not errors else 1
+    if action == "stats":
+        rows = _ledger_load(args.target)
+        payload = {"target": args.target, **_ledger_stats(rows),
+                   "integrity": _ledger_integrity_details(args.target)}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"═══ LEDGER STATS — {args.target} ═══")
+            print(f"  findings {payload['rows']} · confirmed {payload['confirmed']}"
+                  f" ({payload['confirmed_ratio'] * 100:.1f}%)")
+            print(f"  severity {payload['by_severity']}")
+            print(f"  status   {payload['by_status']}")
+            print(f"  cvss avg {payload['cvss_avg']} · max {payload['cvss_max']}"
+                  f" · risk score {payload['risk_score']}")
+            print(f"  newest {payload['newest'] or '—'}")
+        return 0
+    if action == "export":
+        rows = _ledger_load(args.target)
+        fmt = (args.format or "json").lower()
+        if fmt == "json":
+            data = {"campaign": args.target, "generated": _now(),
+                    "scope": sa.summary(_load_scope()) if _load_scope() else None,
+                    "findings": rows, "stats": _ledger_stats(rows),
+                    "integrity": _ledger_integrity_details(args.target)}
+            text = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+        elif fmt == "jsonl":
+            text = "\n".join(json.dumps(r, ensure_ascii=False) for r in rows) + "\n"
+        elif fmt == "csv":
+            buf = io.StringIO()
+            cols = ["id", "title", "cls", "asset", "severity", "cvss", "status",
+                    "confidence", "cwe", "wstg", "attack", "proof", "at", "updated"]
+            w = csv.DictWriter(buf, fieldnames=cols, extrasaction="ignore")
+            w.writeheader()
+            for r in rows:
+                w.writerow(r)
+            text = buf.getvalue()
+        elif fmt == "markdown":
+            L = [f"# Findings — {args.target}", "",
+                 f"_generated {_now()} · {len(rows)} finding(s)_", "",
+                 "| id | severity | cvss | status | class | title | asset |",
+                 "|---|---|---|---|---|---|---|"]
+            for r in rows:
+                L.append(f"| {r.get('id')} | {r.get('severity')} | {r.get('cvss')} |"
+                         f" {r.get('status')} | {r.get('cls')} | {str(r.get('title','')).replace('|','\\|')} |"
+                         f" {str(r.get('asset','')).replace('|','\\|')} |")
+            text = "\n".join(L) + "\n"
+        elif fmt == "sarif":
+            text = json.dumps(_ledger_to_sarif(args.target, rows), indent=2) + "\n"
+        else:
+            raise UsageError(f"unknown export format: {fmt} (json|jsonl|csv|markdown|sarif)")
+        out = args.output or str(camp / f"findings.{ 'md' if fmt == 'markdown' else fmt }")
+        if out == "-":
+            print(text, end="")
+        else:
+            _atomic_write(Path(out), text, mode=0o600)
+            if _json_mode(args):
+                _emit(args, {"format": fmt, "output": out, "rows": len(rows)})
+            else:
+                print(f"▸ findings exported: {out} ({fmt}, {len(rows)} row(s))")
+        return 0
+    if action == "update":
+        rows = _ledger_load(args.target)
+        r = next((x for x in rows if x.get("id") == args.id), None)
+        if not r:
+            print(f"✗ no finding {args.id}", file=sys.stderr)
+            return 2
+        if args.status:
+            new = args.status.upper()
+            if new not in LEDGER_STATUSES:
+                raise UsageError(f"status must be one of {', '.join(LEDGER_STATUSES)}")
+            old = r.get("status", "HYPOTHESIS")
+            if new != old and new not in STATUS_TRANSITIONS.get(old, set()):
+                raise UsageError(f"illegal transition {old} → {new}")
+        updated = {}
+
+        def apply(rows2):
+            for x in rows2:
+                if x.get("id") != args.id:
+                    continue
+                if args.status:
+                    x["status"] = args.status.upper()
+                    if args.status.upper() == "CONFIRMED":
+                        x["confidence"] = max(float(x.get("confidence") or 0), 0.95)
+                if args.severity:
+                    x["severity"] = args.severity
+                if getattr(args, "cvss", None) is not None:
+                    x["cvss"] = round(args.cvss, 1)
+                x["updated"] = _now()
+                if args.note:
+                    x.setdefault("evidence", []).append(
+                        {"note": args.note, "at": _now(), "sha256": _sha(args.note)})
+                updated.update(x)
+                break
+
+        _ledger_mutate(args.target, apply)
+        _event(args.target, "ledger.update",
+               f"{args.id} {args.status or ''} {args.note or ''}")
+        payload = {"finding": updated, "updated": True}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"▸ {args.id} updated → {updated.get('status')}"
+                  f" {updated.get('severity')} cvss={updated.get('cvss')}")
+        return 0
+    if action == "sync":
+        signals = _confirmed_rows(args.target)
+        created, skipped = [], 0
+        for title, cls, asset in signals:
+            if not asset or asset == "?":
+                skipped += 1
+                continue
+            existing = [r for r in _ledger_load(args.target)
+                        if (r.get("dedupe") or _dedupe_key(r.get("cls", ""),
+                                                            r.get("asset", ""),
+                                                            r.get("title", "")))
+                        == _dedupe_key(cls, asset, title)]
+            if existing:
+                skipped += 1
+                continue
+            if getattr(args, "dry_run", False):
+                created.append({"title": title, "cls": cls, "asset": asset})
+                continue
+            res = _ledger_register(args.target, title, cls, asset, None,
+                                   f"baseline: family state CONFIRMED for {asset}; "
+                                   f"attack: state row '{title[:120]}'; "
+                                   f"diff: engine recorded confirmation (no 3-gate replay yet)",
+                                   require_scope=True)
+            created.append(res["entry"])
+        payload = {"target": args.target, "created": created, "skipped": skipped,
+                   "dry_run": bool(getattr(args, "dry_run", False))}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"▸ ledger sync: {len(created)} created · {skipped} already present")
+            for e in created[:10]:
+                if isinstance(e, dict):
+                    print(f"  + {e.get('id', '?')} {e.get('title', '')[:60]}"
+                          f" @ {e.get('asset', '')[:40]}")
+        return 0
     return 2
 
 
 def _ledger_rewrite(c, rows):
-    ld = _camp(c) / "ledger.jsonl"
-    ld.write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+    _ledger_rehash(rows)
+    _atomic_write(_ledger_path(c),
+                  "\n".join(json.dumps(r) for r in rows) + "\n", mode=0o600)
 
 
-def _now():
-    return datetime.now(timezone.utc).isoformat()
+_MAX_BODY = 1_000_000
 
 
-# ── 3.3 the 3-gate confirmation engine (baseline → attack → diff) ─────────────
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
 
-def _http(url, method="GET", data=None, headers=None, timeout=6):
-    """stdlib live request. Returns dict(status, body, elapsed) — never raises."""
+
+_OPENER = urllib.request.build_opener(_NoRedirect())
+
+
+def _http(url, method="GET", data=None, headers=None, timeout=8):
+    """Stdlib live request. Never redirects (a redirect must never walk the
+    family out of scope), caps the body, honors the scope rate limit, and
+    returns a structured dict. Never raises."""
     t0 = time.time()
-    req = urllib.request.Request(url, method=method,
-                                 data=data.encode() if data else None,
-                                 headers=headers or {})
+    sa.rate_wait()
+    body_bytes = data.encode() if isinstance(data, str) else data
+    req = urllib.request.Request(url, method=method.upper(),
+                                 data=body_bytes, headers=headers or {})
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            return {"status": r.status, "body": r.read().decode("utf-8", "replace"),
-                    "elapsed": round(time.time() - t0, 3)}
+        with _OPENER.open(req, timeout=min(max(float(timeout), 1), 30)) as r:
+            raw = r.read(_MAX_BODY + 1)
+            truncated = len(raw) > _MAX_BODY
+            raw = raw[:_MAX_BODY]
+            return {"status": r.status, "body": raw.decode("utf-8", "replace"),
+                    "headers": {k.lower(): v for k, v in r.headers.items()},
+                    "elapsed": round(time.time() - t0, 3), "url": r.geturl(),
+                    "truncated": truncated, "sha256": _sha(raw.decode("utf-8", "replace")),
+                    "error": ""}
     except urllib.error.HTTPError as e:
-        return {"status": e.code, "body": e.read().decode("utf-8", "replace"),
-                "elapsed": round(time.time() - t0, 3)}
+        raw = e.read(_MAX_BODY + 1)[:_MAX_BODY] if e.fp else b""
+        return {"status": e.code, "body": raw.decode("utf-8", "replace"),
+                "headers": {k.lower(): v for k, v in (e.headers or {}).items()},
+                "elapsed": round(time.time() - t0, 3), "url": url,
+                "truncated": len(raw) >= _MAX_BODY, "sha256": _sha(raw.decode("utf-8", "replace")),
+                "error": ""}
     except Exception as e:
         return {"status": 0, "body": f"__error__ {type(e).__name__}",
-                "elapsed": round(time.time() - t0, 3)}
+                "headers": {}, "elapsed": round(time.time() - t0, 3), "url": url,
+                "truncated": False, "sha256": "", "error": f"{type(e).__name__}: {e}"}
+
+
+def _gate_diff(a: dict, b: dict) -> tuple[bool, list[str]]:
+    what = []
+    if a["status"] != b["status"]:
+        what.append(f"status {a['status']}→{b['status']}")
+    if len(a["body"]) != len(b["body"]):
+        what.append(f"length {len(a['body'])}→{len(b['body'])}")
+    if a["body"] != b["body"]:
+        what.append(f"body sha {a['sha256'][:12]}→{b['sha256'][:12]}")
+    for h in ("location", "content-type", "server", "x-powered-by"):
+        if a["headers"].get(h) != b["headers"].get(h):
+            what.append(f"{h} differs")
+    return bool(what), what
+
+
+def _gate_urls(args) -> tuple[str, str]:
+    sp = urllib.parse.urlsplit(args.url)
+    base_q = urllib.parse.parse_qsl(sp.query, keep_blank_values=True)
+    base_path = sp.path or "/"
+    base_query = (urllib.parse.parse_qsl(args.baseline_query, keep_blank_values=True)
+                  if args.baseline_query else base_q)
+    url_b = urllib.parse.urlunsplit((sp.scheme, sp.netloc, base_path,
+                                     urllib.parse.urlencode(base_query), ""))
+    atk_q = urllib.parse.parse_qsl(args.attack_query, keep_blank_values=True)
+    if args.append_query:
+        atk_q = base_query + atk_q
+    url_a = urllib.parse.urlunsplit((sp.scheme, sp.netloc, base_path,
+                                     urllib.parse.urlencode(atk_q), ""))
+    return url_b, url_a
+
+
+def _gate_attack_data(args, url_a: str) -> str | None:
+    if getattr(args, "attack_data", None) is not None:
+        return args.attack_data
+    if args.data and args.method.upper() in ("POST", "PUT", "PATCH", "DELETE") \
+            and args.append_query:
+        return args.data + "&" + url_a.split("?", 1)[-1]
+    return args.data
 
 
 def cmd_gate(args):
     if args.prove:
         rows = _ledger_load(args.target)
-        r = next((x for x in rows if x["id"] == args.prove), None)
+        r = next((x for x in rows if x.get("id") == args.prove), None)
         if not r:
             print(f"✗ no finding {args.prove}", file=sys.stderr)
             return 2
-        print(f"═══ 3-GATE REPLAY — {r['id']} {r['title'][:50]} ═══")
-        for i, ev in enumerate(r.get("evidence", []), 1):
-            print(f"  evidence {i}: {ev['proof'][:160]} ({ev['at']})")
-        print(f"  status {r['status']} · confidence {r['confidence']}")
+        integrity = _ledger_integrity_details(args.target)
+        payload = {"finding": r, "integrity": integrity}
+        if getattr(args, "replay", False):
+            req = r.get("request") or {}
+            if not req.get("baseline_url") or not req.get("attack_url"):
+                payload["replay"] = {"ok": False, "error": "no stored request metadata"}
+            elif not _scope_gate(req["baseline_url"]) or not _scope_gate(req["attack_url"]):
+                payload["replay"] = {"ok": False, "error": "replay refused by scope gate"}
+                return 1
+            else:
+                g1 = _http(req["baseline_url"], req.get("method", "GET"),
+                           data=None, headers=None)
+                g2 = _http(req["attack_url"], req.get("method", "GET"),
+                           data=None, headers=None)
+                diff, what = _gate_diff(g1, g2)
+                payload["replay"] = {"ok": diff, "baseline": _gate_brief(g1),
+                                     "attack": _gate_brief(g2), "diff": what}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"═══ 3-GATE REPLAY — {r['id']} {r.get('title', '')[:50]} ═══")
+            for i, ev in enumerate(r.get("evidence", []), 1):
+                print(f"  evidence {i}: {str(ev.get('proof', ev.get('note', '')))[:160]}"
+                      f" ({ev.get('at')})")
+            print(f"  status {r.get('status')} · confidence {r.get('confidence')}"
+                  f" · cvss {r.get('cvss')}")
+            print(f"  integrity: {'✓ signed chain' if not integrity['errors'] else '✗ ' + integrity['errors'][0]}")
+            if "replay" in payload:
+                rp = payload["replay"]
+                if rp.get("ok"):
+                    print(f"  replay: ✓ diff reproduced ({'; '.join(rp['diff'])})")
+                else:
+                    print(f"  replay: ✗ {rp.get('error') or 'responses identical'}")
         return 0
-    if not _scope_gate(args.url):
+    if not _scope_gate(args.url, quiet=_json_mode(args)):
         return 1
-    from urllib.parse import urlencode, urlsplit, urlunsplit, parse_qsl
-    sp = urlsplit(args.url)
-    base_q = parse_qsl(sp.query, keep_blank_values=True)
-    base_path = sp.path or "/"
-    url_b = urlunsplit((sp.scheme, sp.netloc, base_path,
-                        urlencode(parse_qsl(args.baseline_query, keep_blank_values=True)
-                                  if args.baseline_query else base_q), ""))
-    # attack request: the attack query REPLACES the baseline query by default
-    # (--append-query keeps the baseline params and adds the attack params)
-    atk_q = parse_qsl(args.attack_query, keep_blank_values=True)
-    if args.append_query:
-        atk_q = (parse_qsl(args.baseline_query, keep_blank_values=True)
-                 if args.baseline_query else base_q) + atk_q
-    url_a = urlunsplit((sp.scheme, sp.netloc, base_path, urlencode(atk_q), ""))
+    url_b, url_a = _gate_urls(args)
+    if not _scope_gate(url_a, quiet=_json_mode(args)):
+        return 1
     method = args.method.upper()
-    hb = dict(h.split(":", 1) for h in args.header) if args.header else {}
-    print(f"═══ 3-GATE CONFIRMATION — {method} {sp.netloc}{base_path} ═══")
-    g1 = _http(url_b, method, data=args.data, headers=hb)
-    print(f"  ▸ G1 baseline  {url_b[:70]} → {g1['status']} len={len(g1['body'])} {g1['elapsed']}s")
-    g2 = _http(url_a, method, data=(args.data + "&" + args.attack_query if args.data and method == "POST"
-                                    else args.data), headers=hb)
-    print(f"  ▸ G2 attack    {url_a[:70]} → {g2['status']} len={len(g2['body'])} {g2['elapsed']}s")
-    diff = (g1["status"], len(g1["body"]), g1["body"]) != (g2["status"], len(g2["body"]), g2["body"])
-    what = []
-    if g1["status"] != g2["status"]:
-        what.append(f"status {g1['status']}→{g2['status']}")
-    if len(g1["body"]) != len(g2["body"]):
-        what.append(f"length {len(g1['body'])}→{len(g2['body'])}")
-    if g1["body"] != g2["body"]:
-        what.append("body differs")
-    g3 = diff
+    hb = {}
+    for h in args.header or []:
+        if ":" in h:
+            k, v = h.split(":", 1)
+            hb[k.strip()] = v.strip()
+    reps = max(1, int(getattr(args, "reps", 1) or 1))
+    baselines = []
+    for _ in range(reps):
+        baselines.append(_http(url_b, method, data=args.data, headers=hb,
+                               timeout=getattr(args, "timeout", 8)))
+    g1 = baselines[0]
+    unstable = any((b["status"], b["sha256"]) != (g1["status"], g1["sha256"])
+                   for b in baselines[1:])
+    attack_data = _gate_attack_data(args, url_a)
+    g2 = _http(url_a, method, data=attack_data, headers=hb,
+               timeout=getattr(args, "timeout", 8))
+    diff, what = _gate_diff(g1, g2)
     token_hit = None
     if args.confirm:
         token_hit = args.confirm.lower() in g2["body"].lower()
-        g3 = diff and token_hit
-    print(f"  ▸ G3 diff      {'YES' if diff else 'NO'} ({'; '.join(what) or 'identical response'})"
-          + (f" · confirm-token {'✓ present' if token_hit else '✗ ABSENT'}" if args.confirm else ""))
-    title = args.title or f"{args.cls.lower()} differential on {base_path}"
-    if g3:
-        proof = (f"baseline: {url_b[:100]} → {g1['status']} len={len(g1['body'])}; "
-                 f"attack: {url_a[:100]} → {g2['status']} len={len(g2['body'])}; "
-                 f"diff: {'; '.join(what)}")
-        rc = _cmd_ledger_internal(args.target, title, args.cls, args.url, args.severity,
-                                  proof, args.cwe)
-        print("  ✓ CONFIRMED — measurable, reproducible diff; registered in the ledger")
-        return 0 if rc == 0 else rc
+    expect_ok = True
+    if getattr(args, "expect_regex", None):
+        try:
+            expect_ok = re.search(args.expect_regex, g2["body"], re.I | re.M) is not None
+        except re.error as e:
+            raise UsageError(f"bad --expect-regex: {e}") from e
+    if getattr(args, "expect_status", None):
+        expect_ok = expect_ok and g2["status"] == args.expect_status
+    has_expect = bool(getattr(args, "expect_regex", None)
+                      or getattr(args, "expect_status", None) is not None)
+    if token_hit is not None:
+        decisive = bool(diff and not unstable and token_hit)
+    elif has_expect:
+        decisive = bool(diff and not unstable and expect_ok)
+    else:
+        decisive = bool(diff and not unstable and getattr(args, "auto_confirm", False))
+    if not _json_mode(args):
+        print(f"═══ 3-GATE CONFIRMATION — {method} "
+              f"{urllib.parse.urlsplit(args.url).netloc}"
+              f"{urllib.parse.urlsplit(args.url).path or '/'} ═══")
+        print(f"  ▸ G1 baseline  {url_b[:78]} → {g1['status']} len={len(g1['body'])}"
+              f" {g1['elapsed']}s" + (f" ({reps} reps, unstable!)" if unstable else ""))
+        print(f"  ▸ G2 attack    {url_a[:78]} → {g2['status']} len={len(g2['body'])}"
+              f" {g2['elapsed']}s")
+        print(f"  ▸ G3 diff      {'YES' if diff else 'NO'}"
+              f" ({'; '.join(what) or 'identical response'})"
+              + (f" · confirm-token {'✓' if token_hit else '✗ ABSENT'}"
+                 if args.confirm else "")
+              + (" · unstable baseline" if unstable else ""))
+    title = args.title or f"{args.cls.lower()} differential on {urllib.parse.urlsplit(args.url).path or '/'}"
+    proof = (f"baseline: {url_b[:120]} → {g1['status']} len={len(g1['body'])}"
+             f" sha={g1['sha256'][:16]}; "
+             f"attack: {url_a[:120]} → {g2['status']} len={len(g2['body'])}"
+             f" sha={g2['sha256'][:16]}; "
+             f"diff: {'; '.join(what) or 'none'}"
+             + ("; baseline unstable across repeats" if unstable else "")
+             + (f"; confirm token present" if token_hit else ""))
+    request_meta = {
+        "method": method,
+        "baseline_url": url_b,
+        "attack_url": url_a,
+        "header_names": sorted(hb),
+        "data_sha256": _sha(args.data or ""),
+        "attack_data_sha256": _sha(attack_data or ""),
+    }
+    severity = args.severity or _impact_to_severity(title, proof)
+    if decisive:
+        _cmd_ledger_internal(args.target, title, args.cls, args.url, severity,
+                             proof, args.cwe, request_meta=request_meta,
+                             quiet=_json_mode(args))
+        payload = {"target": args.target, "confirmed": True, "diff": what,
+                   "baseline": _gate_brief(g1), "attack": _gate_brief(g2),
+                   "token_present": token_hit, "unstable": unstable,
+                   "proof": proof}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print("  ✓ CONFIRMED — measurable, reproducible diff; registered in the ledger")
+        _event(args.target, "gate.confirmed", title[:100], asset=args.url)
+        return 0
     if diff:
-        print("  ⚠ HYPOTHESIS — measurable diff but the confirm token is absent;"
-              " registered at confidence 0.4 (downgraded, never suppressed)")
-        proof = (f"baseline: {g1['status']} len={len(g1['body'])}; attack: {g2['status']}"
-                 f" len={len(g2['body'])}; diff: {'; '.join(what)} — confirm token unverified")
-        _cmd_ledger_internal(args.target, title, args.cls, args.url, "info", proof, args.cwe)
+        reason = ("baseline unstable across repeats" if unstable else
+                  "no decisive token/expectation supplied")
+        _cmd_ledger_internal(args.target, title, args.cls, args.url,
+                             "info", proof + f"; hypothesis: {reason}", args.cwe,
+                             force_hypothesis=True, request_meta=request_meta,
+                             quiet=_json_mode(args))
+        payload = {"target": args.target, "confirmed": False, "diff": what,
+                   "baseline": _gate_brief(g1), "attack": _gate_brief(g2),
+                   "token_present": token_hit, "unstable": unstable,
+                   "reason": reason, "proof": proof}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"  ⚠ HYPOTHESIS — {reason}; registered at confidence 0.4"
+                  " (downgraded, never suppressed)")
         return 0
-    print("  ✗ DISPROVEN — responses identical; nothing registered (no speculation)")
+    payload = {"target": args.target, "confirmed": False, "diff": [],
+               "baseline": _gate_brief(g1), "attack": _gate_brief(g2),
+               "reason": "responses identical"}
+    if _json_mode(args):
+        _emit(args, payload)
+    else:
+        print("  ✗ DISPROVEN — responses identical; nothing registered (no speculation)")
     return 0
 
 
-def _cmd_ledger_internal(target, title, cls, asset, severity, proof, cwe=None):
-    """Register a finding through the ledger's own gates (used by gate/testers)."""
-    rows = _ledger_load(target)
-    status, conf, reason = _evidence_gate(proof)
-    key = _dedupe_key(cls, asset, title)
-    dup = next((r for r in rows if r.get("dedupe") == key), None)
-    if dup:
-        dup.setdefault("evidence", []).append({"proof": proof, "at": _now()})
-        if status == "confirmed" and dup["status"] != "CONFIRMED":
-            dup["status"], dup["confidence"] = "CONFIRMED", conf
-        _ledger_rewrite(target, rows)
-        print(f"  ▸ ledger: evidence attached to {dup['id']} (dedupe)")
-        return 0
-    eid = f"SPY-{len(rows) + 1:03d}"
-    _ledger_append(target, {"id": eid, "title": title, "cls": cls, "asset": asset,
-                            "severity": severity, "status": status.upper(),
-                            "confidence": conf, "proof": proof, "cwe": cwe or "",
-                            "dedupe": key, "evidence": [{"proof": proof, "at": _now()}],
-                            "at": _now()})
-    print(f"  ▸ ledger: {eid} [{status.upper()} {severity} conf={conf:.2f}] {title[:52]}")
-    if reason:
-        print(f"    ⚠ downgraded (never suppressed): {reason}")
-    return 0
+def _gate_brief(r: dict) -> dict:
+    return {"status": r["status"], "length": len(r["body"]),
+            "sha256": r["sha256"], "elapsed": r["elapsed"],
+            "truncated": r.get("truncated", False), "error": r.get("error", "")}
 
 
 # ── 3.4 the chain detection engine (8 patterns) ───────────────────────────────
@@ -999,112 +3288,249 @@ CHAIN_PATTERNS = [
 ]
 
 
-def _confirmed_rows(target):
-    """Every CONFIRMED signal in the campaign: ledger rows + family state rows."""
+def _confirmed_signals(target):
+    """Every CONFIRMED signal in the campaign, with a stable reference id."""
     camp = _camp(target)
-    out = [(r["title"], r["cls"], r["asset"]) for r in _ledger_load(target)
-           if r.get("status") == "CONFIRMED"]
-    try:
-        u = _load_json(camp / "undercroft-state.json", {})
+    out = []
+    for r in _ledger_load(target):
+        if r.get("status") == "CONFIRMED":
+            out.append({"id": r.get("id", "?"), "title": r.get("title", ""),
+                        "cls": r.get("cls", "GENERAL"), "asset": r.get("asset", "?"),
+                        "source": "ledger", "severity": r.get("severity", "medium")})
+    for fname, source in (("undercroft-state.json", "undercroft"),
+                          ("kenshi-state.json", "undercroft")):
+        u = _load_json(camp / fname, {})
         for s in u.get("surface", []) + u.get("logic", []):
             if s.get("status") == "CONFIRMED":
-                out.append((s.get("endpoint") or s.get("seam") or "?", "UNDERCROFT",
-                            s.get("endpoint") or s.get("seam") or "?"))
-    except Exception:
-        pass
-    try:
-        h = _load_json(camp / "harvest-state.json", {})
-        for cr in h.get("crown", []):
-            out.append((f"{cr.get('class')} harvested", cr.get("class", "HARVEST"),
-                        cr.get("asset", "?")))
-    except Exception:
-        pass
+                asset = s.get("endpoint") or s.get("where") or s.get("seam") or "?"
+                title = s.get("seam") or s.get("note") or "undercroft confirmed seam"
+                out.append({"id": f"UND-{len(out)+1:03d}", "title": title,
+                            "cls": "UNDERCROFT", "asset": asset, "source": source,
+                            "severity": "high"})
+    h = _load_json(camp / "harvest-state.json", {})
+    for cr in h.get("crown", []):
+        out.append({"id": f"HAR-{len(out)+1:03d}",
+                    "title": f"{cr.get('class')} harvested",
+                    "cls": cr.get("class", "HARVEST"), "asset": cr.get("asset", "?"),
+                    "source": "harvest", "severity": "high"})
     return out
+
+
+def _confirmed_rows(target):
+    """Backward-compatible tuple view used by ledger sync."""
+    return [(s["title"], s["cls"], s["asset"]) for s in _confirmed_signals(target)]
 
 
 def _origin(asset):
     from urllib.parse import urlsplit
     if "://" not in (asset or ""):
-        return (asset or "?").lower()
+        return (asset or "?").lower().split("/")[0]
     sp = urlsplit(asset)
     return f"{sp.scheme}://{sp.netloc}".lower()
 
 
+def _custom_chain(args, camp) -> int:
+    requires = [s.strip().upper() for s in (args.requires or "").split("+") if s.strip()]
+    if len(requires) < 2:
+        raise UsageError("chain plan --pattern custom needs --requires 'CLS-A+CLS-B'")
+    st = _load_json(camp / "chain-state.json", {})
+    chains = st.get("chains", [])
+    n = max([int(m.group(1)) for c in chains
+             if (m := re.search(r"(\d+)$", str(c.get("id", ""))))] or [0]) + 1
+    cid = f"CH-{n:03d}"
+    ch = {"id": cid, "pattern": "custom", "entry_ids": requires,
+          "assets": [args.asset or "?"], "impact": "operator-defined chain",
+          "plan": args.plan_text or "declare the two classes and validate the first hop",
+          "severity": args.severity or "medium",
+          "confidence": 0.5, "status": "manual", "manual": True, "at": _now()}
+    chains.append(ch)
+    st.update({"campaign": args.target, "chains": chains, "at": _now()})
+    _atomic_write(camp / "chain-state.json", json.dumps(st, indent=2) + "\n")
+    if _json_mode(args):
+        _emit(args, {"chain": ch})
+    else:
+        print(f"▸ {cid} [custom] {' + '.join(requires)} → {ch['severity']}")
+    _event(args.target, "chain.manual", f"{cid} {'+'.join(requires)}")
+    return 0
+
+
 def cmd_chain(args):
     camp = _camp(args.target)
+    _ensure_campaign(args.target)
+    if args.action == "plan" and args.pattern == "custom":
+        return _custom_chain(args, camp)
     if args.action == "plan":
         st = _load_json(camp / "chain-state.json", {})
-        ch = next((c for c in st.get("chains", []) if c["id"] == args.chain_id), None)
+        ch = next((c for c in st.get("chains", []) if c.get("id") == args.chain_id), None)
         if not ch:
             print(f"✗ no chain {args.chain_id}", file=sys.stderr)
             return 2
+        if _json_mode(args):
+            _emit(args, {"chain": ch})
+            return 0
         print(f"═══ CHAIN PLAN — {ch['id']} [{ch['pattern']}] severity {ch['severity']} ═══")
-        print(f"  entries:   {', '.join(ch['entry_ids'])}")
+        print(f"  entries:   {', '.join(ch.get('entry_ids', []))}")
+        print(f"  assets:    {', '.join(ch.get('assets', []))}")
         print(f"  impact:    {ch['impact']}")
         print(f"  plan:      {ch['plan']}")
         print(f"  confidence {ch['confidence']:.2f} · status {ch['status']}")
         return 0
-    rows = _confirmed_rows(args.target)
-    if len(rows) < 2:
-        print("· fewer than 2 confirmed signals — chains need findings; gate/testers/shiki first")
+    if args.action == "list":
+        st = _load_json(camp / "chain-state.json", {})
+        chains = st.get("chains", [])
+        if _json_mode(args):
+            _emit(args, {"target": args.target, "chains": chains})
+            return 0
+        if not chains:
+            print("· no chains — chain detect --target <t>")
+            return 0
+        print(f"═══ CHAINS — {args.target} ({len(chains)}) ═══")
+        for c in chains:
+            print(f"  {c['id']} [{c['pattern']:22s}] {c['severity']:8s}"
+                  f" conf={c['confidence']:.2f} {c['status']:8s} "
+                  f"{' + '.join(c.get('entry_ids', []))[:70]}")
         return 0
-    chains = []
-    n = 0
-    seen_pairs = set()
-    print(f"═══ CHAIN DETECTION — {args.target} ({len(rows)} confirmed signal(s)) ═══")
+    signals = _confirmed_signals(args.target)
+    if getattr(args, "include_hypothesis", False):
+        signals += [{"id": r.get("id", "?"), "title": r.get("title", ""),
+                     "cls": r.get("cls", "GENERAL"), "asset": r.get("asset", "?"),
+                     "source": "ledger-hypothesis", "severity": r.get("severity", "medium")}
+                    for r in _ledger_load(args.target)
+                    if r.get("status") != "CONFIRMED"]
+    if len(signals) < 2:
+        if _json_mode(args):
+            _emit(args, {"target": args.target, "signals": signals, "chains": [],
+                         "reason": "fewer than 2 confirmed signals"})
+        else:
+            print("· fewer than 2 confirmed signals — chains need findings;"
+                  " gate/testers/shiki first")
+        return 0
+    old = _load_json(camp / "chain-state.json", {})
+    manual = [c for c in old.get("chains", []) if c.get("manual")]
+    base_n = max([int(m.group(1)) for c in manual
+                  if (m := re.search(r"(\d+)$", str(c.get("id", ""))))] or [0])
+    chains, n, seen_pairs = [], base_n, set()
     for pat in CHAIN_PATTERNS:
         if pat["pair"] is None:
             continue
         a_re, b_re = pat["pair"]
-        hits_a = [r for r in rows if re.search(a_re, f"{r[0]} {r[1]} {r[2]}".lower())]
-        hits_b = [r for r in rows if re.search(b_re, f"{r[0]} {r[1]} {r[2]}".lower())]
-        for a in hits_a:
-            for b in hits_b:
-                if a is b:
+        hits_a = [s for s in signals if re.search(a_re, f"{s['title']} {s['cls']} {s['asset']}".lower())]
+        hits_b = [s for s in signals if re.search(b_re, f"{s['title']} {s['cls']} {s['asset']}".lower())]
+        for i, a in enumerate(hits_a):
+            for j, b in enumerate(hits_b):
+                if a["id"] == b["id"] and a["source"] == b["source"]:
                     continue
-                same_asset = _origin(a[2]) == _origin(b[2]) or a[2] == "?" or b[2] == "?"
+                same_asset = _origin(a["asset"]) == _origin(b["asset"]) \
+                    or a["asset"] == "?" or b["asset"] == "?"
                 if not same_asset:
                     continue
-                pkey = (pat["name"], tuple(sorted((a[0][:40], b[0][:40]))))
+                pkey = (pat["name"], tuple(sorted((a["id"], b["id"]))))
                 if pkey in seen_pairs:
                     continue
                 seen_pairs.add(pkey)
                 n += 1
-                cid = f"CH-{n:03d}"
                 conf = 0.55 + 0.1 * min(2, len(hits_a) + len(hits_b) - 2)
-                chains.append({"id": cid, "pattern": pat["name"], "entry_ids": [a[0][:40], b[0][:40]],
-                               "assets": [a[2]], "impact": pat["impact"], "plan": pat["plan"],
+                if getattr(args, "include_hypothesis", False) and "hypothesis" in (a["source"] + b["source"]):
+                    conf = min(conf, 0.4)
+                if conf < (getattr(args, "min_confidence", 0) or 0):
+                    continue
+                chains.append({"id": f"CH-{n:03d}", "pattern": pat["name"],
+                               "entry_ids": [a["id"], b["id"]],
+                               "assets": list(dict.fromkeys([a["asset"], b["asset"]])),
+                               "impact": pat["impact"], "plan": pat["plan"],
                                "severity": pat["severity"], "confidence": round(conf, 2),
                                "status": "detected", "at": _now()})
-                print(f"  ▸ {cid} [{pat['name']}] {a[0][:34]} + {b[0][:34]}"
-                      f" → {pat['severity']} (conf {conf:.2f})")
+    st = {"campaign": args.target, "chains": manual + chains,
+          "signals": len(signals), "at": _now()}
+    _atomic_write(camp / "chain-state.json", json.dumps(st, indent=2) + "\n")
+    if _json_mode(args):
+        _emit(args, {"target": args.target, "signals": signals, "chains": chains,
+                     "manual": manual, "count": len(chains)})
+        return 0
+    print(f"═══ CHAIN DETECTION — {args.target} ({len(signals)} confirmed signal(s)) ═══")
+    for c in chains:
+        print(f"  ▸ {c['id']} [{c['pattern']}] {' + '.join(c['entry_ids'])}"
+              f" → {c['severity']} (conf {c['confidence']:.2f})")
     if not chains:
         print("  · no chain patterns matched the confirmed signals")
-    st = {"campaign": args.target, "chains": chains, "at": _now()}
-    (camp / "chain-state.json").write_text(json.dumps(st, indent=2) + "\n")
     print(f"═══ {len(chains)} chain candidate(s) — chain plan --id CH-XXX for the testing plan ═══")
+    _event(args.target, "chain.detect", f"{len(chains)} chain(s)")
     return 0
 
 
 # ── 3.5 the session context (endpoints · roles · credentials · functions) ─────
 
+CONTEXT_KINDS = {"endpoints": "endpoints", "endpoint": "endpoints",
+                 "urls": "endpoints", "roles": "roles", "role": "roles",
+                 "credentials": "credentials", "credential": "credentials",
+                 "creds": "credentials", "functions": "functions",
+                 "function": "functions"}
+
+
 def cmd_context(args):
     camp = _camp(args.target)
+    _ensure_campaign(args.target)
     st = _load_json(camp / "context.json", {"endpoints": [], "roles": [],
                                             "credentials": [], "functions": []})
     for k in ("endpoints", "roles", "credentials", "functions"):
         st.setdefault(k, [])
     if args.action == "set":
-        kind = args.kind.lower()
-        if kind not in st:
-            print(f"✗ kind must be one of: {', '.join(st)}", file=sys.stderr)
-            return 2
-        if args.value not in st[kind]:
-            st[kind].append(args.value)
-            (camp / "context.json").write_text(json.dumps(st, indent=2) + "\n")
-            print(f"▸ context[{kind}] += {args.value[:80]}")
+        kind = CONTEXT_KINDS.get((args.kind or "").lower())
+        if not kind:
+            raise UsageError(f"kind must be one of: {', '.join(CONTEXT_KINDS)}")
+        values = args.value if isinstance(args.value, list) else [args.value]
+        values = [v for v in values if v]
+        if not values:
+            raise UsageError("context set needs --value")
+        added = []
+        for v in values:
+            if kind == "endpoints":
+                scope = _load_scope()
+                if scope is not None and not _is_lab(v) and not _scope_match(scope, v):
+                    print(f"✗ CONTEXT REFUSED — {v} is out of the declared estate",
+                          file=sys.stderr)
+                    return 1
+            if v not in st[kind]:
+                st[kind].append(v)
+                added.append(v)
+        if added:
+            _atomic_write(camp / "context.json", json.dumps(st, indent=2) + "\n")
+            _event(args.target, "context.set", f"{kind}: {', '.join(added)[:160]}")
+        payload = {"target": args.target, "kind": kind, "added": added,
+                   "context": st}
+        if _json_mode(args):
+            _emit(args, payload)
         else:
-            print("· already in context (dedupe)")
+            print(f"▸ context[{kind}] += {len(added)} value(s)"
+                  + ("" if added else " (all already present — dedupe)"))
+        return 0
+    if args.action == "remove":
+        kind = CONTEXT_KINDS.get((args.kind or "").lower())
+        if not kind:
+            raise UsageError(f"kind must be one of: {', '.join(CONTEXT_KINDS)}")
+        values = args.value if isinstance(args.value, list) else [args.value]
+        before = len(st[kind])
+        st[kind] = [x for x in st[kind] if x not in values]
+        _atomic_write(camp / "context.json", json.dumps(st, indent=2) + "\n")
+        payload = {"target": args.target, "kind": kind, "removed": before - len(st[kind]),
+                   "context": st}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"▸ context[{kind}] -= {before - len(st[kind])} value(s)")
+        return 0
+    if args.action == "clear":
+        st = {"endpoints": [], "roles": [], "credentials": [], "functions": []}
+        _atomic_write(camp / "context.json", json.dumps(st, indent=2) + "\n")
+        _event(args.target, "context.clear", "session context cleared")
+        if _json_mode(args):
+            _emit(args, {"target": args.target, "context": st})
+        else:
+            print("▸ session context cleared")
+        return 0
+    if _json_mode(args):
+        _emit(args, {"target": args.target, "context": st,
+                     "counts": {k: len(v) for k, v in st.items()}})
         return 0
     print(f"═══ SESSION CONTEXT — {args.target} ═══")
     for k, v in st.items():
@@ -1112,7 +3538,7 @@ def cmd_context(args):
         for x in v[:12]:
             print(f"    · {x[:100]}")
     if not any(st.values()):
-        print("  (empty — context set --kind endpoint --value '/api/orders?id=1')")
+        print("  (empty — context set --target T --kind endpoints --value '/api/orders?id=1')")
     return 0
 
 
@@ -1125,7 +3551,7 @@ def _t_requests_removed():  # removed — differential requests are built in run
 TESTERS = [
     {"name": "IDOR", "cls": "IDOR",
      "params": ("id", "org_id", "user_id", "account_id", "order_id", "doc_id"),
-     "attacks": lambda v: [f"{v}+1", "foreign"] if v else [],
+     "attacks": lambda v: ["foreign", f"{v}+1"] if v else [],
      "logic": "object identifier trusted from the request — swap it, diff the body"},
     {"name": "AUTHZ", "cls": "AUTHZ",
      "params": ("role", "admin", "is_admin", "level"),
@@ -1246,11 +3672,79 @@ def _demo_replica():
     return srv, f"http://127.0.0.1:{port}"
 
 
+def _tester_verdict(t: dict, payload: str, b: dict, a: dict) -> tuple[bool, bool, str]:
+    """Return (differential, decisive, reason).
+
+    A differential is only DECISIVE when the class-specific evidence is present.
+    A reflected payload, an unstable baseline, or a generic status/length delta
+    is registered as a hypothesis at confidence 0.4 — never suppressed, never
+    inflated to CONFIRMED.
+    """
+    diff = ((b["status"], len(b["body"]), b["sha256"])
+            != (a["status"], len(a["body"]), a["sha256"]))
+    if not diff:
+        return False, False, "identical responses"
+    low = (a["body"] or "").lower()
+    atk = (payload or "").lower()
+    reflected = bool(atk) and atk in low
+    name = t["name"]
+    if name == "INJECTION":
+        if "7*7" in atk:
+            evaluated = "49" in low and "{{7*7}}" not in low and "${7*7}" not in low
+            return True, evaluated, ("template expression evaluated (49)" if evaluated
+                                     else "marker reflected without evaluation")
+        sql_sig = ("sql", "syntax error", "odbc", "mysql", "sqlite",
+                   "unterminated", "quoted string")
+        if any(s in low for s in sql_sig):
+            return True, True, "interpreter error signature"
+        return True, False, ("payload reflected without interpreter evidence"
+                             if reflected else "differential without interpreter evidence")
+    if name == "FILEATTACK":
+        if any(s in low for s in ("root:x:0:0", "root:*:0:0", "daemon:")):
+            return True, True, "passwd content returned"
+        return True, False, "differential without file-content evidence"
+    if name == "SSRF":
+        if any(s in low for s in ("internal-banner", "169.254", "metadata",
+                                  "root:x", "internal service")):
+            return True, True, "server-side fetch reached internal content"
+        return True, False, "differential without internal-content evidence"
+    if name == "AUTHN":
+        if any(s in low for s in ('"authenticated": true', '"bypass": true',
+                                  '"admin": true', '"role": "admin"')):
+            return True, True, "authentication bypass marker"
+        return True, False, "differential without auth-bypass evidence"
+    if name == "IDOR":
+        if reflected and any(s in low for s in ('"org"', '"user_id"', '"email"',
+                                                '"account_id"', '"order_id"')):
+            return True, True, "foreign object id echoed in the body"
+        return True, False, "differential without foreign-object evidence"
+    if name == "AUTHZ":
+        if any(s in low for s in ('"admin"', '"role": "admin"', '"full"',
+                                  '"is_admin": true')):
+            return True, True, "privileged role accepted"
+        return True, False, "differential without privilege evidence"
+    if name == "BIZLOGIC":
+        accepted = any(s in low for s in ('"applied": true', '"accepted": true',
+                                          '"created": true', '"success": true',
+                                          '"discount"', '"total"'))
+        if reflected and accepted:
+            return True, True, "out-of-range value accepted by the business path"
+        return True, False, "differential without acceptance evidence"
+    if name == "MASSASSIGN":
+        if any(s in low for s in ('"role": "admin"', '"is_admin": true',
+                                  '"balance": 999999', '"price": 0')):
+            return True, True, "unexpected writable field accepted"
+        return True, False, "differential without writable-field evidence"
+    return True, True, "differential"
+
+
 def cmd_testers(args):
     if not args.demo and not args.url:
         print("✗ testers need --url U (repeatable; declared targets) or --demo (lab replica)",
               file=sys.stderr)
         return 2
+    json_mode = _json_mode(args)
+    srv = None
     if args.demo:
         srv, base = _demo_replica()
         args.url = [base + "/api/orders?org_id=acme",
@@ -1261,22 +3755,23 @@ def cmd_testers(args):
                     base + "/api/coupon?amount=5",
                     base + "/role?role=user",
                     base + "/api/user?name=bob&email=bob@lab"]
-        print("▸ demo mode: built-in lab replica serving (self-terminating at exit)")
-    else:
-        srv = None
-    urls = list(args.url)
-    for u in urls:
-        if not _scope_gate(u):
-            if srv:
-                srv.shutdown()
-            return 1
+        if not json_mode:
+            print("▸ demo mode: built-in lab replica serving (self-terminating at exit)")
+    urls = [u for u in (args.url or []) if u]
     camp = _camp(args.target)
     ctx = _load_json(camp / "context.json", {})
     endpoints = ctx.get("endpoints", [])
-    if endpoints and not args.demo:
-        urls = [u if "://" in u else args.url[0].rstrip("/") + u for u in endpoints] or urls
+    if endpoints and not args.demo and urls:
+        urls = [u if "://" in u else urls[0].rstrip("/") + u for u in endpoints] or urls
+    for u in urls:
+        if not _scope_gate(u, quiet=json_mode):
+            if srv:
+                srv.shutdown()
+            return 1
+    timeout = max(1, min(int(getattr(args, "timeout", 8) or 8), 30))
     results = {}
-    print(f"═══ SPYDERMONKEY TESTERS — 8 sub-testers in PARALLEL over {len(urls)} url(s) ═══")
+    if not json_mode:
+        print(f"═══ SPYDERMONKEY TESTERS — 8 sub-testers in PARALLEL over {len(urls)} url(s) ═══")
 
     def run_tester(t):
         from urllib.parse import urlsplit, parse_qsl, urlencode, urlunsplit
@@ -1286,58 +3781,104 @@ def cmd_testers(args):
             params = dict(parse_qsl(sp.query, keep_blank_values=True))
             base = urlunsplit((sp.scheme, sp.netloc, sp.path, "", ""))
             if t["name"] == "MASSASSIGN":
-                # POST-body class: unexpected writable fields accepted?
                 if not params:
                     continue
-                b = _http(base, "POST", data=urlencode(params))
-                a = _http(base, "POST", data=urlencode(params) + t["extra"])
-                if (b["status"], len(b["body"])) != (a["status"], len(a["body"])) and \
-                        any(x in a["body"] for x in ("role", "admin", "balance", "price")):
-                    hits.append(("body", "+base fields", t["extra"], b, a, u))
+                headers = {"Content-Type": "application/x-www-form-urlencoded"}
+                b1 = _http(base, "POST", data=urlencode(params), headers=headers,
+                           timeout=timeout)
+                b2 = _http(base, "POST", data=urlencode(params), headers=headers,
+                           timeout=timeout)
+                a = _http(base, "POST", data=urlencode(params) + t["extra"],
+                          headers=headers, timeout=timeout)
+                hit, decisive, reason = _tester_verdict(t, t["extra"], b1, a)
+                stable = (b1["status"], b1["sha256"]) == (b2["status"], b2["sha256"])
+                if not stable:
+                    decisive, reason = False, "unstable baseline across control repeats"
+                if hit:
+                    hits.append({"param": "body", "original": "+base fields",
+                                 "payload": t["extra"], "baseline": _gate_brief(b1),
+                                 "attack": _gate_brief(a), "url": u,
+                                 "decisive": decisive, "reason": reason,
+                                 "stable": stable})
                 continue
             for p in t["params"]:
                 if p not in params:
                     continue
                 orig = params[p]
                 for atk in t["attacks"](orig):
-                    b = _http(base + "?" + urlencode({**params, p: orig}))
-                    a = _http(base + "?" + urlencode({**params, p: atk}))
-                    hit = (b["status"], len(b["body"])) != (a["status"], len(a["body"]))
-                    sig = t.get("signatures")
-                    if sig and hit:
-                        low = a["body"].lower()
-                        hit = any(s in low for s in sig)
+                    b1 = _http(base + "?" + urlencode({**params, p: orig}), timeout=timeout)
+                    b2 = _http(base + "?" + urlencode({**params, p: orig}), timeout=timeout)
+                    a = _http(base + "?" + urlencode({**params, p: atk}), timeout=timeout)
+                    hit, decisive, reason = _tester_verdict(t, atk, b1, a)
+                    stable = (b1["status"], b1["sha256"]) == (b2["status"], b2["sha256"])
+                    if not stable:
+                        decisive, reason = False, "unstable baseline across control repeats"
                     if hit:
-                        hits.append((p, orig, atk, b, a, u))
+                        hits.append({"param": p, "original": orig, "payload": atk,
+                                     "baseline": _gate_brief(b1),
+                                     "attack": _gate_brief(a), "url": u,
+                                     "decisive": decisive, "reason": reason,
+                                     "stable": stable})
         results[t["name"]] = hits
 
-    threads = []
-    for t in TESTERS:
-        th = threading.Thread(target=run_tester, args=(t,))
+    threads = [threading.Thread(target=run_tester, args=(t,), daemon=True)
+               for t in TESTERS]
+    for th in threads:
         th.start()
-        threads.append(th)
     for th in threads:
         th.join()
-    total = 0
-    confirmed = 0
+    produced = confirmed = hypotheses = total = 0
+    out_rows = []
     for t in TESTERS:
         hits = results.get(t["name"], [])
-        if hits:
-            p, orig, atk, b, a, u = hits[0]
-            proof = (f"baseline: {b['status']} len={len(b['body'])} (param {p}={orig}); "
-                     f"attack: {a['status']} len={len(a['body'])} (param {p}={atk}); "
-                     f"diff: baseline vs attack differ on {t['name']}")
-            title = f"{t['name']} differential on param '{p}'"
-            _cmd_ledger_internal(args.target, title, t["cls"], u,
-                                 "high" if t["cls"] in ("IDOR", "SSRF", "TRAVERSAL") else "medium",
-                                 proof)
-            confirmed += 1
-            total += len(hits)
-            print(f"  ✓ {t['name']:10s} {len(hits)} differential hit(s) → ledger "
-                  f"(e.g. {p}={orig!r}→{atk!r}: {b['status']}/{len(b['body'])}B → {a['status']}/{len(a['body'])}B)")
-        else:
+        total += len(hits)
+        decisive_hits = [h for h in hits if h["decisive"]]
+        chosen = decisive_hits[0] if decisive_hits else (hits[0] if hits else None)
+        ledger_id = None
+        if chosen:
+            produced += 1
+            if chosen["decisive"]:
+                confirmed += 1
+            else:
+                hypotheses += 1
+            proof = (f"baseline: {chosen['baseline']['status']} "
+                     f"len={chosen['baseline']['length']} (param {chosen['param']}="
+                     f"{chosen['original']}); attack: {chosen['attack']['status']} "
+                     f"len={chosen['attack']['length']} (param {chosen['param']}="
+                     f"{chosen['payload']}); diff: {chosen['reason']}; "
+                     f"control: baseline stable={chosen['stable']}")
+            title = f"{t['name']} differential on param '{chosen['param']}'"
+            sev = "high" if t["cls"] in ("IDOR", "SSRF", "TRAVERSAL", "AUTHN") else "medium"
+            entry = _cmd_ledger_internal(
+                args.target, title, t["cls"], chosen["url"], sev, proof,
+                force_hypothesis=not chosen["decisive"], quiet=True)
+            ledger_id = entry.get("id") if isinstance(entry, dict) else None
+            chosen["ledger_id"] = ledger_id
+            if not json_mode:
+                mark = "✓" if chosen["decisive"] else "⚠"
+                print(f"  {mark} {t['name']:10s} {len(hits)} differential(s)"
+                      f" · {'CONFIRMED' if chosen['decisive'] else 'HYPOTHESIS'}"
+                      f" ({chosen['reason']}) → ledger {ledger_id or '?'}")
+                print(f"      {chosen['param']}={chosen['original']!r}→"
+                      f"{chosen['payload']!r}: {chosen['baseline']['status']}/"
+                      f"{chosen['baseline']['length']}B → {chosen['attack']['status']}/"
+                      f"{chosen['attack']['length']}B")
+        elif not json_mode:
             print(f"  · {t['name']:10s} no differential (no matching param or identical responses)")
-    print(f"═══ {confirmed}/8 tester(s) produced findings · {total} differential(s) · deduped into the ledger ═══")
+        out_rows.append({"name": t["name"], "cls": t["cls"], "logic": t["logic"],
+                         "hits": hits[:20], "hit_count": len(hits),
+                         "decisive": bool(decisive_hits),
+                         "ledger_id": ledger_id})
+    payload = {"target": args.target, "urls": len(urls), "testers": out_rows,
+               "produced": produced, "confirmed": confirmed,
+               "hypotheses": hypotheses, "differentials": total,
+               "demo": bool(args.demo), "ok": True}
+    if json_mode:
+        _emit(args, payload)
+    else:
+        print(f"═══ {produced}/8 tester(s) produced findings · {confirmed} confirmed"
+              f" · {hypotheses} hypothesis · {total} differential(s)"
+              f" · deduped into the ledger ═══")
     if srv:
         srv.shutdown()
     return 0
@@ -1347,191 +3888,517 @@ def cmd_testers(args):
 
 def cmd_coverage(args):
     camp = _camp(args.target)
-    board = _load_json(camp / "phases-state.json", {})
+    _ensure_campaign(args.target)
     rows = _ledger_load(args.target)
     hist = {}
     for r in rows:
-        hist[r["cls"]] = hist.get(r["cls"], 0) + 1
-    print(f"═══ COVERAGE — engagement '{args.target}' ═══")
-    gaps = []
-    for p in PHASES:
-        live = board.get(p["id"]) or ("completed" if _phase_deliverable(args.target, p) else "blocked")
-        mark = {"completed": "✓", "in_progress": "▸", "blocked": "·"}.get(live, "·")
-        if live != "completed":
-            gaps.append((p["id"], p["mandate"]))
-        print(f"  {mark} {p['id']:22s} [{live:11s}] via {p['mandate']}")
-    print(f"  findings histogram: {', '.join(f'{k}={v}' for k, v in sorted(hist.items())) or '—'}")
+        hist[r.get("cls", "?")] = hist.get(r.get("cls", "?"), 0) + 1
+    board = _phase_board(args.target)
+    gaps = [{"phase": r["id"], "mandate": r["mandate"], "status": r["status"],
+             "deliverable": r["deliverable"]} for r in board
+            if r["status"] != "completed"]
     chains = _load_json(camp / "chain-state.json", {}).get("chains", [])
+    payload = {
+        "target": args.target,
+        "phases": board,
+        "complete": len(board) - len(gaps),
+        "total": len(board),
+        "percent": round(100.0 * (len(board) - len(gaps)) / len(board), 1) if board else 0.0,
+        "ledger_rows": len(rows),
+        "severity_histogram": _ledger_stats(rows)["by_severity"],
+        "class_histogram": hist,
+        "chains": len(chains),
+        "gaps": gaps,
+        "next_mandates": list(dict.fromkeys(g["mandate"] for g in gaps)),
+    }
+    if _json_mode(args):
+        _emit(args, payload)
+        return 0
+    print(f"═══ COVERAGE — engagement '{args.target}' ═══")
+    for r in board:
+        mark = {"completed": "✓", "in_progress": "▸", "blocked": "·"}.get(r["status"], "·")
+        print(f"  {mark} {r['id']:22s} [{r['status']:11s}] via {r['mandate']}")
+    print(f"  findings histogram: {', '.join(f'{k}={v}' for k, v in sorted(hist.items())) or '—'}")
     print(f"  chain candidates: {len(chains)} · ledger rows: {len(rows)}")
-    print(f"  gaps: {', '.join(g[0] for g in gaps) or 'none — full coverage'}")
+    print(f"  gaps: {', '.join(g['phase'] for g in gaps) or 'none — full coverage'}")
     if gaps:
-        print(f"  next mandates: {' → '.join(dict.fromkeys(g[1] for g in gaps))}")
+        print(f"  next mandates: {' → '.join(payload['next_mandates'])}")
     return 0
 
 
-def cmd_report(args):
-    camp = _camp(args.target)
-    rows = _ledger_load(args.target)
+def _md_escape(value) -> str:
+    return str(value if value is not None else "").replace("|", "\\|").replace("\n", " ")
+
+
+def _report_data(target: str) -> dict:
+    camp = _camp(target)
+    _ensure_campaign(target)
+    rows = _ledger_load(target)
     chains = _load_json(camp / "chain-state.json", {}).get("chains", [])
     kage = _load_json(camp / "kage-state.json", {})
     harvest = _load_json(camp / "harvest-state.json", {})
     scope = _load_scope()
-    out = args.output or f"{args.target}-spydermonkey-report.md"
-    conf = [r for r in rows if r["status"] == "CONFIRMED"]
-    sev_hist = {}
-    for r in rows:
-        sev_hist[r["severity"]] = sev_hist.get(r["severity"], 0) + 1
-    L = [f"# SPYDERMONKEY War Report — {args.target}", "",
-         f"_generated {_now()} · scope: {scope.get('engagement', 'none declared') if scope else 'none declared'}_",
+    try:
+        scope_summary = sa.summary(scope) if scope else None
+    except Exception:
+        scope_summary = None
+    return {
+        "schema": SCHEMA,
+        "generator": f"SPYDERMONKEY {VERSION}",
+        "target": target,
+        "generated": _now(),
+        "manifest": _manifest(target),
+        "scope": scope_summary,
+        "findings": rows,
+        "stats": _ledger_stats(rows),
+        "integrity": _ledger_integrity_details(target),
+        "chains": chains,
+        "phases": _phase_board(target),
+        "detection_rules": kage.get("rules", []),
+        "harvest": harvest.get("crown", []),
+        "events": _load_events(target, 50),
+    }
+
+
+def _report_markdown(data: dict) -> str:
+    rows, chains = data["findings"], data["chains"]
+    stats = data["stats"]
+    scope = data["scope"]
+    conf = [r for r in rows if r.get("status") == "CONFIRMED"]
+    manifest = data.get("manifest") or {}
+    L = [f"# SPYDERMONKEY War Report — {data['target']}", "",
+         f"_generated {data['generated']} · SPYDERMONKEY {VERSION} · "
+         f"scope: {(scope or {}).get('engagement', 'none declared')}_", "",
+         "## Authorization & scope", "",
+         f"- engagement: **{(scope or {}).get('engagement', 'none declared')}**",
+         f"- objective: {manifest.get('objective') or '—'}",
+         f"- in-scope entries: {(scope or {}).get('in_scope', '—')} · "
+         f"deny entries: {(scope or {}).get('out_of_scope', '—')}",
+         f"- expires: {(scope or {}).get('expires') or 'no expiry'}",
+         f"- rules: {(scope or {}).get('rules', {})}",
          "", "## Executive summary", "",
-         f"- **{len(rows)}** finding(s) registered · **{len(conf)}** confirmed (3-gate evidence)",
-         f"- severity mix: {', '.join(f'{k}={v}' for k, v in sorted(sev_hist.items())) or '—'}",
+         f"- **{len(rows)}** finding(s) registered · **{len(conf)}** confirmed with 3-gate evidence",
+         f"- severity mix: {', '.join(f'{k}={v}' for k, v in sorted(stats['by_severity'].items())) or '—'}",
+         f"- risk score: **{stats['risk_score']}** · cvss avg {stats['cvss_avg']} · max {stats['cvss_max']}",
          f"- **{len(chains)}** chain candidate(s) — low findings combining into high-impact chains",
-         f"- **{len(kage.get('rules', []))}** detection rule(s) mirrored (kage)",
-         f"- harvest crown rows: {len(harvest.get('crown', []))} (shukaku pricing)",
+         f"- **{len(data['detection_rules'])}** detection rule(s) mirrored (kage)",
+         f"- harvest crown rows: {len(data['harvest'])} (shukaku pricing)",
+         f"- methodology: {sum(1 for p in data['phases'] if p['status'] == 'completed')}"
+         f"/{len(data['phases'])} phases complete",
          ""]
     if rows:
-        L += ["## Findings", ""]
+        L += ["## Findings", "",
+              "| id | severity | cvss | status | class | title | asset |",
+              "|---|---|---|---|---|---|---|"]
         for r in rows:
-            L += [f"### {r['id']} — {r['title']} [{r['status']} · {r['severity']} · conf {r['confidence']:.2f}]",
-                  f"- class: {r['cls']} · asset: {r['asset']}" + (f" · CWE {r['cwe']}" if r.get("cwe") else ""),
-                  f"- proof: {r['proof'][:300]}", ""]
+            L.append(f"| {r.get('id')} | {r.get('severity')} | {r.get('cvss')} |"
+                     f" {r.get('status')} | {r.get('cls')} | {_md_escape(r.get('title'))} |"
+                     f" {_md_escape(r.get('asset'))} |")
+        L.append("")
+        for r in rows:
+            L += [f"### {r.get('id')} — {r.get('title')}"
+                  f" [{r.get('status')} · {r.get('severity')} · conf {r.get('confidence')}]",
+                  f"- class: {r.get('cls')} · asset: {r.get('asset')}"
+                  + (f" · CWE {r.get('cwe')}" if r.get("cwe") else "")
+                  + (f" · WSTG {r.get('wstg')}" if r.get("wstg") else "")
+                  + (f" · ATT&CK {r.get('attack')}" if r.get("attack") else ""),
+                  f"- evidence quality: {r.get('evidence_quality', '—')}",
+                  f"- proof: {str(r.get('proof', ''))[:1200]}", ""]
     if chains:
         L += ["## Attack chains", ""]
         for ch in chains:
-            L += [f"- **{ch['id']}** [{ch['pattern']}] {ch['severity']} (conf {ch['confidence']:.2f}):"
-                  f" {' + '.join(ch['entry_ids'])} → {ch['impact']}"]
+            L.append(f"- **{ch.get('id')}** [{ch.get('pattern')}] {ch.get('severity')}"
+                     f" (conf {ch.get('confidence')}): {' + '.join(ch.get('entry_ids', []))}"
+                     f" → {ch.get('impact')}")
         L.append("")
-    st = _load_json(camp / "phases-state.json", {})
+    if data["detection_rules"]:
+        L += ["## Detection coverage (kage)", ""]
+        for rule in data["detection_rules"]:
+            L.append(f"- {rule.get('id', '?')} — {rule.get('title', rule.get('name', 'rule'))}")
+        L.append("")
+    if data["harvest"]:
+        L += ["## Harvest impact (shukaku)", ""]
+        for h in data["harvest"]:
+            L.append(f"- {h.get('class', '?')} @ {h.get('asset', '?')}")
+        L.append("")
     L += ["## Phase coverage", ""]
-    for p in PHASES:
-        live = st.get(p["id"]) or ("completed" if _phase_deliverable(args.target, p) else "blocked")
-        L.append(f"- {live:11s} {p['id']} ({p['mandate']})")
-    L.append("")
-    Path(out).write_text("\n".join(L) + "\n")
-    print(f"▸ war report written: {out}")
-    print(f"  {len(rows)} finding(s) · {len(conf)} confirmed · {len(chains)} chain(s)"
-          f" · {len(kage.get('rules', []))} detection rule(s)")
+    for p in data["phases"]:
+        L.append(f"- {p['status']:11s} {p['id']} ({p['mandate']})")
+    L += ["", "## Evidence integrity", "",
+          f"- ledger rows: {data['integrity']['rows']} · signed:"
+          f" {data['integrity']['signed']} · unsigned: {data['integrity']['unsigned']}",
+          f"- integrity errors: {len(data['integrity']['errors'])}", ""]
+    L += ["## Closeout", "",
+          "- validation-only: every confirmed action is one decisive proof, reversible.",
+          "- NO-GAIN: nothing of value was retained; no persistence was installed.",
+          "- scope: every live probe was checked against the declaration at the top.",
+          ""]
+    return "\n".join(L) + "\n"
+
+
+def cmd_report(args):
+    data = _report_data(args.target)
+    fmt = (getattr(args, "format", None) or "markdown").lower()
+    if fmt in ("md", "markdown"):
+        text = _report_markdown(data)
+        ext = ".md"
+    elif fmt == "json":
+        text = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+        ext = ".json"
+    elif fmt == "sarif":
+        text = json.dumps(_ledger_to_sarif(args.target, data["findings"]),
+                          indent=2) + "\n"
+        ext = ".sarif.json"
+    else:
+        raise UsageError(f"unknown report format: {fmt} (markdown|json|sarif)")
+    out = args.output or str(_camp(args.target) / f"{args.target}-spydermonkey-report{ext}")
+    if out == "-":
+        print(text, end="")
+        return 0
+    _atomic_write(Path(out), text, mode=0o600)
+    payload = {"target": args.target, "format": fmt, "output": str(Path(out).resolve()),
+               "bytes": len(text.encode()), "findings": len(data["findings"]),
+               "confirmed": sum(1 for r in data["findings"]
+                                if r.get("status") == "CONFIRMED"),
+               "chains": len(data["chains"]),
+               "detection_rules": len(data["detection_rules"]),
+               "stats": data["stats"]}
+    if _json_mode(args):
+        _emit(args, payload)
+    else:
+        print(f"▸ war report written: {out} ({fmt})")
+        print(f"  {payload['findings']} finding(s) · {payload['confirmed']} confirmed"
+              f" · {payload['chains']} chain(s)"
+              f" · {payload['detection_rules']} detection rule(s)")
     return 0
 
 
 # ── 3.8 relay — remote execution nodes (Bolt-equivalent, Ed25519, scope-gated) ─
 
-RELAY_DIR = Path.home() / ".redteam" / "relays"
+def _relay_dir() -> Path:
+    return _root() / "relays"
 
 
 def cmd_relay(args):
-    if args.action == "init":
-        import shutil
+    action = args.action
+    scope_file = getattr(args, "scope_file", None)
+    if action == "init":
         if not shutil.which("ssh-keygen"):
             print("✗ ssh-keygen not found — relay nodes need OpenSSH", file=sys.stderr)
             return 1
-        d = RELAY_DIR / args.name
+        try:
+            name = sa.safe_name(args.name, "relay name")
+        except sa.ScopeError as e:
+            raise UsageError(str(e)) from e
+        d = _relay_dir() / name
         d.mkdir(parents=True, exist_ok=True)
         key = d / "ed25519.key"
         if not key.exists():
             r = subprocess.run(["ssh-keygen", "-t", "ed25519", "-f", str(key), "-N", "",
-                                "-C", f"spydermonkey-relay-{args.name}"], capture_output=True, text=True)
+                                "-C", f"spydermonkey-relay-{name}"],
+                               capture_output=True, text=True)
             if r.returncode != 0:
                 print(f"✗ ssh-keygen failed: {r.stderr.strip()[:120]}", file=sys.stderr)
                 return 1
-        (d / "relay.json").write_text(json.dumps(
-            {"name": args.name, "host": args.host, "key": str(key),
-             "added": _now()}) + "\n")
-        print(f"═══ RELAY NODE '{args.name}' — {args.host} ═══")
-        print(f"  keypair: {key} (Ed25519)")
-        print(f"  install the public key on the node, one line:")
-        print(f"    ssh-copy-id -i {key}.pub {args.host}")
-        print(f"  then prove it: spydermonkey relay exec --name {args.name} --cmd 'echo paired'")
-        print("  every exec scope-checks the host + every host-like token in the command")
+        try:
+            os.chmod(key, 0o600)
+        except OSError:
+            pass
+        _atomic_write(d / "relay.json", json.dumps(
+            {"name": name, "host": args.host, "key": str(key),
+             "added": _now()}) + "\n", mode=0o600)
+        payload = {"name": name, "host": args.host, "key": str(key),
+                   "public_key": str(key) + ".pub",
+                   "pair": f"ssh-copy-id -i {key}.pub {args.host}",
+                   "prove": f"spydermonkey relay exec --name {name} --cmd 'echo paired'"}
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"═══ RELAY NODE '{name}' — {args.host} ═══")
+            print(f"  keypair: {key} (Ed25519)")
+            print("  install the public key on the node, one line:")
+            print(f"    {payload['pair']}")
+            print(f"  then prove it: {payload['prove']}")
+            print("  every exec scope-checks the host + every host-like token in the command")
         return 0
-    if args.action == "list":
-        if not RELAY_DIR.exists():
+    if action == "list":
+        rows = []
+        if _relay_dir().exists():
+            for f in sorted(_relay_dir().glob("*/relay.json")):
+                r = _load_json(f, {})
+                if r:
+                    rows.append({"name": r.get("name"), "host": r.get("host"),
+                                 "key": r.get("key"), "added": r.get("added"),
+                                 "key_present": Path(r.get("key", "")).exists()})
+        payload = {"nodes": rows, "count": len(rows)}
+        if _json_mode(args):
+            _emit(args, payload)
+        elif not rows:
             print("· no relays — relay init --name N --host user@host")
-            return 0
-        print("═══ RELAY NODES ═══")
-        for f in sorted(RELAY_DIR.glob("*/relay.json")):
-            r = _load_json(f, {})
-            print(f"  ▸ {r.get('name', '?'):12s} {r.get('host', '?')[:44]}  key {r.get('key', '')}")
+        else:
+            print("═══ RELAY NODES ═══")
+            for r in rows:
+                print(f"  ▸ {str(r['name']):12s} {str(r['host'])[:44]}"
+                      f"  key {r['key']}{'' if r['key_present'] else ' (MISSING)'}")
         return 0
-    if args.action == "remove":
-        import shutil
-        d = RELAY_DIR / args.name
+    if action == "remove":
+        try:
+            name = sa.safe_name(args.name, "relay name")
+        except sa.ScopeError as e:
+            raise UsageError(str(e)) from e
+        d = _relay_dir() / name
         if not d.exists():
             print(f"✗ no relay '{args.name}'", file=sys.stderr)
             return 2
         shutil.rmtree(d)
-        print(f"▸ relay '{args.name}' removed")
+        if _json_mode(args):
+            _emit(args, {"name": name, "removed": True})
+        else:
+            print(f"▸ relay '{args.name}' removed")
         return 0
-    if args.action == "exec":
-        rf = RELAY_DIR / args.name / "relay.json"
-        r = _load_json(rf, {})
+    if action == "exec":
+        try:
+            name = sa.safe_name(args.name, "relay name")
+        except sa.ScopeError as e:
+            raise UsageError(str(e)) from e
+        r = _load_json(_relay_dir() / name / "relay.json", {})
         if not r:
             print(f"✗ no relay '{args.name}' — relay init first", file=sys.stderr)
             return 2
         host = r["host"].split("@")[-1].split(":")[0]
-        # scope gate: the node's host AND every host-like token in the command
-        for tok in [host] + re.findall(r"\b(?:[a-z0-9-]+\.)+[a-z]{2,}\b|\b\d{1,3}(?:\.\d{1,3}){3}\b",
-                                       args.relay_cmd.lower()):
-            if not _scope_gate(tok):
+        tokens = [host] + re.findall(
+            r"\b(?:[a-z0-9-]+\.)+[a-z]{2,}\b|\b\d{1,3}(?:\.\d{1,3}){3}\b",
+            args.relay_cmd.lower())
+        for tok in dict.fromkeys(tokens):
+            ok, reason, _ = sa.check(tok, file=scope_file, strict=True,
+                                     audit=True, allow_lab=True)
+            if not ok:
+                print(f"✗ RELAY REFUSED — '{tok}' is outside the declared estate: {reason}",
+                      file=sys.stderr)
                 return 1
         key = r["key"]
         argv = ["ssh", "-i", key, "-o", "BatchMode=yes",
                 "-o", "StrictHostKeyChecking=accept-new", r["host"], "--", args.relay_cmd]
-        print(f"═══ RELAY EXEC — {args.name} ({r['host']}) ═══")
-        print(f"  ▸ {args.relay_cmd[:100]}")
+        payload = {"name": name, "host": r["host"], "command": args.relay_cmd,
+                   "argv": argv, "dry_run": bool(getattr(args, "dry_run", False))}
+        if getattr(args, "dry_run", False):
+            if _json_mode(args):
+                _emit(args, payload)
+            else:
+                print(f"═══ RELAY EXEC (dry-run) — {name} ({r['host']}) ═══")
+                print("  " + " ".join(argv))
+            return 0
+        if not _json_mode(args):
+            print(f"═══ RELAY EXEC — {name} ({r['host']}) ═══")
+            print(f"  ▸ {args.relay_cmd[:100]}")
         try:
-            rc = subprocess.run(argv, timeout=args.timeout).returncode
+            started = time.time()
+            rc = subprocess.run(argv, timeout=max(1, int(args.timeout or 120))).returncode
         except subprocess.TimeoutExpired:
-            print("✗ relay timed out", file=sys.stderr)
+            if _json_mode(args):
+                _emit(args, {**payload, "ok": False, "error": "timeout"})
+            else:
+                print("✗ relay timed out", file=sys.stderr)
             return 1
-        print(f"═══ relay exit {rc} ═══")
+        payload.update({"ok": rc == 0, "rc": rc,
+                        "elapsed": round(time.time() - started, 2)})
+        if _json_mode(args):
+            _emit(args, payload)
+        else:
+            print(f"═══ relay exit {rc} ═══")
         return rc
     return 2
 
 
 # ── 3.9 mission — one command, the whole war + the intelligence layer ─────────
 
-def cmd_mission(args):
-    print("═══ SPYDERMONKEY MISSION — scope gate → fleet → triage → chains → coverage → report ═══")
-    scope = _load_scope()
-    if scope is None and not _is_lab(args.url):
-        print("✗ MISSION REFUSED — no scope authority and the target is not lab-bound", file=sys.stderr)
-        print("  scope init --engagement E --in-scope <host> ; then re-run", file=sys.stderr)
-        return 1
-    rc = 0
-    if not args.skip_fleet:
-        argv = [sys.executable, str(Path(__file__).resolve()), "fleet",
-                "--goal", args.goal or f"full assault on {args.target}",
-                "--target", args.target, "--domain", args.domain]
-        subprocess.run(argv)   # fleet capability misses don't kill the mission
-    # the intelligence layer
-    steps = [
-        ["ledger", "triage", "--target", args.target],
-        ["chain", "detect", "--target", args.target],
-        ["coverage", "--target", args.target],
-        ["report", "--target", args.target],
+def _mission_steps(target: str) -> list[dict]:
+    report = _camp(target) / f"{target}-spydermonkey-report.md"
+    return [
+        {"name": "triage", "argv": ["ledger", "triage", "--target", target]},
+        {"name": "chains", "argv": ["chain", "detect", "--target", target]},
+        {"name": "coverage", "argv": ["coverage", "--target", target]},
+        {"name": "report", "argv": ["report", "--target", target, "--format",
+                                    "markdown", "--output", str(report)],
+         "artifact": str(report)},
     ]
-    for st in steps:
-        r = subprocess.run([sys.executable, str(Path(__file__).resolve())] + st,
-                           capture_output=True, text=True)
-        print(r.stdout.rstrip())
-        if r.returncode not in (0, 1):
-            rc |= 1
+
+
+def cmd_mission(args):
+    target = args.target
+    _camp(target)
+    _ensure_campaign(target, url=args.url, domain=args.domain,
+                     objective=args.goal or f"mission on {target}")
+    plan_only = bool(getattr(args, "plan", False) or getattr(args, "dry_run", False))
+    json_mode = _json_mode(args)
+    scope_file = getattr(args, "scope_file", None)
+    verdicts = []
+    for value in (args.url, args.domain):
+        ok, reason, scope = sa.check(value, file=scope_file, strict=True,
+                                     audit=True, allow_lab=True)
+        verdicts.append({"value": value, "in_scope": ok, "reason": reason,
+                         "engagement": (scope or {}).get("engagement")})
+        if not ok:
+            if json_mode:
+                _emit(args, {"target": target, "ok": False, "scope": verdicts,
+                             "error": f"scope refusal: {value} — {reason}"})
+            else:
+                print(f"✗ MISSION REFUSED — {value}: {reason}", file=sys.stderr)
+                print("  scope init --engagement E --in-scope <host> ; then re-run",
+                      file=sys.stderr)
+            return 1
+    goal = args.goal or f"full assault on {target}"
+    fleet_argv = ["fleet", "--goal", goal, "--target", target,
+                  "--domain", args.domain]
+    steps = _mission_steps(target)
+    if plan_only:
+        fleet_plan = []
+        if not args.skip_fleet:
+            rc, out, err = _run([sys.executable, str(Path(__file__).resolve())]
+                                + fleet_argv + ["--dry-run", "--json"], timeout=30)
+            try:
+                fleet_plan = json.loads(out).get("plan", [])
+            except Exception:
+                fleet_plan = [{"error": (out or err)[:300]}]
+        payload = {"target": target, "ok": True, "plan": True,
+                   "scope": verdicts, "fleet": fleet_plan,
+                   "steps": [{"name": s["name"],
+                              "command": "spydermonkey " + " ".join(s["argv"])}
+                             for s in steps],
+                   "close": bool(args.close)}
+        if json_mode:
+            _emit(args, payload)
+        else:
+            print(f"═══ SPYDERMONKEY MISSION PLAN — {target} (nothing executes) ═══")
+            for v in verdicts:
+                print(f"  scope: {'✓' if v['in_scope'] else '✗'} {v['value']} ({v['reason']})")
+            print(f"  fleet: {len(fleet_plan)} agent(s)" + (" (skipped)" if args.skip_fleet else ""))
+            for p in fleet_plan:
+                print(f"    ▸ {p.get('agent', '?')} — {p.get('command', p.get('error', ''))[:100]}")
+            for s in payload["steps"]:
+                print(f"  step {s['name']:10s} {s['command']}")
+        return 0
+    state_path = _camp(target) / "mission-state.json"
+    state = _load_json(state_path, {"target": target, "steps": {}})
+    if not getattr(args, "resume", False):
+        state = {"target": target, "started": _now(), "steps": {}}
+    else:
+        state.setdefault("steps", {})
+    results = {}
+    rc = 0
+    if not json_mode:
+        print("═══ SPYDERMONKEY MISSION — scope gate → fleet → triage → chains → coverage → report ═══")
+        for v in verdicts:
+            print(f"  scope ✓ {v['value']}")
+
+    def run_step(name, argv, timeout=180):
+        nonlocal rc
+        if getattr(args, "resume", False) and state["steps"].get(name, {}).get("ok"):
+            results[name] = {**state["steps"][name], "skipped": True}
+            if not json_mode:
+                print(f"  · {name}: already complete (resume)")
+            return results[name]
+        r = subprocess.run([sys.executable, str(Path(__file__).resolve())]
+                           + argv + ["--json"], capture_output=True, text=True,
+                           timeout=timeout)
+        try:
+            payload = json.loads(r.stdout)
+        except Exception:
+            payload = {"raw": (r.stdout or r.stderr)[:800]}
+        ok = r.returncode in (0, 1) if name == "triage" else r.returncode == 0
+        blocker = name == "triage" and r.returncode == 1
+        row = {"name": name, "rc": r.returncode, "ok": ok,
+               "blocker": blocker, "at": _now(),
+               "summary": _mission_summary(name, payload)}
+        results[name] = row
+        state["steps"][name] = row
+        state["updated"] = _now()
+        _atomic_write(state_path, json.dumps(state, indent=2) + "\n", mode=0o600)
+        if blocker or not ok:
+            rc = 1
+        if not json_mode:
+            mark = "⚠" if blocker else ("✓" if ok else "✗")
+            print(f"  {mark} {name}: {row['summary']}")
+        return row
+
+    if not args.skip_fleet:
+        if getattr(args, "resume", False) and state["steps"].get("fleet", {}).get("ok"):
+            results["fleet"] = {**state["steps"]["fleet"], "skipped": True}
+            if not json_mode:
+                print("  · fleet: already complete (resume)")
+        else:
+            try:
+                r = subprocess.run([sys.executable, str(Path(__file__).resolve())]
+                                   + fleet_argv + ["--json"], capture_output=True,
+                                   text=True, timeout=max(60, int(getattr(args, "timeout", 300))))
+                fp = json.loads(r.stdout)
+            except Exception as e:
+                fp = {"up": 0, "total": 0, "error": str(e)[:300]}
+            row = {"name": "fleet", "rc": 0 if fp.get("up") else 1,
+                   "ok": bool(fp.get("up")), "at": _now(),
+                   "summary": f"{fp.get('up', 0)}/{fp.get('total', 0)} agents up"}
+            results["fleet"] = row
+            state["steps"]["fleet"] = row
+            _atomic_write(state_path, json.dumps(state, indent=2) + "\n", mode=0o600)
+            if not json_mode:
+                print(f"  {'✓' if row['ok'] else '⚠'} fleet: {row['summary']}")
+    else:
+        results["fleet"] = {"name": "fleet", "ok": True, "skipped": True,
+                            "summary": "skipped (--skip-fleet)"}
+    for step in steps:
+        run_step(step["name"], step["argv"])
     if args.close:
         bc = FAMILY["barbican"][0]
         if bc.exists():
-            r = subprocess.run([sys.executable, str(bc), "wipe", "--target", args.target],
+            r = subprocess.run([sys.executable, str(bc), "wipe", "--target", target],
                                capture_output=True, text=True)
-            print(r.stdout.rstrip())
-    print(f"═══ MISSION {'COMPLETE' if rc == 0 else 'COMPLETE WITH BLOCKERS (rc=1)'} —"
-          f" report: {args.target}-spydermonkey-report.md ═══")
+            results["wipe"] = {"name": "wipe", "rc": r.returncode,
+                               "ok": r.returncode == 0, "at": _now(),
+                               "summary": (r.stdout or r.stderr).strip()[:200]}
+            if not json_mode:
+                print("  ✓ barbican wipe requested")
+        m = _manifest(target)
+        m["status"] = "closed"
+        m["closed"] = _now()
+        _save_manifest(target, m)
+        _event(target, "mission.close", "mission --close")
+    state["finished"] = _now()
+    state["ok"] = rc == 0
+    _atomic_write(state_path, json.dumps(state, indent=2) + "\n", mode=0o600)
+    report = next((s.get("artifact") for s in steps if s["name"] == "report"),
+                  str(_camp(target) / f"{target}-spydermonkey-report.md"))
+    payload = {"target": target, "ok": rc == 0, "scope": verdicts,
+               "fleet": results.get("fleet"), "steps": results,
+               "state": str(state_path), "report": report,
+               "close": bool(args.close), "resume": bool(args.resume)}
+    if json_mode:
+        _emit(args, payload)
+    else:
+        print(f"═══ MISSION {'COMPLETE' if rc == 0 else 'COMPLETE WITH BLOCKERS (rc=1)'} —"
+              f" report: {report} ═══")
     return rc
+
+
+def _mission_summary(name: str, payload: dict) -> str:
+    try:
+        if name == "triage":
+            return (f"{len(payload.get('findings', []))} finding(s)"
+                    f" · {len(payload.get('blocking', []))} blocking")
+        if name == "chains":
+            return f"{payload.get('count', len(payload.get('chains', [])))} chain(s)"
+        if name == "coverage":
+            return f"{payload.get('complete', 0)}/{payload.get('total', 13)} phases"
+        if name == "report":
+            return f"{payload.get('output', '?')} ({payload.get('bytes', 0)} bytes)"
+    except Exception:
+        pass
+    return f"rc ok · {str(payload)[:120]}"
 
 
 def _verify_gate_live():
     """verify's live proof: spin the demo replica, run ONE 3-gate confirmation
     against it, require CONFIRMED. The engine is exercised, not asserted."""
+    srv = None
     try:
         srv, base = _demo_replica()
         time.sleep(0.2)
@@ -1539,18 +4406,273 @@ def _verify_gate_live():
         a = _http(base + "/api/orders?org_id=foreign")
         ok = b["status"] == 200 and a["status"] == 200 and b["body"] != a["body"] \
             and '"org": "foreign"' in a["body"]
-        srv.shutdown()
         return ok, "live gate proof: baseline→attack→diff CONFIRMED on the lab replica"
     except Exception:
         return False, "live gate proof failed"
+    finally:
+        if srv is not None:
+            try:
+                srv.shutdown()
+            except Exception:
+                pass
 
 
-def main():
-    ap = argparse.ArgumentParser(description="SPYDERMONKEY — master dispatcher of the HolyShit family")
+def _run_selftest(quick: bool = False) -> dict:
+    """Exercise the real CLI end-to-end in a throwaway HOME.
+
+    Nothing touches the operator's estate: HOME, SPYDERMONKEY_HOME and
+    SPYDERMONKEY_SCOPE all point inside one temporary directory. The gate proof
+    strikes only the built-in 127.0.0.1 lab replica.
+    """
+    root = Path(__file__).resolve().parent.parent
+    script = Path(__file__).resolve()
+    tmp = Path(tempfile.mkdtemp(prefix="spydermonkey-selftest-"))
+    env = os.environ.copy()
+    env.update({
+        "HOME": str(tmp),
+        "SPYDERMONKEY_HOME": str(tmp / ".redteam"),
+        "SPYDERMONKEY_SCOPE": str(tmp / "scope.json"),
+        "SM_SELFTEST": "1",
+    })
+    checks = []
+
+    def add(name, ok, detail=""):
+        checks.append({"name": name, "ok": bool(ok), "detail": str(detail)[:400]})
+
+    def run(args, timeout=45):
+        try:
+            r = subprocess.run([sys.executable, str(script)] + args,
+                               capture_output=True, text=True, timeout=timeout,
+                               env=env, cwd=str(root))
+            return r.returncode, r.stdout, r.stderr
+        except subprocess.TimeoutExpired:
+            return 124, "", f"timed out after {timeout}s"
+        except Exception as e:
+            return 1, "", str(e)
+
+    def json_run(name, args, predicate, expect_rc=0, timeout=45):
+        rc, out, err = run(args + ["--json"], timeout=timeout)
+        payload = None
+        try:
+            payload = json.loads(out)
+        except Exception:
+            pass
+        if expect_rc == 0:
+            ok = rc == 0 and payload is not None and predicate(payload)
+        else:
+            ok = rc == expect_rc
+        detail = f"rc={rc}"
+        if payload is None:
+            detail += " · non-JSON output: " + ((out or err).strip()[:200])
+        elif not ok:
+            detail += " · " + json.dumps(payload)[:240]
+        add(name, ok, detail)
+        return payload
+
+    srv = None
+    try:
+        json_run("version", ["version"],
+                 lambda p: p.get("version") == VERSION and p.get("schema") == SCHEMA)
+        json_run("tree", ["tree"],
+                 lambda p: len(p.get("mandates", [])) == 10)
+        json_run("route", ["route", "--goal", "protect my opsec"],
+                 lambda p: p.get("primary") == "barbican")
+        if not quick:
+            json_run("bench", ["bench"],
+                     lambda p: p.get("passed", 0) >= 27 and p.get("accuracy", 0) >= 90,
+                     timeout=60)
+
+        scope_file = str(tmp / "scope.json")
+        rc, out, err = run(["scope", "init", "--engagement", "selftest",
+                            "--in-scope", "example.test,10.0.0.0/24",
+                            "--out-of-scope", "deny.example.test",
+                            "--file", scope_file, "--json"])
+        try:
+            sp = json.loads(out)
+        except Exception:
+            sp = {}
+        add("scope init", rc == 0 and sp.get("engagement") == "selftest",
+            f"rc={rc} {err.strip()[:160]}")
+        json_run("scope allow", ["scope", "check", "--file", scope_file,
+                                 "--value", "https://api.example.test/v1"],
+                 lambda p: p.get("in_scope") is True)
+        json_run("scope deny", ["scope", "check", "--file", scope_file,
+                                "--value", "https://evil.test/"],
+                 lambda p: p.get("in_scope") is False, expect_rc=1)
+
+        proof = ("baseline: GET /api/orders?org_id=acme -> 200 acme; "
+                 "attack: GET /api/orders?org_id=foreign -> 200 foreign; "
+                 "diff: body echoes the swapped org id")
+        json_run("ledger evidence gate",
+                 ["ledger", "add", "--target", "selftest",
+                  "--title", "cross-tenant order read", "--cls", "IDOR",
+                  "--asset", "https://api.example.test/api/orders?org_id=acme",
+                  "--proof", proof],
+                 lambda p: p.get("finding", {}).get("status") == "CONFIRMED")
+        json_run("ledger dedupe",
+                 ["ledger", "add", "--target", "selftest",
+                  "--title", "cross-tenant order read", "--cls", "IDOR",
+                  "--asset", "https://api.example.test/api/orders?org_id=acme",
+                  "--proof", "second evidence sample"],
+                 lambda p: p.get("duplicate") is True)
+        json_run("ledger integrity", ["ledger", "verify", "--target", "selftest"],
+                 lambda p: p.get("ok") is True)
+
+        srv, base = _demo_replica()
+        time.sleep(0.2)
+        json_run("gate live proof",
+                 ["gate", "--target", "selftest", "--url",
+                  base + "/api/orders?org_id=acme", "--attack-query", "org_id=foreign",
+                  "--confirm", "foreign"],
+                 lambda p: p.get("confirmed") is True, timeout=30)
+
+        if not quick:
+            json_run("testers demo",
+                     ["testers", "--target", "selftest", "--demo"],
+                     lambda p: len(p.get("testers", [])) == 8 and p.get("confirmed", 0) >= 1,
+                     timeout=60)
+            json_run("chain detect",
+                     ["chain", "detect", "--target", "selftest"],
+                     lambda p: len(p.get("chains", [])) >= 1)
+        json_run("phases board", ["phases", "--target", "selftest"],
+                 lambda p: p.get("total") == 13 and len(p.get("phases", [])) == 13)
+        if not quick:
+            json_run("coverage", ["coverage", "--target", "selftest"],
+                     lambda p: len(p.get("phases", [])) == 13)
+            report_path = tmp / "report.md"
+            rc, out, err = run(["report", "--target", "selftest",
+                               "--format", "markdown", "--output", str(report_path)])
+            body = report_path.read_text(errors="replace") if report_path.exists() else ""
+            add("report", rc == 0 and "Executive summary" in body,
+                f"rc={rc} path={report_path} bytes={len(body)}")
+            json_run("campaign init",
+                     ["campaign", "init", "--target", "selftest-camp",
+                      "--objective", "selftest engagement"],
+                     lambda p: p.get("campaign", {}).get("target") == "selftest-camp")
+            json_run("campaign list",
+                     ["campaign", "list"],
+                     lambda p: any(c.get("target") == "selftest-camp"
+                                   for c in p.get("campaigns", [])))
+            json_run("campaign show", ["campaign", "show", "--target", "selftest-camp"],
+                     lambda p: p.get("campaign", {}).get("target") == "selftest-camp")
+            json_run("campaign timeline",
+                     ["campaign", "timeline", "--target", "selftest-camp"],
+                     lambda p: p.get("count", 0) >= 1)
+            json_run("campaign archive",
+                     ["campaign", "archive", "--target", "selftest-camp"],
+                     lambda p: p.get("removed") is False and p.get("bytes", 0) > 0)
+            json_run("campaign purge guard",
+                     ["campaign", "purge", "--target", "selftest-camp"],
+                     lambda p: False, expect_rc=2)
+            json_run("campaign purge",
+                     ["campaign", "purge", "--target", "selftest-camp", "--force"],
+                     lambda p: p.get("purged") is True)
+        json_run("mandates verify", ["mandates", "verify"],
+                 lambda p: p.get("ok") is True and p.get("count") == 10)
+        # Companion scripts are exercised directly (not dispatcher subcommands).
+        mcp = root / "scripts" / "mcp_server.py"
+        try:
+            r = subprocess.run([sys.executable, str(mcp), "--test"],
+                               capture_output=True, text=True, timeout=60,
+                               env=env, cwd=str(root))
+            mp = json.loads(r.stdout)
+            add("mcp --test", r.returncode == 0 and mp.get("version") == VERSION
+                and len(mp.get("tools", [])) >= 25,
+                f"rc={r.returncode} tools={len(mp.get('tools', []))}")
+        except Exception as e:
+            add("mcp --test", False, str(e)[:200])
+        try:
+            arsenal = root / "scripts" / "arsenal.py"
+            r = subprocess.run([sys.executable, str(arsenal), "verify"],
+                               capture_output=True, text=True, timeout=60,
+                               env=env, cwd=str(root))
+            add("arsenal verify", r.returncode == 0,
+                f"rc={r.returncode} {r.stdout.strip()[:200]}")
+        except Exception as e:
+            add("arsenal verify", False, str(e)[:200])
+        if not quick:
+            try:
+                bl = root / "scripts" / "bench_live.py"
+                r = subprocess.run([sys.executable, str(bl), "--json", "--no-engine"],
+                                   capture_output=True, text=True, timeout=60,
+                                   env=env, cwd=str(root))
+                bp = json.loads(r.stdout)
+                add("bench_live", r.returncode == 0 and bp.get("accuracy", 0) >= 90,
+                    f"rc={r.returncode} accuracy={bp.get('accuracy')}")
+            except Exception as e:
+                add("bench_live", False, str(e)[:200])
+    finally:
+        if srv is not None:
+            try:
+                srv.shutdown()
+            except Exception:
+                pass
+        shutil.rmtree(tmp, ignore_errors=True)
+
+    passed = sum(1 for c in checks if c["ok"])
+    return {"ok": passed == len(checks) and bool(checks),
+            "passed": passed, "total": len(checks), "checks": checks,
+            "quick": quick}
+
+
+def cmd_selftest(args):
+    result = _run_selftest(quick=bool(getattr(args, "quick", False)))
+    if _json_mode(args):
+        _emit(args, result)
+    else:
+        print(f"═══ SPYDERMONKEY SELFTEST — throwaway HOME {'(quick)' if result['quick'] else ''} ═══")
+        for c in result["checks"]:
+            print(f"  {'✓' if c['ok'] else '✗'} {c['name']:24s} {c['detail']}")
+        print(f"═══ {result['passed']}/{result['total']} checks passed ═══")
+    return 0 if result["ok"] else 1
+
+
+def _extract_global_flags(argv: list[str]) -> tuple[list[str], bool, bool]:
+    """Pull --json/--scope-file/--version out of any position.
+
+    argparse only accepts global flags before the subcommand; operators type
+    them after. One preprocessing pass makes `--json` universal without
+    defining it on thirty subparsers.
+    """
+    out, json_flag, version = [], False, False
+    i = 0
+    while i < len(argv):
+        a = argv[i]
+        if a == "--json":
+            json_flag = True
+            i += 1
+            continue
+        if a == "--version":
+            version = True
+            i += 1
+            continue
+        if a == "--scope-file":
+            if i + 1 >= len(argv):
+                raise UsageError("--scope-file needs a value")
+            os.environ["SPYDERMONKEY_SCOPE"] = argv[i + 1]
+            i += 2
+            continue
+        if a.startswith("--scope-file="):
+            os.environ["SPYDERMONKEY_SCOPE"] = a.split("=", 1)[1]
+            i += 1
+            continue
+        out.append(a)
+        i += 1
+    return out, json_flag, version
+
+
+def _build_parser() -> argparse.ArgumentParser:
+    ap = argparse.ArgumentParser(
+        description="SPYDERMONKEY — master dispatcher of the HolyShit family",
+        epilog="Exit codes: 0 ok · 1 gate/verify/scope failure · 2 usage · 130 interrupted")
     sub = ap.add_subparsers(dest="cmd", required=True)
+
     sub.add_parser("tree", help="the family + roles + chain")
+    sub.add_parser("version", help="version · data root · scope path · engine presence")
+
     r = sub.add_parser("route", help="goal → mandate sequence")
     r.add_argument("--goal", required=True)
+
     rn = sub.add_parser("run", help="the full pipeline (SHIKI assault)")
     rn.add_argument("--target", required=True)
     rn.add_argument("--url", required=True)
@@ -1561,134 +4683,276 @@ def main():
     rn.add_argument("--parallel", action="store_true")
     rn.add_argument("--resume", action="store_true")
     rn.add_argument("--close", action="store_true")
-    rn.add_argument("--dry-run", action="store_true", help="print the delegated command; do not execute")
-    ms = sub.add_parser("mission", help="v3 one command: fleet + intelligence layer + report")
+    rn.add_argument("--dry-run", action="store_true",
+                    help="print the delegated command; do not execute")
+
+    ms = sub.add_parser("mission", help="one command: fleet + intelligence layer + report")
     ms.add_argument("--target", required=True)
     ms.add_argument("--url", required=True)
     ms.add_argument("--domain", required=True)
     ms.add_argument("--goal")
     ms.add_argument("--skip-fleet", action="store_true")
     ms.add_argument("--close", action="store_true")
+    nx = sub.add_parser("next", help="KERNEL: the one next directive (state-driven planner)")
+    nx.add_argument("--target", required=True)
+    nx.add_argument("--url")
+    nx.add_argument("--domain")
+    nx.add_argument("--json", action="store_true", help="machine-readable directive")
+    ab = sub.add_parser("absorb", help="KERNEL: validate a result through the gates, ingest, re-plan")
+    ab.add_argument("--target", required=True)
+    ab.add_argument("--file", required=True, help="result JSON (schema: next --json)")
+    ab.add_argument("--url")
+    ab.add_argument("--domain")
+    lp = sub.add_parser("loop", help="KERNEL: the brrrr — plan→execute→absorb→repeat until complete")
+    lp.add_argument("--target", required=True)
+    lp.add_argument("--url")
+    lp.add_argument("--domain")
+    lp.add_argument("--agent-cmd", dest="agent_cmd",
+                    help="external reasoning cell, e.g. 'claude -p' or 'hermes -z' "
+                         "(default: AUTOPILOT — the engines run their own directives)")
+    lp.add_argument("--max-steps", dest="max_steps", type=int, default=12)
+    lp.add_argument("--agent-timeout", dest="agent_timeout", type=int, default=900)
+    lp.add_argument("--plan-only", dest="plan_only", action="store_true",
+                    help="print the battle plan, execute nothing")
+    ms.add_argument("--plan", action="store_true", help="show the mission plan; execute nothing")
+    ms.add_argument("--dry-run", action="store_true", help="alias for --plan")
+    ms.add_argument("--resume", action="store_true", help="skip completed mission steps")
+    ms.add_argument("--timeout", type=int, default=300)
+
     ph = sub.add_parser("phases", help="the 13-phase methodology board")
     ph.add_argument("--target", required=True)
     ph.add_argument("--set-phase", dest="set_phase", help="phase id to override")
     ph.add_argument("--phase-status", dest="phase_status",
                     choices=("not_started", "in_progress", "completed", "blocked"))
-    lg = sub.add_parser("ledger", help="the finding ledger: add · list · show · triage")
-    lg.add_argument("action", choices=("add", "list", "show", "triage"))
-    lg.add_argument("--target")
+    ph.add_argument("--clear-override", dest="clear_override",
+                    help="clear a manual phase override")
+
+    np = sub.add_parser("next-phase", help="the next 13-phase board action, with the exact command")
+    np.add_argument("--target", required=True)
+
+    lg = sub.add_parser("ledger", help="the finding ledger: add · list · show · triage · export")
+    lg.add_argument("action", choices=("add", "list", "show", "triage", "verify",
+                                       "stats", "export", "update", "sync"))
+    lg.add_argument("--target", required=True)
     lg.add_argument("--title")
     lg.add_argument("--cls", default="GENERAL")
+    lg.add_argument("--class", dest="cls_filter", help="filter list by class (comma-separated)")
     lg.add_argument("--asset", help="url/host the finding is about")
-    lg.add_argument("--severity", choices=("info", "low", "medium", "high", "critical"), default="medium")
+    lg.add_argument("--severity",
+                    choices=("info", "low", "medium", "high", "critical"),
+                    default=None,
+                    help="severity (add/update/filter); default is inferred from impact")
     lg.add_argument("--proof", help="'baseline: … attack: … diff: …' (else downgraded to hypothesis)")
+    lg.add_argument("--proof-file", dest="proof_file", help="read the proof from a file")
     lg.add_argument("--cwe")
+    lg.add_argument("--wstg")
+    lg.add_argument("--attack")
+    lg.add_argument("--cvss", type=float)
     lg.add_argument("--id")
-    lg.add_argument("--confirmed", action="store_true", help="operator asserts confirmation (still evidence-tagged)")
+    lg.add_argument("--status", help="new status (update) or status filter (list)")
+    lg.add_argument("--search", help="substring search across every field")
+    lg.add_argument("--sort", choices=("id", "severity", "cvss", "confidence",
+                                       "class", "updated"), default="id")
+    lg.add_argument("--limit", type=int)
+    lg.add_argument("--format", choices=("json", "jsonl", "csv", "markdown", "sarif"),
+                    default="json", help="export format")
+    lg.add_argument("--output", help="export path ('-' = stdout)")
+    lg.add_argument("--note", help="update note / evidence annotation")
+    lg.add_argument("--dry-run", action="store_true")
+    lg.add_argument("--strict", action="store_true",
+                    help="verify: also require every row to be signed")
+
     gt = sub.add_parser("gate", help="the 3-gate confirmation engine: baseline → attack → diff")
     gt.add_argument("--target", required=True)
-    gt.add_argument("--url", required=True, help="baseline request url")
-    gt.add_argument("--attack-query", required=True, help="query params for the attack request")
-    gt.add_argument("--baseline-query", help="override baseline query (default: the url's own)")
-    gt.add_argument("--append-query", action="store_true",
+    gt.add_argument("--url", help="baseline request url (required unless --prove)")
+    gt.add_argument("--attack-query", dest="attack_query",
+                    help="query params for the attack request (required unless --prove)")
+    gt.add_argument("--baseline-query", dest="baseline_query",
+                    help="override baseline query (default: the url's own)")
+    gt.add_argument("--append-query", dest="append_query", action="store_true",
                     help="attack request keeps the baseline params and adds the attack params")
     gt.add_argument("--method", default="GET")
     gt.add_argument("--data", help="POST body")
+    gt.add_argument("--attack-data", dest="attack_data", help="separate body for the attack request")
     gt.add_argument("--header", action="append", help="'Name: value' (repeatable)")
     gt.add_argument("--confirm", help="token that must appear in the attack body for CONFIRMED")
+    gt.add_argument("--expect-regex", dest="expect_regex",
+                    help="regex that must match the attack body")
+    gt.add_argument("--expect-status", dest="expect_status", type=int,
+                    help="HTTP status the attack response must have")
+    gt.add_argument("--auto-confirm", dest="auto_confirm", action="store_true",
+                    help="CONFIRMED on a stable measurable diff without a token")
+    gt.add_argument("--reps", type=int, default=1, help="baseline repetitions (instability check)")
+    gt.add_argument("--timeout", type=int, default=8)
     gt.add_argument("--title", help="ledger title (default: derived)")
     gt.add_argument("--cls", default="DIFFERENTIAL")
-    gt.add_argument("--severity", choices=("info", "low", "medium", "high", "critical"), default="medium")
+    gt.add_argument("--severity", choices=("info", "low", "medium", "high", "critical"),
+                    default=None)
     gt.add_argument("--cwe")
-    gt.add_argument("--prove", metavar="SPY-NNN", help="replay the stored 3-gate evidence for a finding")
+    gt.add_argument("--prove", metavar="SPY-NNN", help="replay the stored 3-gate evidence")
+    gt.add_argument("--replay", action="store_true",
+                    help="with --prove: re-fire the stored requests")
+
     ch = sub.add_parser("chain", help="8 chain patterns: low findings → high-impact chains")
-    ch.add_argument("action", choices=("detect", "plan"))
+    ch.add_argument("action", choices=("detect", "plan", "list"))
     ch.add_argument("--target", required=True)
     ch.add_argument("--id", dest="chain_id", help="CH-NNN for plan")
+    ch.add_argument("--pattern", help="custom pattern (with --requires)")
+    ch.add_argument("--requires", help="custom chain classes, e.g. 'IDOR+HARVEST'")
+    ch.add_argument("--asset")
+    ch.add_argument("--plan-text", dest="plan_text")
+    ch.add_argument("--severity", choices=("info", "low", "medium", "high", "critical"))
+    ch.add_argument("--min-confidence", dest="min_confidence", type=float, default=0.0)
+    ch.add_argument("--include-hypothesis", dest="include_hypothesis", action="store_true")
+
     cx = sub.add_parser("context", help="session context: endpoints · roles · credentials · functions")
-    cx.add_argument("action", choices=("set", "show"))
+    cx.add_argument("action", choices=("set", "show", "remove", "clear"))
     cx.add_argument("--target", required=True)
     cx.add_argument("--kind", help="endpoint | role | credential | function")
-    cx.add_argument("--value")
+    cx.add_argument("--value", action="append",
+                    help="value(s) for set/remove (repeatable)")
+
     ts = sub.add_parser("testers", help="8 parallel sub-testers over the session context")
     ts.add_argument("--target", required=True)
     ts.add_argument("--url", action="append",
                     help="baseline target url (repeatable: one entry per surface)")
-    ts.add_argument("--demo", action="store_true", help="strike the built-in lab replica (no setup)")
+    ts.add_argument("--demo", action="store_true",
+                    help="strike the built-in lab replica (no setup)")
+    ts.add_argument("--timeout", type=int, default=8)
+
     cv = sub.add_parser("coverage", help="phase × deliverable matrix + gaps")
     cv.add_argument("--target", required=True)
-    rp = sub.add_parser("report", help="the joint war report (markdown)")
+
+    rp = sub.add_parser("report", help="the joint war report (markdown · json · sarif)")
     rp.add_argument("--target", required=True)
-    rp.add_argument("--output")
+    rp.add_argument("--output", help="output path ('-' = stdout)")
+    rp.add_argument("--format", choices=("markdown", "md", "json", "sarif"),
+                    default="markdown")
+
     rl = sub.add_parser("relay", help="remote execution nodes: init · list · exec · remove")
     rl.add_argument("action", choices=("init", "list", "exec", "remove"))
     rl.add_argument("--name")
     rl.add_argument("--host", help="user@host for init")
     rl.add_argument("--cmd", dest="relay_cmd", help="command for exec (scope-checked)")
     rl.add_argument("--timeout", type=int, default=120)
-    s = sub.add_parser("status", help="family meta-status")
-    s.add_argument("--target")
-    sub.add_parser("verify", help="meta self-check + live gate proof")
-    ar = sub.add_parser("arsenal", help="scope-gated execution layer (real tools, 13 wrappers)")
-    ar.add_argument("action", choices=["list", "plan", "run", "verify"], nargs="?", default="list")
+    rl.add_argument("--dry-run", action="store_true")
+
+    st = sub.add_parser("status", help="family meta-status")
+    st.add_argument("--target")
+    st.add_argument("--fast", action="store_true", help="presence only; do not run engine verify")
+
+    vf = sub.add_parser("verify", help="meta self-check + live gate proof + selftest")
+    vf.add_argument("--fast", action="store_true", help="presence-only engine checks")
+    vf.add_argument("--no-selftest", dest="no_selftest", action="store_true")
+
+    sl = sub.add_parser("selftest", help="end-to-end self-test in a throwaway HOME")
+    sl.add_argument("--quick", action="store_true", help="skip the slower integration checks")
+
+    cm = sub.add_parser("campaign", help="engagement lifecycle: init · list · show · timeline · archive · purge")
+    cm.add_argument("action", choices=("init", "list", "show", "timeline",
+                                       "archive", "purge", "close"))
+    cm.add_argument("--target")
+    cm.add_argument("--url")
+    cm.add_argument("--domain")
+    cm.add_argument("--objective")
+    cm.add_argument("--engagement")
+    cm.add_argument("--force", action="store_true")
+    cm.add_argument("--remove", action="store_true",
+                    help="archive: remove the source campaign (needs --force)")
+    cm.add_argument("--note")
+    cm.add_argument("--limit", type=int, default=100)
+
+    md = sub.add_parser("mandates", help="the ten mandate contracts: list · show · verify")
+    md.add_argument("action", choices=("list", "show", "verify"))
+    md.add_argument("--name")
+
+    mf = sub.add_parser("mandate", help="print the injectable mandate (persona contract)")
+    mf.add_argument("--file", action="store_true", help="print path only")
+
+    sc = sub.add_parser("scope", help="the scope authority: init · check · show · add · remove · history · extend")
+    sc.add_argument("action", choices=("init", "check", "show", "add", "remove",
+                                       "history", "extend"))
+    sc.add_argument("--engagement")
+    sc.add_argument("--in-scope", dest="in_scope", help="comma domains/CIDRs/urls")
+    sc.add_argument("--out-of-scope", dest="out_of_scope", help="comma domains/CIDRs")
+    sc.add_argument("--max-rate", dest="max_rate", type=int, help="max requests/sec (rules)")
+    sc.add_argument("--value", help="domain/url/host to check (or add/remove)")
+    sc.add_argument("--file", help="scope file (default $SPYDERMONKEY_SCOPE or ~/.redteam/scope.json)")
+    sc.add_argument("--strict", action="store_true", help="no scope authority → rc=1")
+    sc.add_argument("--expires", help="ISO-8601 expiry")
+    sc.add_argument("--expires-days", dest="expires_days", type=int,
+                    help="expiry N days from now")
+    sc.add_argument("--force", action="store_true", help="replace an existing authority")
+    sc.add_argument("--kind", help="add/remove: 'in' (allow) or 'out' (deny)")
+    sc.add_argument("--limit", type=int, default=40)
+
+    doc = sub.add_parser("doctor", help="full health check: engines · scope · states · canon · ledger")
+    doc.add_argument("--fast", action="store_true")
+    doc.add_argument("--fix", action="store_true",
+                    help="tighten scope perms; rename corrupt JSON; remove stale temp files")
+
+    sub.add_parser("bench", help="offline route-level benchmark (route accuracy)")
+
+    ar = sub.add_parser("arsenal", help="scope-gated execution layer (13 tool wrappers)")
+    ar.add_argument("action", choices=("list", "plan", "run", "verify"), nargs="?",
+                    default="list")
     ar.add_argument("--target")
     ar.add_argument("--only")
     ar.add_argument("--dry-run", action="store_true")
     ar.add_argument("--wordlist")
-    md = sub.add_parser("mandate", help="print the injectable mandate (persona contract, model-agnostic)")
-    md.add_argument("--file", action="store_true", help="print path only")
-    sc = sub.add_parser("scope", help="the scope authority: init · check · show")
-    sc.add_argument("action", choices=("init", "check", "show"))
-    sc.add_argument("--engagement")
-    sc.add_argument("--in-scope", help="comma domains/CIDRs/urls")
-    sc.add_argument("--out-of-scope", help="comma domains/CIDRs")
-    sc.add_argument("--max-rate", type=int, help="max requests/sec (rules)")
-    sc.add_argument("--value", help="domain/url/host to check")
-    sc.add_argument("--file", help="scope file (default ~/.redteam/scope.json)")
-    sc.add_argument("--strict", action="store_true", help="no scope authority → rc=1")
-    doc = sub.add_parser("doctor", help="full health check: engines · scope · states · canon · ledger")
-    bn = sub.add_parser("bench", help="offline route-level benchmark (route accuracy)")
+    ar.add_argument("--timeout", type=int, default=300)
+    ar.add_argument("--output-dir")
+
     fl = sub.add_parser("fleet", help="PARALLEL multi-agent dispatch: one agent per mandate")
     fl.add_argument("--goal", required=True)
     fl.add_argument("--target", required=True)
     fl.add_argument("--domain", required=True)
     fl.add_argument("--agents", help="comma subset (default: full relay)")
-    a = ap.parse_args()
+    fl.add_argument("--sequential", action="store_true")
+    fl.add_argument("--dry-run", action="store_true")
+    fl.add_argument("--timeout", type=int, default=45)
+    fl.add_argument("--retries", type=int, default=0)
+    return ap
+
+
+def _dispatch(a) -> int:
     if a.cmd == "tree":
         return cmd_tree(a)
+    if a.cmd == "version":
+        return cmd_version(a)
     if a.cmd == "route":
         return cmd_route(a)
     if a.cmd == "run":
         return cmd_run(a)
     if a.cmd == "mission":
         return cmd_mission(a)
+    if a.cmd == "next":
+        return cmd_next(a)
+    if a.cmd == "absorb":
+        return cmd_absorb(a)
+    if a.cmd == "loop":
+        return cmd_loop(a)
     if a.cmd == "phases":
         return cmd_phases(a)
+    if a.cmd == "next-phase":
+        return cmd_next_phase(a)
     if a.cmd == "ledger":
-        if not a.target:
-            print("✗ ledger needs --target", file=sys.stderr)
-            return 2
         if a.action == "add" and not (a.title and a.asset):
-            print("✗ ledger add needs --title, --asset (and --proof for evidence)", file=sys.stderr)
-            return 2
-        if a.action == "show" and not a.id:
-            print("✗ ledger show needs --id", file=sys.stderr)
-            return 2
+            raise UsageError("ledger add needs --title and --asset (and --proof for evidence)")
+        if a.action in ("show", "update") and not a.id:
+            raise UsageError(f"ledger {a.action} needs --id")
         return cmd_ledger(a)
     if a.cmd == "gate":
-        if not a.prove and not a.attack_query:
-            print("✗ gate run needs --attack-query (or --prove SPY-NNN)", file=sys.stderr)
-            return 2
+        if not a.prove and not (a.url and a.attack_query):
+            raise UsageError("gate needs --url and --attack-query (or --prove SPY-NNN)")
         return cmd_gate(a)
     if a.cmd == "chain":
-        if a.action == "plan" and not a.chain_id:
-            print("✗ chain plan needs --id CH-NNN", file=sys.stderr)
-            return 2
+        if a.action == "plan" and not a.chain_id and a.pattern != "custom":
+            raise UsageError("chain plan needs --id CH-NNN (or --pattern custom --requires A+B)")
         return cmd_chain(a)
     if a.cmd == "context":
-        if a.action == "set" and not (a.kind and a.value):
-            print("✗ context set needs --kind and --value", file=sys.stderr)
-            return 2
+        if a.action in ("set", "remove") and not (a.kind and a.value):
+            raise UsageError(f"context {a.action} needs --kind and --value")
         return cmd_context(a)
     if a.cmd == "testers":
         return cmd_testers(a)
@@ -1700,14 +4964,19 @@ def main():
         need = {"init": ("name", "host"), "exec": ("name", "relay_cmd"),
                 "remove": ("name",)}.get(a.action, ())
         for f in need:
-            if not getattr(a, f):
-                print(f"✗ relay {a.action} needs --{f.replace('_', '-')}", file=sys.stderr)
-                return 2
+            if not getattr(a, f, None):
+                raise UsageError(f"relay {a.action} needs --{f.replace('_', '-')}")
         return cmd_relay(a)
     if a.cmd == "status":
         return cmd_status(a)
     if a.cmd == "verify":
         return cmd_verify(a)
+    if a.cmd == "selftest":
+        return cmd_selftest(a)
+    if a.cmd == "campaign":
+        return cmd_campaign(a)
+    if a.cmd == "mandates":
+        return cmd_mandates(a)
     if a.cmd == "mandate":
         return cmd_mandate(a)
     if a.cmd == "arsenal":
@@ -1721,6 +4990,45 @@ def main():
     if a.cmd == "fleet":
         return cmd_fleet(a)
     return 2
+
+
+def _main(argv: list[str] | None = None) -> int:
+    raw, json_flag, want_version = _extract_global_flags(
+        list(sys.argv[1:] if argv is None else argv))
+    if want_version:
+        payload = {"name": "spydermonkey", "version": VERSION, "schema": SCHEMA,
+                   "home": str(_root()), "scope": str(sa.scope_path())}
+        if json_flag:
+            print(json.dumps(payload, indent=2))
+        else:
+            print(f"SPYDERMONKEY v{VERSION} (schema {SCHEMA}) · home {_root()}")
+        return 0
+    ap = _build_parser()
+    a = ap.parse_args(raw)
+    a.json = json_flag
+    return _dispatch(a)
+
+
+def main(argv: list[str] | None = None) -> int:
+    try:
+        return _main(argv)
+    except ScopeDenied as e:
+        print(f"✗ {e}", file=sys.stderr)
+        return 1
+    except UsageError as e:
+        print(f"✗ {e}", file=sys.stderr)
+        return 2
+    except KeyboardInterrupt:
+        print("✗ interrupted", file=sys.stderr)
+        return 130
+    except BrokenPipeError:
+        return 0
+    except Exception as e:
+        if os.environ.get("SM_DEBUG"):
+            import traceback
+            traceback.print_exc()
+        print(f"✗ internal error: {type(e).__name__}: {e}", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":
