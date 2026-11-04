@@ -126,6 +126,8 @@ python3 $S crawl --target smoke-v4 --url "http://127.0.0.1:9/x?org_id=acme" --js
 python3 $S context set --target smoke-v4 --kind credentials --value "admin:tok-a" --value "user:tok-b" > /dev/null
 python3 $S testers --target smoke-v4 --demo | grep -qE '[0-9]+/8 tester'
 
+echo "── v4.2 TAKEOVER ENGINE: fingerprints + wall"
+python3 $S takeover --target smoke-v4 --domain evil.com 2>/dev/null && exit 1 || test $? -eq 1
 echo "── relay · refusal paths · usage errors"
 expect_rc 2 python3 $S relay exec --name ghost --cmd id
 python3 $S relay list | grep -qE 'RELAY|no relays'

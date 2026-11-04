@@ -594,7 +594,7 @@ def cmd_verify(args):
                  "doctor", "bench", "fleet", "arsenal", "mission", "phases",
                  "ledger", "gate", "chain", "context", "testers", "coverage",
                  "report", "relay", "campaign", "mandates", "next", "selftest",
-                 "version"):
+                 "crawl", "takeover", "version"):
         if want not in help_out:
             bad.append(f"subcommand {want}")
     mandate = self.parent.parent / "references" / "mandate.md"
@@ -3757,6 +3757,119 @@ def _tester_verdict(t: dict, payload: str, b: dict, a: dict) -> tuple[bool, bool
     return True, True, "differential"
 
 
+# ── v4.2 THE TAKEOVER ENGINE — deterministic DOMTAKE, fully zero-gain ─────────
+
+TAKEOVER_SIGS = [
+    {"service": "github-pages", "cname": r"\.github\.io$", "http": "There isn't a GitHub Pages site here.",
+     "cwe": "CWE-350", "severity": "high", "test": "claim the repo on github.io and serve content"},
+    {"service": "aws-s3", "cname": r"\.s3\.amazonaws\.com$|\.s3-website[\.-]", "http": "NoSuchBucket",
+     "cwe": "CWE-350", "severity": "high", "test": "create the bucket in the affected region"},
+    {"service": "azure", "cname": r"\.azurewebsites\.net$", "http": "404 Web Site not found",
+     "cwe": "CWE-350", "severity": "high", "test": "claim the app-service name"},
+    {"service": "cloudfront", "cname": r"\.cloudfront\.net$", "http": "BAD_REQUEST - The request could not be satisfied",
+     "cwe": "CWE-350", "severity": "high", "test": "claim the distribution origin"},
+    {"service": "heroku", "cname": r"\.herokuapp\.com$", "http": "No such app",
+     "cwe": "CWE-350", "severity": "high", "test": "register the heroku app name"},
+    {"service": "vercel", "cname": r"\.vercel\.app$", "http": "The deployment could not be found",
+     "cwe": "CWE-350", "severity": "medium", "test": "claim the vercel project"},
+    {"service": "netlify", "cname": r"\.netlify\.app$|\.netlify\.com$", "http": "Not Found - Request ID",
+     "cwe": "CWE-350", "severity": "medium", "test": "claim the netlify site"},
+    {"service": "fastly", "cname": r"\.fastly\.net$", "http": "Fastly error: unknown domain",
+     "cwe": "CWE-350", "severity": "medium", "test": "claim the fastly service domain"},
+    {"service": "shopify", "cname": r"\.myshopify\.com$", "http": "Sorry, this shop is currently unavailable",
+     "cwe": "CWE-350", "severity": "medium", "test": "claim the shopify handle"},
+    {"service": "tumblr", "cname": r"\.tumblr\.com$", "http": "Whatever you were looking for doesn't currently live at this URL",
+     "cwe": "CWE-350", "severity": "medium", "test": "claim the tumblr blog"},
+]
+
+
+def cmd_takeover(args):
+    """THE TAKEOVER ENGINE — CNAME → dangling-service fingerprint → NO-GAIN
+    verdict. Read-only resolution + one GET; nothing is claimed, nothing gained.
+    Every CONFIRMED candidate is an in-scope finding awaiting the disclosure playbook."""
+    import socket
+    json_mode = _json_mode(args)
+    dom = args.domain
+    if not _scope_gate(dom, quiet=json_mode):
+        return 1
+    # gather candidate subdomains: --subdomains file OR the finder's recon state
+    subs = [dom]
+    if args.subdomains:
+        subs += [s.strip() for s in Path(args.subdomains).read_text(errors="replace").splitlines()
+                 if s.strip() and "." in s]
+    camp = _camp(args.target)
+    try:
+        h = _load_json(camp / "holyshit-state.json", {})
+        subs += [s for s in h.get("subdomains", []) if "." in s]
+    except Exception:
+        pass
+    subs = list(dict.fromkeys(subs))[:200]
+    cand, checked = [], 0
+    if not json_mode:
+        print(f"═══ TAKEOVER ENGINE — {len(subs)} candidate(s) under '{dom}' (read-only · NO-GAIN) ═══")
+    for sub in subs:
+        cname = None
+        try:
+            import subprocess as sp2
+            r = sp2.run(["dig", "+short", "CNAME", sub], capture_output=True,
+                        text=True, timeout=6)
+            for ln in r.stdout.splitlines():
+                ln = ln.strip().rstrip(".")
+                if ln and not _is_ip(ln):
+                    cname = ln
+                    break
+        except Exception:
+            cname = None
+        if not cname:
+            checked += 1
+            continue
+        sig = next((s for s in TAKEOVER_SIGS if re.search(s["cname"], cname)), None)
+        if not sig:
+            continue
+        checked += 1
+        url = f"https://{sub}"
+        r = _http(url, timeout=8)
+        body = r["body"][:4000]
+        if sig["http"].lower() in body.lower() or r["status"] == 404 and sig["service"] in ("aws-s3",):
+            cand.append({"subdomain": sub, "cname": cname, "service": sig["service"],
+                         "severity": sig["severity"], "cwe": sig["cwe"],
+                         "test": sig["test"], "status": "CONFIRMED-NOGAIN",
+                         "proof": f"cname {cname} → {sig['service']} fingerprint on "
+                                  f"HTTP {r['status']} ('{sig['http'][:40]}…') — "
+                                  f"claimable: {sig['test']}"})
+            if not json_mode:
+                print(f"  🔥 {sub} → {cname} [{sig['service']}] — DANGLING, claimable"
+                      f" ({sig['severity']})")
+        else:
+            if not json_mode:
+                print(f"  · {sub} → {cname} [{sig['service']}] — live content, not dangling")
+    for c in cand:
+        try:
+            _cmd_ledger_internal(args.target,
+                                 f"subdomain takeover candidate: {c['subdomain']}",
+                                 "DOMTAKE", f"https://{c['subdomain']}",
+                                 c["severity"], c["proof"], c["cwe"], quiet=json_mode)
+        except Exception:
+            pass
+    payload = {"target": args.target, "domain": dom, "checked": checked,
+               "candidates": len(cand), "findings": cand}
+    if json_mode:
+        _emit(args, payload)
+    else:
+        print(f"═══ {checked} cname(s) resolved · {len(cand)} dangling candidate(s) · "
+              f"all NO-GAIN (nothing claimed) ═══")
+    return 0
+
+
+def _is_ip(host):
+    import ipaddress as _ip
+    try:
+        _ip.ip_address(host)
+        return True
+    except ValueError:
+        return False
+
+
 # ── v4.1 THE SURFACE ENGINE — the kernel discovers its own attack surface ─────
 
 _JS_PATH_RE = re.compile(
@@ -4965,6 +5078,10 @@ def _build_parser() -> argparse.ArgumentParser:
     cw.add_argument("--url", required=True)
     cw.add_argument("--depth", type=int, default=2)
     cw.add_argument("--timeout", type=int, default=8)
+    tk = sub.add_parser("takeover", help="THE TAKEOVER ENGINE: dangling CNAME fingerprints (read-only, NO-GAIN)")
+    tk.add_argument("--target", required=True)
+    tk.add_argument("--domain", required=True)
+    tk.add_argument("--subdomains", help="file of subdomains (else the finder state + the domain)")
 
     ts = sub.add_parser("testers", help="8 parallel sub-testers over the session context")
     ts.add_argument("--target", required=True)
@@ -5112,6 +5229,8 @@ def _dispatch(a) -> int:
         return cmd_testers(a)
     if a.cmd == "crawl":
         return cmd_crawl(a)
+    if a.cmd == "takeover":
+        return cmd_takeover(a)
     if a.cmd == "coverage":
         return cmd_coverage(a)
     if a.cmd == "report":
