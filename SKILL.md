@@ -1,6 +1,6 @@
 ---
-name: cyberbomb
-description: "Trigger `/cyberbomb`. CYBERBOMB — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
+name: spydermonkey
+description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
 version: 1.0.0
 author: Hermes Agent
 license: MIT
@@ -11,9 +11,9 @@ metadata:
     related_skills: [barbican, holyshit-mode, 3am-shinjitsu, undercroft, kairo, shiki]
 ---
 
-# CYBERBOMB — Master Dispatcher of the HolyShit Family
+# SPYDERMONKEY — Master Dispatcher of the HolyShit Family
 
-Any agent, one skill, the whole war. CYBERBOMB is the family's front door: it
+Any agent, one skill, the whole war. SPYDERMONKEY is the family's front door: it
 knows the tree, routes any goal to the right mandate, runs the full pipeline, and
 reports the family's state. Load THIS skill first; load the others as the router
 sends you.
@@ -47,11 +47,11 @@ SHIKI conducts all of it in one `assault` · BARBICAN wipes at the end
 
 **One-liners:** Barbican shields you · HolyShit finds it · UNDERCROFT reads what's
 hidden · 3AM hits it fast · KAIRO turns every hit into everyone's weapons · SHIKI
-conducts the whole war · CyberBomb routes it.
+conducts the whole war · SpyderMonkey routes it.
 
 ## The Router (what any agent does with a goal)
 
-`scripts/cyberbomb.py route --goal "<words>"` — goal → mandate sequence:
+`scripts/spydermonkey.py route --goal "<words>"` — goal → mandate sequence:
 - "protect / anonymous / opsec / vantage" → **barbican** (posture first)
 - "find / recon / what do we know / dossier" → **holyshit** (then handoff)
 - "custom / bundle / logic / business rules / their code" → **undercroft** (run)
@@ -62,7 +62,7 @@ conducts the whole war · CyberBomb routes it.
 
 ## Tooling
 
-`scripts/cyberbomb.py` — stdlib CLI:
+`scripts/spydermonkey.py` — stdlib CLI:
 - `tree` — the family + roles + chain (this document, condensed)
 - `route --goal "<words>"` — goal → the mandate sequence to load/run
 - `run --target T --url U --domain D [--bundle P] [--boundary-url U2] [--probe-ids 1,2] [--parallel] [--resume] [--close]` — the full pipeline (delegates to SHIKI assault, the proven path)
@@ -72,7 +72,7 @@ conducts the whole war · CyberBomb routes it.
 ## Files
 
 - `SKILL.md` — this doctrine (the tree lives here)
-- `scripts/cyberbomb.py` — tree/route/run/status/verify CLI
+- `scripts/spydermonkey.py` — tree/route/run/status/verify CLI
 
 ## Relations
 
