@@ -129,9 +129,12 @@ def cmd_verify(args):
     self = Path(__file__).resolve()
     help_out = subprocess.run([sys.executable, str(self), "--help"],
                               capture_output=True, text=True).stdout
-    for want in ("tree", "route", "run", "status", "verify"):
+    for want in ("tree", "route", "run", "status", "verify", "mandate"):
         if want not in help_out:
             bad.append(f"subcommand {want}")
+    mandate = Path(__file__).resolve().parent.parent / "references" / "mandate.md"
+    if not mandate.exists():
+        bad.append("mandate file")
     for name, (script, _) in FAMILY.items():
         r = subprocess.run([sys.executable, str(script), "verify"],
                            capture_output=True, text=True)
@@ -162,7 +165,9 @@ def main():
     rn.add_argument("--close", action="store_true")
     s = sub.add_parser("status", help="family meta-status")
     s.add_argument("--target")
-    v = sub.add_parser("verify", help="meta self-check")
+    vf = sub.add_parser("verify", help="meta self-check")
+    md = sub.add_parser("mandate", help="print the injectable persona contract (kimiko architecture, model-agnostic)")
+    md.add_argument("--file", action="store_true", help="print path only")
     a = ap.parse_args()
     if a.cmd == "tree":
         return cmd_tree(a)
@@ -174,6 +179,13 @@ def main():
         return cmd_status(a)
     if a.cmd == "verify":
         return cmd_verify(a)
+    if a.cmd == "mandate":
+        mfile = Path(__file__).resolve().parent.parent / "references" / "mandate.md"
+        if args.file:
+            print(str(mfile))
+            return 0
+        print(mfile.read_text())
+        return 0
     return 2
 
 
