@@ -383,7 +383,7 @@ def cmd_mandate(args):
 
 FLEET_BRIEFS = {
     "barbican":   ("THE SHIELD",   lambda a: ["assess", "--target", a["target"]]),
-    "holyshit":   ("THE FINDER",   lambda a: ["recon", "--domain", a["domain"]]),
+    "holyshit":   ("THE FINDER",   lambda a: ["dossier", "--target", a["target"]]),
     "undercroft": ("THE DESCENT",  lambda a: ["probe"]),
     "3am":        ("THE PERFORMER", lambda a: ["verify"]),
     "kage":       ("THE MIRROR",   lambda a: ["mirror", "--target", a["target"]]),
