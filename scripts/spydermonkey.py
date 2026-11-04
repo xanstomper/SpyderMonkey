@@ -181,7 +181,7 @@ def main():
         return cmd_verify(a)
     if a.cmd == "mandate":
         mfile = Path(__file__).resolve().parent.parent / "references" / "mandate.md"
-        if args.file:
+        if a.file:
             print(str(mfile))
             return 0
         print(mfile.read_text())
