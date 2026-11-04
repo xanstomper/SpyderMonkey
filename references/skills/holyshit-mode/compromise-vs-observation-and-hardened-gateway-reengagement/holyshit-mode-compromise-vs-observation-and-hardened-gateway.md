@@ -1,28 +1,16 @@
-# Why this matters
+# 1. Re-verify the prior "holy shits" are patched FIRST (findings decay hourly)
 
 - source canon: `holyshit-mode/compromise-vs-observation-and-hardened-gateway-reengagement.md`
-- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
 - generated: 2026-11-04
 
 ## The technique
 
-A target with 21 "confirmed" ledger entries can still have ZERO compromisable findings.
-Prior sessions milked a hardened gateway for read-only observations (served_by model
-substitution, CoT leak, system-prompt reconstruction, supply-chain hostnames) and scored
-them high. Those are NOT compromises — an attacker gains no control, no data, no
-availability damage. When the operator asks for "real compromisable holy shits," re-set the
-bar BEFORE probing: the finding must answer **"what does the attacker actually GAIN / DAMAGE?"**
-
-Classify EVERY candidate as:
-- **COMPROMISE** — attacker achieves control (RCE, auth bypass, stored XSS in trusted UI),
-  data exfil (cross-user content, secrets, sessions), or availability/financial damage to the
-  operator's OWN assets (credit/CPU drain).
-- **OBSERVATION** — attacker learns info but gains nothing usable (served_by, CoT leak,
-  hidden-model map, upstream hostnames, prompt reconstruction). Recon coverage, NOT a finding.
-- **RISK (already-defined)** — unauthenticated unlimited free-AI is a COMPROMISE when it
-  bleeds the OPERATOR's paid third-party upstream credits (financial + availability DoS of
-  operator's own service), even though it's "just" resource abuse. Sometimes the highest
-  true compromise.
+- **Shared-buffer cross-user disclosure / context poisoning patch check = PTOK-drift oracle:**
+  fire 3+ identical 1-word requests spaced ~3s apart, read `usage.prompt_tokens`. Constant
+  (e.g. 6) = stateless/patched. DRIFTING/growing = shared global buffer re-emerged = the
+  highest-value re-find. Do this before anything else; the ledger `negative` rows may predate
+  a redeploy that brought the vuln back.
 
 ## Family use
 

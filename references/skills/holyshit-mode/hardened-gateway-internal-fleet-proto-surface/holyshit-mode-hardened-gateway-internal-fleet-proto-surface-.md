@@ -1,16 +1,14 @@
-# When to use
+# Contrast vs the vulnerable GoTrue variant (g***REDACTED***/g***REDACTED***)
 
 - source canon: `holyshit-mode/hardened-gateway-internal-fleet-proto-surface.md`
-- bindings: **WSTG-ATHZ-04** · **CWE-639** · **ATT&CK T1068**
+- bindings: **MASTG-RES** · **CWE-288** · **ATT&CK T1557**
 - generated: 2026-11-04
 
 ## The technique
 
-A public OpenAI-compatible gateway / LLM platform is **professionally hardened** — every `/v1/*` and
-`/api/*` route keyed, Turnstile on all bootstrap, opaque DB sessions, no JWT in bundles, no IDOR on the
-pre-auth management API. The compromisable surface then often lives on the operator's **internal
-serving fleet**, reachable because (a) it is publicly IP-addressed and (b) a worker-level proto surface
-was left unauthenticated while the public edge is keyed.
+The earlier findings (redirect_uri forwarded verbatim, anon key client-exposed, unthrottled code
+exchange) come from an **un-hardened GoTrue deployment**. Always fingerprint BEFORE assuming: server-side
+PKCE + no client anon key + hardcoded redirect_to ⇒ the g***REDACTED*** chain does not apply; pivot.
 
 ## Family use
 

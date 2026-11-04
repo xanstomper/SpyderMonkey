@@ -9,7 +9,7 @@
 **The master dispatcher of the HolyShit offensive-security family —
 the tree, the router, and the full engagement pipeline in one stdlib-only CLI.**
 
-[![Version](https://img.shields.io/badge/version-1.3.0-blueviolet?style=for-the-badge)](#-the-cli)
+[![Version](https://img.shields.io/badge/version-3.0.0-blueviolet?style=for-the-badge)](#-the-cli)
 [![Python](https://img.shields.io/badge/python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](#quickstart)
 [![Platform](https://img.shields.io/badge/platform-Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](#quickstart)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?style=for-the-badge)](#why-its-so-powerful)
@@ -18,7 +18,7 @@ the tree, the router, and the full engagement pipeline in one stdlib-only CLI.**
 [![CI](https://github.com/xanstomper/spydermonkey/actions/workflows/verify.yml/badge.svg)](https://github.com/xanstomper/spydermonkey/actions/workflows/verify.yml)
 [![Use](https://img.shields.io/badge/use-AUTHORIZED%20TARGETS%20ONLY-crimson?style=for-the-badge)](#the-walls-non-negotiable)
 
-**THE FAMILY** — six mandates, one axis each, one click away:
+**THE FAMILY** — ten mandates, one axis each, one click away:
 
 [![00 BARBICAN · the shield](https://img.shields.io/badge/00-BARBICAN%20·%20the%20shield-2E4057?style=for-the-badge)](https://github.com/xanstomper/barbican)
 [![01 3AM · the performer](https://img.shields.io/badge/01-3AM%20·%20the%20performer-8B0000?style=for-the-badge)](https://github.com/xanstomper/3am-shinjitsu)
@@ -27,8 +27,9 @@ the tree, the router, and the full engagement pipeline in one stdlib-only CLI.**
 [![04 HOLYSHIT · the finder](https://img.shields.io/badge/04-HOLYSHIT%20·%20the%20finder-B8860B?style=for-the-badge)](https://github.com/xanstomper/HolyShit)
 [![05 SHIKI · the command](https://img.shields.io/badge/05-SHIKI%20·%20the%20command-111111?style=for-the-badge)](https://github.com/xanstomper/shiki)
 [![06 KAISHA · the ladder](https://img.shields.io/badge/06-KAISHA%20·%20the%20ladder-704214?style=for-the-badge)](https://github.com/xanstomper/kaisha)
-[![09 DOJO · the range](https://img.shields.io/badge/09-DOJO%20·%20the%20range-4a5d23?style=for-the-badge)](https://github.com/xanstomper/dojo)
 [![07 SHUKAKU · the harvester](https://img.shields.io/badge/07-SHUKAKU%20·%20the%20harvester-8B4513?style=for-the-badge)](https://github.com/xanstomper/shukaku)
+[![08 KAGE · the mirror](https://img.shields.io/badge/08-KAGE%20·%20the%20mirror-3A3A3A?style=for-the-badge)](https://github.com/xanstomper/kage)
+[![09 DOJO · the range](https://img.shields.io/badge/09-DOJO%20·%20the%20range-4a5d23?style=for-the-badge)](https://github.com/xanstomper/dojo)
 
 [How it works](#how-it-works) · [Why it's so powerful](#why-its-so-powerful) ·
 [Quickstart](#quickstart) · [The CLI](#the-cli) ·
@@ -40,7 +41,7 @@ the tree, the router, and the full engagement pipeline in one stdlib-only CLI.**
 
 ## What is this?
 
-SPYDERMONKEY is the spider at the center of the web. Around it, eight specialized
+SPYDERMONKEY is the spider at the center of the web. Around it, ten specialized
 offensive-security mandates — the **HolyShit family** — each owning exactly one
 axis of an engagement. None of them overlap. All of them compose.
 
@@ -48,6 +49,10 @@ SPYDERMONKEY is the piece that knows the whole tree:
 
 - **routes** any goal, in plain words, to the right mandate sequence,
 - **runs** the full pipeline end-to-end with one command,
+- **owns the INTELLIGENCE LAYER** (v3): the 13-phase methodology board, the
+  finding ledger with triager gates, the 3-gate confirmation engine, the
+  8 parallel sub-testers, the chain detector, coverage, the war report, and
+  remote execution nodes,
 - **reports** the family's state (versions, engines, campaign states),
 - **carries the persona contract** that puts ANY model under the family's discipline.
 
@@ -74,12 +79,15 @@ KAISHA: the ladder — era-stack · privesc rungs · lateral    (DEPTH below the
     ↓ what the depth reaches
 SHUKAKU: crown register — catalog · price · disclose     (what the attacker GAINED)
     ↓ the P5 impact layer
+KAGE: mirror every confirmed attack → detection rules · purple validation
+    ↓ the defender gets the eyes
 SHIKI conducts all of it in one `assault` · BARBICAN wipes at the end
 ```
 
 **One-liners:** Barbican shields you · HolyShit finds it · UNDERCROFT reads what's
-hidden · 3AM hits it fast · KAIRO turns every hit into everyone's weapons · SHUKAKU
-prices the gain · SHIKI conducts the whole war · SpyderMonkey routes it.
+hidden · 3AM hits it fast · KAIRO turns every hit into everyone's weapons · KAISHA
+climbs the ladder · SHUKAKU prices the gain · KAGE mirrors it · DOJO drills it ·
+SHIKI conducts the whole war · SpyderMonkey routes it.
 
 ### 2. The router — plain words in, mandate sequence out
 
@@ -98,10 +106,12 @@ $ python3 scripts/spydermonkey.py route --goal "protect my ass"
 | custom · bundle · logic · business · their code | **undercroft** — live auto-engagement |
 | attack · sweep · take over · exploit | **3AM** — the universal sweep |
 | arm · forge · vectors · weapons · chains | **kairo** — forge from existing findings |
-| harvest · crown · price · what could they take · disclose · impact | **shukaku** — the harvest, after confirmed compromises |
 | ladder · climb · deepen · privesc · lateral · foothold | **kaisha** — the depth leg: what the foothold becomes |
+| harvest · crown · price · what could they take · disclose · impact | **shukaku** — the harvest, after confirmed compromises |
+| detect · mirror · detection · purple · sigma | **kage** — confirmed attacks → detection rules |
+| train · range · replica · lab · lesson | **dojo** — the range: vulnerable replicas + training lessons |
 | everything · full assault · together · one command | **shiki** — the entire pipeline as one assault |
-| *anything else* | the **STANDARD RELAY**: barbican → holyshit → undercroft → kairo → 3am → kaisha → shukaku |
+| *anything else* | the **STANDARD RELAY**: barbican → holyshit → undercroft → kairo → 3am → kaisha → shukaku → kage → dojo |
 
 ### 3. The scope authority — the machine-checkable estate gate
 
@@ -117,15 +127,25 @@ Every live-probing engine honors `~/.redteam/scope.json` — default-deny with
 `--strict`. Plus: **`doctor`** (full health check) and **`bench`** (offline
 route-accuracy benchmark — the family's first measurable metric).
 
-### 4. The pipeline — one command, eight engines
+### 4. The pipeline — one command, ten engines
 
-Also since v1.3: **`bench_live.py`** — the LIVE exploitation benchmark: stdlib
-vulnerable mini-targets (IDOR · replay · exposed-backup) spun up on localhost,
-the family's real engines engage them, sub-task completion scored (3/3 verified).
-And **`mcp_server.py`** — the whole family exposed as 12 MCP tools (stdio
-JSON-RPC, zero deps): Claude Desktop, Cursor, or any MCP client drives it. And
+Also since v1.3: **`scope`/`doctor`/`bench`** — the estate gate, the health check,
+and the offline route-accuracy benchmark. Since v1.4: **`fleet`** — every mandate
+dispatched as its own parallel agent with a live brief. Since v1.5: **`kage`** —
+every confirmed attack becomes a defender's detection rule (the purple layer).
+Since v1.6: **`arsenal`** — the execution layer: 13 tool wrappers (nmap, masscan,
+httpx, nuclei, gobuster, testssl, dnsx, subfinder, whatweb, wafw00f, nikto, dig,
+curl), scope-gated (rc=1 refusal), findings canon-classified. Since v1.7:
+**`dojo`** — the range: buildable vulnerable replicas of every technique class,
+lab-bound on 127.0.0.1.
+
+**`bench_live.py`** — the LIVE exploitation benchmark: stdlib vulnerable
+mini-targets (IDOR · replay · exposed-backup) spun up on localhost, the family's
+real engines engage them, sub-task completion scored (3/3 verified).
+**`mcp_server.py`** — the whole family exposed as 12 MCP tools (stdio
+JSON-RPC, zero deps): Claude Desktop, Cursor, or any MCP client drives it.
 **`skilltree.py`** — generates the technique library from the family's real
-canon: 600+ per-technique skill files, WSTG/CWE/ATT&CK-bound, lazy-loaded via
+canon: 722 per-technique skill files, WSTG/CWE/ATT&CK-bound, lazy-loaded via
 `references/skilltree-index.md`.
 
 `run` delegates to **SHIKI assault** — the proven path that drives every real
@@ -146,9 +166,22 @@ assault idempotently; `--close` wipes the campaign at the end.
 
 ## Why it's so powerful
 
-- **One command, eight engines.** A single `run` conducts gate → recon ∥ descent →
-  forge → chain → sweep → ladder → harvest → closeout. You stop babysitting eight
-  CLIs; the conductor handles ordering, parallelism, and re-tasking from live results.
+- **The intelligence layer (v3).** CyberStrike-style engagement brain, family-native:
+  a **13-phase methodology board** computed from real deliverables (never declared),
+  a **finding ledger** with triager gates (scope · evidence · duplicates — downgraded,
+  never suppressed), the **3-gate confirmation engine** (baseline → attack →
+  measurable diff → CONFIRMED, or nothing registers), **8 parallel sub-testers**
+  (IDOR · AUTHZ · MASSASSIGN · INJECTION · AUTHN · BIZLOGIC · SSRF · FILEATTACK),
+  a **chain detector** (8 patterns turning low findings into high-impact kill chains),
+  **coverage** with the gap list, the joint **war report**, and **remote execution
+  nodes** (Ed25519 ssh relays, scope-checked). `mission` runs all of it in one command.
+- **Proven, not asserted.** `verify` now ends with a LIVE GATE PROOF: it spins the
+  built-in lab replica and requires a real baseline→attack→diff CONFIRMED before it
+  says PASS. `testers --demo` strikes the same replica with zero setup.
+- **One command, ten engines.** A single `run` conducts gate → recon ∥ descent →
+  forge → chain → sweep → ladder → harvest → mirror → drill → closeout. You stop
+  babysitting ten CLIs; the conductor handles ordering, parallelism, and re-tasking
+  from live results.
 - **One axis per mandate.** Unix philosophy applied to offensive security: each
   mandate does exactly one thing and hands off cleanly. Swap one engine and the
   family still works — the dispatcher only knows roles, not internals.
@@ -172,8 +205,9 @@ assault idempotently; `--close` wipes the campaign at the end.
 - **The gate.** BARBICAN hard-gates the pipeline on a verified exit vantage and
   strips operator strings before anything runs. No verified exit → rc=1 and
   **nothing** executes. OpSec is not a step; it's a precondition.
-- **Zero dependencies.** Pure Python stdlib, one file, ~9 KB. Clone and run on
-  any box with `python3` — no venv, no pip, no supply chain.
+- **Zero dependencies.** Pure Python stdlib. The dispatcher is one file
+  (~24 KB); the companion scripts (`arsenal` · `bench_live` · `mcp_server` ·
+  `skilltree`) are stdlib too — no venv, no pip, no supply chain.
 - **Idempotent & resumable.** Interrupted engagement? `--resume` re-enters
   without double-firing. Done? `--close` wipes. Campaign state lives on disk in
   `~/.redteam/campaigns/`.
@@ -193,7 +227,7 @@ git clone https://github.com/xanstomper/spydermonkey.git \
     ~/.hermes/skills/security/spydermonkey
 ```
 
-> **The six engines are separate repos.** `verify` and `status` need the family
+> **The ten engines are separate repos.** `verify` and `status` need the family
 > installed at `~/.hermes/skills/security/<name>/scripts/`. Clone them all:
 >
 > ```bash
@@ -205,6 +239,9 @@ git clone https://github.com/xanstomper/spydermonkey.git \
 > git clone https://github.com/xanstomper/kairo.git
 > git clone https://github.com/xanstomper/shiki.git
 > git clone https://github.com/xanstomper/shukaku.git
+> git clone https://github.com/xanstomper/kaisha.git
+> git clone https://github.com/xanstomper/kage.git
+> git clone https://github.com/xanstomper/dojo.git
 > python3 spydermonkey/scripts/spydermonkey.py verify   # → ALL PASS
 > ```
 
@@ -217,9 +254,24 @@ git clone https://github.com/xanstomper/spydermonkey.git \
 | `tree` | the family + roles + the chain (the doctrine, condensed) |
 | `route --goal "<words>"` | plain-language goal → the mandate sequence to load/run |
 | `run --target T --url U --domain D [--bundle P] [--boundary-url U2] [--probe-ids 1,2] [--parallel] [--resume] [--close] [--dry-run]` | the full pipeline — delegates to SHIKI assault |
-| `status [--target T]` | every mandate's engine presence + verify state + campaign files |
-| `verify` | the meta self-check: subcommands, mandate file, all six engines |
+| `mission --target T --url U --domain D [--skip-fleet] [--close]` | **v3 one command**: scope gate → fleet (10 agents, parallel) → ledger triage → chain detect → coverage → the war report |
+| `phases --target T` | the 13-phase methodology board — statuses computed from real deliverables, never declared |
+| `ledger add\|list\|show\|triage --target T` | the finding ledger — scope-blocked, deduped, evidence-gated (`baseline:/attack:/diff:` or downgraded to hypothesis, never suppressed) |
+| `gate --target T --url U --attack-query Q [--confirm TOK] [--prove SPY-NNN]` | the **3-gate confirmation engine**: baseline → attack → measurable diff (+ token) → CONFIRMED |
+| `chain detect\|plan --target T [--id CH-NNN]` | **8 chain patterns** — low findings on one origin combine into high-impact kill chains with testing plans |
+| `context set\|show --target T` | session context: endpoints · roles · credentials · functions |
+| `testers --target T --url U [--url U2 …] \| --demo` | the **8 parallel sub-testers** (IDOR · AUTHZ · MASSASSIGN · INJECTION · AUTHN · BIZLOGIC · SSRF · FILEATTACK), differential + deduped into the ledger |
+| `coverage --target T` | phase × deliverable matrix + findings histogram + the gap list |
+| `report --target T [--output F]` | the joint **war report** (markdown): findings + proofs + chains + coverage + detection + pricing |
+| `relay init\|list\|exec\|remove` | remote execution nodes (Bolt-equivalent): Ed25519 ssh pairs, every exec scope-checked |
+| `status [--target T]` | every mandate's engine presence + verify state + campaign files + ledger counts |
+| `verify` | the meta self-check: subcommands, mandate file, all ten engines **+ the live gate proof** |
 | `mandate [--file]` | print (or locate) the injectable persona contract |
+| `scope init\|check\|show` | the estate gate — `~/.redteam/scope.json`, domain-suffix/CIDR match, default-deny with `--strict` |
+| `doctor` | full health check: engines · scope · corrupt states · canon · ledger · relays |
+| `bench` | offline route-level benchmark (route accuracy; 13/13 at v3.0.0) |
+| `arsenal list\|plan\|run\|verify` | the execution layer — 13 tool wrappers, scope-gated, canon-classified findings |
+| `fleet --goal G --target T --domain D [--agents a,b]` | one agent per mandate, dispatched in parallel |
 
 Exit codes: `0` ok · `1` gate/verify failure · `2` usage error.
 
@@ -276,10 +328,18 @@ walls is refused — by design, at every layer.
 ```
 spydermonkey/
 ├── SKILL.md                  # the doctrine — the tree lives here
+├── CHANGELOG.md              # release notes
 ├── scripts/
-│   └── spydermonkey.py       # tree · route · run · status · verify · mandate
+│   ├── spydermonkey.py       # tree · route · run · status · verify · mandate · scope · doctor · bench · arsenal · fleet
+│   ├── arsenal.py            # the execution layer — 13 tool wrappers, scope-gated
+│   ├── bench_live.py         # the exploitation-level bench (localhost lab)
+│   ├── mcp_server.py         # the family as 12 MCP tools (stdio JSON-RPC)
+│   └── skilltree.py          # regenerate references/skills/ from the family canon
 ├── references/
-│   └── mandate.md            # the injectable persona contract (any model)
+│   ├── mandate.md            # the injectable persona contract (any model)
+│   ├── skilltree-index.md    # the generated technique library index (722 entries)
+│   └── skills/               # 722 lazy-loaded technique files (WSTG/CWE/ATT&CK-bound)
+├── .github/workflows/verify.yml
 └── assets/
     └── spyder.gif            # the spider at the center of the web
 ```
@@ -292,8 +352,11 @@ Every family skill is reachable from here; load per the router:
 [undercroft](https://github.com/xanstomper/undercroft) (descent) ·
 [3am-shinjitsu](https://github.com/xanstomper/3am-shinjitsu) (performer) ·
 [kairo](https://github.com/xanstomper/kairo) (synthesizer) ·
+[kaisha](https://github.com/xanstomper/kaisha) (ladder) ·
 [shukaku](https://github.com/xanstomper/shukaku) (harvester) ·
-[shiki](https://github.com/xanstomper/shiki) (command).
+[shiki](https://github.com/xanstomper/shiki) (command) ·
+[kage](https://github.com/xanstomper/kage) (mirror) ·
+[dojo](https://github.com/xanstomper/dojo) (range).
 
 ## License
 
