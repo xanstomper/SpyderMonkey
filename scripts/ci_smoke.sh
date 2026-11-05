@@ -37,7 +37,7 @@ python3 -m py_compile scripts/spydermonkey.py scripts/scope_authority.py \
 
 echo "── dispatcher CLI · tree · router · version · kernel"
 python3 $S --help > /dev/null
-python3 $S version --json | grep -q '"version": "5.1.0"'
+python3 $S version --json | grep -q '"version": "5.2.0"'
 python3 $S tree | grep -q BARBICAN
 python3 $S tree | grep -q SHIKI
 python3 $S tree | grep -q KAGE
@@ -142,6 +142,19 @@ python3 $S capabilities --json | grep -q '"confirmable_classes"'
 python3 $S protect posture --json | grep -q '"hostname"'
 python3 $S watch --target smoke-train --url http://127.0.0.1:9/x --domain ci.example --every-mins 0 --max-cycles 1 --max-steps 2 | grep -q 'watch complete'
 rm -rf "$HOME/.redteam/campaigns/smoke-train" "$HOME/train.json"
+
+echo "── v5.2 BENCHMARK + FIX LOOP"
+python3 $S ledger add --target smoke-fix --title "idor differential on param org_id" --asset "http://127.0.0.1:9/api/orders?org_id=foreign" --cls IDOR --severity high --proof "x" >/dev/null
+python3 $S remediate --target smoke-fix --id SPY-001 --json | grep -q '"recipe"'
+python3 $S remediate --target smoke-fix --id SPY-001 --reproof --json | grep -qE '"mode": "(unreachable|re-proven)"'
+rm -rf "$HOME/.redteam/campaigns/smoke-fix"
+if [ -f "$DOJO" ]; then
+  SM_DOJO="$DOJO" python3 "$(dirname "$S")/bench_public.py" 2026 > "$HOME/bench.json" 2>/dev/null
+  python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); assert d["completed"]/d["sub_tasks"] >= 0.95, d' "$HOME/bench.json"
+  rm -f "$HOME/bench.json"
+else
+  echo "  (dojo engine not present — bench skipped)"
+fi
 echo "── relay · refusal paths · usage errors"
 expect_rc 2 python3 $S relay exec --name ghost --cmd id
 python3 $S relay list | grep -qE 'RELAY|no relays'
@@ -167,7 +180,7 @@ python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); assert d["ok"] and 
 test "$(grep -c '^- \[' references/skilltree-expanded-index.md)" -ge 10000
 printf '{"jsonrpc":"2.0","id":1,"method":"tools/list"}\n{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"version","arguments":{}}}\n' \
   | python3 scripts/mcp_server.py > "$HOME/mcp.jsonl"
-python3 -c 'import json,sys; rows=[json.loads(l) for l in open(sys.argv[1]) if l.strip()]; assert len(rows) == 2; assert len(rows[0]["result"]["tools"]) >= 43; assert "5.1.0" in json.dumps(rows[1])' "$HOME/mcp.jsonl"
+python3 -c 'import json,sys; rows=[json.loads(l) for l in open(sys.argv[1]) if l.strip()]; assert len(rows) == 2; assert len(rows[0]["result"]["tools"]) >= 43; assert "5.2.0" in json.dumps(rows[1])' "$HOME/mcp.jsonl"
 test -f references/mandate.md
 
 echo "── stdlib test suite"
