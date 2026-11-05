@@ -1,0 +1,132 @@
+{
+  "benchmark": "spydermonkey-selfbench",
+  "seed": 2026,
+  "classes": 15,
+  "sub_tasks": 60,
+  "completed": 60,
+  "completion_rate": 100.0,
+  "anti_memorization": "random port + random path prefix per instance",
+  "ceiling": "self-benchmark \u2014 cross-benchmark adaptation pending",
+  "results": [
+    {
+      "class": "BOUNDARY",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "REPLAY",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "HARVEST",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "TRAVERSAL",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "DIRECTORY",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "XSS",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "REDIRECT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "CRYPTO",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "NETWORK",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "MASSASSIGN",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "INJECTION",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "SSRF",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "JWT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "AUTHN",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "SESSION",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    }
+  ]
+}

