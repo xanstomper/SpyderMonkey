@@ -1,0 +1,75 @@
+{
+  "benchmark": "spydermonkey-crossbench-rangeB",
+  "seed": 2026,
+  "classes": 8,
+  "sub_tasks": 32,
+  "completed": 31,
+  "completion_rate": 96.88,
+  "ceiling": "range B is family-built but NOT co-evolved \u2014 different codebase, different flaw shapes",
+  "results": [
+    {
+      "class": "IDOR",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "AUTHZ",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "XSS",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "SSRF",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "REDIRECT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "TRAVERSAL",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "BIZLOGIC",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 0,
+      "score": 3
+    },
+    {
+      "class": "SESSION",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    }
+  ]
+}

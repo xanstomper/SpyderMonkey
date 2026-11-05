@@ -151,7 +151,9 @@ rm -rf "$HOME/.redteam/campaigns/smoke-fix"
 if [ -f "$DOJO" ]; then
   SM_DOJO="$DOJO" python3 "$(dirname "$S")/bench_public.py" 2026 > "$HOME/bench.json" 2>/dev/null
   python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); assert d["completed"]/d["sub_tasks"] >= 0.95, d' "$HOME/bench.json"
-  rm -f "$HOME/bench.json"
+  SM_DOJO="$DOJO" python3 "$(dirname "$S")/bench_public.py" 2026 b > "$HOME/benchb.json" 2>/dev/null
+  python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); assert d["completed"]/d["sub_tasks"] >= 0.85, d' "$HOME/benchb.json"
+  rm -f "$HOME/bench.json" "$HOME/benchb.json"
 else
   echo "  (dojo engine not present — bench skipped)"
 fi

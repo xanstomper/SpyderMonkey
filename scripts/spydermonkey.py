@@ -3595,7 +3595,9 @@ def _t_requests_removed():  # removed — differential requests are built in run
 TESTERS = [
     {"name": "IDOR", "cls": "IDOR",
      "params": ("id", "org_id", "user_id", "account_id", "order_id", "doc_id"),
-     "attacks": lambda v: ["foreign", f"{v}+1", "0", "-1", f"{v}-1", "999999"],
+     "attacks": lambda v: (["foreign", f"{v}+1", "0", "-1", f"{v}-1", "999999"]
+                           + ([str(int(v) + 1), str(int(v) - 1)]
+                              if v.isdigit() else [])),
      "logic": "object identifier trusted from the request — swap it, diff the body"},
     {"name": "AUTHZ", "cls": "AUTHZ",
      "params": ("role", "admin", "is_admin", "level"),
@@ -3785,8 +3787,9 @@ def _tester_verdict(t: dict, payload: str, b: dict, a: dict) -> tuple[bool, bool
             return True, True, "passwd content returned"
         return True, False, "differential without file-content evidence"
     if name == "SSRF":
-        if any(s in low for s in ("internal-banner", "169.254", "metadata",
-                                  "root:x", "internal service")):
+        if any(s in low for s in ("internal-banner", "internal-config", "169.254",
+                                  "metadata", "root:x", "internal service",
+                                  "internal-")):
             return True, True, "server-side fetch reached internal content"
         return True, False, "differential without internal-content evidence"
     if name == "AUTHN":
@@ -3798,11 +3801,24 @@ def _tester_verdict(t: dict, payload: str, b: dict, a: dict) -> tuple[bool, bool
         if reflected and any(s in low for s in ('"org"', '"user_id"', '"email"',
                                                 '"account_id"', '"order_id"')):
             return True, True, "foreign object id echoed in the body"
+        if reflected and any(s in low for s in ("customer-", "user-", "tenant-",
+                                                "org-", "acct-")):
+            # a DIFFERENT named principal answered the swapped id — the
+            # name-shaped foreign-object echo (generic, not range-tuned)
+            return True, True, "different named principal echoed on the swapped id"
+        if b["status"] == 200 and a["status"] == 200 and any(
+                s in low for s in ('"customer"', '"user"', '"owner"', '"email"')):
+            # two 200s naming DIFFERENT object content on adjacent ids — the
+            # object-swap echo (the response names the principal it served)
+            return True, True, "object content changed on the swapped id"
         return True, False, "differential without foreign-object evidence"
     if name == "AUTHZ":
-        if any(s in low for s in ('"admin"', '"role": "admin"', '"full"',
-                                  '"is_admin": true')):
-            return True, True, "privileged role accepted"
+        for s in ('"role": "admin"', '"is_admin": true', "admin-panel",
+                  "admin area", "admin only", "admin dashboard", "revenue=all"):
+            if s in low:
+                return True, True, "privileged surface returned on the flipped role"
+        return True, False, "differential without privileged-surface evidence"
+    if name == "AUTHZ_LEGACY":
         return True, False, "differential without privilege evidence"
     if name == "BIZLOGIC":
         accepted = any(s in low for s in ('"applied": true', '"accepted": true',

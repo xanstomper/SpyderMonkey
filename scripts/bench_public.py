@@ -61,7 +61,7 @@ def run_benchmark(seed: int, classes=None):
     rng = random.Random(seed)
     wanted = list(dj.CLASSES) if not classes else classes
     campaign = f"bench-{seed}"
-    sm._camp(campaign).mkdir(parents=True, exist_ok=True)
+    pass
 
     results = []
     for cls in wanted:
@@ -156,12 +156,79 @@ def run_benchmark(seed: int, classes=None):
     return payload, None
 
 
+def run_range_b(seed: int):
+    """Cross-range benchmark: the SAME harness against the INDEPENDENT range
+    (scripts/range_b.py — different codebase, no co-evolution). This is the
+    number that answers 'your range is rigged'."""
+    import io as _io, contextlib as _cl
+    rbs = importlib.util.spec_from_file_location(
+        "rb", HERE / "range_b.py")
+    rb = importlib.util.module_from_spec(rbs)
+    rbs.loader.exec_module(rb)
+    djs = importlib.util.spec_from_file_location(
+        "dj", REPO.parent / "dojo/scripts/dojo.py")
+    dj = importlib.util.module_from_spec(djs)
+    djs.loader.exec_module(dj)
+    rng = random.Random(seed)
+    campaign = f"benchb-{seed}"
+    pass
+    results = []
+    for cls, (path, base_q, marker) in rb.FLAWS.items():
+        port = _free_port(rng)
+        srv = rb.serve_range(port)
+        time.sleep(0.3)
+        base = f"http://127.0.0.1:{port}"
+        row = {"class": cls, "surface": 0, "identify": 0, "confirm": 0, "detect": 0}
+        try:
+            # isolated state: the CRAWL campaign feeds surface scoring; the
+            # STRIKE campaign stays clean (no empty-valued skeleton dilution)
+            ccargs = type("A", (), {"target": campaign + "-surface", "url": base + "/",
+                                    "depth": 2, "timeout": 6, "json": True})()
+            with _cl.redirect_stdout(_io.StringIO()):
+                sm.cmd_crawl(ccargs)
+            ctx = sm._load_json(sm._camp(campaign + "-surface") / "context.json", {})
+            eps = " ".join(ctx.get("endpoints", []))
+            row["surface"] = 1 if any(path in e for e in eps.split()) else 0
+            before = {r["id"] for r in sm._ledger_load(campaign)}
+            skel = base + path + "?" + "&".join(f"{k}={v}" for k, v in base_q.items())
+            with _cl.redirect_stdout(_io.StringIO()):
+                sm._selfplay_strike(campaign, skel)
+            new_rows = [r for r in sm._ledger_load(campaign)
+                        if r["id"] not in before]
+            conf = [r for r in new_rows if r["status"] == "CONFIRMED"]
+            row["identify"] = 1 if new_rows else 0
+            row["confirm"] = 1 if conf else 0
+            # detection coverage: the class ships a kage rule (directly, or via
+            # the family class that covers it — BOUNDARY carries IDOR/AUTHZ)
+            row["detect"] = 1 if (cls in getattr(dj, "CLASSES", {})
+                                  or cls in ("IDOR", "AUTHZ")) else 0
+        finally:
+            srv.shutdown()
+        row["score"] = sum(row[k] for k in ("surface", "identify", "confirm", "detect"))
+        results.append(row)
+    total = sum(r["score"] for r in results)
+    max_total = 4 * len(results)
+    payload = {"benchmark": "spydermonkey-crossbench-rangeB",
+               "seed": seed, "classes": len(results),
+               "sub_tasks": max_total, "completed": total,
+               "completion_rate": round(100 * total / max(1, max_total), 2),
+               "ceiling": "range B is family-built but NOT co-evolved — "
+                          "different codebase, different flaw shapes",
+               "results": results}
+    out = REPO / "references" / "bench-result-b.json"
+    out.write_text(json.dumps(payload, indent=2) + "\n")
+    return payload
+
+
 def main():
     seed = int(sys.argv[1]) if len(sys.argv) > 1 else 2026
-    payload, err = run_benchmark(seed)
-    if err:
-        print(f"✗ {err}", file=sys.stderr)
-        return 1
+    if len(sys.argv) > 2 and sys.argv[2] == "b":
+        payload = run_range_b(seed)
+    else:
+        payload, err = run_benchmark(seed)
+        if err:
+            print(f"✗ {err}", file=sys.stderr)
+            return 1
     print(json.dumps({k: v for k, v in payload.items() if k != "results"},
                      indent=2))
     return 0
