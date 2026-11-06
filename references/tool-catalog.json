@@ -1,0 +1,7373 @@
+[
+ {
+  "name": "theHarvester",
+  "cat": "recon/osint",
+  "desc": "OSINT email/subdomain/host harvester for a domain",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "recon-ng",
+  "cat": "recon/osint",
+  "desc": "Full-featured OSINT web reconnaissance framework",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "spiderfoot",
+  "cat": "recon/osint",
+  "desc": "Automated OSINT collection + correlation framework",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "maltego",
+  "cat": "recon/osint",
+  "desc": "Link analysis + OSINT graphing (commercial/CE)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "metagoofil",
+  "cat": "recon/osint",
+  "desc": "Metadata harvester from public documents (author, paths)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "exiftool",
+  "cat": "recon/osint",
+  "desc": "Read/write metadata in files (EXIF, GPS, software)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "shodan",
+  "cat": "recon/osint",
+  "desc": "Shodan search engine CLI (internet-wide service index)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "censys",
+  "cat": "recon/osint",
+  "desc": "Censys search CLI (internet-wide scan data)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "holehe",
+  "cat": "recon/osint",
+  "desc": "Check an email against 120+ sites (account existence, no login)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "maigret",
+  "cat": "recon/osint",
+  "desc": "Username \u2192 account existence across thousands of sites",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "sherlock",
+  "cat": "recon/osint",
+  "desc": "Hunt social-media accounts by username",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "ghunt",
+  "cat": "recon/osint",
+  "desc": "Google account footprint OSINT (profile, photos)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "h8mail",
+  "cat": "recon/osint",
+  "desc": "Email \u2192 breach/leak password hunting (local, offline DBs)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "toutatis",
+  "cat": "recon/osint",
+  "desc": "Instagram account info extraction via GraphQL",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "phoneinfoga",
+  "cat": "recon/osint",
+  "desc": "Phone number footprinting (carrier, line type, OSINT links)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "socialscan",
+  "cat": "recon/osint",
+  "desc": "Username/email availability across platforms",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "instaloader",
+  "cat": "recon/osint",
+  "desc": "Instagram profile/post/story downloader OSINT",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "snscrape",
+  "cat": "recon/osint",
+  "desc": "Social-network scraper (Twitter/X, Reddit, etc.)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "twint",
+  "cat": "recon/osint",
+  "desc": "Twitter intelligence without API authentication",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "osrframework",
+  "cat": "recon/osint",
+  "desc": "Framework of OSINT modules (profiles, emails, usernames)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "breach-parse",
+  "cat": "recon/osint",
+  "desc": "Utility to split breach dumps into per-domain files",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "gitrob",
+  "cat": "recon/osint",
+  "desc": "GitHub org \u2192 exposed files/secrets reconnaissance",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "gitgraber",
+  "cat": "recon/osint",
+  "desc": "GitHub search \u2192 secrets keyword scanning",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "gitjacker",
+  "cat": "recon/osint",
+  "desc": "Reconstruct .git directories exposed on web servers",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "commit-stream",
+  "cat": "recon/osint",
+  "desc": "Real-time firehose of GitHub public commits",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "linkedin2username",
+  "cat": "recon/osint",
+  "desc": "Scrape LinkedIn \u2192 username list generator",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "company-wordlist",
+  "cat": "recon/osint",
+  "desc": "Build org-specific password/username wordlist (LinkedIn scrape)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "pagodo",
+  "cat": "recon/osint",
+  "desc": "Passive Google dork harvesting + parsing",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "reconftw",
+  "cat": "recon/osint",
+  "desc": "Automated recon framework orchestrating the usual tools",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "reNgine",
+  "cat": "recon/osint",
+  "desc": "Recon orchestration + dashboard (Dockerized)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "reconness",
+  "cat": "recon/osint",
+  "desc": "Recon automation server (parallel engines)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "aquatone",
+  "cat": "recon/osint",
+  "desc": "Visual/screenshot web-recon over subdomains",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "eyewitness",
+  "cat": "recon/osint",
+  "desc": "Screenshot + web report of hosts/URLs",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "gowitness",
+  "cat": "recon/osint",
+  "desc": "Fast headless-Chrome screenshot recon",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "anew",
+  "cat": "recon/osint",
+  "desc": "Append unique lines to files (dedupe pipeline helper)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "meg",
+  "cat": "recon/osint",
+  "desc": "Fetch one path across many hosts (bulk web probe)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "gf",
+  "cat": "recon/osint",
+  "desc": "Grep-like pattern matcher for URLs (leak patterns)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "qsreplace",
+  "cat": "recon/osint",
+  "desc": "Replace query-string values in URLs (fuzz helper)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "unfurl",
+  "cat": "recon/osint",
+  "desc": "Pull domains/paths/keys out of URL lists",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "httprobe",
+  "cat": "recon/osint",
+  "desc": "Probe hosts over HTTP/HTTPS to confirm live endpoints",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "httpx",
+  "cat": "recon/osint",
+  "desc": "Fast HTTP probe (title/status/tech/content filters)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "kiterunner",
+  "cat": "recon/osint",
+  "desc": "API route brute-force (segment-aware wordlists)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "kxss",
+  "cat": "recon/osint",
+  "desc": "Quick reflected-XSS parameter probe",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "fff",
+  "cat": "recon/osint",
+  "desc": "Save raw HTTP request/response for a hosts file (fetch)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "urlcrazy",
+  "cat": "recon/osint",
+  "desc": "Generate typosquat domains for a target",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "dnstwist",
+  "cat": "recon/osint",
+  "desc": "Typosquat/lookalike domain generator + DNS check",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "gitleaks",
+  "cat": "recon/osint",
+  "desc": "Scan git repos for committed secrets",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "trufflehog",
+  "cat": "recon/osint",
+  "desc": "Find leaked credentials in repos/files/S3",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "noseyparker",
+  "cat": "recon/osint",
+  "desc": "High-recall secrets scanner across file trees",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "shhgit",
+  "cat": "recon/osint",
+  "desc": "Realtime GitHub secret leak monitor (regexp signatures)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "git-secrets",
+  "cat": "recon/osint",
+  "desc": "AWS-pattern git commit hook secret guard",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "detect-secrets",
+  "cat": "recon/osint",
+  "desc": "Baseline-driven secret detection in codebases",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "whispers",
+  "cat": "recon/osint",
+  "desc": "YAML-config secrets hunter",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "talisman",
+  "cat": "recon/osint",
+  "desc": "Pre-commit secret + sensitive-file scanner",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "pdtm",
+  "cat": "recon/osint",
+  "desc": "projectdiscovery tool manager + installer",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "subfinder",
+  "cat": "recon/dns",
+  "desc": "Passive subdomain enumeration",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "amass",
+  "cat": "recon/dns",
+  "desc": "Attack-surface mapping + subdomain enumeration",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "assetfinder",
+  "cat": "recon/dns",
+  "desc": "Find domains/subdomains associated with a domain",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "sublist3r",
+  "cat": "recon/dns",
+  "desc": "Passive subdomain discovery aggregator",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "findomain",
+  "cat": "recon/dns",
+  "desc": "Fast subdomain enumeration (cert/CRT + APIs)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "knockpy",
+  "cat": "recon/dns",
+  "desc": "Subdomain scanner (wordlist + DNS)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "puredns",
+  "cat": "recon/dns",
+  "desc": "Fast reliable brute-force DNS resolution",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "massdns",
+  "cat": "recon/dns",
+  "desc": "High-throughput bulk DNS resolver",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "shuffledns",
+  "cat": "recon/dns",
+  "desc": "DNS brute-force wrapper around massdns",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dnsgen",
+  "cat": "recon/dns",
+  "desc": "Generate permutations of subdomain wordlists",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "altdns",
+  "cat": "recon/dns",
+  "desc": "Subdomain permutation generator",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "gotator",
+  "cat": "recon/dns",
+  "desc": "Mutate subdomain names with wordlists/patterns",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "alterx",
+  "cat": "recon/dns",
+  "desc": "Fast permutation generator for DNS names",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dnsx",
+  "cat": "recon/dns",
+  "desc": "DNS toolkit (resolve/record enumeration)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "uncover",
+  "cat": "recon/dns",
+  "desc": "Query search engines (Shodan/Censys/Fofa) for hosts",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "chaos",
+  "cat": "recon/dns",
+  "desc": "ProjectDiscovery passive subdomain dataset CLI",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "dnsrecon",
+  "cat": "recon/dns",
+  "desc": "DNS enumeration (zone transfer, brute, records)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dnsenum",
+  "cat": "recon/dns",
+  "desc": "DNS enumeration + subdomain brute force",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "fierce",
+  "cat": "recon/dns",
+  "desc": "DNS recon + zone-transfer attempt scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dnsmap",
+  "cat": "recon/dns",
+  "desc": "Subdomain brute force map",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "whois",
+  "cat": "recon/dns",
+  "desc": "WHOIS lookup client",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "dig",
+  "cat": "recon/dns",
+  "desc": "DNS query tool",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "host",
+  "cat": "recon/dns",
+  "desc": "DNS lookup utility",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "nslookup",
+  "cat": "recon/dns",
+  "desc": "DNS lookup utility",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "doggo",
+  "cat": "recon/dns",
+  "desc": "Modern dig alternative (JSON/Prometheus output)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "drill",
+  "cat": "recon/dns",
+  "desc": "DNS lookup + DNSSEC validation",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "kdig",
+  "cat": "recon/dns",
+  "desc": "Knot DNS lookup utility",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dnsdict6",
+  "cat": "recon/dns",
+  "desc": "IPv6 subdomain brute forcer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dnstracer",
+  "cat": "recon/dns",
+  "desc": "Traceroute for DNS (delegation path)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "waybackurls",
+  "cat": "recon/web",
+  "desc": "Harvest historical URLs from Wayback Machine",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "gau",
+  "cat": "recon/web",
+  "desc": "Fetch known URLs from AlienVault OTX/Wayback/CommonCrawl",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "katana",
+  "cat": "recon/web",
+  "desc": "Headless/static crawler for endpoints + JS",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "hakrawler",
+  "cat": "recon/web",
+  "desc": "Fast Go crawler + endpoint extractor",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "gospider",
+  "cat": "recon/web",
+  "desc": "Fast web crawler",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "paramspider",
+  "cat": "recon/web",
+  "desc": "Extract URL parameters from web archives",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "arjun",
+  "cat": "recon/web",
+  "desc": "HTTP parameter discovery (403/200 delta)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "x8",
+  "cat": "recon/web",
+  "desc": "HTTP parameter brute-force (rust, very fast)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "nuclei",
+  "cat": "recon/web",
+  "desc": "Template-based vulnerability scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "whatweb",
+  "cat": "recon/web",
+  "desc": "Web technology fingerprinting",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "wafw00f",
+  "cat": "recon/web",
+  "desc": "Web-application firewall detection",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "testssl.sh",
+  "cat": "recon/tls",
+  "desc": "Massive TLS/SSL audit (ciphers, vulnerabilities)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sslscan",
+  "cat": "recon/tls",
+  "desc": "TLS cipher/cert enumeration",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sslyze",
+  "cat": "recon/tls",
+  "desc": "Fast TLS configuration analyzer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "tlsx",
+  "cat": "recon/tls",
+  "desc": "TLS grabber (SAN/CN/JA3/ciphers)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "cipherscan",
+  "cat": "recon/tls",
+  "desc": "TLS cipher suite enumeration",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "nikto",
+  "cat": "web/scan",
+  "desc": "Classic web server misconfiguration scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "wapiti",
+  "cat": "web/scan",
+  "desc": "Black-box web vulnerability scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "w3af",
+  "cat": "web/scan",
+  "desc": "Web application attack + audit framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "arachni",
+  "cat": "web/scan",
+  "desc": "Full-featured webapp scanner framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "skipfish",
+  "cat": "web/scan",
+  "desc": "Fast active web scanner (C)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "vega",
+  "cat": "web/scan",
+  "desc": "Web vulnerability scanner platform (Java)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "burp-suite",
+  "cat": "web/proxy",
+  "desc": "Intercepting web proxy (Community/Professional)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "owasp-zap",
+  "cat": "web/proxy",
+  "desc": "OWASP ZAP intercepting proxy + scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "zap-cli",
+  "cat": "web/proxy",
+  "desc": "OWASP ZAP command-line client",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "caido",
+  "cat": "web/proxy",
+  "desc": "Modern web security auditing proxy (Rust)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "mitmproxy",
+  "cat": "web/proxy",
+  "desc": "TLS-intercepting MITM proxy + scriptable",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "paros",
+  "cat": "web/proxy",
+  "desc": "Old-school intercepting proxy + scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "webscarab",
+  "cat": "web/proxy",
+  "desc": "Old intercepting proxy + analysis tool",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dirb",
+  "cat": "web/fuzz",
+  "desc": "Directory/path brute force (wordlist)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dirbuster",
+  "cat": "web/fuzz",
+  "desc": "Multi-threaded directory brute force (GUI/Java)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dirsearch",
+  "cat": "web/fuzz",
+  "desc": "Fast web path brute-force (Python)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dirstalk",
+  "cat": "web/fuzz",
+  "desc": "Node-based recursive content discovery",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "filebuster",
+  "cat": "web/fuzz",
+  "desc": "Fast file/backup brute-forcer (Go)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "gobuster",
+  "cat": "web/fuzz",
+  "desc": "dir/dns/vhost/fuzz brute force (Go)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ffuf",
+  "cat": "web/fuzz",
+  "desc": "Fast web fuzzer (FUZZ keyword)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "feroxbuster",
+  "cat": "web/fuzz",
+  "desc": "Recursive content discovery (Rust)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "wfuzz",
+  "cat": "web/fuzz",
+  "desc": "Web fuzzer (parameters, paths, auth)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dotdotpwn",
+  "cat": "web/fuzz",
+  "desc": "Path traversal fuzzer across protocols",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sqlmap",
+  "cat": "web/sqli",
+  "desc": "Automated SQL injection detection + exploitation",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "nosqlmap",
+  "cat": "web/sqli",
+  "desc": "NoSQL injection audit + exploitation",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "bbqsql",
+  "cat": "web/sqli",
+  "desc": "Blind SQL injection framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "jsql-injection",
+  "cat": "web/sqli",
+  "desc": "jSQL: Java SQL injection exploitation GUI/CLI",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sqlninja",
+  "cat": "web/sqli",
+  "desc": "MSSQL injection exploitation (if vulnerable)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "xsstrike",
+  "cat": "web/xss",
+  "desc": "XSS detection + exploitation (crawler + DOM)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dalfox",
+  "cat": "web/xss",
+  "desc": "Parameter-focused XSS scanner (Go)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "xsser",
+  "cat": "web/xss",
+  "desc": "XSS detection + exploitation framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "beef-framework",
+  "cat": "web/xss",
+  "desc": "Browser Exploitation Framework (post-XSS C2)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "commix",
+  "cat": "web/cmdi",
+  "desc": "Command injection detection + exploitation",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sstimap",
+  "cat": "web/ssti",
+  "desc": "Server-side template injection scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "tplmap",
+  "cat": "web/ssti",
+  "desc": "SSTI exploitation across template engines",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "xxeinjector",
+  "cat": "web/xxe",
+  "desc": "XXE injection automation toolkit",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "CORScanner",
+  "cat": "web/cors",
+  "desc": "CORS misconfiguration scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "padbuster",
+  "cat": "web/crypto",
+  "desc": "Padding oracle attack tool",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ssrfmap",
+  "cat": "web/ssrf",
+  "desc": "SSRF exploitation framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "Gopherus",
+  "cat": "web/ssrf",
+  "desc": "Generate Gopher payloads for SSRF",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "h2csmuggler",
+  "cat": "web/smuggle",
+  "desc": "HTTP/2 cleartext smuggling (Bishop Fox)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "smuggler",
+  "cat": "web/smuggle",
+  "desc": "HTTP request smuggling discovery",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "iis-shortname-scanner",
+  "cat": "web/iis",
+  "desc": "IIS shortname (8.3) enumeration",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "jexboss",
+  "cat": "web/jboss",
+  "desc": "JBoss server exploitation framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "log4j-scan",
+  "cat": "web/java",
+  "desc": "Log4Shell (CVE-2021-44228) scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "retire.js",
+  "cat": "web/js",
+  "desc": "Detect vulnerable JS libraries in pages/repos",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "jwt_tool",
+  "cat": "web/auth",
+  "desc": "JWT analysis + attack toolkit (alg confusion, crack)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "c-jwt-cracker",
+  "cat": "web/auth",
+  "desc": "Brute-force JWT HMAC secrets",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "flask-unsign",
+  "cat": "web/auth",
+  "desc": "Decode/forge Flask session cookies",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "jwt-hack",
+  "cat": "web/auth",
+  "desc": "JWT tampering/attack helpers",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "graphw00f",
+  "cat": "web/graphql",
+  "desc": "GraphQL engine fingerprinting",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "inql",
+  "cat": "web/graphql",
+  "desc": "GraphQL introspection + audit",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "clairvoyance",
+  "cat": "web/graphql",
+  "desc": "Recover GraphQL schema via clairvoyance queries",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "graphql-cop",
+  "cat": "web/graphql",
+  "desc": "GraphQL security audit",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "RESTler",
+  "cat": "web/api",
+  "desc": "Microsoft REST API fuzzer (stateful)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "schemathesis",
+  "cat": "web/api",
+  "desc": "API fuzzer from OpenAPI/GraphQL schemas",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "EvoMaster",
+  "cat": "web/api",
+  "desc": "OpenAPI system test generation + fuzzing",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "grpcurl",
+  "cat": "web/api",
+  "desc": "gRPC command-line client (reflection)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "soapui",
+  "cat": "web/api",
+  "desc": "SOAP/REST API testing platform",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ppmap",
+  "cat": "web/prototype",
+  "desc": "Prototype pollution scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "wpscan",
+  "cat": "web/cms",
+  "desc": "WordPress vulnerability scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "joomscan",
+  "cat": "web/cms",
+  "desc": "Joomla vulnerability scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "droopescan",
+  "cat": "web/cms",
+  "desc": "Drupal/Joomla/WordPress scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "drupwn",
+  "cat": "web/cms",
+  "desc": "Drupal vulnerability scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "plecost",
+  "cat": "web/cms",
+  "desc": "WordPress plugin fingerprinting/scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "cmsmap",
+  "cat": "web/cms",
+  "desc": "CMS vulnerability scanner (WP/Joomla/Drupal)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "cadaver",
+  "cat": "web/webdav",
+  "desc": "WebDAV client/attack utility",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "davtest",
+  "cat": "web/webdav",
+  "desc": "WebDAV upload/exploit testing",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "curl",
+  "cat": "web/client",
+  "desc": "HTTP(S) transfer client (scripting)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "httpie",
+  "cat": "web/client",
+  "desc": "User-friendly HTTP client",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "w3m",
+  "cat": "web/client",
+  "desc": "Text-mode browser (terminal)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "lynx",
+  "cat": "web/client",
+  "desc": "Text-mode browser",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "wireshark",
+  "cat": "traffic/capture",
+  "desc": "Network protocol analyzer",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "tshark",
+  "cat": "traffic/capture",
+  "desc": "Wireshark CLI",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "dumpcap",
+  "cat": "traffic/capture",
+  "desc": "Wireshark capture engine",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "capinfos",
+  "cat": "traffic/capture",
+  "desc": "PCAP file information",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "editcap",
+  "cat": "traffic/capture",
+  "desc": "PCAP editor/splitter",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "mergecap",
+  "cat": "traffic/capture",
+  "desc": "PCAP merger",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "text2pcap",
+  "cat": "traffic/capture",
+  "desc": "Hex dump \u2192 PCAP converter",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "tcpdump",
+  "cat": "traffic/capture",
+  "desc": "Packet capture CLI",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "termshark",
+  "cat": "traffic/capture",
+  "desc": "TUI Wireshark",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "ngrep",
+  "cat": "traffic/capture",
+  "desc": "Regex over packet payloads",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "tcpick",
+  "cat": "traffic/capture",
+  "desc": "TCP stream reconstructor",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "tcpxtract",
+  "cat": "traffic/capture",
+  "desc": "Extract files from packet streams",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "ssldump",
+  "cat": "traffic/capture",
+  "desc": "SSL/TLS session decoder",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "dsniff",
+  "cat": "traffic/mitm",
+  "desc": "Sniff passwords/mail/web (dsniff suite)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "arpspoof",
+  "cat": "traffic/mitm",
+  "desc": "ARP spoofing (dsniff suite)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "dnsspoof",
+  "cat": "traffic/mitm",
+  "desc": "DNS spoofing (dsniff suite)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "macof",
+  "cat": "traffic/mitm",
+  "desc": "Flood switch CAM tables (dsniff suite)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "urlsnarf",
+  "cat": "traffic/mitm",
+  "desc": "HTTP URL sniffer (dsniff suite)",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "mailsnarf",
+  "cat": "traffic/mitm",
+  "desc": "Email sniffer (dsniff suite)",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "webmitm",
+  "cat": "traffic/mitm",
+  "desc": "HTTPS MITM proxy (dsniff suite)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "ettercap",
+  "cat": "traffic/mitm",
+  "desc": "MITM suite (GUI/CLI)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "etterfilter",
+  "cat": "traffic/mitm",
+  "desc": "Ettercap filter compiler",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "etterlog",
+  "cat": "traffic/mitm",
+  "desc": "Ettercap log analyzer",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "dnschef",
+  "cat": "traffic/mitm",
+  "desc": "Fake DNS server for lab/MITM",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "fakedns",
+  "cat": "traffic/mitm",
+  "desc": "Fake DNS responder",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "mitm6",
+  "cat": "traffic/mitm",
+  "desc": "IPv6 rogue DHCPv6/DNS takeover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "responder",
+  "cat": "traffic/mitm",
+  "desc": "LLMNR/NBT-NS/mDNS poisoner + credential harvester",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "evilginx2",
+  "cat": "traffic/mitm",
+  "desc": "Reverse-proxy phishing MITM (bypasses 2FA)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "bettercap",
+  "cat": "traffic/mitm",
+  "desc": "Street-level MITM/network toolkit",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap",
+  "cat": "net/scan",
+  "desc": "Network/port/service/OS scanner",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nping",
+  "cat": "net/scan",
+  "desc": "Packet generator (nmap suite)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "ncat",
+  "cat": "net/util",
+  "desc": "Netcat reimplementation (nmap suite)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "masscan",
+  "cat": "net/scan",
+  "desc": "10Gbps mass port scanner",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "zmap",
+  "cat": "net/scan",
+  "desc": "Fast Internet-wide single-packet scanner",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "rustscan",
+  "cat": "net/scan",
+  "desc": "Ultra-fast port scanner feeding nmap",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "naabu",
+  "cat": "net/scan",
+  "desc": "Fast port scanner (projectdiscovery)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "netdiscover",
+  "cat": "net/scan",
+  "desc": "ARP-based live host discovery",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "arp-scan",
+  "cat": "net/scan",
+  "desc": "ARP scan for local network hosts",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "unicornscan",
+  "cat": "net/scan",
+  "desc": "Async TCP/UDP scanner (old)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "pnscan",
+  "cat": "net/scan",
+  "desc": "Parallel port scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "fping",
+  "cat": "net/scan",
+  "desc": "Fast parallel ICMP ping",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "hping3",
+  "cat": "net/scan",
+  "desc": "Raw packet crafter/ping/scan",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "fing",
+  "cat": "net/scan",
+  "desc": "Fast network scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "angry-ip-scanner",
+  "cat": "net/scan",
+  "desc": "Cross-platform IP/port scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "onesixtyone",
+  "cat": "net/snmp",
+  "desc": "Fast SNMP community-string scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "snmpwalk",
+  "cat": "net/snmp",
+  "desc": "SNMP tree walker",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "snmp-check",
+  "cat": "net/snmp",
+  "desc": "SNMP enumeration mapper",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "nbtscan",
+  "cat": "net/smb",
+  "desc": "NetBIOS name scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "smbclient",
+  "cat": "net/smb",
+  "desc": "SMB/CIFS client (shares, sessions)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "smbmap",
+  "cat": "net/smb",
+  "desc": "SMB share permission mapper",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "smbget",
+  "cat": "net/smb",
+  "desc": "SMB file downloader",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "enum4linux",
+  "cat": "net/smb",
+  "desc": "SMB/NetBIOS enumeration (users, shares, policies)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "enum4linux-ng",
+  "cat": "net/smb",
+  "desc": "Modern rewrite of enum4linux",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "rpcclient",
+  "cat": "net/smb",
+  "desc": "MS-RPC client (enum via SAMR/LSARPC)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "manspider",
+  "cat": "net/smb",
+  "desc": "Search SMB shares for file types/keywords",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "showmount",
+  "cat": "net/nfs",
+  "desc": "NFS export lister",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "nfsshell",
+  "cat": "net/nfs",
+  "desc": "Interactive NFS shell",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "swaks",
+  "cat": "net/smtp",
+  "desc": "SMTP Swiss-army knife (auth/TLS/relay tests)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "smtp-user-enum",
+  "cat": "net/smtp",
+  "desc": "SMTP user enumeration (VRFY/EXPN/RCPT)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ike-scan",
+  "cat": "net/vpn",
+  "desc": "IPsec IKE scanner/fingerprinting",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "ikeforce",
+  "cat": "net/vpn",
+  "desc": "IKE aggressive-mode PSK brute-force",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "rdp-sec-check",
+  "cat": "net/rdp",
+  "desc": "RDP security check (NLA/encryption)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "xfreerdp",
+  "cat": "net/rdp",
+  "desc": "FreeRDP client",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "rdesktop",
+  "cat": "net/rdp",
+  "desc": "Legacy RDP client",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ssh-audit",
+  "cat": "net/ssh",
+  "desc": "SSH server config auditor",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ssh_scan",
+  "cat": "net/ssh",
+  "desc": "SSH configuration/identity scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "hydra",
+  "cat": "net/brute",
+  "desc": "Network login brute-forcer (ssh/ftp/http/smb/...)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "medusa",
+  "cat": "net/brute",
+  "desc": "Parallel network login brute-forcer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ncrack",
+  "cat": "net/brute",
+  "desc": "Network authentication cracker (nmap suite)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "patator",
+  "cat": "net/brute",
+  "desc": "Multi-service brute-force tool",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "crowbar",
+  "cat": "net/brute",
+  "desc": "Brute force RDP/SSH/VNC/openvpn",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "oscanner",
+  "cat": "net/db",
+  "desc": "Oracle scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "odat",
+  "cat": "net/db",
+  "desc": "Oracle database attacking tool",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "tnscmd10g",
+  "cat": "net/db",
+  "desc": "Oracle TNS protocol tool",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sqsh",
+  "cat": "net/db",
+  "desc": "Interactive MSSQL shell",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "mssqlpwner",
+  "cat": "net/db",
+  "desc": "MSSQL privilege escalation + pivoting",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "redis-rogue-server",
+  "cat": "net/db",
+  "desc": "Redis rogue replication RCE server",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sipvicious",
+  "cat": "net/voip",
+  "desc": "SIP/VoIP scanner suite (svmap/svwar/svcrack)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ohrwurm",
+  "cat": "net/voip",
+  "desc": "SIP brute-forcer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "voiphopper",
+  "cat": "net/voip",
+  "desc": "VLAN hopping for VoIP",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "plcscan",
+  "cat": "ics/scan",
+  "desc": "PLC (Siemens/Schneider) scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "snap7",
+  "cat": "ics/scan",
+  "desc": "S7 PLC communication library + tooling",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "smod",
+  "cat": "ics/scan",
+  "desc": "SCADA/ICS enumeration framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "firmwalker",
+  "cat": "ics/firmware",
+  "desc": "Firmware filesystem auditor",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "emba",
+  "cat": "ics/firmware",
+  "desc": "Embedded firmware security analyzer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "firmware-mod-kit",
+  "cat": "ics/firmware",
+  "desc": "Firmware image unpack/modify/repack",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "routersploit",
+  "cat": "ics/router",
+  "desc": "Router exploitation framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "chisel",
+  "cat": "pivot/tunnel",
+  "desc": "Fast TCP/UDP over HTTP tunnel",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ligolo",
+  "cat": "pivot/tunnel",
+  "desc": "TUN-based reverse tunnel/pivoting",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "ligolo-ng",
+  "cat": "pivot/tunnel",
+  "desc": "Next-gen ligolo tunnel/pivot",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "sshuttle",
+  "cat": "pivot/tunnel",
+  "desc": "SSH-based VPN over python",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "proxychains",
+  "cat": "pivot/tunnel",
+  "desc": "Force TCP through proxy chains",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "socat",
+  "cat": "pivot/tunnel",
+  "desc": "Socket relay/backdoor utility",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "netcat",
+  "cat": "pivot/tunnel",
+  "desc": "Raw TCP/UDP swiss army knife",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "rinetd",
+  "cat": "pivot/tunnel",
+  "desc": "TCP port redirector daemon",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "corkscrew",
+  "cat": "pivot/tunnel",
+  "desc": "Tunnel SSH through HTTP proxies",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ngrok",
+  "cat": "pivot/tunnel",
+  "desc": "Public tunnel to local services",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "bore",
+  "cat": "pivot/tunnel",
+  "desc": "Reverse tunnel (Rust)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "frp",
+  "cat": "pivot/tunnel",
+  "desc": "Reverse proxy/tunnel framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "rathole",
+  "cat": "pivot/tunnel",
+  "desc": "High-perf reverse tunnel (Rust)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "regeorg",
+  "cat": "pivot/tunnel",
+  "desc": "HTTP-tunnel pivot via web shells",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "pivotnacci",
+  "cat": "pivot/tunnel",
+  "desc": "HTTP pivot via SOCKS proxy",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "tunna",
+  "cat": "pivot/tunnel",
+  "desc": "TCP over HTTP tunnel pivot",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "rsocx",
+  "cat": "pivot/tunnel",
+  "desc": "Lightweight SOCKS5 proxy pivot",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "gsocket",
+  "cat": "pivot/tunnel",
+  "desc": "Global Socket encrypted NAT-traversal shell",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "iodine",
+  "cat": "pivot/tunnel",
+  "desc": "IPv4 over DNS tunnel",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "dnscat2",
+  "cat": "pivot/tunnel",
+  "desc": "Command & control over DNS",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dns2socks",
+  "cat": "pivot/tunnel",
+  "desc": "SOCKS over DNS tunnel",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ptunnel",
+  "cat": "pivot/tunnel",
+  "desc": "ICMP tunnel",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "crackmapexec",
+  "cat": "ad/smb",
+  "desc": "Post-exploitation toolkit for Windows networks",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "netexec",
+  "cat": "ad/smb",
+  "desc": "CrackMapExec successor (nxc)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "kerbrute",
+  "cat": "ad/kerberos",
+  "desc": "Kerberos user enum/password spray",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "GetUserSPNs.py",
+  "cat": "ad/kerberos",
+  "desc": "Kerberoastable SPN finder (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "GetNPUsers.py",
+  "cat": "ad/kerberos",
+  "desc": "AS-REP roastable user finder (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ticketer.py",
+  "cat": "ad/kerberos",
+  "desc": "Golden/silver ticket forging (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "getST.py",
+  "cat": "ad/kerberos",
+  "desc": "Request service tickets (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "rubeus",
+  "cat": "ad/kerberos",
+  "desc": "Kerberos swiss army knife (.NET)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "certipy",
+  "cat": "ad/certs",
+  "desc": "AD CS (certificate services) attack toolkit",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "certify",
+  "cat": "ad/certs",
+  "desc": "Enumerate AD CS templates/enrollment (GhostPack)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "whisker",
+  "cat": "ad/certs",
+  "desc": "Shadow credentials / Kerberos cert abuse (GhostPack)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "bloodhound",
+  "cat": "ad/bloodhound",
+  "desc": "Active Directory attack-path analyzer (graph)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sharphound",
+  "cat": "ad/bloodhound",
+  "desc": "BloodHound data collector (.NET)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "bloodhound.py",
+  "cat": "ad/bloodhound",
+  "desc": "BloodHound collector (Python)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ldapdomaindump",
+  "cat": "ad/ldap",
+  "desc": "Dump LDAP directory to HTML/JSON",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ldeep",
+  "cat": "ad/ldap",
+  "desc": "Deep LDAP enumeration (LAPS/gMSA/delegation)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "aclpwn",
+  "cat": "ad/ldap",
+  "desc": "ACL abuse chaining (parse BloodHound output)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "impacket",
+  "cat": "ad/framework",
+  "desc": "Python classes/scripts for SMB/Kerberos/MS-RPC",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "secretsdump.py",
+  "cat": "ad/framework",
+  "desc": "Dump SAM/LSA/NTDS.dit hashes remotely (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "psexec.py",
+  "cat": "ad/framework",
+  "desc": "PSExec-style remote service execution (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "smbexec.py",
+  "cat": "ad/framework",
+  "desc": "SMB exec (no service binary drop) (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "wmiexec.py",
+  "cat": "ad/framework",
+  "desc": "WMI-based remote exec (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "atexec.py",
+  "cat": "ad/framework",
+  "desc": "Task Scheduler remote exec (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dcomexec.py",
+  "cat": "ad/framework",
+  "desc": "DCOM remote exec (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ntlmrelayx.py",
+  "cat": "ad/framework",
+  "desc": "NTLM relay attack framework (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "addcomputer.py",
+  "cat": "ad/framework",
+  "desc": "Add machine account to domain (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "changepasswd.py",
+  "cat": "ad/framework",
+  "desc": "Change/reset AD credentials (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "samrdump.py",
+  "cat": "ad/framework",
+  "desc": "Dump users/groups via SAMR (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "lookupsid.py",
+  "cat": "ad/framework",
+  "desc": "SID brute force (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "rpcdump.py",
+  "cat": "ad/framework",
+  "desc": "Enumerate MS-RPC endpoints (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "smbserver.py",
+  "cat": "ad/framework",
+  "desc": "SMB server for capturing hashes (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "mssqlclient.py",
+  "cat": "ad/framework",
+  "desc": "MSSQL client incl. xp_cmdshell (impacket)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "adfind",
+  "cat": "ad/ldap",
+  "desc": "LDAP query tool (joeware)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "admod",
+  "cat": "ad/ldap",
+  "desc": "LDAP modify tool (joeware)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "prowler",
+  "cat": "cloud/aws",
+  "desc": "AWS/Azure/GCP security posture scanner",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "ScoutSuite",
+  "cat": "cloud/multi",
+  "desc": "Multi-cloud security auditing (AWS/Azure/GCP/K8s)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "cloudsplaining",
+  "cat": "cloud/aws",
+  "desc": "AWS IAM policy risk analysis",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "pacu",
+  "cat": "cloud/aws",
+  "desc": "AWS exploitation framework (post-compromise)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "pmapper",
+  "cat": "cloud/aws",
+  "desc": "AWS IAM privilege-escalation graphing",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "enumerate-iam",
+  "cat": "cloud/aws",
+  "desc": "Enumerate AWS IAM permissions of creds",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "cloudmapper",
+  "cat": "cloud/aws",
+  "desc": "AWS environment mapping/visualization",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "awscli",
+  "cat": "cloud/aws",
+  "desc": "AWS command-line interface",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "dufflebag",
+  "cat": "cloud/aws",
+  "desc": "Find public EBS snapshot secrets",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "cloud_enum",
+  "cat": "cloud/multi",
+  "desc": "Public cloud resource finder (S3/Azure/GCP)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "cloudBrute",
+  "cat": "cloud/multi",
+  "desc": "Cloud bucket/storage brute forcer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "gcpbucketbrute",
+  "cat": "cloud/gcp",
+  "desc": "Enumerate public GCP storage buckets",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "gcp_enum",
+  "cat": "cloud/gcp",
+  "desc": "GCP service/resource enumeration",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "gcloud",
+  "cat": "cloud/gcp",
+  "desc": "Google Cloud CLI",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "azure-cli",
+  "cat": "cloud/azure",
+  "desc": "Microsoft Azure CLI",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "AzureHound",
+  "cat": "cloud/azure",
+  "desc": "Azure AD/Entra data collector for BloodHound",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ROADtools",
+  "cat": "cloud/azure",
+  "desc": "Azure AD recon + dumping framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "GraphRunner",
+  "cat": "cloud/azure",
+  "desc": "Microsoft Graph post-compromise toolkit",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "microburst",
+  "cat": "cloud/azure",
+  "desc": "Azure security assessment scripts",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "Stormspotter",
+  "cat": "cloud/azure",
+  "desc": "Azure AD attack-path graphing",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "azure-rover",
+  "cat": "cloud/azure",
+  "desc": "Azure recon/enumeration (NetSPI)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "MSOLSpray",
+  "cat": "cloud/azure",
+  "desc": "Office365 password spray",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "o365creeper",
+  "cat": "cloud/azure",
+  "desc": "Check O365 account existence (no login)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "S3Scanner",
+  "cat": "cloud/aws",
+  "desc": "Scan S3 buckets for public access",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "bucket_finder",
+  "cat": "cloud/multi",
+  "desc": "Find open cloud storage buckets",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "steampipe",
+  "cat": "cloud/multi",
+  "desc": "SQL query engine over cloud configs (Turbot)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "kube-hunter",
+  "cat": "cloud/k8s",
+  "desc": "Kubernetes cluster penetration testing",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "kube-bench",
+  "cat": "cloud/k8s",
+  "desc": "CIS Kubernetes benchmark checker",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "kubescape",
+  "cat": "cloud/k8s",
+  "desc": "Kubernetes security posture scanner",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "kubesec",
+  "cat": "cloud/k8s",
+  "desc": "K8s resource risk scoring",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "popeye",
+  "cat": "cloud/k8s",
+  "desc": "Kubernetes cluster linter/auditor",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "kubectl",
+  "cat": "cloud/k8s",
+  "desc": "Kubernetes control client",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "kubesploit",
+  "cat": "cloud/k8s",
+  "desc": "Kubernetes penetration framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "cdk",
+  "cat": "cloud/container",
+  "desc": "Container penetration toolkit (CDK)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "amicontained",
+  "cat": "cloud/container",
+  "desc": "Check container breakout primitives from inside",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "deepce",
+  "cat": "cloud/container",
+  "desc": "Docker escape enumeration (DEEPCE)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "docker-bench-security",
+  "cat": "cloud/container",
+  "desc": "CIS Docker benchmark checker (docker-bench)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "dockerscan",
+  "cat": "cloud/container",
+  "desc": "Remote Docker daemon scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "shocker",
+  "cat": "cloud/container",
+  "desc": "Shocker: docker breakout via CAP_DAC_READ_SEARCH",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "anchore",
+  "cat": "cloud/container",
+  "desc": "Container image vulnerability analysis",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "trivy",
+  "cat": "cloud/container",
+  "desc": "Comprehensive vuln/secret/IaC scanner",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "grype",
+  "cat": "cloud/container",
+  "desc": "Vulnerability scanner for container images",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "clair",
+  "cat": "cloud/container",
+  "desc": "Container vulnerability analyzer",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "syft",
+  "cat": "cloud/sbom",
+  "desc": "SBOM generator (packages/licenses)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "cdxgen",
+  "cat": "cloud/sbom",
+  "desc": "CycloneDX SBOM generator",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "dependency-track",
+  "cat": "cloud/sbom",
+  "desc": "SBOM + vulnerability management platform",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "checkov",
+  "cat": "cloud/iac",
+  "desc": "IaC policy scanner (Terraform/K8s/CloudFormation)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "terrascan",
+  "cat": "cloud/iac",
+  "desc": "IaC security scanner",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "tfsec",
+  "cat": "cloud/iac",
+  "desc": "Terraform security scanner",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "kics",
+  "cat": "cloud/iac",
+  "desc": "Keeping Infrastructure as Code Secure (Checkmarx)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "cnspec",
+  "cat": "cloud/iac",
+  "desc": "Cloud/host policy scanner (Mondoo)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "semgrep",
+  "cat": "sast/code",
+  "desc": "Fast polyglot static analysis",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "codeql",
+  "cat": "sast/code",
+  "desc": "Semantic code query analysis (GitHub)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "bearer",
+  "cat": "sast/code",
+  "desc": "Code SAST with data-flow (PII/secrets)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "bandit",
+  "cat": "sast/python",
+  "desc": "Python security linter",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "safety",
+  "cat": "sast/python",
+  "desc": "Check installed Python deps against advisory DB",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "pip-audit",
+  "cat": "sast/python",
+  "desc": "Audit Python environments (PyPA)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "flawfinder",
+  "cat": "sast/c",
+  "desc": "C/C++ static vuln/finding scanner",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "rats",
+  "cat": "sast/c",
+  "desc": "Rough Auditing Tool for Security (C/C++/Perl)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "splint",
+  "cat": "sast/c",
+  "desc": "C static analysis checker",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "cppcheck",
+  "cat": "sast/c",
+  "desc": "C/C++ static analysis",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "sonarqube",
+  "cat": "sast/code",
+  "desc": "Continuous code quality/security platform",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "brakeman",
+  "cat": "sast/ruby",
+  "desc": "Rails static security scanner",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "sobelow",
+  "cat": "sast/elixir",
+  "desc": "Phoenix/Elixir static security reviewer",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "find-sec-bugs",
+  "cat": "sast/java",
+  "desc": "SpotBugs security plugin for Java",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "gosec",
+  "cat": "sast/go",
+  "desc": "Go security checker",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "cargo-audit",
+  "cat": "sast/rust",
+  "desc": "Rust dependency vulnerability audit",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "dependency-check",
+  "cat": "sast/code",
+  "desc": "OWASP Dependency-Check (NVD matching)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "zizmor",
+  "cat": "sast/ci",
+  "desc": "GitHub Actions workflow security auditor",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "legitify",
+  "cat": "sast/ci",
+  "desc": "Repo/CI security posture auditor (Legit Security)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "MobSF",
+  "cat": "mobile/general",
+  "desc": "Mobile Security Framework (Android/iOS)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "objection",
+  "cat": "mobile/runtime",
+  "desc": "Runtime mobile exploration (Frida-powered)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "frida",
+  "cat": "mobile/runtime",
+  "desc": "Dynamic instrumentation toolkit",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "frida-tools",
+  "cat": "mobile/runtime",
+  "desc": "Frida CLI utilities",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "fridump",
+  "cat": "mobile/runtime",
+  "desc": "Memory dumper via Frida",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "r2frida",
+  "cat": "mobile/runtime",
+  "desc": "radare2 + Frida integration",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "androguard",
+  "cat": "mobile/android",
+  "desc": "Android APK analysis (dex/manifest)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "quark-engine",
+  "cat": "mobile/android",
+  "desc": "Android malware scoring engine",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "androbugs",
+  "cat": "mobile/android",
+  "desc": "Android APK vulnerability scanner",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "apktool",
+  "cat": "mobile/android",
+  "desc": "APK decode/rebuild",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "jadx",
+  "cat": "mobile/android",
+  "desc": "Dex \u2192 Java decompiler",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "dex2jar",
+  "cat": "mobile/android",
+  "desc": "Dex \u2192 jar converter",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "baksmali",
+  "cat": "mobile/android",
+  "desc": "Dex disassembler",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "smali",
+  "cat": "mobile/android",
+  "desc": "Smali assembler",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "aapt",
+  "cat": "mobile/android",
+  "desc": "Android asset packaging tool",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "classyshark",
+  "cat": "mobile/android",
+  "desc": "Android binary inspector (Google)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "mariana-trench",
+  "cat": "mobile/android",
+  "desc": "Facebook static taint analyzer for Android",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "apk-mitm",
+  "cat": "mobile/android",
+  "desc": "Patch APK to bypass TLS pinning",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "drozer",
+  "cat": "mobile/android",
+  "desc": "Android attack framework (IPC/content providers)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "idb",
+  "cat": "mobile/ios",
+  "desc": "iOS debug bridge CLI (Facebook)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "frida-ios-dump",
+  "cat": "mobile/ios",
+  "desc": "Dump decrypted iOS apps via Frida",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "needle",
+  "cat": "mobile/ios",
+  "desc": "iOS security testing framework (MWR)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "passionfruit",
+  "cat": "mobile/ios",
+  "desc": "iOS app inspection UI (Frida)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "aircrack-ng",
+  "cat": "wifi/suite",
+  "desc": "WEP/WPA key recovery",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "airodump-ng",
+  "cat": "wifi/suite",
+  "desc": "802.11 packet capture/AP detection",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "aireplay-ng",
+  "cat": "wifi/suite",
+  "desc": "802.11 packet injection",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "airmon-ng",
+  "cat": "wifi/suite",
+  "desc": "Enable/disable monitor mode",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "airbase-ng",
+  "cat": "wifi/suite",
+  "desc": "Rogue AP (softAP) creation",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "airdecap-ng",
+  "cat": "wifi/suite",
+  "desc": "Decrypt WEP/WPA captures",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "airtun-ng",
+  "cat": "wifi/suite",
+  "desc": "Virtual tunnel over 802.11",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "besside-ng",
+  "cat": "wifi/suite",
+  "desc": "Auto-capture WEP/WPA handshakes",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "airolib-ng",
+  "cat": "wifi/suite",
+  "desc": "Precompute WPA hash tables",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "airgeddon",
+  "cat": "wifi/tools",
+  "desc": "Multi-use bash wireless attack framework",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "wifite",
+  "cat": "wifi/tools",
+  "desc": "Automated wireless auditing (WPA/WPS/WEP)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "reaver",
+  "cat": "wifi/wps",
+  "desc": "WPS PIN brute-force",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "bully",
+  "cat": "wifi/wps",
+  "desc": "WPS brute-force (alternative to reaver)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "pixiewps",
+  "cat": "wifi/wps",
+  "desc": "WPS offline Pixie-Dust attack",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "hcxdumptool",
+  "cat": "wifi/suite",
+  "desc": "PMKID/EAPOL capture from APs",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "hcxpcaptool",
+  "cat": "wifi/suite",
+  "desc": "Extract PSK material from captures",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "hcxpcapngtool",
+  "cat": "wifi/suite",
+  "desc": "Same as hcxpcaptool (pcapng)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "hcxtools",
+  "cat": "wifi/suite",
+  "desc": "hcx toolchain (cap2hccapx, hccapx, etc.)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "kismet",
+  "cat": "wifi/monitor",
+  "desc": "802.11/BT/SDR wireless intrusion detector",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "mdk4",
+  "cat": "wifi/tools",
+  "desc": "802.11 stress/deauth/beacon toolkit",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "mdk3",
+  "cat": "wifi/tools",
+  "desc": "802.11 exploitation (older mdk)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "hostapd-wpe",
+  "cat": "wifi/enterprise",
+  "desc": "Rogue enterprise WiFi AP (PEAP/EAP-TTLS)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "eaphammer",
+  "cat": "wifi/enterprise",
+  "desc": "Enterprise WiFi evil twin (EAP)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "cowpatty",
+  "cat": "wifi/suite",
+  "desc": "Offline WPA-PSK dictionary attack",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "asleap",
+  "cat": "wifi/enterprise",
+  "desc": "LEAP/MS-CHAPv2 cracking",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "fern-wifi-cracker",
+  "cat": "wifi/tools",
+  "desc": "GUI wireless auditing tool",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "wifiphisher",
+  "cat": "wifi/phishing",
+  "desc": "Rogue AP + captive-portal phishing",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "fluxion",
+  "cat": "wifi/phishing",
+  "desc": "Evil-twin captive portal (WPA)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "pwnagotchi",
+  "cat": "wifi/tools",
+  "desc": "AI-driven WiFi auditing (Pi)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "airdrop-ng",
+  "cat": "wifi/tools",
+  "desc": "Deauth orchestration (dsniff-based)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "spooftooph",
+  "cat": "bluetooth/tools",
+  "desc": "Bluetooth device spoofer",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "blueranger",
+  "cat": "bluetooth/tools",
+  "desc": "Bluetooth link-quality analyzer",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "bluesnarfer",
+  "cat": "bluetooth/tools",
+  "desc": "Bluetooth data exfiltration tool",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "carwhisperer",
+  "cat": "bluetooth/tools",
+  "desc": "Car Bluetooth key sniffer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "btlejack",
+  "cat": "bluetooth/ble",
+  "desc": "BLE sniffing/hijacking (microbit)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ubertooth",
+  "cat": "bluetooth/ble",
+  "desc": "Ubertooth packet sniffer toolkit",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "hackrf",
+  "cat": "sdr/tools",
+  "desc": "HackRF One SDR toolchain",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "rtl_sdr",
+  "cat": "sdr/tools",
+  "desc": "RTL-SDR software-defined radio toolkit",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "rtl_433",
+  "cat": "sdr/tools",
+  "desc": "Decode 433 MHz ISM device signals",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "gnuradio",
+  "cat": "sdr/tools",
+  "desc": "Software-defined radio framework",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "urh",
+  "cat": "sdr/tools",
+  "desc": "Universal Radio Hacker (unknown signal reverse)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "proxmark3",
+  "cat": "rfid/tools",
+  "desc": "Proxmark3 RFID/NFC toolkit",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "mfoc",
+  "cat": "rfid/tools",
+  "desc": "MIFARE Classic offline cracking",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "mfcuk",
+  "cat": "rfid/tools",
+  "desc": "MIFARE Classic card-only key recovery",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "libnfc",
+  "cat": "rfid/tools",
+  "desc": "NFC library + tools (nfc-*)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "hashcat",
+  "cat": "crack/hash",
+  "desc": "World-fastest password cracker (GPU)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "hashcat-utils",
+  "cat": "crack/hash",
+  "desc": "hashcat companion utils (cap2hccapx, maskprocessor)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "maskprocessor",
+  "cat": "crack/hash",
+  "desc": "Hashcat mask generator (mp64)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "princeprocessor",
+  "cat": "crack/hash",
+  "desc": "PRINCE wordlist generator",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "cap2hccapx",
+  "cat": "crack/hash",
+  "desc": "Convert capture \u2192 hccapx (hashcat)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "john",
+  "cat": "crack/hash",
+  "desc": "John the Ripper password cracker",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "rar2john",
+  "cat": "crack/hash",
+  "desc": "RAR \u2192 john hash extraction",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "zip2john",
+  "cat": "crack/hash",
+  "desc": "ZIP \u2192 john hash extraction",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "ssh2john",
+  "cat": "crack/hash",
+  "desc": "SSH key \u2192 john hash extraction",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "keepass2john",
+  "cat": "crack/hash",
+  "desc": "KeePass DB \u2192 john hash extraction",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "pdf2john",
+  "cat": "crack/hash",
+  "desc": "PDF \u2192 john hash extraction",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "office2john",
+  "cat": "crack/hash",
+  "desc": "MS Office \u2192 john hash extraction",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "wpapcap2john",
+  "cat": "crack/hash",
+  "desc": "WPA pcap \u2192 john hash extraction",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "hccap2john",
+  "cat": "crack/hash",
+  "desc": "hccap \u2192 john hash extraction",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "ophcrack",
+  "cat": "crack/hash",
+  "desc": "Rainbow-table Windows password cracker",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "rainbowcrack",
+  "cat": "crack/hash",
+  "desc": "Rainbow table generation/cracking",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "samdump2",
+  "cat": "crack/hash",
+  "desc": "Dump SAM hashes from Windows",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "fgdump",
+  "cat": "crack/hash",
+  "desc": "Windows password dumping (old)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "pwdump7",
+  "cat": "crack/hash",
+  "desc": "Windows SAM dump (pwdump7)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "chntpw",
+  "cat": "crack/hash",
+  "desc": "Offline Windows SAM/registry editor",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "cupp",
+  "cat": "crack/wordlist",
+  "desc": "Common User Passwords Profiler",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "cewl",
+  "cat": "crack/wordlist",
+  "desc": "Custom wordlist generator from website text",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "rsmangler",
+  "cat": "crack/wordlist",
+  "desc": "Wordlist mangling rules (Alec Jamieson)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "mentalist",
+  "cat": "crack/wordlist",
+  "desc": "Visual wordlist generator (GUI/CLI)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "crunch",
+  "cat": "crack/wordlist",
+  "desc": "Wordlist generator by charset/length",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "metasploit-framework",
+  "cat": "exploit/framework",
+  "desc": "Exploit development + execution framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "msfconsole",
+  "cat": "exploit/framework",
+  "desc": "Metasploit interactive console",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "msfvenom",
+  "cat": "exploit/framework",
+  "desc": "Payload generator (metasploit)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "searchsploit",
+  "cat": "exploit/framework",
+  "desc": "Exploit-DB searchable copy (offline)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "empire",
+  "cat": "exploit/c2",
+  "desc": "PowerShell/Empire post-exploitation agent framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "starkiller",
+  "cat": "exploit/c2",
+  "desc": "Empire C2 GUI client",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "covenant",
+  "cat": "exploit/c2",
+  "desc": ".NET C2 framework (Covenant)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "havoc",
+  "cat": "exploit/c2",
+  "desc": "Havoc C2 framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "mythic",
+  "cat": "exploit/c2",
+  "desc": "Mythic multi-agent C2 framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sliver",
+  "cat": "exploit/c2",
+  "desc": "Sliver adversary emulation C2 (Go)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "villain",
+  "cat": "exploit/c2",
+  "desc": "Villain backdoor generator + C2",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "poshc2",
+  "cat": "exploit/c2",
+  "desc": "PoshC2 proxy-aware C2 framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "cobalt-strike",
+  "cat": "exploit/c2",
+  "desc": "Commercial adversary simulation platform",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "brute-ratel",
+  "cat": "exploit/c2",
+  "desc": "Commercial adversary emulation C4",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "powersploit",
+  "cat": "exploit/post",
+  "desc": "PowerShell offensive post-exploitation modules",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "nishang",
+  "cat": "exploit/post",
+  "desc": "PowerShell offensive security toolkit",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "mimikatz",
+  "cat": "exploit/post",
+  "desc": "Windows credential extraction (Kiwi)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "pypykatz",
+  "cat": "exploit/post",
+  "desc": "Python mimikatz (sekurlsa) parser",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "lazagne",
+  "cat": "exploit/post",
+  "desc": "Local credential recovery (LaZagne)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "SharPersist",
+  "cat": "exploit/post",
+  "desc": "Windows persistence implant (SharpPersist)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "SharpChrome",
+  "cat": "exploit/post",
+  "desc": "Chrome cookie/password harvester",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "windows-exploit-suggester",
+  "cat": "exploit/privesc",
+  "desc": "Windows kernel exploit candidate suggester (WESNG)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "watson",
+  "cat": "exploit/privesc",
+  "desc": "Windows missing-patch scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "windows-privesc-check",
+  "cat": "exploit/privesc",
+  "desc": "Windows privilege-escalation checker",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "powerup",
+  "cat": "exploit/privesc",
+  "desc": "PowerShell privilege-escalation audit (PowerUp.ps1)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "privesccheck",
+  "cat": "exploit/privesc",
+  "desc": "PrivescCheck local privilege-escalation audit",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "linpeas",
+  "cat": "exploit/privesc",
+  "desc": "Linux privilege-escalation scanner (PEASS)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "winpeas",
+  "cat": "exploit/privesc",
+  "desc": "Windows privilege-escalation scanner (PEASS)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "linenum",
+  "cat": "exploit/privesc",
+  "desc": "Linux enumeration script (privesc)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "linuxprivchecker",
+  "cat": "exploit/privesc",
+  "desc": "Linux privesc info gatherer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "beroot",
+  "cat": "exploit/privesc",
+  "desc": "BeRoot privilege-escalation finder",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "linux-exploit-suggester",
+  "cat": "exploit/privesc",
+  "desc": "Linux kernel exploit suggester",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "linux-exploit-suggester-2",
+  "cat": "exploit/privesc",
+  "desc": "Linux exploit suggester v2",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "seatbelt",
+  "cat": "exploit/post",
+  "desc": "Windows host situational awareness (Seatbelt)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sharpup",
+  "cat": "exploit/privesc",
+  "desc": "Windows privilege-escalation audit (SharpUp)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sharpdpapi",
+  "cat": "exploit/post",
+  "desc": "DPAPI credential decryption",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sharpedrchecker",
+  "cat": "exploit/post",
+  "desc": "EDR/AV detection script (SharpEDRChecker)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "donut",
+  "cat": "exploit/payload",
+  "desc": "Shellcode generator from .NET/PE",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "srdi",
+  "cat": "exploit/payload",
+  "desc": "Shellcode Reflective DLL Injection (sRDI)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "shellter",
+  "cat": "exploit/payload",
+  "desc": "Dynamic shellcode injection into PE",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "veil",
+  "cat": "exploit/payload",
+  "desc": "Veil payload generator (evasion)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "msfpc",
+  "cat": "exploit/payload",
+  "desc": "MSFvenom payload generator wrapper (MSFPC)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "backdoor-factory",
+  "cat": "exploit/payload",
+  "desc": "Patch shellcode into PE files (BDF)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "shellnoob",
+  "cat": "exploit/payload",
+  "desc": "Shellcode writing/conversion swiss knife",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "hyperion",
+  "cat": "exploit/payload",
+  "desc": "PE encryptor (Hyperion)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "weevely",
+  "cat": "exploit/webshell",
+  "desc": "PHP webshell + agent framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "phpggc",
+  "cat": "exploit/deser",
+  "desc": "PHP deserialization gadget chains",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ysoserial",
+  "cat": "exploit/deser",
+  "desc": "Java deserialization payload generator",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ysoserial.net",
+  "cat": "exploit/deser",
+  "desc": ".NET deserialization payload generator",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "marshalsec",
+  "cat": "exploit/deser",
+  "desc": "Marshalsec (Java deserialization servers)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "scshell",
+  "cat": "exploit/post",
+  "desc": "SC Shell: service-control remote exec",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "gdb",
+  "cat": "exploit/debug",
+  "desc": "GNU debugger",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "pwndbg",
+  "cat": "exploit/debug",
+  "desc": "GDB exploit-dev plugin",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "gef",
+  "cat": "exploit/debug",
+  "desc": "GDB exploit-dev plugin (GEF)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "peda",
+  "cat": "exploit/debug",
+  "desc": "GDB exploit-dev plugin (PEDA)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "radare2",
+  "cat": "reversing/tools",
+  "desc": "RE framework + disassembler",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "rizin",
+  "cat": "reversing/tools",
+  "desc": "radare2 fork (GUI-friendly)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "cutter",
+  "cat": "reversing/tools",
+  "desc": "rizin GUI (Cutter)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "iaito",
+  "cat": "reversing/tools",
+  "desc": "radare2 GUI (iaito)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ghidra",
+  "cat": "reversing/tools",
+  "desc": "NSA software reverse engineering suite",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "binary-ninja",
+  "cat": "reversing/tools",
+  "desc": "Commercial binary RE platform",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ida-pro",
+  "cat": "reversing/tools",
+  "desc": "Commercial interactive disassembler",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "x64dbg",
+  "cat": "reversing/debug",
+  "desc": "Open-source Windows debugger",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "windbg",
+  "cat": "reversing/debug",
+  "desc": "Microsoft Windows debugger",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ollydbg",
+  "cat": "reversing/debug",
+  "desc": "32-bit Windows debugger (classic)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "immunitydbg",
+  "cat": "reversing/debug",
+  "desc": "Immunity Debugger (classic)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "objdump",
+  "cat": "reversing/tools",
+  "desc": "Object file disassembler (binutils)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "capstone",
+  "cat": "reversing/lib",
+  "desc": "Disassembly framework (capstone engine)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "keystone",
+  "cat": "reversing/lib",
+  "desc": "Assembly framework (keystone engine)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "unicorn",
+  "cat": "reversing/lib",
+  "desc": "CPU emulator engine (Unicorn)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "angr",
+  "cat": "reversing/lib",
+  "desc": "Binary analysis/symbolic execution platform",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "triton",
+  "cat": "reversing/lib",
+  "desc": "Dynamic binary analysis (Triton)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "manticore",
+  "cat": "reversing/lib",
+  "desc": "Symbolic execution engine (Trail of Bits)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "qiling",
+  "cat": "reversing/lib",
+  "desc": "Cross-platform binary emulation",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "miasm",
+  "cat": "reversing/lib",
+  "desc": "Reverse engineering + program synthesis",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "flare-emu",
+  "cat": "reversing/lib",
+  "desc": "Mandiant FLARE emulator for emulation-based RE",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "capa",
+  "cat": "reversing/tools",
+  "desc": "Detect capabilities in executables (Mandiant)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "floss",
+  "cat": "reversing/tools",
+  "desc": "Extract obfuscated strings from binaries",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "diaphora",
+  "cat": "reversing/tools",
+  "desc": "Binary diffing (IDA plugin)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "bindiff",
+  "cat": "reversing/tools",
+  "desc": "Binary diffing (BinDiff)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "detect-it-easy",
+  "cat": "reversing/tools",
+  "desc": "Packer/compiler detector (Detect It Easy)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "pev",
+  "cat": "reversing/tools",
+  "desc": "PE analysis suite (pev)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "peframe",
+  "cat": "reversing/tools",
+  "desc": "PE malware framework (peframe)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "pe-sieve",
+  "cat": "reversing/tools",
+  "desc": "Detect in-memory PE replacements (PE-sieve)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "hollows_hunter",
+  "cat": "reversing/tools",
+  "desc": "Detect process hollowing (hollows_hunter)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ropgadget",
+  "cat": "exploit/rop",
+  "desc": "ROP gadget finder",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "ropper",
+  "cat": "exploit/rop",
+  "desc": "ROP gadget finder (ropper)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "one_gadget",
+  "cat": "exploit/rop",
+  "desc": "Find one-shot magic gadgets in libc",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "angrop",
+  "cat": "exploit/rop",
+  "desc": "ROP chain generator (angrop)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "libc-database",
+  "cat": "exploit/rop",
+  "desc": "libc symbol/offset database",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "pwntools",
+  "cat": "exploit/rop",
+  "desc": "Exploit development framework (pwntools)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "volatility",
+  "cat": "forensic/memory",
+  "desc": "Memory forensics framework (v2)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "volatility3",
+  "cat": "forensic/memory",
+  "desc": "Memory forensics framework (v3)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "autopsy",
+  "cat": "forensic/disk",
+  "desc": "GUI digital forensics platform",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sleuthkit",
+  "cat": "forensic/disk",
+  "desc": "Forensic filesystem toolkit (fls/icat/mmls)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "bulk_extractor",
+  "cat": "forensic/disk",
+  "desc": "Bulk data/carved-artifact extractor",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "foremost",
+  "cat": "forensic/carving",
+  "desc": "File carver by headers/footers",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "magicrescue",
+  "cat": "forensic/carving",
+  "desc": "File carver (magic bytes)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "scalpel",
+  "cat": "forensic/carving",
+  "desc": "Fast file carver",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "photorec",
+  "cat": "forensic/carving",
+  "desc": "Photo/data recovery carver",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "testdisk",
+  "cat": "forensic/disk",
+  "desc": "Partition recovery tool",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "hashdeep",
+  "cat": "forensic/hash",
+  "desc": "Recursive hashset generator/matcher",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "ssdeep",
+  "cat": "forensic/hash",
+  "desc": "Fuzzy hash (spamsum)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "yara",
+  "cat": "forensic/malware",
+  "desc": "Malware pattern matching engine",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "oletools",
+  "cat": "forensic/office",
+  "desc": "OLE/Office malicious document analyzer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "oledump",
+  "cat": "forensic/office",
+  "desc": "OLE stream dump/analysis",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "rtfdump",
+  "cat": "forensic/office",
+  "desc": "RTF structure analyzer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "pdfid",
+  "cat": "forensic/pdf",
+  "desc": "PDF anomaly scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "pdf-parser",
+  "cat": "forensic/pdf",
+  "desc": "PDF object parser",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "peepdf",
+  "cat": "forensic/pdf",
+  "desc": "Malicious PDF analyzer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "binwalk",
+  "cat": "forensic/firmware",
+  "desc": "Firmware image analyzer/extractor",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "radamsa",
+  "cat": "fuzz/engine",
+  "desc": "General-purpose fuzzer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "zzuf",
+  "cat": "fuzz/engine",
+  "desc": "Deterministic bit-flip fuzzer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "afl",
+  "cat": "fuzz/engine",
+  "desc": "American Fuzzy Lop",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "afl++",
+  "cat": "fuzz/engine",
+  "desc": "American Fuzzy Lop++",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "libfuzzer",
+  "cat": "fuzz/engine",
+  "desc": "LLVM in-process fuzzer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "honggfuzz",
+  "cat": "fuzz/engine",
+  "desc": "Coverage-guided fuzzer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "syzkaller",
+  "cat": "fuzz/kernel",
+  "desc": "Linux kernel fuzzer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "boofuzz",
+  "cat": "fuzz/protocol",
+  "desc": "Network protocol fuzzer (Sulley successor)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "peach-fuzzer",
+  "cat": "fuzz/engine",
+  "desc": "Peach Fuzzer (file/protocol)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sulley",
+  "cat": "fuzz/protocol",
+  "desc": "Classic network fuzzer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "kitty",
+  "cat": "fuzz/protocol",
+  "desc": "KITTY fuzzer (Cisco)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "spike",
+  "cat": "fuzz/protocol",
+  "desc": "SPIKE protocol fuzzer",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "grammarinator",
+  "cat": "fuzz/engine",
+  "desc": "Grammar-based fuzzer generator",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "recollapse",
+  "cat": "fuzz/web",
+  "desc": "URL parser fuzzer (Portswigger research)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "domato",
+  "cat": "fuzz/browser",
+  "desc": "DOM/JS fuzzer (Mozilla/Ivan Fratric)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "gophish",
+  "cat": "phishing/framework",
+  "desc": "Open-source phishing framework",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "king-phisher",
+  "cat": "phishing/framework",
+  "desc": "Campaign phishing toolkit (PhishMe-style)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "setoolkit",
+  "cat": "phishing/framework",
+  "desc": "Social-Engineer Toolkit (credential harvester, payloads)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "tor",
+  "cat": "anon/net",
+  "desc": "The Onion Router daemon/client",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "torsocks",
+  "cat": "anon/net",
+  "desc": "Force applications through Tor",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "obfs4proxy",
+  "cat": "anon/net",
+  "desc": "Obfuscated bridge transport (Tor)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "nyx",
+  "cat": "anon/net",
+  "desc": "Tor controller console",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "macchanger",
+  "cat": "anon/net",
+  "desc": "MAC address spoofing utility",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "stunnel",
+  "cat": "net/proxy",
+  "desc": "TLS wrapper for arbitrary TCP services",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sslh",
+  "cat": "net/proxy",
+  "desc": "Port multiplexer (SSH/TLS/HTTPS on one port)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "privoxy",
+  "cat": "net/proxy",
+  "desc": "Privacy-enhancing web proxy",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "tinyproxy",
+  "cat": "net/proxy",
+  "desc": "Lightweight HTTP proxy",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "iperf3",
+  "cat": "net/util",
+  "desc": "Network throughput generator",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "netperf",
+  "cat": "net/util",
+  "desc": "Network performance benchmark",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "mtr",
+  "cat": "net/util",
+  "desc": "Traceroute + ping (ICMP path discovery)",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "traceroute",
+  "cat": "net/util",
+  "desc": "Route tracing utility",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "tracetcp",
+  "cat": "net/util",
+  "desc": "TCP traceroute",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "sshpass",
+  "cat": "net/util",
+  "desc": "Non-interactive SSH password auth",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "wget",
+  "cat": "net/util",
+  "desc": "Non-interactive downloader",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "lynis",
+  "cat": "host/audit",
+  "desc": "Host security auditing tool",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "rkhunter",
+  "cat": "host/audit",
+  "desc": "Rootkit scanner",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "chkrootkit",
+  "cat": "host/audit",
+  "desc": "Rootkit detection toolkit",
+  "mode": "active",
+  "root": 0
+ },
+ {
+  "name": "osquery",
+  "cat": "host/audit",
+  "desc": "SQL-based endpoint visibility (osqueryi/osqueryd)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "falco",
+  "cat": "host/audit",
+  "desc": "Runtime cloud/container threat detection",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "sysdig",
+  "cat": "host/audit",
+  "desc": "System call monitoring/capture",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "ossec",
+  "cat": "host/audit",
+  "desc": "OSSEC HIDS (host intrusion detection)",
+  "mode": "passive",
+  "root": 0
+ },
+ {
+  "name": "snort",
+  "cat": "ids/net",
+  "desc": "Classic network intrusion detection (SNORT)",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "suricata",
+  "cat": "ids/net",
+  "desc": "High-performance IDS/IPS/NSM",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "zeek",
+  "cat": "ids/net",
+  "desc": "Network traffic analysis framework (Bro)",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "arkime",
+  "cat": "ids/net",
+  "desc": "Full-packet capture index + search",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "ntopng",
+  "cat": "ids/net",
+  "desc": "Real-time traffic monitoring",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "malcolm",
+  "cat": "ids/net",
+  "desc": "Network traffic analysis suite (CISA)",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "aesfix",
+  "cat": "crack/hash",
+  "desc": "tool for correcting bit errors in an AES key schedule",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "aeskeyfind",
+  "cat": "crack/hash",
+  "desc": "tool for locating AES keys in a captured memory image",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "afflib-tools",
+  "cat": "forensic/apt",
+  "desc": "Advanced Forensics Format Library (utilities)",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "aide",
+  "cat": "host/audit",
+  "desc": "Advanced Intrusion Detection Environment - dynamic binary",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "argus-client",
+  "cat": "net/apt",
+  "desc": "IP network transaction auditing tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "argus-server",
+  "cat": "net/apt",
+  "desc": "IP network transaction auditing tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "arpalert",
+  "cat": "net/scan",
+  "desc": "monitor ARP changes in ethernet networks",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "bittwist",
+  "cat": "traffic/apt",
+  "desc": "libpcap based Ethernet packet generator",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "bruteforce-luks",
+  "cat": "crack/apt",
+  "desc": "Try to find a password of a LUKS encrypted volume",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "bruteforce-salted-openssl",
+  "cat": "crack/apt",
+  "desc": "try to find the passphrase for files encrypted with OpenSSL",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "bruteforce-wallet",
+  "cat": "crack/apt",
+  "desc": "try to find the password of an encrypted wallet file",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "brutespray",
+  "cat": "crack/apt",
+  "desc": "Python bruteforce tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "can-utils",
+  "cat": "ics/can",
+  "desc": "SocketCAN userspace utilities and tools",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "certspotter",
+  "cat": "recon/dns",
+  "desc": "Certificate Transparency Log Monitor",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "changeme",
+  "cat": "net/apt",
+  "desc": "Default credential scanner",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "chaosreader",
+  "cat": "traffic/capture",
+  "desc": "trace network sessions and export it to html format",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "checksec",
+  "cat": "reversing/tools",
+  "desc": "Bash script to test executable properties",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "checksecurity",
+  "cat": "host/audit",
+  "desc": "basic system security checks",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "clamav",
+  "cat": "host/audit",
+  "desc": "anti-virus utility for Unix - command-line interface",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "creddump7",
+  "cat": "ad/framework",
+  "desc": "Python tool to extract credentials and secrets from Windows registry hives",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "darkstat",
+  "cat": "traffic/apt",
+  "desc": "network traffic analyzer",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "dc3dd",
+  "cat": "forensic/apt",
+  "desc": "patched version of GNU dd with forensic features",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "dcfldd",
+  "cat": "forensic/apt",
+  "desc": "enhanced version of dd for forensics and security",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "debsecan",
+  "cat": "host/audit",
+  "desc": "Debian Security Analyzer",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "dmitry",
+  "cat": "recon/osint",
+  "desc": "Deepmagic Information Gathering Tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "dislocker",
+  "cat": "forensic/disk",
+  "desc": "read/write encrypted BitLocker volumes",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "dis51",
+  "cat": "reversing/apt",
+  "desc": "Disassembler for 8051 code in Intel Hex format",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "dumpasn1",
+  "cat": "recon/tls",
+  "desc": "ASN.1 object dump program",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "ewf-tools",
+  "cat": "forensic/disk",
+  "desc": "collection of tools for reading and writing EWF files",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "etherpuppet",
+  "cat": "net/util",
+  "desc": "create a virtual interface from a remote Ethernet interface",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "ext3grep",
+  "cat": "forensic/apt",
+  "desc": "tool to help recover deleted files on ext3 filesystems",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "ext4magic",
+  "cat": "forensic/apt",
+  "desc": "recover deleted files from ext3 or ext4 partitions",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "extundelete",
+  "cat": "forensic/apt",
+  "desc": "utility to recover deleted files from ext3/ext4 partition",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "fatcat",
+  "cat": "forensic/apt",
+  "desc": "FAT filesystem explore, extract, repair, and forensic tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "fcheck",
+  "cat": "host/audit",
+  "desc": "IDS filesystem baseline integrity checker",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "fcrackzip",
+  "cat": "crack/apt",
+  "desc": "password cracker for zip archives",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "firewalk",
+  "cat": "recon/apt",
+  "desc": "active reconnaissance network security tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "fiu-utils",
+  "cat": "fuzz/engine",
+  "desc": "userspace fault injection framework (utilities)",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "fwknop-client",
+  "cat": "net/knock",
+  "desc": "FireWall KNock OPerator client side - C version",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "fwknop-server",
+  "cat": "net/knock",
+  "desc": "FireWall KNock OPerator server side - C version",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "galleta",
+  "cat": "forensic/apt",
+  "desc": "Internet Explorer cookie forensic analysis tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "gpart",
+  "cat": "forensic/disk",
+  "desc": "Guess PC disk partition table, find lost partitions",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "gifshuffle",
+  "cat": "stego/apt",
+  "desc": "Steganography program to gif images",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "gvm-tools",
+  "cat": "net/apt",
+  "desc": "Remote control the Greenbone Vulnerability Manager",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "goldeneye",
+  "cat": "web/dos",
+  "desc": "HTTP DoS test tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "hunt",
+  "cat": "traffic/apt",
+  "desc": "advanced packet sniffer and connection intrusion",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "inetsim",
+  "cat": "forensic/lab",
+  "desc": "Software suite for simulating common internet services",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "ippl",
+  "cat": "ids/net",
+  "desc": "IP protocols logger",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "irpas",
+  "cat": "net/scan",
+  "desc": "Internetwork Routing Protocol Attack Suite",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "archmage",
+  "cat": "forensic/office",
+  "desc": "CHM (Compiled HTML) Decompressor",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "dnsdbq",
+  "cat": "recon/apt",
+  "desc": "DNSDB API Client",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "doona",
+  "cat": "fuzz/protocol",
+  "desc": "Network fuzzer forked from bed",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "lime-forensics-dkms",
+  "cat": "forensic/apt",
+  "desc": "kernel module to memory dump (DKMS)",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "mac-robber",
+  "cat": "forensic/disk",
+  "desc": "collects data about allocated files in mounted filesystems",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "mat2",
+  "cat": "recon/osint",
+  "desc": "Metadata anonymisation toolkit v2",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "missidentify",
+  "cat": "reversing/tools",
+  "desc": "find win32 applications",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "nast",
+  "cat": "traffic/apt",
+  "desc": "packet sniffer and lan analyzer",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "nasty",
+  "cat": "forensic/apt",
+  "desc": "tool which helps you to recover your GPG passphrase",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "netsniff-ng",
+  "cat": "traffic/apt",
+  "desc": "Linux network packet sniffer toolkit",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "netwox",
+  "cat": "net/scan",
+  "desc": "networking utilities",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "notus-scanner",
+  "cat": "net/apt",
+  "desc": "vulnerable products detection (Python 3)",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "o-saft",
+  "cat": "recon/tls",
+  "desc": "SSL advanced forensic tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "openscap-scanner",
+  "cat": "net/apt",
+  "desc": "OpenScap Scanner Tool (oscap)",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "openvas-scanner",
+  "cat": "net/apt",
+  "desc": "remote network security auditor - scanner",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "outguess",
+  "cat": "stego/apt",
+  "desc": "universal steganographic tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "packetsender",
+  "cat": "traffic/apt",
+  "desc": "Utility for sending and receiving TCP, UDP, SSL, HTTP packets",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "packit",
+  "cat": "traffic/apt",
+  "desc": "network packet generator and capture tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "parsero",
+  "cat": "net/apt",
+  "desc": "Audit tool for robots.txt of a site",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "pasco",
+  "cat": "forensic/apt",
+  "desc": "Internet Explorer cache forensic analysis tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "paxtest",
+  "cat": "host/audit",
+  "desc": "Test suite for the PaX kernel patch",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "pdfcrack",
+  "cat": "crack/apt",
+  "desc": "PDF files password cracker",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "pocsuite3",
+  "cat": "net/apt",
+  "desc": "Open-sourced remote vulnerability testing framework",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "pompem",
+  "cat": "net/apt",
+  "desc": "Exploit and Vulnerability Finder",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "prads",
+  "cat": "net/apt",
+  "desc": "Passive Real-time Asset Detection System",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "procyon-decompiler",
+  "cat": "reversing/apt",
+  "desc": "Procyon Java Decompiler",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "proxycheck",
+  "cat": "pivot/apt",
+  "desc": "checks existence of open proxy",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "rarcrack",
+  "cat": "crack/apt",
+  "desc": "Password cracker for rar archives",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "readpe",
+  "cat": "reversing/apt",
+  "desc": "command-line tools to manipulate Windows PE files",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "recoverjpeg",
+  "cat": "forensic/apt",
+  "desc": "recover JFIF (JPEG) pictures and MOV movies",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "recoverdm",
+  "cat": "forensic/apt",
+  "desc": "recover files on disks with damaged sectors",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "reglookup",
+  "cat": "forensic/registry",
+  "desc": "utility to analysis for Windows NT-based registry",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "regripper",
+  "cat": "forensic/apt",
+  "desc": "perform forensic analysis of registry hives",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "rifiuti2",
+  "cat": "forensic/registry",
+  "desc": "replacement for rifiuti, a MS Windows recycle bin analysis tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "rsakeyfind",
+  "cat": "forensic/keys",
+  "desc": "locates BER-encoded RSA private keys in memory images",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "safecopy",
+  "cat": "forensic/apt",
+  "desc": "data recovery tool for problematic or damaged media",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "sagan",
+  "cat": "ids/net",
+  "desc": "Real-time System & Event Log Monitoring System",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "samhain",
+  "cat": "host/audit",
+  "desc": "Data integrity and host intrusion alert system",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "scanlogd",
+  "cat": "net/apt",
+  "desc": "Portscan Detecting Tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "scanmem",
+  "cat": "reversing/apt",
+  "desc": "locate and modify a variable in a running process",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "scrounge-ntfs",
+  "cat": "forensic/apt",
+  "desc": "Data recovery program for NTFS filesystems",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "shed",
+  "cat": "reversing/apt",
+  "desc": "simple hex editor with a pico-style interface",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "shelldap",
+  "cat": "ad/apt",
+  "desc": "shell-like interface for browsing LDAP servers and editing their content",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "sipcrack",
+  "cat": "crack/apt",
+  "desc": "SIP login dumper/cracker",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "sniffit",
+  "cat": "traffic/apt",
+  "desc": "packet sniffer and monitoring tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "sniffglue",
+  "cat": "traffic/apt",
+  "desc": "Secure multithreaded packet sniffer",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "softflowd",
+  "cat": "traffic/apt",
+  "desc": "Flow-based network traffic analyser",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "spectre-meltdown-checker",
+  "cat": "net/apt",
+  "desc": "Spectre & Meltdown vulnerability/mitigation checker",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "statsprocessor",
+  "cat": "crack/wordlist",
+  "desc": "word generator based on per-position Markov chains",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "stenographer",
+  "cat": "traffic/apt",
+  "desc": "full-packet-capture utility -- server",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "stepic",
+  "cat": "stego/apt",
+  "desc": "Python 3 Steganography in Images",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "sucrack",
+  "cat": "crack/apt",
+  "desc": "multithreaded su bruteforcer",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "tableau-parm",
+  "cat": "forensic/disk",
+  "desc": "tableau write-blocking bridge query/command utility",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "taktuk",
+  "cat": "net/util",
+  "desc": "efficient, large scale, parallel remote execution of commands",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "tcpreplay",
+  "cat": "traffic/capture",
+  "desc": "Tool to replay saved tcpdump files at arbitrary speeds",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "tcptrack",
+  "cat": "traffic/capture",
+  "desc": "TCP connection tracker, with states and speeds",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "themole",
+  "cat": "exploit/apt",
+  "desc": "automatic SQL injection exploitation tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "tiger",
+  "cat": "host/audit",
+  "desc": "security auditing and intrusion detection tools for Linux",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "tlsh-tools",
+  "cat": "forensic/apt",
+  "desc": "compare similar files using fuzzy hashing",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "tlswrapper",
+  "cat": "recon/tls",
+  "desc": "TLS encryption wrapper",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "tripwire",
+  "cat": "host/audit",
+  "desc": "file and directory integrity checker",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "undbx",
+  "cat": "forensic/apt",
+  "desc": "tool to extract, recover and undelete e-mail messages from .dbx files",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "unhide",
+  "cat": "forensic/apt",
+  "desc": "forensic tool to find hidden processes and ports",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "usbrip",
+  "cat": "forensic/usb",
+  "desc": "USB device artifacts tracker",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "vinetto",
+  "cat": "forensic/apt",
+  "desc": "forensics tool to examine Thumbs.db files",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "vrfy",
+  "cat": "recon/osint",
+  "desc": "verify electronic mail addresses",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "vuls",
+  "cat": "net/apt",
+  "desc": "Vulnerability scanner for Linux/FreeBSD, agentless, written in Go",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "wpan-tools",
+  "cat": "wifi/apt",
+  "desc": "Configure and test 802.15.4 devices",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "x86dis",
+  "cat": "reversing/apt",
+  "desc": "Frontend to libdisasm",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "xmount",
+  "cat": "forensic/apt",
+  "desc": "tool for crossmounting between disk image formats",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "xva-img",
+  "cat": "cloud/container",
+  "desc": "Citrix XenServer .xva disk extraction tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "yasat",
+  "cat": "host/audit",
+  "desc": "simple stupid audit tool",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "yazc",
+  "cat": "crack/hash",
+  "desc": "Command line tool for the libzc library",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "zenmap",
+  "cat": "net/scan",
+  "desc": "The Network Mapper Front End",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "zydis-tools",
+  "cat": "reversing/apt",
+  "desc": "fast and lightweight x86/x86-64 disassembler library - tools",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "lziprecover",
+  "cat": "forensic/apt",
+  "desc": "lossless data compressor based on the LZMA algorithm (recovery)",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "d52",
+  "cat": "reversing/apt",
+  "desc": "Disassembler for 8052, 8048/8041, and Z80/8080/8085 code",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "metacam",
+  "cat": "recon/osint",
+  "desc": "extract EXIF information from digital camera files",
+  "mode": "active",
+  "src": "apt"
+ },
+ {
+  "name": "spiderfoot-cli",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/spiderfoot)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "email2phonenumber",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/email2phonenumber)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "emailharvester",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/emailharvester)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "photon",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/photon)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "tookie-osint",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/tookie-osint)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "autorecon",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/autorecon)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "legion",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/legion)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "dnswalk",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/dnswalk)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "finalrecon",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/finalrecon)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "lbd",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/lbd)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "uniscan-gui",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/uniscan)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "uro",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/uro)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "wpprobe",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/wpprobe)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "CAT",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/cisco-auditing-tool)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "gvm-start",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/gvm)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "heartleech",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/heartleech)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "owasp-mantra-ff",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/owasp-mantra-ff)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "burpsuite",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/burpsuite)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "caido-cli",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/caido-cli)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "crlfuzz",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/crlfuzz)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "subjack",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/subjack)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "tinja",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/tinja)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "watobo",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/watobo)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "wcvs",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/web-cache-vulnerability-scanner)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "zaproxy",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/zaproxy)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "bluelog",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/bluelog)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "btscanner",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/btscanner)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "fang",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/redfang)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ubertooth-util",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/ubertooth)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sparrow-wifi",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/sparrow-wifi)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "wash",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/reaver)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "hackrf_info",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/hackrf)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "gqrx",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/gqrx-sdr)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "chirp",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/chirp)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "rfcat",
+  "cat": "kali/recon",
+  "desc": "Kali Linux tool \u2014 Reconnaissance (kali.org/tools/rfcat)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sickle-pdk",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/sickle-pdk)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "wixl",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/msitools)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "wmic",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/wmi)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "wmis",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/wmi)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "pyinstaller",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/pyinstaller)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "olevba",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/oletools)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "olefile",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/oletools)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "afl-fuzz",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/aflplusplus)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "bed",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/bed)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "generic_chunked",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/spike)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "generic_listen_tcp",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/spike)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "generic_send_tcp",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/spike)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "generic_send_udp",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/spike)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sfuzz",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/sfuzz)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "msf-nasm_shell",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/metasploit-framework)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "clang",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/llvm-defaults)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "clang++",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/llvm-defaults)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "edb",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/edb-debugger)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "cstool",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/capstone)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "bytecode-viewer",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/bytecode-viewer)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "jadx-gui",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/jadx)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "javasnoop",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/javasnoop)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "jd-gui",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/jd-gui)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "d2j-dex2jar",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/dex2jar)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "exploitdb-papers",
+  "cat": "kali/exploit-dev",
+  "desc": "Kali Linux tool \u2014 Resource Development (kali.org/tools/exploitdb-papers)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "dns-rebind",
+  "cat": "kali/initial",
+  "desc": "Kali Linux tool \u2014 Initial Access (kali.org/tools/rebind)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "gophish-start",
+  "cat": "kali/initial",
+  "desc": "Kali Linux tool \u2014 Initial Access (kali.org/tools/gophish)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sqlsus",
+  "cat": "kali/initial",
+  "desc": "Kali Linux tool \u2014 Initial Access (kali.org/tools/sqlsus)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "jsql",
+  "cat": "kali/initial",
+  "desc": "Kali Linux tool \u2014 Initial Access (kali.org/tools/jsql)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "jboss-linux",
+  "cat": "kali/initial",
+  "desc": "Kali Linux tool \u2014 Initial Access (kali.org/tools/jboss-autopwn)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "jboss-win",
+  "cat": "kali/initial",
+  "desc": "Kali Linux tool \u2014 Initial Access (kali.org/tools/jboss-autopwn)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "armitage",
+  "cat": "kali/execution",
+  "desc": "Kali Linux tool \u2014 Execution (kali.org/tools/armitage)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "evilgrade",
+  "cat": "kali/execution",
+  "desc": "Kali Linux tool \u2014 Execution (kali.org/tools/isr-evilgrade)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "beef-xss-start",
+  "cat": "kali/execution",
+  "desc": "Kali Linux tool \u2014 Execution (kali.org/tools/beef-xss)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "laudanum",
+  "cat": "kali/persistence",
+  "desc": "Kali Linux tool \u2014 Persistence (kali.org/tools/laudanum)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "seclists",
+  "cat": "kali/persistence",
+  "desc": "Kali Linux tool \u2014 Persistence (kali.org/tools/seclists)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "webacoo",
+  "cat": "kali/persistence",
+  "desc": "Kali Linux tool \u2014 Persistence (kali.org/tools/webacoo)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "webshells",
+  "cat": "kali/persistence",
+  "desc": "Kali Linux tool \u2014 Persistence (kali.org/tools/webshells)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "cymothoa",
+  "cat": "kali/persistence",
+  "desc": "Kali Linux tool \u2014 Persistence (kali.org/tools/cymothoa)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "peass",
+  "cat": "kali/privesc",
+  "desc": "Kali Linux tool \u2014 Privilege Escalation (kali.org/tools/peass-ng)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "unix-privesc-check",
+  "cat": "kali/privesc",
+  "desc": "Kali Linux tool \u2014 Privilege Escalation (kali.org/tools/unix-privesc-check)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "bloodyad",
+  "cat": "kali/privesc",
+  "desc": "Kali Linux tool \u2014 Privilege Escalation (kali.org/tools/bloodyad)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "evil-winrm",
+  "cat": "kali/evasion",
+  "desc": "Kali Linux tool \u2014 Defense Evasion (kali.org/tools/evil-winrm)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "evil-winrm-py",
+  "cat": "kali/evasion",
+  "desc": "Kali Linux tool \u2014 Defense Evasion (kali.org/tools/evil-winrm-py)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "impacket-scripts",
+  "cat": "kali/evasion",
+  "desc": "Kali Linux tool \u2014 Defense Evasion (kali.org/tools/impacket-scripts)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "passing-the-hash",
+  "cat": "kali/evasion",
+  "desc": "Kali Linux tool \u2014 Defense Evasion (kali.org/tools/passing-the-hash)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "xfreerdp3",
+  "cat": "kali/evasion",
+  "desc": "Kali Linux tool \u2014 Defense Evasion (kali.org/tools/freerdp3)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sniffjoke",
+  "cat": "kali/evasion",
+  "desc": "Kali Linux tool \u2014 Defense Evasion (kali.org/tools/sniffjoke)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ftest",
+  "cat": "kali/evasion",
+  "desc": "Kali Linux tool \u2014 Defense Evasion (kali.org/tools/ftester)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "fragrouter",
+  "cat": "kali/evasion",
+  "desc": "Kali Linux tool \u2014 Defense Evasion (kali.org/tools/fragrouter)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "steghide",
+  "cat": "kali/evasion",
+  "desc": "Kali Linux tool \u2014 Defense Evasion (kali.org/tools/steghide)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "stegosuite",
+  "cat": "kali/evasion",
+  "desc": "Kali Linux tool \u2014 Defense Evasion (kali.org/tools/stegosuite)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "stegsnow",
+  "cat": "kali/evasion",
+  "desc": "Kali Linux tool \u2014 Defense Evasion (kali.org/tools/stegsnow)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "exe2hex",
+  "cat": "kali/evasion",
+  "desc": "Kali Linux tool \u2014 Defense Evasion (kali.org/tools/exe2hexbat)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ccrypt",
+  "cat": "kali/evasion",
+  "desc": "Kali Linux tool \u2014 Defense Evasion (kali.org/tools/ccrypt)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "hashid",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/hashid)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "hash-identifier",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/hash-identifier)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "bopscrk",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/bopscrk)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "maskgen",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/pack)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "policygen",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/pack)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "statsgen",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/pack)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "twofi",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/twofi)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "wordlists",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/wordlists)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "hydra-gtk",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/hydra)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "legba",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/legba)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sqldict",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/sqldict)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "thc-pptp-bruter",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/thc-pptp-bruter)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "cmospwd",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/cmospwd)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "crackle",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/crackle)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "johnny",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/johnny)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ophcrack-cli",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/ophcrack)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "rcrack",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/rainbowcrack)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "rcracki_mt",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/rcracki-mt)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "truecrack",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/truecrack)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "gitxray",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/gitxray)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "eapmd5pass",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/eapmd5pass)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "freeradius",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/freeradius)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "wifi-honey",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/wifi-honey)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "xspy",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/xspy)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "svcrack",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/sipvicious)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "enumiax",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/enumiax)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "mfterm",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/mfterm)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "mifare-classic-format",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/libfreefare)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "nfc-list",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/libnfc)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "nfc-mfclassic",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/libnfc)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "kerberoast",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/kerberoast)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "krbrelayx",
+  "cat": "kali/credential",
+  "desc": "Kali Linux tool \u2014 Credential Access (kali.org/tools/krbrelayx)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sctpscan",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/sctpscan)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "tlssled",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/tlssled)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "braa",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/braa)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "above",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/above)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "driftnet",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/driftnet)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "hexinject",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/hexinject)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "scapy",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/scapy)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "tcpflow",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/tcpflow)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "arping",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/arping)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "arpwatch",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/arpwatch)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "atk6-thcping6",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/thc-ipv6)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "p0f",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/p0f)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "apache-users",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/apache-users)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "pspy",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/pspy)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "pspy-binaries",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/pspy)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "0trace.sh",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/0trace)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ass",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/irpas)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "cdp",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/irpas)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "intrace",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/intrace)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "netmask",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/netmask)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sara",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/sara)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "yersinia",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/yersinia)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "impacket-mssqlclient",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/impacket-scripts)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "mdb-sql",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/mdbtools)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sidguess",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/sidguesser)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sqlitebrowser",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/sqlitebrowser)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "mxcheck",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/mxcheck)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "cge.pl",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/cisco-global-exploiter)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "cisco-ocs",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/cisco-ocs)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "cisco-torch",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/cisco-torch)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "copy-router-config.pl",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/copy-router-config)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "merge-router-config.pl",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/copy-router-config)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "bloodhound-python",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/bloodhound.py)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "bloodhound-ce-python",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/bloodhound-ce-python)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "protos-sip",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/protos-sip)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "rtpbreak",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/rtpbreak)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "rtpinsertsound",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/rtpinsertsound)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "rtpmixsound",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/rtpmixsound)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "siparmyknife",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/siparmyknife)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sipp",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/sipp)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sippts",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/sippts)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sipsak",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/sipsak)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "svcrash",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/sipvicious)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "svmap",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/sipvicious)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "svreport",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/sipvicious)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "svwar",
+  "cat": "kali/discovery",
+  "desc": "Kali Linux tool \u2014 Discovery (kali.org/tools/sipvicious)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "impacket-smbexec",
+  "cat": "kali/lateral",
+  "desc": "Kali Linux tool \u2014 Lateral Movement (kali.org/tools/impacket-scripts)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "impacket-psexec",
+  "cat": "kali/lateral",
+  "desc": "Kali Linux tool \u2014 Lateral Movement (kali.org/tools/impacket-scripts)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "httrack",
+  "cat": "kali/collection",
+  "desc": "Kali Linux tool \u2014 Collection (kali.org/tools/httrack)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ettercap-text-only",
+  "cat": "kali/collection",
+  "desc": "Kali Linux tool \u2014 Collection (kali.org/tools/ettercap)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "fiked",
+  "cat": "kali/collection",
+  "desc": "Kali Linux tool \u2014 Collection (kali.org/tools/fiked)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sslsplit",
+  "cat": "kali/collection",
+  "desc": "Kali Linux tool \u2014 Collection (kali.org/tools/sslsplit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sslsniff",
+  "cat": "kali/collection",
+  "desc": "Kali Linux tool \u2014 Collection (kali.org/tools/sslsniff)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "wifipumpkin3",
+  "cat": "kali/collection",
+  "desc": "Kali Linux tool \u2014 Collection (kali.org/tools/wifipumpkin3)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ferret-sidejack",
+  "cat": "kali/collection",
+  "desc": "Kali Linux tool \u2014 Collection (kali.org/tools/ferret-sidejack)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "hamster-sidejack",
+  "cat": "kali/collection",
+  "desc": "Kali Linux tool \u2014 Collection (kali.org/tools/hamster-sidejack)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "minicom",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/minicom)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "dbd",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/dbd)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "penelope",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/penelope)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "powercat",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/powercat)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sbd",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/sbd)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "termineter",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/termineter)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "chisel-common-binaries",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/chisel-common-binaries)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "dns2tcpc",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/dns2tcp)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "dns2tcpd",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/dns2tcp)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "dnscat",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/dnscat2)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "iodine-client-start",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/iodine)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ligolo-agent",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/ligolo-ng)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ligolo-proxy",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/ligolo-ng)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ligolo-mp",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/ligolo-mp)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ligolo-mp-client",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/ligolo-mp)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ligolo-ng-common-binaries",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/ligolo-ng-common-binaries)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "miredo",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/miredo)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "proxychains4",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/proxychains-ng)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "proxytunnel",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/proxytunnel)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "pwnat",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/pwnat)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "stunnel4",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/stunnel4)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "udptunnel",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/udptunnel)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "adaptixclient",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/adaptixc2)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "adaptixserver",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/adaptixc2)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "hoaxshell",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/hoaxshell)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "koadic",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/koadic)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "powershell-empire",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/powershell-empire)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "starkiller-start",
+  "cat": "kali/c2",
+  "desc": "Kali Linux tool \u2014 Command and Control (kali.org/tools/powershell-empire)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "impacket-smbserver",
+  "cat": "kali/exfil",
+  "desc": "Kali Linux tool \u2014 Exfiltration (kali.org/tools/impacket-scripts)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "goshs",
+  "cat": "kali/exfil",
+  "desc": "Kali Linux tool \u2014 Exfiltration (kali.org/tools/goshs)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "raven",
+  "cat": "kali/exfil",
+  "desc": "Kali Linux tool \u2014 Exfiltration (kali.org/tools/raven)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "dhcpig",
+  "cat": "kali/impact",
+  "desc": "Kali Linux tool \u2014 Impact (kali.org/tools/dhcpig)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "iaxflood",
+  "cat": "kali/impact",
+  "desc": "Kali Linux tool \u2014 Impact (kali.org/tools/iaxflood)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "inviteflood",
+  "cat": "kali/impact",
+  "desc": "Kali Linux tool \u2014 Impact (kali.org/tools/inviteflood)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "rtpflood",
+  "cat": "kali/impact",
+  "desc": "Kali Linux tool \u2014 Impact (kali.org/tools/rtpflood)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "siege",
+  "cat": "kali/impact",
+  "desc": "Kali Linux tool \u2014 Impact (kali.org/tools/siege)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "slowhttptest",
+  "cat": "kali/impact",
+  "desc": "Kali Linux tool \u2014 Impact (kali.org/tools/slowhttptest)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "t50",
+  "cat": "kali/impact",
+  "desc": "Kali Linux tool \u2014 Impact (kali.org/tools/t50)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "thc-ssl-dos",
+  "cat": "kali/impact",
+  "desc": "Kali Linux tool \u2014 Impact (kali.org/tools/thc-ssl-dos)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "hexwalk",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/hexwalk)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "readpst",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/libpst)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "myrescue",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/myrescue)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "rifiuti",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/rifiuti)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "affcat",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/afflib)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "dd_rescue",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/ddrescue)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ewfacquire",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/libewf)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "guymager",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/guymager)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "blkcalc",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "blkcat",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "blkls",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "blkstat",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ffind",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "fls",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "fsstat",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "grokevt-addlog",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/grokevt)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "grokevt-builddb",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/grokevt)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "grokevt-findlogs",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/grokevt)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "grokevt-parselog",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/grokevt)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "grokevt-ripdll",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/grokevt)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "hfind",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "icat",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ifind",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "ils",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "img_cat",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "img_stat",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "istat",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "jcat",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "jls",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "mactime",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "mmcat",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "mmls",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "mmstat",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sigfind",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "sorter",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "srch_strings",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "tsk_comparedir",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "tsk_gettimes",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "tsk_loaddb",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "tsk_recover",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/sleuthkit)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "binwalk3",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/binwalk3)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "xplico-webui-start",
+  "cat": "kali/forensic",
+  "desc": "Kali Linux tool \u2014 Forensics (kali.org/tools/xplico)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "cherrytree",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/cherrytree)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "dradis-start",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/dradis)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "faraday-start",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/python-faraday)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "obsidian",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/obsidian)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "pipal",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/pipal)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "recordmydesktop",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/recordmydesktop)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "redeye-start",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/redeye)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "cutycapt",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/cutycapt)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "witnessme",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/witnessme)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "juice-shop-start",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/juice-shop)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "dvwa-start",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/dvwa)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "beef-xss-stop",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/beef-xss)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "defectdojo-start",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/defectdojo)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "defectdojo-stop",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/defectdojo)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "dradis-stop",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/dradis)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "dvwa-stop",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/dvwa)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "faraday-stop",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/python-faraday)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "gophish-stop",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/gophish)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "gvm-check-setup",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/gvm)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "gvm-setup",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/gvm)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "gvm-stop",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/gvm)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "juice-shop-stop",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/juice-shop)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "portspoof-start",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/portspoof)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "portspoof-stop",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/portspoof)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "redeye-stop",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/redeye)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "starkiller-stop",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/powershell-empire)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "xplico-webui-stop",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/xplico)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "arsenal-ng",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/arsenal-ng)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "hexstrike_server",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/hexstrike-ai)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "pwsh",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/powershell)",
+  "mode": "active",
+  "src": "kali"
+ },
+ {
+  "name": "tailscale",
+  "cat": "kali/misc",
+  "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/tailscale)",
+  "mode": "active",
+  "src": "kali"
+ }
+]

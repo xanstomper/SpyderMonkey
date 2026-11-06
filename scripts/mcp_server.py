@@ -21,7 +21,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-VERSION = "5.2.0"
+VERSION = "5.11.0"
 PROTOCOL = "2024-11-05"
 SM = str(Path(__file__).resolve().parent / "spydermonkey.py")
 NAME_RE = re.compile(r"^[a-z][a-z0-9_]{1,63}$")
@@ -358,6 +358,32 @@ def h_testers_demo(a):
                    timeout=120)
 
 
+def h_hypothesis_gen(a):
+    _need(a, "target")
+    argv = ["hypothesis", "gen", "--target", a["target"], "--json"]
+    if a.get("url"):
+        argv += ["--url", a["url"]]
+    if a.get("kinds"):
+        argv += ["--kinds", a["kinds"]]
+    return _run_sm(argv, timeout=60)
+
+
+def h_hypothesis_brief(a):
+    _need(a, "target")
+    argv = ["hypothesis", "brief", "--target", a["target"], "--json"]
+    if a.get("url"):
+        argv += ["--url", a["url"]]
+    return _run_sm(argv, timeout=60)
+
+
+def h_hypothesis_run(a):
+    _need(a, "target")
+    argv = ["hypothesis", "run", "--target", a["target"], "--json"]
+    if a.get("id"):
+        argv += ["--id", a["id"]]
+    return _run_sm(argv, timeout=120)
+
+
 def h_relay_list(a):
     return _run_sm(["relay", "list"])
 
@@ -369,6 +395,24 @@ def h_arsenal_list(a):
 def h_arsenal_plan(a):
     _need(a, "target")
     return _run_sm(["arsenal", "plan", "--target", a["target"]])
+
+
+def h_catalog_search(a):
+    _need(a, "q")
+    limit = a.get("limit", 50)
+    try:
+        limit = int(limit)
+    except Exception:
+        limit = 50
+    argv = ["catalog", "search", str(a["q"]), "--limit", str(max(1, limit))]
+    if a.get("cat"):
+        argv += ["--cat", str(a["cat"])]
+    return _run_sm(argv)
+
+
+def h_catalog_show(a):
+    _need(a, "name")
+    return _run_sm(["catalog", "show", str(a["name"])])
 
 
 def h_skilltree_count(a):
@@ -563,14 +607,31 @@ TOOLS = [
                            output=_s("output path")), "required": ["target"]},
     {"name": "context_show", "description": "Session context: endpoints, roles, credentials, functions.",
      "inputSchema": _props(target=_s("campaign")), "required": ["target"]},
-    {"name": "testers_demo", "description": "Strike the built-in lab replica with the 8 sub-testers.",
+    {"name": "testers_demo", "description": "Strike the built-in lab replica with the 18 sub-testers.",
      "inputSchema": _props(target=_s("campaign")), "required": ["target"]},
+    {"name": "hypothesis_gen", "description": "THE REASONING ENGINE: rank wall-checked hypothesis cards (surface/cve-map/variant/chain) that guide a model toward unconfirmed vulnerability instances. Generation is offline; execution stays scope-gated.",
+     "inputSchema": _props(target=_s("campaign"), url=_s("optional surface url"),
+                           kinds=_s("comma list: surface,cve-map,variant,chain")),
+     "required": ["target"]},
+    {"name": "hypothesis_brief", "description": "The model brief: top-ranked hypothesis cards + the exact loop to run them through the 3-gate engine.",
+     "inputSchema": _props(target=_s("campaign"), url=_s("optional surface url")),
+     "required": ["target"]},
+    {"name": "hypothesis_run", "description": "Fire ONE hypothesis card through the 3-gate discipline (baseline → attack → class verdict → ledger). Confirmed registers CONFIRMED; non-decisive HYPOTHESIS; identical DISPROVEN (nothing registered).",
+     "inputSchema": _props(target=_s("campaign"), id=_s("card id (default: top executable)")),
+     "required": ["target"]},
     {"name": "relay_list", "description": "Remote execution nodes and key state.",
      "inputSchema": _props()},
     {"name": "arsenal_list", "description": "Installed arsenal tools × capabilities.",
      "inputSchema": _props()},
     {"name": "arsenal_plan", "description": "Scope-gated arsenal run plan (nothing executes).",
      "inputSchema": _props(target=_s("target")), "required": ["target"]},
+    {"name": "catalog_search", "description": "Search the 1,053-entry known-tool catalog (offensive tooling reference index; info only, execution stays scope-gated via arsenal).",
+     "inputSchema": _props(q=_s("search term (name/description/category)"),
+                           limit=_i("max results (default 50)"),
+                           cat=_s("optional category prefix filter, e.g. web, recon/dns, wifi")),
+     "required": ["q"]},
+    {"name": "catalog_show", "description": "Show one catalog entry: category, mode, source, one-line description (reference only — never executes).",
+     "inputSchema": _props(name=_s("tool name, e.g. 'nmap'")), "required": ["name"]},
     {"name": "skilltree_count", "description": "Count the generated technique skill files.",
      "inputSchema": _props()},
     {"name": "skilltree_verify", "description": "Verify index ↔ files ↔ WSTG/CWE/ATT&CK bindings.",
@@ -615,8 +676,11 @@ HANDLERS = {
     "chain_list": h_chain_list, "phases_board": h_phases_board,
     "coverage": h_coverage, "war_report": h_war_report,
     "context_show": h_context_show, "testers_demo": h_testers_demo,
+    "hypothesis_gen": h_hypothesis_gen, "hypothesis_brief": h_hypothesis_brief,
+    "hypothesis_run": h_hypothesis_run,
     "relay_list": h_relay_list, "arsenal_list": h_arsenal_list,
-    "arsenal_plan": h_arsenal_plan, "skilltree_count": h_skilltree_count,
+    "arsenal_plan": h_arsenal_plan, "catalog_search": h_catalog_search,
+    "catalog_show": h_catalog_show, "skilltree_count": h_skilltree_count,
     "skilltree_verify": h_skilltree_verify,
     "mission_plan": h_mission_plan,
     "shukaku_hunt_dryrun": h_shukaku_hunt_dryrun,

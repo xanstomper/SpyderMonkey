@@ -1,0 +1,18 @@
+# Login throttling response differential — chain composition
+
+- source canon: `spydermonkey/technique-canon.md`
+- base technique: `spydermonkey-technique-canon-login-throttling-response-diffe.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+Locked vs unlocked account responses differ (message/timing/length) = enumeration oracle. Decisive test: your test account (existing) vs random string (nonexisting) — differentiable = the finding.
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

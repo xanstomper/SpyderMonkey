@@ -1,0 +1,31 @@
+# State-machine escape (order status skip) — kubernetes / low-priv
+
+- source canon: `spydermonkey/technique-canon.md`
+- base technique: `spydermonkey-technique-canon-state-machine-escape-order-stat.md`
+- bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
+- context: **kubernetes** · auth **low-priv** · chain role **pivot**
+
+## Context
+
+- platform: RBAC/service-account surface — read-only enumeration, crown the exposure
+- auth state: hold ONE low-priv principal; swap object ids/roles upward only (idor/authz classes)
+
+## The technique
+
+Order transitions (cart → paid → shipped) accepted out of order by direct API calls. Decisive test: call shipped-confirm on a test order still in cart — 200 = the class; the escape is characterized on your own order only.
+
+## Probe adjustment (kubernetes × low-priv)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

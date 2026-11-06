@@ -1,7 +1,7 @@
 # 5.1 postMessage origin matrix (score 70)
 
 - source canon: `3am-shinjitsu/arsenal-05-client-side.md`
-- bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
+- bindings: **WSTG-CRYPTO-04** · **CWE-329** · **ATT&CK T1573**
 - generated: 2026-11-04
 
 ## The technique

@@ -1,0 +1,18 @@
+# JA3/JA4 client fingerprints (infra intel) — chain composition
+
+- source canon: `spydermonkey/technique-canon-2.md`
+- base technique: `spydermonkey-technique-canon-2-ja3-ja4-client-fingerprints-i.md`
+- chain role: **entry — this OPENS a chain: everything after pairs with it; chain detect looks for same-origin findings that follow**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+Fingerprint the EGRESS the service expects vs accepts — anomalies map bot-walls and API tiers. Decisive test: same request two fingerprints — differential handling = the intel (register as recon, not vuln).
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

@@ -1,0 +1,23 @@
+# Citations rot: check the current manifest before testing a claimed artifact — chain composition
+
+- source canon: `spydermonkey/engagement-ops.md`
+- base technique: `spydermonkey-engagement-ops-citations-rot-check-the-current-.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+Public claims name files by build hash (`Crash.route.BBLHNSNC.js`). Builds rotate weekly;
+resolve CURRENT chunk names from the live index/route manifest (`grep -oE
+"[A-Za-z]+\.route\.[A-Za-z0-9_-]{8}\.js" client.<hash>.js`) before declaring a file
+missing or testing its contents. A cited artifact's absence after rotation is a finding
+(evidence rotated post-exposure); scanning ~800KB of current chunks for the claimed math
+(sha256/2**52/slice(0,13)/hardcoded 64-hex) and finding none is the testable half.
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

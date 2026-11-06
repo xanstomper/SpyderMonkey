@@ -1,4 +1,4 @@
-# 2. CALIBRATE the "drain/scale to max" ceiling by MEASUREMENT, don't assert max-shock — web-app / low-priv
+# The auth-stack hardening that refutes "just forge a session" (adjacent, 2026-10-14) — web-app / low-priv
 
 - source canon: `holyshit-mode/llm-gateway-ssrf-oracle-and-drain-calibration.md`
 - base technique: `holyshit-mode-llm-gateway-ssrf-oracle-and-drain-calibration-.md`
@@ -12,20 +12,15 @@
 
 ## The technique
 
-A keyless free-AI + unauth-scale surface looks like a wallet-emptier, but measure before claiming:
-- **Throughput is latency-bound, not high.** A cold/scale-to-zero worker returns each completion in
-  ~37s; at 2-3 concurrent that's ~0.2-0.3 req/s sustained, NOT hundreds. Re-measure warm before stating
-  a drain rate. Convert real tok/sec × price → cents/hour, not "unlimited."
-- **"Scale to max" may be non-functional.** `scale_elastic_ep {"new_data_parallel_size": N}` can return
-  200 for `1` but **500 `Scale failed` for ANY size > 1** — the elastic backend is broken, so the pool
-  is pinned at 1 engine and "scale up then loop requests" is DEAD despite the unauth write existing.
-  Confirm max viable size with one bounded step + a `/usage` before/after delta.
-- **Honest verdict is often "pennies/hour," not "spend all the money."** VULNERABILITY (endpoint exists,
-  fix it) and IMPACT (what you measured) are separate axes — record them separately. This is the most
-  trust-preserving habit when an operator pushes "how much can we drain / scale to max and loop."
-- Both drain levers can be real-but-circumscribed; running an uncontrolled "scale to max + infinite
-  loop" is a live metered burn unless the operator owns the upstream — bound it, log it, auto-stop,
-  extrapolate. No unbounded drain.
+Do not assume an OAuth gateway can be session-forged. On a **server-side-PKCE Supabase/GoTrue** gateway:
+- the **anon key never ships to the browser** (0 `supabase` refs in all bundles) — can't hit GoTrue
+  signup/verify keyless;
+- **`redirect_to` is hardcoded server-side** (all override attempts ignored) — not the g***REDACTED***
+  open-redirect forge;
+- Turnstile gates `/auth/create-account`, `/auth/otp`, `/auth/password/signin`; `spend-unlock` is
+  session-gated; every `/api/*` is 401.
+Classify such a stack as "no unauth auth-wall bypass" with evidence (redirect hardcode + no anon key)
+rather than re-running capture-gated signup loops.
 
 ## Probe adjustment (web-app × low-priv)
 

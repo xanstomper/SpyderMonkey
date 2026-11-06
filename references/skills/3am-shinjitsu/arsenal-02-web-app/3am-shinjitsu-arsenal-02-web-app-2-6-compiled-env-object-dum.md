@@ -10,10 +10,6 @@
   template literals — plain quote-greps return EMPTY and you conclude "no surface" falsely).
 - CONFIRMED WHEN: prod payment test-mode flags ON, New Relic license keys, internal bot names,
   `VITE_SUPABASE_*`, unshipped feature flags.
-- Next analog: grep chunks for `NEXT_PUBLIC_[A-Z_0-9]+` — build-inlined by definition, so
-  hunt the VALUE around each name, not the name. FP DISCRIMINATOR: the
-  `...env.NEXT_PUBLIC_X && !1` spread idiom is a dev-only guard (spreads `false` in prod) —
-  the secret did NOT ship; never report it as an embedded credential.
 
 ## Family use
 

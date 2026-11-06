@@ -2,7 +2,7 @@
 
 - source canon: `kaisha/ladder-playbook.md`
 - base technique: `kaisha-ladder-playbook-r2-surface-inventory-read-only.md`
-- bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
+- bindings: **MASTG-RES** · **CWE-798** · **ATT&CK T1552**
 - context: **container** · auth **low-priv** · chain role **pivot**
 
 ## Context

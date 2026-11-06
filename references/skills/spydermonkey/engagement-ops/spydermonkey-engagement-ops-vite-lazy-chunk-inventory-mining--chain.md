@@ -1,0 +1,30 @@
+# Vite lazy-chunk inventory mining (`__vite__mapDeps` + in-page fetch) — chain composition
+
+- source canon: `spydermonkey/engagement-ops.md`
+- base technique: `spydermonkey-engagement-ops-vite-lazy-chunk-inventory-mining.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+A Vite-bundled SPA's lazy chunks are names by purpose but rotated by hash; you can still fetch ANY
+specific module if you mine the chunk inventory. The tricks that make this fast:
+
+1. **The route-map / dependency-map file is a COMPLETE chunk inventory.** A `__vite__mapDeps` array
+   (or a `path:"...",component:()=>import("./name-HASH.js")` route table) lists every lazy chunk by
+   hashed filename AND often a purpose-revealing name — `getVerifyType-DYqfJP5P.js`, `whiteList-*`,
+   `twofa-verify-*`, `withdraw-*`, `hack-verify-*`. Grep the main bundle or a captured entry chunk for
+   `__vite__mapDeps([` / `import("./<name>-<hash>.js"` to both enumerate the estate AND learn which
+   chunk governs which feature and the withdrawal/2FA/etc routes (`/wallet/withdraw/confirm`, `/auth/twofa-verify`) — a goldmine for targeted reversing.
+2. **Route-chunk fetches return the CF "Just a moment" HTML (not the JS) to curl AND to a bare
+   `page.evaluate(fetch)`** — the hashed chunks are challenge-gated to the app's own load path. Fetch
+them from the CLEARED page context (`await page.goto(<app>); await page.evaluate(()=>fetch("https://<origin>/assets/<name>-HASH.js"))`) and use an ABSOLUTE URL — relative `/assets/...` throws `TypeError: Failed to parse URL` inside evaluate. A sub-5KB "chunk" that is `<!DOCTYPE html><title>Just a moment` is the challenge page, not the module — you were challenged, not missing the asset.
+3. **A `xx-yyy-HASH.js` naming pair usually means `xx-yyy` is a thin loader** (e.g. a 1.4KB `user-action-*` importing the real 660KB `index-*`); read the small loader to find the real module before grepping the huge one for feature strings.
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

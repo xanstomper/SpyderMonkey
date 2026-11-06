@@ -1,7 +1,7 @@
 # 1.3 TLS SAN hidden-host discovery (score 75, T≈2min)
 
 - source canon: `3am-shinjitsu/arsenal-01-network-edge.md`
-- bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
+- bindings: **WSTG-CRYPTO-04** · **CWE-329** · **ATT&CK T1573**
 - generated: 2026-11-04
 
 ## The technique

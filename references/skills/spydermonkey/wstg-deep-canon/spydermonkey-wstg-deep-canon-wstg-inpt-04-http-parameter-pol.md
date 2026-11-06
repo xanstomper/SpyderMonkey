@@ -1,7 +1,7 @@
 # WSTG-INPT-04 HTTP Parameter Pollution
 
 - source canon: `spydermonkey/wstg-deep-canon.md`
-- bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
+- bindings: **WSTG-BUSL-02** · **CWE-840** · **ATT&CK T1565**
 - generated: 2026-11-04
 
 ## The technique

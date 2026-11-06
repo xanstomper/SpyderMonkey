@@ -2,7 +2,7 @@
 
 - source canon: `kage/mirror-playbook.md`
 - base technique: `kage-mirror-playbook-rule-quality-bar.md`
-- bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
+- bindings: **WSTG-CRYPTO-04** · **CWE-329** · **ATT&CK T1573**
 - context: **host** · auth **low-priv** · chain role **pivot**
 
 ## Context

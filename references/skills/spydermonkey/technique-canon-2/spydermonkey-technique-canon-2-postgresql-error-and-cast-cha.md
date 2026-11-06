@@ -1,0 +1,14 @@
+# PostgreSQL error and CAST channels
+
+- source canon: `spydermonkey/technique-canon-2.md`
+- bindings: **WSTG-INPV-05** · **CWE-89** · **ATT&CK T1190**
+- generated: 2026-11-06
+
+## The technique
+
+`::int` cast failures and `generate_series` timing — the error text names the query context. Decisive test: cast-error reflection with a marker value embedded.
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

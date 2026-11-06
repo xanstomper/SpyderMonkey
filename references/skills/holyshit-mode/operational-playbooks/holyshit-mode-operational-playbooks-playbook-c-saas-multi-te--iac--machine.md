@@ -1,0 +1,64 @@
+# PLAYBOOK C — SAAS / MULTI-TENANT — iac / machine
+
+- source canon: `holyshit-mode/operational-playbooks.md`
+- base technique: `holyshit-mode-operational-playbooks-playbook-c-saas-multi-te.md`
+- bindings: **WSTG-ATHZ-04** · **CWE-639** · **ATT&CK T1068**
+- context: **iac** · auth **machine** · chain role **pivot**
+
+## Context
+
+- platform: template/state files are the infrastructure inventory — read-only crown of the exposure
+- auth state: the principal is a SERVICE identity (API key, SA token, CI secret, webhook signing key): the differential is the KEY's resource scope — key-level vs user-level objects, cross-tenant reach, unscoped keys, and which audit trail the key leaves; the human account model does not apply
+
+## The technique
+
+**Objective**: validate tenant isolation, subscription enforcement, and admin boundaries.
+
+**Phase 1 — Recon**
+- Tenant enumeration: subdomain (`tenant.target.com`) vs path (`target.com/tenant`) vs
+  header (`X-Tenant-ID`). Map isolation model.
+- CT logs + DNS for forgotten tenant subdomains (dangling CNAME takeover).
+
+**Phase 2 — Tenant Isolation**
+- **IDOR across tenants**: `GET /api/tenant-a/resource/123` with tenant-b token.
+- **Shared infrastructure**: Redis, DB, queue — can you leak across via cache keys,
+  pub/sub channels, job queues?
+- **Feature flags**: can tenant-a enable enterprise features by guessing flag names?
+- **Subdomain takeover**: tenant churn leaves orphaned DNS → cloud service takeover.
+
+**Phase 3 — Subscription & Billing**
+- Downgrade-with-features: cancel subscription, verify enterprise features revoke immediately.
+- Trial re-spam: email tricks (`+tag`, dots, unicode) to farm infinite trials.
+- Usage metering: can you reset/rollback usage counters via API or race conditions?
+- Webhook integrity: unsigned subscription events → free upgrades (replay test).
+
+**Phase 4 — Admin & Superuser**
+- Admin panel discovery: `/admin`, `/internal`, `/ops` — 405-matrix verify.
+- Impersonation endpoints: `POST /admin/impersonate` with tenant-admin token — BFLA test.
+- Audit logs: are admin actions logged? Can admins wipe their own logs?
+
+**Phase 5 — API & Integration**
+- OAuth app validation: third-party integrations with over-scoped permissions.
+- API key scoping: read-only keys that can write? Write keys that can delete?
+- Webhook payload validation: SSRF in webhook URLs, blind payload injection.
+
+**Deliverable**: tenant-isolation map, subscription-bypass findings, admin-boundary
+violations, integration-trust model, dangling-takeover candidates.
+
+---
+
+## Probe adjustment (iac × machine)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

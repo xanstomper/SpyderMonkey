@@ -1,0 +1,34 @@
+# Ledger pitfalls — mail / high-priv
+
+- source canon: `holyshit-mode/wordpress-cloudflare-origin-bypass.md`
+- base technique: `holyshit-mode-wordpress-cloudflare-origin-bypass-ledger-pitf.md`
+- bindings: **WSTG-BUSL** · **CWE-200** · **ATT&CK T1005**
+- context: **mail** · auth **high-priv** · chain role **pivot**
+
+## Context
+
+- platform: spf/dkim/dmarc record surface — spoofing and spoofability live in the record math
+- auth state: the baseline IS the privileged session; test downgrade paths (mass-assign, state-bypass)
+
+## The technique
+
+- `holyleadger chain` splits the chain value on `-->`. If you embed `->` in the `--impact` text,
+  the chain parser fragment and you get "1 step". Keep `--impact` free of arrow sequences.
+- Statuses are lowercase (`confirmed|negative|hypothesis`). Set `HOLYSHIT_TARGET=<domain>` or pass
+  `--target` or every `add` fails.
+
+## Probe adjustment (mail × high-priv)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

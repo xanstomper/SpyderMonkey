@@ -2,7 +2,7 @@
 
 - source canon: `dojo/range-playbook.md`
 - base technique: `dojo-range-playbook-the-teaching-rule.md`
-- bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
+- bindings: **WSTG-SESS** · **CWE-287** · **ATT&CK T1550**
 - context: **web-app** · auth **unauth** · chain role **pivot**
 
 ## Context

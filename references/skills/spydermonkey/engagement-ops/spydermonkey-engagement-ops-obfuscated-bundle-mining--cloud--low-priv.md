@@ -1,0 +1,34 @@
+# Obfuscated-bundle mining — cloud / low-priv
+
+- source canon: `spydermonkey/engagement-ops.md`
+- base technique: `spydermonkey-engagement-ops-obfuscated-bundle-mining.md`
+- bindings: **WSTG-BUSL-06** · **CWE-294** · **ATT&CK T1550**
+- context: **cloud** · auth **low-priv** · chain role **pivot**
+
+## Context
+
+- platform: control-plane exposure — read-only, crown the class
+- auth state: hold ONE low-priv principal; swap object ids/roles upward only (idor/authz classes)
+
+## The technique
+
+The decoder-replay recipe for javascript-obfuscator bundles, the New Relic `/api/script`
+obfuscate-regex route leak, i18n/env plaintext feature maps, runtime crypto hooks, and the
+wildcard-cert DNS wordlist all live in `references/spa-bundle-extraction.md` — load that before
+touching any obfuscated or lazy-loaded SPA bundle.
+
+## Probe adjustment (cloud × low-priv)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

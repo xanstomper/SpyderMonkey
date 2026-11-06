@@ -1,0 +1,31 @@
+# JWT implementation families — kubernetes / unauth
+
+- source canon: `spydermonkey/technique-canon-2.md`
+- base technique: `spydermonkey-technique-canon-2-jwt-implementation-families.md`
+- bindings: **WSTG-SESS** · **CWE-287** · **ATT&CK T1528**
+- context: **kubernetes** · auth **unauth** · chain role **pivot**
+
+## Context
+
+- platform: RBAC/service-account surface — read-only enumeration, crown the exposure
+- auth state: no credential material — the classic differential applies as-is; absent auth = the authn-bypass class
+
+## The technique
+
+`none`-alg acceptance, kid-injection, jku/x5u self-keying, weak HMAC secrets (tested offline against a known dictionary ONLY on your own tokens). Decisive test per family: acceptance delta of the forged-but-harmless token.
+
+## Probe adjustment (kubernetes × unauth)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

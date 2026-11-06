@@ -1,0 +1,18 @@
+# Clickjacking without X-Frame-Options / frame-ancestors — chain composition
+
+- source canon: `spydermonkey/technique-canon.md`
+- base technique: `spydermonkey-technique-canon-clickjacking-without-x-frame-op.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+Framable state-changing pages. Decisive test: local framing harness — the frame renders the sensitive control = the class (register per-endpoint).
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

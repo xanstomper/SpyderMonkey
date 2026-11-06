@@ -1,0 +1,31 @@
+# WASM module execution in-page — api / low-priv
+
+- source canon: `spydermonkey/technique-canon-7.md`
+- base technique: `spydermonkey-technique-canon-7-wasm-module-execution-in-page.md`
+- bindings: **WSTG-SESS** · **CWE-384** · **ATT&CK T1550**
+- context: **api** · auth **low-priv** · chain role **pivot**
+
+## Context
+
+- platform: strike the JSON body + query string; content-type and parameter placement change the probe shape
+- auth state: hold ONE low-priv principal; swap object ids/roles upward only (idor/authz classes)
+
+## The technique
+
+Signing modules as WASM executed in-page for the replication chain — the module's exported functions map is the finding (execution happens in YOUR browser session on the page's own code).
+
+## Probe adjustment (api × low-priv)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

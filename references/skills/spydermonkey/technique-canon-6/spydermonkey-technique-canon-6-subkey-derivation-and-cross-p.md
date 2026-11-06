@@ -1,0 +1,14 @@
+# Subkey derivation and cross-protocol key reuse
+
+- source canon: `spydermonkey/technique-canon-6.md`
+- bindings: **WSTG-CRYPTO-04** · **CWE-329** · **ATT&CK T1573**
+- generated: 2026-11-06
+
+## The technique
+
+Same key material across protocols/tiers (the mkey+securityKey class) — proven from bundle/config co-occurrence + one probe showing cross-tier acceptance on YOUR test material.
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

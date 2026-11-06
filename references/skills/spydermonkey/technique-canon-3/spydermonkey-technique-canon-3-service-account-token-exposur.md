@@ -1,0 +1,14 @@
+# Service-account token exposure
+
+- source canon: `spydermonkey/technique-canon-3.md`
+- bindings: **WSTG-SESS** · **CWE-287** · **ATT&CK T1528**
+- generated: 2026-11-06
+
+## The technique
+
+SA tokens in mounts/configmaps/logs readable from the confirmed foothold. Decisive test: token file readable in YOUR test pod/replica — the lab replica proves the class shape; live proof needs the foothold (kaisha-priced).
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

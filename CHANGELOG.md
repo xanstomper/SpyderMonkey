@@ -3,6 +3,283 @@
 All notable changes to SPYDERMONKEY, newest first. Dates are UTC; versions are
 the dispatcher release (`SKILL.md` frontmatter).
 
+
+
+## v5.11.0 — VULN-CHECK DEPTH + SOURCE-PULL LANE (2026-11-06)
+
+- **Arsenal 200 → 212 wrappers.** Vuln CHECK batch 3 (nmap http-vuln CVE checks:
+  Struts cve2017-5638, Drupalgeddon cve2014-3704, http.sys ms15-034, php-cgi
+  cve2012-1823, ColdFusion cve2010-2861, Rails cve2013-0156 — all DETECTION-only
+  scripts; ftp-vsftpd-backdoor, ftp-proftpd-backdoor, http-default-accounts) +
+  the **source-pull lane** (wget-mirror depth-2 recursive pull, httrack full
+  public-source mirror, nmap-allports thorough sweep). Mirror lane feeds the
+  content chain.
+- **Tunneling note:** the relay lane (dispatcher `relay init|list|exec` —
+  Ed25519 ssh-paired nodes, scope-gated) + the sanctioned SOCKS egress recipe
+  (vermes -D 1080) remain the family's tunneling capability — arsenal wrappers
+  do not duplicate plumbing the relay system already owns.
+- **Wall held:** destructive/DoS tooling NOT added — the family's own doctrine
+  (destructive end-states refused; DoS = capacity-exposure rows, never fired).
+  Verified: arsenal verify ALL PASS (212 tools) · selftest 27/27.
+
+## v5.10.0 — THE 200-TOOL ARSENAL (2026-11-06)
+
+- **Arsenal 103 → 200 wrappers, ALL REAL entries.** Three honest levers:
+  (a) **17 targeted NSE validation probes** batch 1 — named checks the model
+  routes to directly (http-enum, http-git, http-backup-finder, http-methods,
+  http-cors, http-userdir-enum, http-shellshock, ssl-heartbleed, ssl-ccs,
+  ssl-enum-ciphers, smb-security-mode, smb-vuln-ms17-010, mysql-empty-password,
+  ftp-anon, dns-nsec-enum, smtp-open-relay, vulners);
+  (b) **28 NSE probes batch 2** — vuln CHECKs + service inventories (ssl-poodle,
+  ssl-drown, ssl-logjam, smtp-commands, imap/pop3-capabilities, mongodb-info/
+  -databases, redis-info, mysql-info, ms-sql-info, http-devframework,
+  http-iis-short-name, http-aspnet-debug, http-drupal-enum, http-wordpress-plugins,
+  http-apache-server-status, http-php-version, smb-enum-shares/-users,
+  smb2-capabilities, smb-vuln-conficker, nfs-showmount/nfs-ls, rpcinfo,
+  ipmi-cipher-zero, http-open-proxy, ftp-bounce, rdp-ntlm-info, vnc-info,
+  telnet-encryption, sip-methods, ssl-cert, http-cookie-flags);
+  (c) **mode splits + distinct tools** — nmap udp/fast/discovery/vuln modes,
+  gobuster vhost/dns/s3, nuclei cve/misconfig/exposure/takeover/token tag lanes,
+  dnsx brute/reverse, dig AXFR/MX/TXT/NS/SOA/CNAME record lanes, amass-intel,
+  ffuf-vhost/deep, gobuster-deep, ldapsearch-enum, curl-cors/trace,
+  testssl-protocols/ciphers, sslyze-cert, arp-scan-lan, netdiscover-passive,
+  gowitness, cmseek, webanalyze, urlcrazy, cloudlist, smbmap, crackmapexec
+  (legacy-name coverage), finalrecon, gitleaks, o-saft, paramspider, swaks,
+  ssh-keyscan, asnmap.
+- **Every entry is a distinct probe shape** — no filler, no invented binaries.
+  The arsenal counts real routable checks, not double-counted duplicates.
+- **Verified:** arsenal verify ALL PASS (200 tools · 16 chains · scope refusal ·
+  kernel --out) · selftest 27/27 · 18 wrappers live-installed on the operator box.
+
+## v5.9.0 — THE BIG ARSENAL: 103 TOOLS · 28,296 TECHNIQUES (2026-11-06)
+
+- **Arsenal 73 → 103 wrappers.** Packet lane (hping3, nping, traceroute, mtr,
+  fping, arp-scan, netdiscover, tcpdump, tshark, ngrep, nc, zmap — capture lanes
+  read-only), cloud lane (s3scanner, cloudbrute, kube-hunter), fuzz confirm-aid
+  lane (xsstrike, commix, tplmap, nosqlmap, dotdotpwn), crawlers (dirhunt,
+  gospider), API discovery (kiterunner, webtech), secret scan (trufflehog
+  verified-only), kerberos enum (kerbrute), device lane (adb lab), file-exposure
+  (snallygaster), BMC (ipmitool mc info), capture proxy (mitmdump). Chains
+  13 → 16: `cloud`, `packet`, `fuzz`.
+- **Technique corpus 22,888 → 28,296 files.** canon-7 (MASTG depth: storage/
+  clipboard/logcat/CT-of-mobile-APIs/key-extraction/attestation/posture; binary
+  & protocol RE: the chunk-extraction recipe, string-table replay, runtime
+  crypto hooks, wire-format replication, WASM modules, packet-type taxonomy,
+  dangling versions; edge/CDN: vhost collisions, origin-cert tri-brand class,
+  526 incidents, cache-key, geo/WAF inconsistency; ledger-discipline classes)
+  + the **`machine` auth axis** (service-principal/API-key/SA-token differential
+  — key scope, cross-tenant reach, audit trail) multiplying the whole corpus.
+- **Matrix:** 195 binding keys (WSTG · MASTG · PTES-WIN/ICS/RA/OPSEC · CWE ·
+  ATT&CK · ICS T-code 0886) · 20 platform families.
+- **Verified:** skilltree --verify ALL PASS (1,126 base + 27,170 expanded,
+  0 orphans) · arsenal verify ALL PASS (103 tools · 16 chains) · selftest 27/27.
+
+## v5.8.0 — MAX SCALE: 22,888 TECHNIQUES · 73 TOOLS · 13 CHAINS (2026-11-06)
+
+- **Arsenal 65 → 73 wrappers.** DB confirm-aid lane (psql, mysql, mongosh,
+  memcstat), takeover lane (subzy), harvest lane (git-dumper, cewl), WAF
+  fingerprint (whatwaf). Chains 11 → 13: `db` (engine handshake/auth-stage
+  probes) + `takeover` (subzy/dnstwist/dnsx/subfinder).
+- **Technique corpus 21,521 → 22,888 files.** Three new canon volumes:
+  `technique-canon-4.md` (server misconfig per-webserver: nginx alias/off-by-slash,
+  IIS 8.3, Tomcat residue, Spring actuators; framework classes Django/Rails/
+  Laravel/Express/Next; DB-engine exposure PostgreSQL/MySQL/Mongo/Elasticsearch/
+  Memcached/ClickHouse/CouchDB/InfluxDB; queues RabbitMQ/Kafka; remote-access
+  SSH/RDP/VNC/VPN posture), `technique-canon-5.md` (OSINT depth: breach row-
+  correlation, code-search dorking, git-object recovery, CT lifecycle, ASN/
+  passive-DNS, zero-document artifact strings; LAB-ONLY wireless/hardware: WiFi/
+  BLE/SDR/NFC/UART/JTAG/SPI; supply-chain: dependency-confusion, vendor-SDK
+  SPY-095 class, SRI/CSP; ICS/SCADA read-only pointers), `technique-canon-6.md`
+  (crypto classes: entropy/PRNG, IV/ECB, padding-oracle shape, length-extension,
+  key-in-code; auth-protocol depth: Kerberos enum set, NTLM relay config posture,
+  OAuth per-grant, SAML profiles, WebAuthn, cookie depth; anti-abuse: CAPTCHA
+  anatomy, anti-bot matrix, WAF evasion vocabulary, rate architecture; the
+  casino verification canon: PF chains, RTP sweep discipline, client-bet APIs,
+  two-salt traps, feed-fabrication).
+- **Matrix widened:** new platforms db, queue, lb, wireless (LAB-ONLY), embedded,
+  desktop + 41 new binding keys (182 total, WSTG/MASTG/PTES-ICS/CWE/ATT&CK).
+- **Verified:** skilltree --verify ALL PASS (1,102 base + 21,786 expanded,
+  0 orphans) · arsenal verify ALL PASS (73 tools · 13 chains) · selftest 27/27.
+
+## v5.7.0 — CANON DEPTH: TECHNIQUE UNIVERSE CLAIMED (2026-11-06)
+
+- **Arsenal 48 → 65 wrappers.** New lanes: CMS (wpscan, joomscan, droopescan,
+  cmsmap), Windows/SMB (smbclient, rpcclient, ldapsearch, enum4linux-ng,
+  netexec read-only module pass), OSINT (assetfinder, findomain, dnstwist,
+  shodan, hakrawler, linkfinder, xsser, zaproxy baseline). Chains 8 → 11
+  (`cms`, `win`, `osint` feeding chains added; feed parsers + canon classes
+  CMS/SECRET extended).
+- **Technique corpus 20,041 → 21,521 files.** Two new canon volumes:
+  `technique-canon-2.md` (injection depth per-DBMS/engine/language, API-surface
+  classes, HTTP/2+3, WebSocket, TLS/JA3, XS-Leaks) and `technique-canon-3.md`
+  (cloud per-provider AWS/Azure/GCP, K8s/Docker/CI-CD, AD read-only enum
+  classes, MASTG mobile classes, CMS depth, mail/DNS depth, business-abuse
+  depth). ~110 new base blocks; 141 binding keys (was 103); new platform
+  families: cms, mail depth, windows/SMB, mobile MASTG.
+- **Verified:** skilltree --verify ALL PASS (1,028 base + 20,493 expanded,
+  0 orphans) · arsenal verify ALL PASS (65 tools · 11 chains) · selftest 27/27.
+
+## v5.6.0 — THE REASONING ENGINE (2026-11-06)
+
+- **`hypothesis gen|brief` — the engine that guides a model to NEW findings.**
+  A new stdlib module (`scripts/hypothesis.py`, pure reasoning — no live fire)
+  turns the family's EXISTING datasets into ranked, testable, wall-checked
+  hypothesis cards:
+  - **surface** — the testers' own param vocabularies + endpoint shapes
+    (13 param patterns, 12 endpoint patterns) reason from the mined context
+    (or the ledger's own assets, when the crawler has not run) to candidate
+    classes not yet confirmed on each asset.
+  - **cve-map** — tech fingerprints (express/php/jvm/python/graphql/dotnet/
+    jwt/edge) map to DOCUMENTED CVE-class families (CWE-anchored: CWE-943
+    operator injection, CWE-98 wrapper traversal, CWE-1336 SSTI, CWE-347
+    alg=none, CWE-200 exposure…) each with a ready probe shape.
+  - **variant** — every CONFIRMED finding opens its documented
+    encoding/marker variant families (overlong-UTF8, double-encoding, wrapper
+    streams, mixed separators + `....//` filter evasion, unicode CRLF,
+    scheme-relative redirects, blind-bool operators, kid-path markers,
+    event-handler XSS contexts, rare loopback encodings) — the payloads the
+    standard battery never fired on that asset.
+  - **chain** — when a kill chain's `need` classes are confirmed but its
+    `give` classes are not, a completion card is emitted (5 chain specs).
+- **The ranker** — priors-weighted (base class prior × learned prior from
+  self-play × kind weight × confirmed-elsewhere boost), scores bounded 0–1.
+- **The model brief** (`hypothesis brief`) — the guidance document any model
+  consumes: top-ranked cards + the exact loop (read the `why` trace → load
+  the lazy citations → fire the probe through `gate` → CONFIRMED lands in
+  the ledger → regenerate) + the rules (documented classes only; novel
+  INSTANCES, never novel weapon classes; every claim through the 3-gate).
+- **The wall, in code** — every card whose asset fails the scope authority is
+  marked `scope: blocked` at generation (execution would refuse anyway); all
+  cards restate the five walls. Generation is offline; execution stays in the
+  dispatcher's scope-gated, evidence-gated kernel.
+- **The kernel plans it** — a new `hypothesis-gen` directive fires when
+  confirmed classes and untested surface coexist; MCP exposes
+  `hypothesis_gen` + `hypothesis_brief` (54 tools now).
+- **PROVEN end-to-end on the lab**: the engine ranked a `....//` filter-
+  evasion TRAVERSAL variant the 18 batteries never fired → the gate confirmed
+  it (404→200, passwd content, confirm-token) → SPY-019 CONFIRMED →
+  regeneration absorbed it (the variant is no longer proposed on that asset;
+  the surface dedupe closed). The "find new ones" loop is closed and honest:
+  DISPROVEN variants (e.g. octal-loopback SSRF against a resolver that will
+  not parse it) register nothing.
+- **Gate hardening from the loop proof**: dedupe now compares
+  scheme+host+path (a query-form difference never defeats it) and fired-
+  payload matching handles the URL-encoded form the gate stores.
+- **Tests**: 18 new hypothesis tests (surface mapping, dedupe semantics,
+  variant fired-matching, chain closure, rank ordering, learned-prior shift,
+  brief shape, corrupt-ledger tolerance) — 48 total, all green.
+
+## v5.5.0 — THE BATTERY EXPANSION (2026-11-06)
+
+- **Seven new differential testers — 11 → 18 batteries.** Every one a
+  documented-PoC class, differential, evidence-gated, NO-GAIN:
+  - **REDIRECT** (CWE-601) — open redirect; the proof lives in the Location
+    header swapping to a foreign origin. Probes use the `.invalid` TLD: it never
+    resolves, so no third party is ever contacted. The dangling
+    `SSRF/REDIRECT` Location fallback in the sweep finally has its tester.
+  - **CORS** (CWE-942) — Origin-reflection differential: neutral Origin is the
+    baseline, a foreign Origin the attack; ACAO echoing the foreign origin
+    (or `*` with allow-credentials) is the proof. Read-only — the Origin header
+    triggers no fetch.
+  - **NOSQL** (CWE-943) — operator injection: `$ne` / `$gt` / `$regex` /
+    `[$ne]=1` reaching a document interpreter; auth-bypass marker is decisive.
+  - **CRLF** (CWE-113) — header injection: `%0d%0aX-Probe` / `Set-Cookie`
+    markers; an attacker-controlled header appearing in the attack response's
+    header block (and not the baseline's) is the split proof.
+  - **HARVEST** — 15 predictable paths (`.env`, `.git/HEAD`, `backup.zip`,
+    `debug`, `actuator/env`, `swagger.json`…); a guaranteed-missing control
+    path is the baseline, so a soft-404 target registers NOTHING.
+  - **DIRECTORY** (CWE-548) — 10 autoindex roots; `Index of /` is decisive.
+  - **REPLAY** (CWE-837) — idempotency differential: the same logical request
+    fired twice (N=2, validation-only); a countable effect that increments is
+    the proof. Stateless endpoints register nothing.
+- **The header-aware differential gate.** `_tester_verdict`'s early
+  identical-response gate now also diffs non-volatile headers for the
+  header-evidence classes (CORS · CRLF · REDIRECT) — a body-identical pair with
+  a header delta is still a live differential, and the clock never becomes a
+  finding.
+- **The demo replica grew the matching flaws** (`/redirect`, `/api/data`,
+  `/api/login2`, `/greet`, `/.env` + 5 more harvest paths, `/files/` autoindex,
+  the webhook idempotency counter) — `testers --demo` proves all seven new
+  classes CONFIRMED with zero setup. Bonus: the replica's `/redirect` endpoint
+  also reflects raw values into the Location header, and the CRLF battery
+  catches it — two classes proving on one flaw.
+- **Two new chain patterns — 8 → 10.** `cors_credential_read` (ACAO reflection
+  + credential endpoint → cross-origin credential read) and `nosql_authn`
+  (operator injection + auth surface → forged authentication).
+- **The arsenal grew — 20 → 30 executors, 4 → 6 feeding chains.** New: arjun
+  (hidden params), corsy, crlfuzz, subzy (dangling-CNAME checks — pairs with
+  the takeover engine), s3scanner + cloud_enum (read-only cloud exposure), the
+  Harvester (passive OSINT), dirsearch + feroxbuster (content discovery),
+  gitleaks (in-scope repo secret scanning). New chains: **cloud**
+  (s3scanner → cloud_enum) and **osint** (theharvester → subfinder → dnsx).
+  Four new canon classes feed the ledger bindings: REDIRECT · CORS · CRLF ·
+  NOSQL.
+- **Counts updated everywhere**: `verify` pins 18 testers, the sweep banners
+  are dynamic, `capabilities` introspects 22 confirmable classes live,
+  ci_smoke asserts count-agnostically. README/SKILL numbers match the code.
+
+## v5.4.0 — THE SESSION INJECTION (2026-11-06)
+
+- **`/spydermonkey` — one word, the mandate owns the session.** The canonical
+  contract lives in `references/mandate-session.md` (print with
+  `spydermonkey mandate --session [--file]`). It declares the dispatcher's role,
+  the loop (state → directive → act → absorb → report), the evidence discipline
+  (gate or hypothesis), the persistence clause (every message is a mandate
+  message until release), and the absolute stop conditions — walls intact,
+  always.
+- **THE HOLD** — persistence protocol baked into the contract: persist the P0 to
+  campaign manifest + context on entry, re-read the campaign files (ledger ·
+  phases · chains · estate memory) every session, re-inject after context
+  compaction, and close with `train` (priors the planner re-weights).
+- **`mandate --session`** flag added to the dispatcher. Tests pin the contract's
+  shape (walls present, persistence clause, release phrase).
+- **Wired agents:** OpenCode — `/spydermonkey` switches the session to the
+  global `spydermonkey` primary agent (`~/.config/opencode/agents/spydermonkey.md`,
+  mandate = the agent's system prompt; `/build` switches back). Claude Code —
+  `/spydermonkey` command (`~/.claude/commands/spydermonkey.md`). Hermes —
+  `/spydermonkey` (skill). Cline CLI — `spydermonkey-cline "<brief>"`
+  (system-prompt override via `cline -s`). Any other agent — `mandate --session`
+  prints the contract for any prompt slot.
+- **`mandate --session`** flag added to the dispatcher. Tests pin the contract's
+  shape (walls present, persistence clause, release phrase).
+- **Reliability + self-improvement loop closed.** Trace collection now actually
+  works end-to-end: `--trace-file` lives on the `loop` parser (previously added to
+  `watch` only — the collector could never be enabled) and `watch` forwards it to
+  the `loop` subprocess; the trace mislabels `directives_planned` → `step_number`.
+- **The chain-detector fixes upstreamed.** `_chainable_estate` / `_chainable_signal`
+  (estate-scoped chain pairing + SPA-shell/lookalike-negative poisoning) and the
+  content-derived `UND-<sha1>` ids (a running counter orphaned saved chain rows as
+  the ledger grew) are now in the repo, not only in the hermes skill copy — the
+  skill copy was then re-synced over the repo (scripts, tests, catalog, contracts;
+  personal SKILL.md engagement notes preserved).
+- **The agent remembers.** Global `AGENTS.md` now carries a one-line reminder to
+  invoke `/spydermonkey` for offensive-security engagements — reminder, not a
+  hijack; the walls remain non-negotiable.
+- Walls unchanged and non-negotiable: the mandate is a persona contract, not a
+  bypass. Injected everywhere, the scope authority is still the estate's only
+  verdict — findings that survive are the product.
+
+## v5.3.0 — THE KNOWN-TOOL CATALOG (2026-11-06)
+
+- **`catalog` — 1,053 known offensive tools, lazy-loaded on any machine.** A
+  reference index in `references/tool-catalog.json` (152 KB, zero deps):
+  names, categories, one-line descriptions, mode (passive/active), and source
+  pedigree (**curated** 636 hand-picked entries · **apt** 130 harvested from the
+  Ubuntu package index with real short-descriptions · **kali** 290 from Kali's
+  official tools index). Actions: `stats` · `categories` · `list [--cat]`
+  · `search <term>` · `show <name>` — all `--json`-clean for agents.
+- **Info only, never execution.** The catalog executes NOTHING. Firing any
+  tool still goes through `arsenal` (installed executors only, 4 feeding
+  chains, shared scope authority, kernel `--out` schema). The map is not the
+  gun — an agent reads the catalog to pick the tool, the scope wall still
+  decides whether it may run.
+- **Lazy by construction.** The JSON is loaded once per process, on first use
+  (`_catalog()`), never injected into a prompt; agents pay for the 3 rows they
+  query, not the 1,053.
+- **MCP 50 → 52.** New `catalog_search` and `catalog_show` tools (same
+  scope/doctrine as everything else). Docs updated.
+
 ## v5.0.0 — SELF-KNOWLEDGE · SELF-PROTECTION · GROWTH (2026-11-04)
 
 - **`capabilities` — the mirror of self.** The live-introspected capability
