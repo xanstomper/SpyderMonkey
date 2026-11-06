@@ -150,13 +150,17 @@ the dispatcher release (`SKILL.md` frontmatter).
   INSTANCES, never novel weapon classes; every claim through the 3-gate).
 - **`hypothesis run [--id HYP-NNN]` — the engine executes its own cards.**
   Builds the baseline→attack request pair from the card's probe (surface
-  params, variant payloads against the parent's param, CORS header pair),
-  passes BOTH urls through the live-fire gate, fires them, and runs the same
-  class verdict the batteries use. CONFIRMED → a new ledger finding;
-  non-decisive diff → HYPOTHESIS at conf 0.4; identical responses →
-  DISPROVEN, nothing registered. Card verdicts persist across regeneration
-  (a disproven card is never re-fired; repeated runs walk down the ranked
-  list). Chain cards are plans — they refuse cleanly rather than guess.
+  params, variant payloads against the parent's param, CORS header pair,
+  **path probes for HARVEST/DIRECTORY and cve-map path families** — a
+  guaranteed-missing control path is the baseline), passes BOTH urls through
+  the live-fire gate, fires them, and runs the same class verdict the
+  batteries use. CONFIRMED → a new ledger finding; non-decisive diff →
+  HYPOTHESIS at conf 0.4; identical responses → DISPROVEN, nothing
+  registered. Card verdicts persist across regeneration (a disproven card is
+  never re-fired; repeated runs walk down the ranked list). Chain cards are
+  plans — they refuse cleanly rather than guess. Live proof: a HARVEST card
+  fired `.env` at the lab replica (404→200, 55B of config) and registered
+  CONFIRMED on the first decisive path.
 - **The wall, in code** — every card whose asset fails the scope authority is
   marked `scope: blocked` at generation (execution would refuse anyway); all
   cards restate the five walls. Generation is offline; execution stays in the
