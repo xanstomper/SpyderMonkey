@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 5.11.0
+version: 5.12.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -114,15 +114,15 @@ The dispatcher is now a control plane, not just a router:
   engine self-checks serially so a healthy engine is never reported red.
 
 Also in the toolbox: `bench` (offline route-level accuracy — 29/29 at v4.0.0) ·
-`arsenal` (212 scope-gated tool wrappers + 16 feeding chains — recon/web/tls/net/
+`arsenal` (258 scope-gated tool wrappers + 23 feeding chains — recon/web/tls/net/
 dns/content/api/services/cms/win/osint/db/takeover/cloud/packet/fuzz —
 structured run records, kernel `--out` results the loop absorbs) · **`catalog`**
 (v5.3.0 — 1,053-entry known-tool reference index, lazy-loaded metadata; info
 only, execution stays scope-gated via arsenal) · `fleet`
 (parallel multi-agent dispatch, one agent per mandate) · `bench_live.py`
 (exploitation-level bench, throwaway HOME, localhost lab) · `mcp_server.py`
-(the family as 52 MCP tools) · `skilltree.py` (the technique library: 1,126 base
-files + the CONTEXT CORPUS — `--expand` generates 28.3k technique × platform ×
+(the family as 52 MCP tools) · `skilltree.py` (the technique library: 1,255 base
+files + the CONTEXT CORPUS — `--expand` generates 31.2k technique × platform ×
 auth × federated × machine files with chain-role tags, deterministic, `--verify` checks both indexes).
 
 ## The Mandate Discipline (v1.1.0 — the Kimiko architecture, model-agnostic)
@@ -236,12 +236,6 @@ selftest that exercises each engine for real.
   `hypothesis brief` emits the MODEL BRIEF — the guidance document any model
   consumes: top cards + the exact loop (read `why` → load citations → fire
   the probe through `gate` → CONFIRMED lands in the ledger → regenerate).
-  `hypothesis run [--id HYP-NNN]` EXECUTES one card through the same 3-gate
-  discipline: baseline → attack → class verdict → ledger. CONFIRMED registers
-  a new finding; a non-decisive diff registers HYPOTHESIS; identical
-  responses register NOTHING and the card is marked DISPROVEN. Fired card
-  verdicts persist across regeneration — the engine never re-fires the same
-  hypothesis, and repeated `run` calls walk down the ranked list.
   The kernel plans `hypothesis-gen` automatically when confirmed classes and
   untested surface coexist. Walls: documented-PoC ADAPTATION only — novel
   INSTANCES of documented classes, never novel weapon classes.
@@ -294,7 +288,7 @@ exercised, not asserted.
 - `scope init|check|show|add|remove|extend|history` — the shared estate gate (matching · deny precedence · expiry · audit)
 - `doctor [--fix]` — health check (engines · scope perms · corrupt states · canon · ledger · relays)
 - `bench` — offline route-level benchmark (29/29 = 100% at v4.0.0)
-- `arsenal list|plan|run|verify` — 212 tool wrappers + 16 feeding chains (recon · web · tls · net · dns · content · api · services · cms · win · osint · db · takeover · cloud · packet · fuzz) behind the shared scope authority; `run --chain C --out result.json` emits the kernel result schema (`absorb` ingests it)
+- `arsenal list|plan|run|verify` — 258 tool wrappers + 23 feeding chains (recon · web · tls · net · dns · content · api · services · cms · win · osint · db · takeover · cloud · packet · fuzz · cve-sweep · exposure-sweep · takeover-full · cloud-full · db-full · mail-full · cms-full) behind the shared scope authority; `run --chain C --out result.json` emits the kernel result schema (`absorb` ingests it)
 - `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` — one agent per mandate, dispatched in parallel
 
 Companion scripts (stdlib too):
@@ -309,7 +303,7 @@ Companion scripts (stdlib too):
 - `CHANGELOG.md` — release notes
 - `scripts/spydermonkey.py` — the control-plane CLI
 - `scripts/scope_authority.py` — the shared estate gate
-- `scripts/arsenal.py` — the execution layer (212 scope-gated tool wrappers · 16 feeding chains)
+- `scripts/arsenal.py` — the execution layer (258 scope-gated tool wrappers · 23 feeding chains)
 - `scripts/bench_live.py` — the exploitation-level bench
 - `scripts/mcp_server.py` — the family as MCP tools (stdio JSON-RPC)
 - `scripts/skilltree.py` — the technique-library generator + verifier

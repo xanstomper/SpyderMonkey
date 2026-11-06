@@ -1,0 +1,22 @@
+# BOLA object-swap — chain composition
+
+- source canon: `spydermonkey/technique-canon-8.md`
+- base technique: `spydermonkey-technique-canon-8-bola-object-swap.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Chain roles
+
+- pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+Endpoint returning objects by id accepts another tenant's/owner's id (the IDOR family). Decisive test: baseline with your object, attack with a sibling id you control — swapped content = CONFIRMED.
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

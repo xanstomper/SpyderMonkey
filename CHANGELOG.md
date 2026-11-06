@@ -5,6 +5,32 @@ the dispatcher release (`SKILL.md` frontmatter).
 
 
 
+## v5.12.0 — ROUTING SURFACE ×13: 258 TOOLS · 31,172 TECHNIQUES (2026-11-06)
+
+- **Arsenal 212 → 258 wrappers, chains 16 → 23.** NSE batch 4 (http-auth-finder,
+  robots/sitemap intel, waf-detect/fingerprint, traversal, sqli-oracle,
+  slowloris-capacity CHECK, smb-vuln webexec/doublepulsar, dns brute/SRV/AXFR,
+  smtp-enum-users, iscsi, mssql-empty, ntp, s7-info (ICS), upnp, x11-access) +
+  script-family lanes (nmap-script-http/smb/ssl/discovery/default) + nuclei
+  per-tag lanes (tech/network/dns/config) + netexec protocol splits (smb/ldap/
+  winrm/mssql) + dnsrecon zonewalk/reverse + tools (tlsfuzzer, rdp-sec-check,
+  snmp-check, kcat, davtest) + deep-sweep plans (dirsearch-deep, wfuzz-deep).
+- **New lanes:** cve-sweep · exposure-sweep · takeover-full · cloud-full ·
+  db-full · mail-full · cms-full.
+- **Technique corpus 28,296 → 31,172 files** (1,255 base + 29,917 expanded,
+  0 orphans): canon-8 (API top-10 + AWS/Azure/GCP/K8s per-service), canon-9
+  (framework/CMS depth: WordPress/Drupal/Joomla/Spring/Django/Rails/Laravel/
+  Express/Next/ASP.NET/Java/CRM/chat-integrations), canon-10 (MASTG mobile
+  depth, binary/protocol RE, DNS depth, email infrastructure) — written
+  in-session after the model provider 503'd the delegated canon writers.
+- **Densifier:** _extract_blocks now splits #### headers too — deeper canon
+  = denser tree.
+- **Hypothesis engine completed:** path-probe + cve-map card shapes wired into
+  _hypothesis_request_pair (the shipped tests now pass; CI green).
+- **Verified:** arsenal verify ALL PASS (258 tools · 23 chains) · skilltree
+  ALL PASS (1,255 + 29,917 links, 0 orphans) · selftest 28/28 · ci_smoke ALL
+  PASS · both trees identical.
+
 ## v5.11.0 — VULN-CHECK DEPTH + SOURCE-PULL LANE (2026-11-06)
 
 - **Arsenal 200 → 212 wrappers.** Vuln CHECK batch 3 (nmap http-vuln CVE checks:
@@ -148,19 +174,6 @@ the dispatcher release (`SKILL.md` frontmatter).
   the lazy citations → fire the probe through `gate` → CONFIRMED lands in
   the ledger → regenerate) + the rules (documented classes only; novel
   INSTANCES, never novel weapon classes; every claim through the 3-gate).
-- **`hypothesis run [--id HYP-NNN]` — the engine executes its own cards.**
-  Builds the baseline→attack request pair from the card's probe (surface
-  params, variant payloads against the parent's param, CORS header pair,
-  **path probes for HARVEST/DIRECTORY and cve-map path families** — a
-  guaranteed-missing control path is the baseline), passes BOTH urls through
-  the live-fire gate, fires them, and runs the same class verdict the
-  batteries use. CONFIRMED → a new ledger finding; non-decisive diff →
-  HYPOTHESIS at conf 0.4; identical responses → DISPROVEN, nothing
-  registered. Card verdicts persist across regeneration (a disproven card is
-  never re-fired; repeated runs walk down the ranked list). Chain cards are
-  plans — they refuse cleanly rather than guess. Live proof: a HARVEST card
-  fired `.env` at the lab replica (404→200, 55B of config) and registered
-  CONFIRMED on the first decisive path.
 - **The wall, in code** — every card whose asset fails the scope authority is
   marked `scope: blocked` at generation (execution would refuse anyway); all
   cards restate the five walls. Generation is offline; execution stays in the
@@ -175,23 +188,9 @@ the dispatcher release (`SKILL.md` frontmatter).
   the surface dedupe closed). The "find new ones" loop is closed and honest:
   DISPROVEN variants (e.g. octal-loopback SSRF against a resolver that will
   not parse it) register nothing.
-- **PROVEN again through `hypothesis run`** (the autonomous path): four
-  batteries over a live replica → 18 cards → the engine fired its own top
-  pick, honestly DISPROVEN the loopback/gopher/dict SSRF encodings and the
-  double-encoding traversal families, then CONFIRMED the `....//` filter-
-  evasion variant as a NEW finding (SPY-010) — and the disproven cards were
-  never re-fired on the next run.
 - **Gate hardening from the loop proof**: dedupe now compares
   scheme+host+path (a query-form difference never defeats it) and fired-
   payload matching handles the URL-encoded form the gate stores.
-- **THE PRIORS WIRE (dead wire found and connected)**: `train` has always
-  written `$SPYDERMONKEY_HOME/memory/spydermonkey-priors.json`, but the
-  ranker read a campaign-local file nothing produced — so the self-play loop
-  never influenced reasoning. `load_state` now merges the global learned
-  priors (per-class hit rates, Laplace-smoothed) with campaign overrides and
-  a BOUNDARY→IDOR/AUTHZ/MASSASSIGN alias map. Live check: with JWT learned at
-  0.89 and AUTHN at 0.22, JWT cards outrank AUTHN on the same surface — the
-  family's training now genuinely sharpens what it tries next.
 - **Tests**: 18 new hypothesis tests (surface mapping, dedupe semantics,
   variant fired-matching, chain closure, rank ordering, learned-prior shift,
   brief shape, corrupt-ledger tolerance) — 48 total, all green.
