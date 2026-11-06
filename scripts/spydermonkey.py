@@ -98,7 +98,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "5.12.0"
+VERSION = "5.13.0"
 SCHEMA = 4
 
 
@@ -5399,6 +5399,39 @@ def cmd_hypothesis(args):
     return 0
 
 
+def _flow_http(steps, timeout=8):
+    """Run a request SEQUENCE with cookie carryover (stdlib cookiejar opener).
+    Returns the LAST step's response dict ({status, body, url}) — the same shape
+    _http returns — so class verdicts and 3-gate semantics apply to multi-step
+    flows: login → action → result. Fresh session per run."""
+    import http.cookiejar as _cj
+    from urllib.request import Request, build_opener, HTTPCookieProcessor
+    from urllib.error import HTTPError
+    jar = _cj.CookieJar()
+    opener = build_opener(HTTPCookieProcessor(jar))
+    last = None
+    for st in steps:
+        url = st["url"]
+        method = st.get("method", "GET")
+        body = st.get("body")
+        data = body.encode() if isinstance(body, str) else body
+        req = Request(url, data=data, method=method)
+        for k, v in (st.get("headers") or {}).items():
+            req.add_header(k, v)
+        try:
+            with opener.open(req, timeout=timeout) as r:
+                last = {"status": r.status,
+                        "body": r.read(200000).decode("utf-8", "replace"),
+                        "url": url}
+        except HTTPError as e:
+            last = {"status": e.code,
+                    "body": e.read(200000).decode("utf-8", "replace"),
+                    "url": url}
+        except Exception as e:
+            last = {"status": 0, "body": f"error: {e}", "url": url}
+    return last
+
+
 def _hypothesis_request_pair(card: dict, ledger: list) -> tuple:
     """Build (baseline_kwargs, [(payload, attack_kwargs)]) from a card's probe.
     Returns (None, []) when the card is not auto-executable (chain plans and
@@ -5406,6 +5439,33 @@ def _hypothesis_request_pair(card: dict, ledger: list) -> tuple:
     from urllib.parse import urlsplit, parse_qsl, urlencode, urlunsplit
     probe = card.get("probe") or {}
     cls = card.get("cls")
+
+    if probe.get("flow") and probe.get("payloads"):
+        # MULTI-STEP FLOW card: the steps carry a __PAYLOAD__ marker; the
+        # baseline run substitutes it with `baseline`, each attack run with the
+        # payload. The verdict diffs the FINAL step — logic chains (login →
+        # action → result) become provable, not hypothetical.
+        marker = probe.get("marker", "__PAYLOAD__")
+
+        def _subst(steps, value):
+            out = []
+            for st in steps:
+                s2 = {}
+                for k, v in st.items():
+                    if k == "headers" and isinstance(v, dict):
+                        s2[k] = {hk: hv.replace(marker, value) if isinstance(hv, str) else hv
+                                 for hk, hv in v.items()}
+                    elif isinstance(v, str):
+                        s2[k] = v.replace(marker, value)
+                    else:
+                        s2[k] = v
+                out.append(s2)
+            return out
+
+        baseline_val = probe.get("baseline", "baseline")
+        base = {"flow": _subst(probe["flow"], baseline_val)}
+        attacks = [(p, {"flow": _subst(probe["flow"], p)}) for p in probe["payloads"]]
+        return base, attacks
 
     if card.get("kind") == "surface" and cls == "CORS":
         base = probe.get("url") or card.get("asset")
@@ -5542,10 +5602,13 @@ def cmd_hypothesis_run(args):
         return 2
     # the wall: the baseline AND every attack url pass the live-fire gate
     for _p, akw in [(-1, baseline)] + list(attacks):
-        if not _scope_gate(akw["url"], quiet=True):
-            print(f"✗ refusing — attack url outside the declared estate: "
-                  f"{akw['url']}", file=sys.stderr)
-            return 2
+        urls = ([s.get("url", "") for s in akw["flow"]] if "flow" in akw
+                else [akw["url"]])
+        for u in urls:
+            if not _scope_gate(u, quiet=True):
+                print(f"✗ refusing — attack url outside the declared estate: "
+                      f"{u}", file=sys.stderr)
+                return 2
 
     timeout = getattr(args, "timeout", 8)
     t = {"name": card["cls"], "signatures": HYP_SIGNATURES.get(card["cls"], ())}
@@ -5557,10 +5620,16 @@ def cmd_hypothesis_run(args):
               f"on {card.get('asset', '')[:60]} ═══")
         print(f"  why: {'; '.join(card.get('why', [])[:2])}")
     for payload, akw in attacks:
-        b = _http(baseline["url"], method=baseline.get("method", "GET"),
-                  headers=baseline.get("headers"), timeout=timeout)
-        a = _http(akw["url"], method=akw.get("method", "GET"),
-                  headers=akw.get("headers"), timeout=timeout)
+        if "flow" in baseline:
+            b = _flow_http(baseline["flow"], timeout=timeout)
+        else:
+            b = _http(baseline["url"], method=baseline.get("method", "GET"),
+                      headers=baseline.get("headers"), timeout=timeout)
+        if "flow" in akw:
+            a = _flow_http(akw["flow"], timeout=timeout)
+        else:
+            a = _http(akw["url"], method=akw.get("method", "GET"),
+                      headers=akw.get("headers"), timeout=timeout)
         tried += 1
         hit, decisive, reason = _tester_verdict(t, str(payload), b, a)
         if not _json_mode(args):
