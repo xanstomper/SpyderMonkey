@@ -274,6 +274,16 @@ SEVERITY_GUESS = {
     "XSS": "medium", "CRYPTO": "high",
 }
 
+# path-probe vocabularies for the classes whose evidence lives at predictable
+# paths (the testers' own lists — GET-only, count-only, NO-GAIN)
+HARVEST_PATHS = (".env", ".git/HEAD", ".svn/entries", ".DS_Store",
+                 "backup.zip", "backup.sql", "dump.sql", "debug", "phpinfo",
+                 "phpinfo.php", "actuator/env", "swagger.json", "api-docs",
+                 "server-status")
+DIRECTORY_PATHS = ("files/", "backup/", "static/", "data/", "uploads/",
+                   "images/", "assets/", "archive/", "old/", "test/")
+PATH_PROBE_CONTROL = "__spydermonkey_control__"
+
 
 # ── state assembly ───────────────────────────────────────────────────────────
 
@@ -431,6 +441,13 @@ def _surface_probe(cls: str, ep: str, state: dict) -> dict:
     }
     fn = probes.get(cls)
     if fn is None:
+        if cls in ("HARVEST", "DIRECTORY"):
+            root = urlunsplit((sp.scheme, sp.netloc, "/", "", ""))
+            paths = HARVEST_PATHS if cls == "HARVEST" else DIRECTORY_PATHS
+            return {"method": "GET", "base": root, "paths": list(paths),
+                    "control": PATH_PROBE_CONTROL,
+                    "diff": "the control path is the baseline; a candidate "
+                            "answering with sensitive content/listing is the proof"}
         return {"method": "GET", "url": base, "note": "class-specific runner required"}
     attacks = fn(orig) if orig else fn("1")
     return {"method": "GET", "url": base,

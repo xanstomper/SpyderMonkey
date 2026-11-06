@@ -5417,6 +5417,26 @@ def _hypothesis_request_pair(card: dict, ledger: list) -> tuple:
              "headers": {"Origin": "https://cors.probe.invalid"}}
         return b, [("https://cors.probe.invalid", a)]
 
+    if probe.get("paths"):
+        # path-probe cards (HARVEST/DIRECTORY): the guaranteed-missing control
+        # path is the baseline; each candidate path is an attack. Soft-404
+        # targets answer identically and register NOTHING.
+        base = probe.get("base")
+        if not base:
+            for r in ledger:                       # cve-map cards: derive the
+                a = r.get("asset") or ""           # origin from estate evidence
+                if a.startswith(("http://", "https://")):
+                    sp2 = urlsplit(a)
+                    base = f"{sp2.scheme}://{sp2.netloc}/"
+                    break
+        if not base:
+            return None, []
+        control = probe.get("control") or "__spydermonkey_control__"
+        baseline = {"method": "GET", "url": base + control}
+        out = [(p, {"method": "GET", "url": base + p})
+               for p in probe["paths"]]
+        return baseline, out
+
     if card.get("kind") == "surface" and probe.get("attacks") and probe.get("url"):
         base = probe["url"]
         param = probe.get("param")
@@ -5459,9 +5479,11 @@ def _hypothesis_request_pair(card: dict, ledger: list) -> tuple:
 HYP_SIGNATURES = {
     "TRAVERSAL": ("root:x:0:0", "root:*:0:0", "daemon:"),
     "NOSQL": ('"authenticated": true', '"role": "admin"', '"bypass": true'),
-    "HARVEST": ("secret", "api_key", "password=", "ref: refs/",
-                "BEGIN PRIVATE KEY", "DATABASE_URL"),
-    "DIRECTORY": ("index of /", "<title>directory listing"),
+    "HARVEST": ("secret", "api_key", "apikey", "password=", "ref: refs/",
+                "begin private key", "phpinfo()", "database_url",
+                '{"paths"', "swagger", '"openapi"', "disk_free"),
+    "DIRECTORY": ("index of /", "<title>directory listing",
+                  "parent directory"),
     "AUTHN": ('"authenticated": true', '"bypass": true', '"role": "admin"'),
 }
 

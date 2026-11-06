@@ -276,6 +276,25 @@ class RunPathTests(unittest.TestCase):
         base, attacks = self.sm._hypothesis_request_pair(card, ledger)
         self.assertEqual(attacks, [])
 
+    def test_path_probe_card_uses_control_baseline(self):
+        card = {"kind": "surface", "cls": "HARVEST", "asset": "http://l/debug",
+                "probe": {"method": "GET", "base": "http://l/",
+                          "paths": [".env", "debug"], "control": "__ctl__"}}
+        base, attacks = self.sm._hypothesis_request_pair(card, [])
+        self.assertEqual(base["url"], "http://l/__ctl__")
+        self.assertEqual([a[1]["url"] for a in attacks],
+                         ["http://l/.env", "http://l/debug"])
+
+    def test_cve_map_path_card_derives_origin_from_ledger(self):
+        ledger = [_row("SPY-001", "IDOR", "https://app.test/api/x?id=1")]
+        card = {"kind": "cve-map", "cls": "HARVEST", "asset": "campaign-x",
+                "probe": {"paths": ("actuator/env",)}}
+        base, attacks = self.sm._hypothesis_request_pair(card, ledger)
+        self.assertEqual(base["url"],
+                         "https://app.test/__spydermonkey_control__")
+        self.assertEqual(attacks[0][1]["url"],
+                         "https://app.test/actuator/env")
+
 
 if __name__ == "__main__":
     unittest.main()
