@@ -1,0 +1,46 @@
+# Hermes fallback debugging (user-reported "keeps falling back / some models not working") — mobile-api / hardened
+
+- source canon: `holyshit-mode/case-gratisfy-2026-10-10-gateway-mint.md`
+- base technique: `holyshit-mode-case-gratisfy-2026-10-10-gateway-mint-hermes-f.md`
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- context: **mobile-api** · auth **hardened** · chain role **pivot**
+
+## Context
+
+- platform: the mobile client IS another api principal — same routes, different trust assumptions
+- auth state: a filter/WAF tier fronts the target: expect canonicalization and signature matching on the raw request — the probe vocabulary's encodings (double-encode, unicode, backslash, case-split) exist exactly for this tier; the differential must clear the filter WITHOUT tripping it, or the finding is a WAF flag, not a class confirmation. Low-and-slow: one variant per request, never a burst.
+
+## The technique
+
+Two independent causes, both diagnosed in one pass:
+1. **`fallback_model` chain pointed at dead providers** (obsidian-free models + freeinference).
+   Any transient freeforge error (429 throttle) silently "recovered" onto broken endpoints.
+   Fix: replace chain with same-provider fallbacks (`freeforge/instant`, then
+   `freeforge/deepseek-v4-pro`) so retries stay in-family. Verify with
+   `hermes_cli.fallback_config.get_fallback_chain(yaml.safe_load(config))` — note
+   `fallback_providers` key takes priority over `fallback_model` if both exist.
+2. **Stale master key in `~/.hermes/.env`** — the key printed at server startup came from an
+   older DB generation; the running server's `freeforge.db` (`meta` table, `master` row) holds
+   the real one. Symptom: direct curl 200 but hermes 401 → 401s trigger fallback churn.
+   Fix: read master from the SQLite DB, sed it into `.env`.
+   Rule: **read the authoritative key from the server's DB, not from startup logs**, and diff
+   `.env` value vs DB before debugging anything else in provider wiring.
+- "Some models don't work" can also just be the shared per-IP 20/min throttle queueing a model
+  (~90s+ for one call after a burst) — retest alone with a longer timeout before treating it
+  as dead. grok-4-6 behaved exactly this way and passed on solo retest.
+
+## Probe adjustment (mobile-api × hardened)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

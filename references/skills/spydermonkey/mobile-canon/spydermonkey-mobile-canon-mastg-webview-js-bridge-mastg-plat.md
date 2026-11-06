@@ -1,7 +1,7 @@
 # MASTG WebView JS Bridge (MASTG-PLATFORM-05)
 
 - source canon: `spydermonkey/mobile-canon.md`
-- bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
+- bindings: **MASTG-PLATFORM** · **CWE-749** · **ATT&CK T1557**
 - generated: 2026-11-04
 
 ## The technique

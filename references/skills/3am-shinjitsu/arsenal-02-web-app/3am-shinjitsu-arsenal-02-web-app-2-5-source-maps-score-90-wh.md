@@ -1,7 +1,7 @@
 # 2.5 Source maps (score 90 when present)
 
 - source canon: `3am-shinjitsu/arsenal-02-web-app.md`
-- bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
+- bindings: **WSTG-CRYPTO-04** · **CWE-329** · **ATT&CK T1573**
 - generated: 2026-11-04
 
 ## The technique

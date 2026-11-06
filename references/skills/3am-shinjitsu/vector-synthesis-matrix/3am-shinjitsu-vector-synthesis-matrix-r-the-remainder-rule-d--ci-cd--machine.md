@@ -1,0 +1,40 @@
+# §R — the remainder rule (derive any unlisted pair) — ci-cd / machine
+
+- source canon: `3am-shinjitsu/vector-synthesis-matrix.md`
+- base technique: `3am-shinjitsu-vector-synthesis-matrix-r-the-remainder-rule-d.md`
+- bindings: **WSTG-ATHZ-04** · **CWE-639** · **ATT&CK T1068**
+- context: **ci-cd** · auth **machine** · chain role **pivot**
+
+## Context
+
+- platform: pipeline config/runner surface — secrets and lateral movement ride the runners
+- auth state: the principal is a SERVICE identity (API key, SA token, CI secret, webhook signing key): the differential is the KEY's resource scope — key-level vs user-level objects, cross-tenant reach, unscoped keys, and which audit trail the key leaves; the human account model does not apply
+
+## The technique
+
+Pair (F, S) not in the table → derive mechanically, 60 seconds:
+
+1. Take F's canonical primitive shape (flaw-family key).
+2. Substitute S's boundary as the attacker-controlled input position (seam key).
+3. Write the one-liner: `[primitive shape] at [seam's input position]`.
+4. Score §14. ≥60 → run; else ledger as rejected-with-reason.
+
+Derivation example: (3 Type-coercion × H Multi-host) → "send the object-where-string
+payload to the mirror host's twin endpoint, where the validator is one version older" —
+this is exactly how the gamdom mirrors got probed.
+
+## Probe adjustment (ci-cd × machine)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

@@ -1,0 +1,37 @@
+# 4. WebSocket capture — chain composition
+
+- source canon: `spydermonkey/tls-auth-audit.md`
+- base technique: `spydermonkey-tls-auth-audit-4-websocket-capture.md`
+- chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
+
+## Pairing rule
+
+chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). This technique composes when a sibling finding shares that origin and the pattern's two legs match. Never invent a chain: both legs need their own baseline→attack→diff proof first.
+
+## Composition
+
+- `page.on('websocket')` only fires for main-world sockets AND only on pages
+  that actually open one (chat/game pages, not the landing page); sockets inside
+  blob workers escape it. Prefer hooking: `evaluateOnNewDocument` patching
+  `window.WebSocket` to log open/send/receive. ArrayBuffer frames print as
+  `[object ArrayBuffer]` — that means binary protobuf framing (custom parser),
+  not an error.
+- A raw `new WebSocket()` from page context without the client's handshake
+  params closes 1006. Do NOT hand-build the connect URL — copy it verbatim from
+  the hook log (transport params, device-fingerprint and timestamp query params
+  included).
+- Socket auth may be device-fingerprint + timestamp query params only — no user
+  identity. On a public feed/chat socket that is an AUTHN finding (visitor
+  sessions ride production sockets).
+- The SPA socket opens LAZILY and INTERMITTENTLY: one sequence (landing → chat → game, 10-20s waits) opened it; later repeats of subsets (landing → game, landing → chat alone) opened nothing. On frames: 0, retry the full sequence with long waits before concluding no socket exists.
+- `page.goto` to a new route KILLS an open socket and may not reopen it. To exercise a room on a different SPA route (e.g. personal-bets), open the socket on its home page first, then navigate IN-APP: `history.pushState` + `dispatchEvent(new PopStateEvent('popstate'))`, capturing frames across the change.
+- The client bundle rarely exposes the socket instance (`window.io` absent — verify with an Object.keys scan). To emit, open a SECOND WebSocket from page context with the connect URL copied verbatim from the hook log; with a custom parser (binary protobuf) events are not socket.io text frames (`42[...]`) — decoding requires the bundle's proto schema.
+- Room/event names for personal data with CLIENT-SIDE identity predicates
+  (`accept: r.userId === e`) = hypothesis of a server-side enforcement gap.
+  Binary protobuf framing usually blocks black-box proof — register as
+  hypothesis with the code excerpt as evidence; do not claim CONFIRMED.
+
+## Walls
+
+- a chain is a SEVERITY judgment over proven findings — never new execution
+- every leg keeps its own ledger row and its own evidence

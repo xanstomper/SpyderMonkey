@@ -1,7 +1,7 @@
 # The cycle
 
 - source canon: `dojo/range-playbook.md`
-- bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
+- bindings: **WSTG-SESS** · **CWE-287** · **ATT&CK T1550**
 - generated: 2026-11-04
 
 ## The technique

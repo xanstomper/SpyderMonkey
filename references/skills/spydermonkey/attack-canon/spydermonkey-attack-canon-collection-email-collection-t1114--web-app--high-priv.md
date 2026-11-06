@@ -2,7 +2,7 @@
 
 - source canon: `spydermonkey/attack-canon.md`
 - base technique: `spydermonkey-attack-canon-collection-email-collection-t1114.md`
-- bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
+- bindings: **WSTG-CRYPTO-04** · **CWE-329** · **ATT&CK T1573**
 - context: **web-app** · auth **high-priv** · chain role **pivot**
 
 ## Context

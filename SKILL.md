@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 5.2.0
+version: 5.11.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -114,13 +114,16 @@ The dispatcher is now a control plane, not just a router:
   engine self-checks serially so a healthy engine is never reported red.
 
 Also in the toolbox: `bench` (offline route-level accuracy — 29/29 at v4.0.0) ·
-`arsenal` (20 scope-gated tool wrappers + 4 feeding chains — recon/web/tls/net —
-structured run records, kernel `--out` results the loop absorbs) · `fleet`
+`arsenal` (212 scope-gated tool wrappers + 16 feeding chains — recon/web/tls/net/
+dns/content/api/services/cms/win/osint/db/takeover/cloud/packet/fuzz —
+structured run records, kernel `--out` results the loop absorbs) · **`catalog`**
+(v5.3.0 — 1,053-entry known-tool reference index, lazy-loaded metadata; info
+only, execution stays scope-gated via arsenal) · `fleet`
 (parallel multi-agent dispatch, one agent per mandate) · `bench_live.py`
 (exploitation-level bench, throwaway HOME, localhost lab) · `mcp_server.py`
-(the family as 43 MCP tools) · `skilltree.py` (the technique library: 722 base
-files + the CONTEXT CORPUS — `--expand` generates 8.8k technique × platform ×
-auth files with chain-role tags, deterministic, `--verify` checks both indexes).
+(the family as 52 MCP tools) · `skilltree.py` (the technique library: 1,126 base
+files + the CONTEXT CORPUS — `--expand` generates 28.3k technique × platform ×
+auth × federated × machine files with chain-role tags, deterministic, `--verify` checks both indexes).
 
 ## The Mandate Discipline (v1.1.0 — the Kimiko architecture, model-agnostic)
 
@@ -150,6 +153,13 @@ walls as the stop conditions:
 paste it as the system prompt of ANY model/agent and it operates the family under
 the same discipline. Kimiko contributed the architecture; the family's walls
 replaced the nullification — discipline without harm.
+
+**The session injection (v5.4.0)** — `references/mandate-session.md` is the
+session-hijack contract: every message in a session runs in-mandate until release.
+Activate per agent: OpenCode `/spydermonkey` (switches to the `spydermonkey`
+primary agent) · Claude Code `/spydermonkey` (`~/.claude/commands/spydermonkey.md`)
+· Hermes `/spydermonkey` · Cline CLI `spydermonkey-cline "<brief>"`. Print or paste
+anywhere else: `spydermonkey mandate --session`. Release: `/spydermonkey off`.
 
 ## The Router (what any agent does with a goal)
 
@@ -194,22 +204,41 @@ selftest that exercises each engine for real.
   findings register themselves; diff-without-token registers as hypothesis;
   identical responses register NOTHING (no speculation). `gate --prove SPY-NNN`
   replays the stored evidence.
-- **`chain detect --target T`** — 8 chain patterns (credential_endpoint ·
+- **`chain detect --target T`** — 10 chain patterns (credential_endpoint ·
   info_disclosure_ssrf · redirect_oauth · idor_data_leak · xss_csrf · ssti_rce ·
   race_business · custom): two low findings on the same origin combine into a
   high-impact kill chain with an expected-impact line and a testing plan. All
   walls preserved in the plans (arithmetic markers only, one reversible test).
 - **`context set|show`** — the session context: endpoints · roles · credentials
   · functions. The shared map the testers strike from.
-- **`testers --url U… | --demo`** — the 8 PARALLEL SUB-TESTERS (IDOR · AUTHZ
-  · MASSASSIGN · INJECTION · AUTHN · BIZLOGIC · SSRF · FILEATTACK), each a
-  differential probe with gate semantics, deduped into the ledger. `--demo`
-  spins the built-in lab replica (127.0.0.1, self-terminating) so the layer
-  proves itself with zero setup — confirmed testers register, the rest register
-  as hypotheses with the evidence they actually produced.
+- **`testers --url U… | --demo`** — the 18 PARALLEL SUB-TESTERS (IDOR · AUTHZ
+  · MASSASSIGN · INJECTION · AUTHN · BIZLOGIC · SSRF · FILEATTACK · JWT · XSS
+  · SESSION · REDIRECT · CORS · NOSQL · CRLF · HARVEST · DIRECTORY · REPLAY),
+  each a differential probe with gate semantics, deduped into the ledger.
+  `--demo` spins the built-in lab replica (127.0.0.1, self-terminating) so the
+  layer proves itself with zero setup — confirmed testers register, the rest
+  register as hypotheses with the evidence they actually produced.
 - **`coverage --target T`** — phase × deliverable matrix, findings histogram,
   chain count, and the GAP LIST: what has NOT been tested, and which mandate
   closes it.
+- **`hypothesis gen|brief --target T [--url U] [--kinds K]`** — THE REASONING
+  ENGINE (v5.6.0): the family's own datasets (tester param vocabularies,
+  endpoint shapes, documented CVE-class families keyed to tech fingerprints,
+  variant grammars, kill-chain specs, learned priors) reason out RANKED,
+  WALL-CHECKED hypothesis cards for instances the batteries have not
+  confirmed. Four generators: **surface** (param/endpoint shape → candidate
+  classes) · **cve-map** (fingerprint → documented CVE-class family with a
+  probe shape) · **variant** (confirmed finding → documented encoding/marker
+  variants the battery never fired) · **chain** (hypothesis pairs that would
+  complete a known kill chain). Every card carries the reasoning trace (`why`),
+  the exact probe recipe, corpus citations, and the walls restated; cards
+  whose asset fails the scope gate are marked `scope: blocked` in code.
+  `hypothesis brief` emits the MODEL BRIEF — the guidance document any model
+  consumes: top cards + the exact loop (read `why` → load citations → fire
+  the probe through `gate` → CONFIRMED lands in the ledger → regenerate).
+  The kernel plans `hypothesis-gen` automatically when confirmed classes and
+  untested surface coexist. Walls: documented-PoC ADAPTATION only — novel
+  INSTANCES of documented classes, never novel weapon classes.
 - **`report --target T [--format md|json|sarif] [--output F]`** — the joint WAR
   REPORT: exec summary (findings · confirmed · severity mix), every finding with
   its 3-gate proof, attack chains, phase coverage, kage rule count, shukaku
@@ -247,7 +276,7 @@ exercised, not asserted.
 - `gate --target T --url U --attack-query Q [--confirm TOK] [--prove SPY-NNN]` — the 3-gate confirmation engine
 - `chain detect|plan --target T [--id CH-NNN]` — the 8-pattern chain detection engine
 - `context set|show --target T [--kind K --value V]` — session context (endpoints · roles · credentials · functions)
-- `testers --target T --url U [--url U2 …] | --demo` — the 8 parallel sub-testers over the session context — **two-role AUTHZ differential**: the context's first credential is the privileged baseline, the second is the low-priv attack; a different 200 on the low role IS the bypass proof
+- `testers --target T --url U [--url U2 …] | --demo` — the 18 parallel sub-testers over the session context — **two-role AUTHZ differential**: the context's first credential is the privileged baseline, the second is the low-priv attack; a different 200 on the low role IS the bypass proof
 - `crawl --target T --url U [--depth N]` — **THE SURFACE ENGINE** (HackBrowser-equivalent, stdlib): same-origin BFS crawl mining links · forms · query params · JS `fetch/axios` API paths → the session context AUTO-FILLS — the testers strike what it finds, no hand-fed urls
 - `coverage --target T` — coverage matrix + gap list
 - `report --target T [--format md|json|sarif] [--output F]` — the joint war report (campaign dir by default)
@@ -259,13 +288,13 @@ exercised, not asserted.
 - `scope init|check|show|add|remove|extend|history` — the shared estate gate (matching · deny precedence · expiry · audit)
 - `doctor [--fix]` — health check (engines · scope perms · corrupt states · canon · ledger · relays)
 - `bench` — offline route-level benchmark (29/29 = 100% at v4.0.0)
-- `arsenal list|plan|run|verify` — 20 tool wrappers + 4 feeding chains (recon · web · tls · net) behind the shared scope authority; `run --chain C --out result.json` emits the kernel result schema (`absorb` ingests it)
+- `arsenal list|plan|run|verify` — 212 tool wrappers + 16 feeding chains (recon · web · tls · net · dns · content · api · services · cms · win · osint · db · takeover · cloud · packet · fuzz) behind the shared scope authority; `run --chain C --out result.json` emits the kernel result schema (`absorb` ingests it)
 - `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` — one agent per mandate, dispatched in parallel
 
 Companion scripts (stdlib too):
 - `scripts/scope_authority.py` — the one estate gate (exact/subdomain/wildcard/CIDR/URL/port · deny · expiry · rate · audit · atomic writes)
 - `scripts/bench_live.py` — exploitation-level bench: throwaway HOME, dynamic port, localhost mini-targets
-- `scripts/mcp_server.py` — the family as 43 MCP tools (stdio JSON-RPC; batch + notifications; `--test`/`--list`)
+- `scripts/mcp_server.py` — the family as 52 MCP tools (stdio JSON-RPC; batch + notifications; `--test`/`--list`)
 - `scripts/skilltree.py` — regenerate + `--verify` `references/skills/` + `references/skilltree-index.md` (722 technique files)
 
 ## Files
@@ -274,13 +303,14 @@ Companion scripts (stdlib too):
 - `CHANGELOG.md` — release notes
 - `scripts/spydermonkey.py` — the control-plane CLI
 - `scripts/scope_authority.py` — the shared estate gate
-- `scripts/arsenal.py` — the execution layer (20 scope-gated tool wrappers · 4 feeding chains)
+- `scripts/arsenal.py` — the execution layer (212 scope-gated tool wrappers · 16 feeding chains)
 - `scripts/bench_live.py` — the exploitation-level bench
 - `scripts/mcp_server.py` — the family as MCP tools (stdio JSON-RPC)
 - `scripts/skilltree.py` — the technique-library generator + verifier
 - `scripts/ci_smoke.sh` — local truth = CI truth
 - `references/mandate.md` — the injectable persona contract
 - `references/mandates/` — 00-barbican.md … 09-dojo.md (machine-checked)
+- `references/technique-canon.md` … `-7.md` — the seven dense canon volumes feeding the tree
 - `references/skilltree-index.md` + `references/skills/` — the 722-file technique library
 - `tests/test_spydermonkey.py` — stdlib test suite
 - `README.md` — the public front page (badges, family buttons, how-it-works)

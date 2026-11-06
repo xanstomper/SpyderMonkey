@@ -1,0 +1,35 @@
+# Phase 4: Endpoint Fingerprinting — mobile-api / hardened
+
+- source canon: `holyshit-mode/recon-technique-multi-host-brute.md`
+- base technique: `holyshit-mode-recon-technique-multi-host-brute-phase-4-endpo.md`
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- context: **mobile-api** · auth **hardened** · chain role **entry**
+
+## Context
+
+- platform: the mobile client IS another api principal — same routes, different trust assumptions
+- auth state: a filter/WAF tier fronts the target: expect canonicalization and signature matching on the raw request — the probe vocabulary's encodings (double-encode, unicode, backslash, case-split) exist exactly for this tier; the differential must clear the filter WITHOUT tripping it, or the finding is a WAF flag, not a class confirmation. Low-and-slow: one variant per request, never a burst.
+
+## The technique
+
+- `/api/dashboard` → 200 unauth, 55KB stale telemetry (aggregate node health — no client IP logs)
+- JS bundle revealed password-gated endpoints:
+  - `x-refresh-password` → `/api/dashboard?refresh=1` (cache-bust)
+  - `x-export-password` → `/api/export?days=N` (full data export)
+- Both are shared secrets stored in sessionStorage (NOT per-user tokens)
+
+## Probe adjustment (mobile-api × hardened)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- opens the kill chain (first blood) — pairs with the info/harvest/recon findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

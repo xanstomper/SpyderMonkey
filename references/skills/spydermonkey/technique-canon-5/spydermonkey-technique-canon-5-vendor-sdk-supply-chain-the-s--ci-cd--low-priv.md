@@ -1,0 +1,31 @@
+# Vendor SDK supply-chain (the SPY-095 class family) — ci-cd / low-priv
+
+- source canon: `spydermonkey/technique-canon-5.md`
+- base technique: `spydermonkey-technique-canon-5-vendor-sdk-supply-chain-the-s.md`
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- context: **ci-cd** · auth **low-priv** · chain role **pivot**
+
+## Context
+
+- platform: pipeline config/runner surface — secrets and lateral movement ride the runners
+- auth state: hold ONE low-priv principal; swap object ids/roles upward only (idor/authz classes)
+
+## The technique
+
+Production pages importing personal/third-party infra (workers.dev class), SDK env-defaults (`mode||"development"`), auth material in URLs. Decisive test: passive capture of the page's OWN traffic (in-scope), the executing SDK pulled and cold-mapped — the env->host map verbatim is the crown.
+
+## Probe adjustment (ci-cd × low-priv)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

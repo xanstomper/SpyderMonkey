@@ -1,0 +1,37 @@
+# E. CLIENT — mobile-api / low-priv
+
+- source canon: `holyshit-mode/vector-matrix.md`
+- base technique: `holyshit-mode-vector-matrix-e-client.md`
+- bindings: **MASTG-RES** · **CWE-288** · **ATT&CK T1557**
+- context: **mobile-api** · auth **low-priv** · chain role **pivot**
+
+## Context
+
+- platform: the mobile client IS another api principal — same routes, different trust assumptions
+- auth state: hold ONE low-priv principal; swap object ids/roles upward only (idor/authz classes)
+
+## The technique
+
+- XSS: stored/reflected/DOM, every sink (innerHTML, eval, document.write, postMessage targets)
+- postMessage: wildcard targetOrigin, unvalidated origin on receive
+- DOM clobbering / CSS injection / clickjacking (missing XFO/frame-ancestors)
+- Sourcemaps deployed (.map) — full source recovery
+- Service worker / cache poisoning of asset URLs
+- Client-side secrets: API keys, feature flags, internal hostnames in bundles
+- Dependency rot: dead third-party scripts/invites/widgets (hijackable references)
+
+## Probe adjustment (mobile-api × low-priv)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

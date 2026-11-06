@@ -1,7 +1,7 @@
 # 5.2 WebSocket auth (score 85 — full class in `websocket-auth-testing.md`)
 
 - source canon: `3am-shinjitsu/arsenal-05-client-side.md`
-- bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
 - generated: 2026-11-04
 
 ## The technique
@@ -20,16 +20,6 @@
   handshake = gateway, not dead host — route through a real socket.io client.
 - msgpack/CFR frames: decode the protocol from the client codec, test frame injection
   server-side validation (rainbet class).
-- Unauth-ns-connect proof (raw polling, box-reachable host): handshake GET
-  `?EIO=4&transport=polling` with NO auth payload → sid issued? → POST body `40` (ns
-  connect) → ack `40{"sid":...}` PLUS an UNPROMPTED server broadcast (`42["game-state",...]`
-  class) = the auth seam CONFIRMED — the server streams state to credential-less sessions.
-  Polling needs POST, so it runs from a host the box reaches directly (exempt path class,
-  edge-gate-recon), never through GET-only relays; CDN-affinity hosts stay websocket-only.
-- Event-vocabulary mining before any emit: grep every chunk for `\.emit\(\s*"([a-z_.-]+)"`,
-  `\.on\(\s*"([a-z_.-]+)"`, and bare `"(subscribe|join|joinChannel|leave|raffle[a-z_]*|chat[a-z_.]*|alert[a-z_]*)"`
-  literals — the vocab feeds the event probes. Emit at most ONE read-shaped event per
-  candidate, observe ONE batch, stop — no harvesting, no bulk event capture.
 
 ## Family use
 

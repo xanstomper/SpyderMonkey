@@ -1,0 +1,37 @@
+# SPA endpoint + body-shape mining (minified bundle) — mobile-api / machine
+
+- source canon: `holyshit-mode/case-talknova-hardened.md`
+- base technique: `holyshit-mode-case-talknova-hardened-spa-endpoint-body-shape.md`
+- bindings: **WSTG-BUSL** · **CWE-200** · **ATT&CK T1005**
+- context: **mobile-api** · auth **machine** · chain role **pivot**
+
+## Context
+
+- platform: the mobile client IS another api principal — same routes, different trust assumptions
+- auth state: the principal is a SERVICE identity (API key, SA token, CI secret, webhook signing key): the differential is the KEY's resource scope — key-level vs user-level objects, cross-tenant reach, unscoped keys, and which audit trail the key leaves; the human account model does not apply
+
+## The technique
+
+1. `grep -oE '"/[a-zA-Z0-9_/.-]{2,60}"' app.js | sort -u` → route + endpoint list.
+2. All fetch calls: `grep -oE 'fetch\("[a-z0-9/_-]+"' app.js | sort -u`.
+3. Body shapes live at CALL SITES of the wrapper fn, not the fetch itself — find the wrapper
+   (e.g. `async function Y8(e,t){fetch("/api/chat"...}`), then grep its callers:
+   `grep -oE 'Y8\(\{[^}]{0,150}' app.js` → reveals real body keys (`{modelId, message}` not
+   the guessed `{model, messages}`). Server error strings are the oracle.
+4. **Code-split chunk discovery**: `grep -oE '"\./[A-Za-z0-9_-]+\.js"' app.js` → fetch each chunk, mine for endpoints.
+
+## Probe adjustment (mobile-api × machine)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

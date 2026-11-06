@@ -1,0 +1,39 @@
+# Real campaigns vs engine artifacts — ci-cd / machine
+
+- source canon: `spydermonkey/ledger-dump.md`
+- base technique: `spydermonkey-ledger-dump-real-campaigns-vs-engine-artifacts.md`
+- bindings: **WSTG-BUSL** · **CWE-200** · **ATT&CK T1005**
+- context: **ci-cd** · auth **machine** · chain role **pivot**
+
+## Context
+
+- platform: pipeline config/runner surface — secrets and lateral movement ride the runners
+- auth state: the principal is a SERVICE identity (API key, SA token, CI secret, webhook signing key): the differential is the KEY's resource scope — key-level vs user-level objects, cross-tenant reach, unscoped keys, and which audit trail the key leaves; the human account model does not apply
+
+## The technique
+
+`~/.redteam/campaigns/` also holds bench/training/debug dirs that are NOT
+engagements: `bdbg*, cdbg*, dbg2, rp, tr-dbg, training, smk-*, bench*, wb, cr2,
+surf, sc, demo, ci, klab, klab2, bcgame, nonexistent-zzz, http-127.0.0.1-9,
+protect, perabet-funnel, bench-live`. Real engagements carry SPY- rows in a
+>3KB ledger.jsonl and/or `*-report.md` / `war-report-*.md` artifacts:
+`bc.game, gamdom, ggpoker, oncasi, iceposeidon, rainbet.com, csgoempire`.
+Heuristic: real = ledger.jsonl >~3KB with rows whose id starts `SPY-`,
+or a war/report artifact present. Engagement names (`klab`, `ggpoker`) are
+scope.json fields, NOT the same as campaign dir names.
+
+## Probe adjustment (ci-cd × machine)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

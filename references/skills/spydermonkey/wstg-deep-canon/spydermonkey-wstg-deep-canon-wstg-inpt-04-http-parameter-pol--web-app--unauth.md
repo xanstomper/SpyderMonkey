@@ -2,7 +2,7 @@
 
 - source canon: `spydermonkey/wstg-deep-canon.md`
 - base technique: `spydermonkey-wstg-deep-canon-wstg-inpt-04-http-parameter-pol.md`
-- bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
+- bindings: **WSTG-BUSL-02** · **CWE-840** · **ATT&CK T1565**
 - context: **web-app** · auth **unauth** · chain role **pivot**
 
 ## Context

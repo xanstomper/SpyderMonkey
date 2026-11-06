@@ -10,7 +10,7 @@
 the tree, the router, the autonomous kernel, the published benchmarks, and the full
 engagement pipeline in one stdlib-only CLI.**
 
-[![Version](https://img.shields.io/badge/version-5.2.1-blueviolet?style=for-the-badge)](#the-cli)
+[![Version](https://img.shields.io/badge/version-5.6.0-blueviolet?style=for-the-badge)](#the-cli)
 [![Python](https://img.shields.io/badge/python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](#quickstart)
 [![Platform](https://img.shields.io/badge/platform-Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](#quickstart)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?style=for-the-badge)](#why-its-so-powerful)
@@ -68,6 +68,9 @@ SPYDERMONKEY is the piece that knows the whole tree:
   absorb cycle with the engines as the state machine — **model-optional**,
 - **KNOWS ITSELF** (v5): `capabilities` introspects the live registry — engines,
   classes, battery sizes, executors, corpus, learned priors,
+- **KNOWS THE KNOWN-TOOL LANDSCAPE** (v5.3.0): `catalog stats|categories|list|search|show`
+  — a 1,053-entry lazy-loaded reference index of known offensive tools; inventory,
+  not execution — firing anything still goes through `arsenal` (scope-gated),
 - **PROTECTS THE OPERATOR** (v5): `protect` inventories what the machine can leak
   and scans every campaign artifact for operator strings — rc=1 while anything leaks,
 - **TRAINS ITSELF** (v5): `train` self-plays against the family's live range and
@@ -192,7 +195,7 @@ its audit trail, and writes are atomic with `0600` permissions.
 ### 5. The pipeline — one command, ten engines
 
 Also in the toolbox: **`fleet`** dispatches every mandate as its own parallel
-agent with a real brief; **`arsenal`** wraps 20 external tools in 4 feeding chains
+agent with a real brief; **`arsenal`** wraps 30 external tools in 6 feeding chains
 (nmap, masscan, httpx, nuclei, gobuster, testssl, dnsx, subfinder, whatweb,
 wafw00f, nikto, dig, curl, ffuf, naabu, amass, katana, dalfox, tlsx, gau) behind
 the same scope authority; chain stages feed each other (subfinder's domains →
@@ -204,7 +207,7 @@ the lab replicas; **`kage`** mirrors every confirmed attack into Sigma.
 **`bench_public.py`** — the published benchmarks: the self-bench (15 live replica
 classes × 4 sub-tasks, anti-memorization, 100%) and **Range B** — an independently
 written app with zero code shared with the testers (90.6%). **`mcp_server.py`** —
-the whole family exposed as 50 MCP tools (stdio JSON-RPC, zero deps,
+the whole family exposed as 52 MCP tools (stdio JSON-RPC, zero deps,
 batch/notification support): Claude Desktop, Cursor, or any MCP client drives it.
 `--test` and `--list` are built in.
 
@@ -260,10 +263,11 @@ war report, exit rc=5, zero human input.
 | Self-play training | **14/14 classes** | `train` — priors written, planner re-ordered |
 | Self-benchmark | **100%** — 60/60 sub-tasks, anti-memorization | `bench_public.py`, seeded + reproducible |
 | Cross-range benchmark | **90.6%** on an independent codebase | `bench_public.py 2026 b` |
-| Differential testers | **11 batteries** — INJECTION 14 markers · TRAVERSAL 8 encodings · SSRF 7 targets · IDOR 8 payloads · AUTHZ 6 · AUTHN 8 · BIZLOGIC 6 | `selftest` |
-| Chain patterns | **8 kill-chain patterns**, same-origin pairing | `chain detect` |
+| Differential testers | **18 batteries** — INJECTION 14 markers · TRAVERSAL 8 encodings · SSRF 7 targets · IDOR 8 payloads · AUTHZ 6 · AUTHN 8 · BIZLOGIC 6 · NOSQL 7 · CRLF 4 · REDIRECT 5 · HARVEST 15 paths · DIRECTORY 10 roots · CORS/REPLAY header & idempotency differentials | `selftest` |
+| Chain patterns | **10 kill-chain patterns**, same-origin pairing (+ cors_credential_read · nosql_authn) | `chain detect` |
 | MCP tools | **50** — every engine surfaced to every MCP client | `mcp --test` |
-| Executors | **20-tool arsenal**, 4 feeding chains (recon/web/tls/net) | `arsenal` |
+| Executors | **30-tool arsenal**, 6 feeding chains (recon/web/tls/net/cloud/osint) | `arsenal` |
+| Reasoning engine | **4 generators** (surface · cve-map · variant · chain) → ranked, wall-checked hypothesis cards + a model brief; priors-weighted; scope-marked | `hypothesis gen` |
 | Detection patterns | **15 kage patterns** + Sigma export + live refire | [kage](https://github.com/xanstomper/kage) |
 | Takeover fingerprints | **10 dangling-CNAME services**, read-only NO-GAIN | `takeover` |
 | Dependency count | **0** | the imports |
@@ -389,7 +393,7 @@ campaign artifacts on its first run.
   real deliverables (never declared), a **finding ledger** with triager gates
   (scope · evidence · duplicates — downgraded, never suppressed), the **3-gate
   confirmation engine** (baseline → attack → measurable diff → CONFIRMED, or
-  nothing registers), **11 differential testers**, a **chain detector** (8
+  nothing registers), **18 differential testers**, a **chain detector** (10
   patterns turning low findings into high-impact kill chains), **coverage** with
   the gap list, the joint **war report**, and **remote execution nodes**
   (Ed25519 ssh relays, scope-checked). `mission` runs all of it in one command.
@@ -446,7 +450,7 @@ spydermonkey skilltree --verify     # links resolve · provenance present · 0 o
 
 ---
 
-## MCP — 50 tools for every client
+## MCP — 52 tools for every client
 
 ```
 spydermonkey mcp --stdio     # or: python3 scripts/mcp_server.py --test
@@ -457,6 +461,27 @@ scope, ledger (add/triage/show/verify/export/stats), gate, chain, context,
 testers, coverage, report, relay, mandates, kernel (`next_action`,
 `kernel_absorb`, `kernel_loop`), `capabilities`, `protect_scan`, `takeover`,
 `train`, `memory` — batch and notification support, zero deps.
+
+---
+
+## The session injection — `/spydermonkey` (v5.4.0)
+
+Type `/spydermonkey` and the mandate becomes the agent for **that session** —
+every message routes through the SPYDERMONKEY contract until release. The file
+every agent injects is `references/mandate-session.md` (re-print any time with
+`spydermonkey mandate --session`).
+
+| Agent | Activation | Persistence |
+| --- | --- | --- |
+| **OpenCode** | `/spydermonkey [goal]` — switches the session to the `spydermonkey` primary agent (`~/.config/opencode/agents/spydermonkey.md`); the mandate IS the system prompt | until you switch back (`/build`) or `/spydermonkey off` |
+| **Claude Code** | `/spydermonkey [goal]` (`~/.claude/commands/spydermonkey.md`) | in-session; released by `/spydermonkey off` |
+| **Hermes** | `/spydermonkey` (skill `spydermonkey` — `~/.hermes/skills/security/spydermonkey`) | in-session; skill reload |
+| **Cline CLI** | `spydermonkey-cline "<brief>"` (wraps `cline -s "$(cat …/mandate-session.md)"`) — system-prompt override per session | session end |
+| **Any other agent** | `spydermonkey mandate --session` → paste as system prompt / first message | per the agent's mechanism |
+
+The contract carries its own walls: scope authority first, evidence discipline
+(baseline → attack → measurable diff), validation-only compromise, NO-GAIN, and the
+report-not-attack deliverable bar. Release: `/spydermonkey off` (or agent switch).
 
 ---
 
@@ -524,9 +549,10 @@ git clone https://github.com/xanstomper/spydermonkey.git \
 | `phases --target T [--set-phase P --phase-status S]` | the 13-phase methodology board — statuses computed from real deliverables |
 | `ledger add\|list\|show\|triage\|verify\|stats\|export\|update\|sync --target T` | the finding ledger — scope-blocked, hash-chained, deduped, evidence-gated |
 | `gate --target T --url U --attack-query Q [--confirm TOK] [--prove SPY-NNN] [--cookie C] [--json-body J --attack-body J2]` | the **3-gate confirmation engine** — headers, cookies, JSON bodies |
-| `chain detect\|plan --target T [--id CH-NNN]` | **8 chain patterns** — low findings combine into high-impact kill chains |
+| `chain detect\|plan --target T [--id CH-NNN]` | **10 chain patterns** — low findings combine into high-impact kill chains |
 | `context set\|show --target T` | session context: endpoints · roles · credentials · functions |
-| `testers --target T --url U [--url U2 …] \| --demo` | the **11 differential batteries**, deduped into the ledger |
+| `testers --target T --url U [--url U2 …] \| --demo` | the **18 differential batteries**, deduped into the ledger |
+| `hypothesis gen\|brief --target T [--url U] [--kinds K]` | the **reasoning engine**: ranked hypothesis cards (surface/cve-map/variant/chain) + the model brief that guides any model through the 3-gate loop |
 | `coverage --target T` | phase × deliverable matrix + findings histogram + the gap list |
 | `report --target T [--format md\|json\|sarif] [--output F]` | the joint **war report**: findings + proofs + chains + coverage + detection + pricing |
 | `relay init\|list\|exec\|remove` | remote execution nodes: Ed25519 ssh pairs, every exec scope-checked |
@@ -537,7 +563,8 @@ git clone https://github.com/xanstomper/spydermonkey.git \
 | `scope init\|check\|show\|add\|remove\|extend\|history` | the estate gate — shared matching, deny precedence, expiry, audit history |
 | `doctor [--fix]` | full health check: engines · scope perms · corrupt states · canon · ledger · relays |
 | `bench` | offline route-level benchmark |
-| `arsenal list\|plan\|run\|verify` | the execution layer — 20 tool wrappers, 4 feeding chains, kernel-schema output |
+| `arsenal list\|plan\|run\|verify` | the execution layer — 30 tool wrappers, 6 feeding chains, kernel-schema output |
+| `catalog stats\|categories\|list\|search\|show` | **1,053-entry known-tool reference** — lazy-loaded metadata (info only; execution stays scope-gated via arsenal) |
 | `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` | one agent per mandate, dispatched in parallel |
 | `skilltree [--expand] [--verify] [--count]` | the corpus: 837 base → 11,683 files, deterministic, 0 orphans |
 | `crawl --target T --url U [--depth N]` | surface mining: links · whole-form-blocks (method+fields) · JS api-paths → context |
@@ -562,7 +589,7 @@ scripts/
 ├── spydermonkey.py    # the dispatcher: control plane · intelligence · kernel · v5 engines
 ├── scope_authority.py # ONE estate gate: matching · deny precedence · expiry · audit
 ├── skilltree.py       # corpus collector/expander/verifier (deterministic, git-stable)
-├── arsenal.py         # 20 executors, 4 feeding chains, kernel-schema results
+├── arsenal.py         # 30 executors, 6 feeding chains, kernel-schema results
 ├── mcp_server.py      # 50-tool MCP server (stdio JSON-RPC)
 ├── bench_public.py    # the published benchmarks (self + cross-range)
 ├── range_b.py         # the INDEPENDENT benchmark range (no co-evolution)

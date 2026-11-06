@@ -1,0 +1,14 @@
+# WiFi posture classes (lab)
+
+- source canon: `spydermonkey/technique-canon-5.md`
+- bindings: **MASTG-RES** · **CWE-288** · **ATT&CK T1557**
+- generated: 2026-11-06
+
+## The technique
+
+Open/guest-network isolation classes, WPA2-Enterprise cert-validation behavior — probed ONLY on lab APs you own. Decisive test: client isolation between your own two lab stations — the reachability delta is the class.
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

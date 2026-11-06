@@ -1,0 +1,36 @@
+# Unauthed-surface verdict — grpc / hardened
+
+- source canon: `holyshit-mode/case-packdraw-com.md`
+- base technique: `holyshit-mode-case-packdraw-com-unauthed-surface-verdict.md`
+- bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
+- context: **grpc** · auth **hardened** · chain role **pivot**
+
+## Context
+
+- platform: reflection/list methods first; protobuf definitions are the schema oracle
+- auth state: a filter/WAF tier fronts the target: expect canonicalization and signature matching on the raw request — the probe vocabulary's encodings (double-encode, unicode, backslash, case-split) exist exactly for this tier; the differential must clear the filter WITHOUT tripping it, or the finding is a WAF flag, not a class confirmation. Low-and-slow: one variant per request, never a burst.
+
+## The technique
+
+- Thin by design: SSR-only product data (full odds tables public = fine), checkpoint +
+  reCAPTCHA on all interactive planes, realtime gated. No unauth data plane leak found.
+- Negatives: /api/pusher/auth 403; tokenize config 404 GET; /pusher/* ghosts; VM fully
+  checkpoint-walled; wayback has HTML shells only (NO JS chunks archived — bundle mining
+  there is a dead end; 2026 shell = current-ish build references only); Elavon/Tokex
+  vendor config untested.
+
+## Probe adjustment (grpc × hardened)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

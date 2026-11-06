@@ -1,0 +1,32 @@
+# Map-snapshot intel (public, unauth)- `GET /event/map-snapshot` → 11 frames. JSON frames: event state, map_objects, contestants roster (inventory/effects/HP), game_items (211 dropped items/gravestones w/ exact lat/lng + contents), tracked_devices (live GPS + heading of tracked participants, e.g. "nate" 30.2489,-97.7236 acc 4.9m). — cloud / machine
+
+- source canon: `holyshit-mode/case-iceposeidon-safezone.md`
+- base technique: `holyshit-mode-case-iceposeidon-safezone-map-snapshot-intel-p.md`
+- bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
+- context: **cloud** · auth **machine** · chain role **pivot**
+
+## Context
+
+- platform: control-plane exposure — read-only, crown the class
+- auth state: the principal is a SERVICE identity (API key, SA token, CI secret, webhook signing key): the differential is the KEY's resource scope — key-level vs user-level objects, cross-tenant reach, unscoped keys, and which audit trail the key leaves; the human account model does not apply
+
+## The technique
+
+- 45 `claimable` chests, exact coords (~30.2509,-97.7291 Austin TX), `is_secret:true`, `claim_radius_m:10` — full chest GPS dumped publicly.
+- Binary frames (types 1/2/4/7/8): **PROTOCOL FULLY CRACKED (2026-10-21)** — see `references/iceposeidon-binary-map-protocol.md`. Kind 1 = contestant GPS fixes (slot, lat/lng i16 deltas from i32 base /1e5, accuracy, age); kinds 2/7/8 = health/zombies/projectiles. Decoded real positions (slots 21/27/67 @ ~30.2548,-97.7301).
+
+## Probe adjustment (cloud × machine)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

