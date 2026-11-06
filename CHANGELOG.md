@@ -5,6 +5,34 @@ the dispatcher release (`SKILL.md` frontmatter).
 
 
 
+## v5.13.0 — THE BRIEFING DISCIPLINE · ROUTE TABLES · MULTI-STEP GATE (2026-11-06)
+
+- **The mandate changes how agents work (v5.13):** the Briefing Discipline —
+  BRIEF ONCE BATCHED: after P0, 3-5 multi-choice option questions in ONE turn
+  (scope confirm · noise budget · lanes · vantage · deliverable form) with the
+  recommended pick marked and justified; DECISION POINTS batched identically
+  (unlocked lane, dry noise budget, ambiguous class, chain pricing); never
+  one-question-per-turn, never re-ask; scope.json read FIRST; unanswered
+  options default to the recommendation; ZERO-BLOCKER HOLDS between briefings
+  (scope-shaping, not permission-seeking); every option set demonstrates a
+  capability the operator hadn't considered.
+- **Route tables in every technique file (density upgrade):** skilltree now
+  emits a `## Route` section per file (base, variant, and chain-composition)
+  — class → the exact arsenal probes + chains that fire it, with the scope
+  gate reminder. A model reading any of the 31,172 technique files knows the
+  live probes to run without touching the index.
+- **The multi-step gate:** `_flow_http` (stdlib cookiejar opener) + the flow
+  probe shape — flow cards carry a `__PAYLOAD__` marker through a request
+  SEQUENCE (login → action → result), baseline/attack runs each substitute
+  the marker, the verdict diffs the FINAL step; every step url passes the
+  scope gate. Logic chains are now provable, not hypothetical.
+- **Hypothesis engine:** 3 new tests (flow marker substitution, per-payload
+  substitution, chain-card refusal) — 31 in the hypothesis suite, 61 total.
+- **CI wired:** .github/workflows/ci.yml runs scripts/ci_smoke.sh verbatim on
+  every push (the maintenance doctrine's closure — stale commits fail CI).
+- **README synced** to v5.13 counts (31,172 corpus · 1,255 base · 258 tools).
+- Verified: selftest + ci_smoke green locally before push.
+
 ## v5.12.0 — ROUTING SURFACE ×13: 258 TOOLS · 31,172 TECHNIQUES (2026-11-06)
 
 - **Arsenal 212 → 258 wrappers, chains 16 → 23.** NSE batch 4 (http-auth-finder,

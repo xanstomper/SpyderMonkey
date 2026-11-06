@@ -298,3 +298,43 @@ class RunPathTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FlowCardTests(unittest.TestCase):
+    """v5.13 — multi-step flow cards: marker substitution + sequence shape."""
+
+    @classmethod
+    def setUpClass(cls):
+        import spydermonkey as sm
+        cls.sm = sm
+
+    CARD = {"kind": "surface", "cls": "AUTHN", "asset": "http://l/app",
+            "probe": {"flow": [
+                {"method": "GET", "url": "http://l/login"},
+                {"method": "POST", "url": "http://l/api/auth/login/",
+                 "body": "user=b&pass=p&otb=__PAYLOAD__",
+                 "headers": {"X-OTB": "__PAYLOAD__"}},
+                {"method": "GET", "url": "http://l/api/orders"}],
+                "payloads": ["reused-otb", "malformed"],
+                "baseline": "fresh-otb"}}
+
+    def test_flow_baseline_substitutes_marker(self):
+        base, _ = self.sm._hypothesis_request_pair(self.CARD, [])
+        self.assertIn("flow", base)
+        self.assertIn("fresh-otb", base["flow"][1]["body"])
+        self.assertNotIn("__PAYLOAD__", base["flow"][1]["body"])
+        self.assertEqual(base["flow"][1]["headers"]["X-OTB"], "fresh-otb")
+
+    def test_flow_attacks_each_substitute(self):
+        _, attacks = self.sm._hypothesis_request_pair(self.CARD, [])
+        self.assertEqual([p for p, _ in attacks], ["reused-otb", "malformed"])
+        self.assertIn("reused-otb", attacks[0][1]["flow"][1]["body"])
+        self.assertIn("reused-otb", attacks[0][1]["flow"][1]["headers"]["X-OTB"])
+        self.assertIn("malformed", attacks[1][1]["flow"][1]["body"])
+
+    def test_flow_chain_card_without_payloads_not_executable(self):
+        card = {"kind": "chain", "cls": "AUTHN", "asset": "t",
+                "probe": {"flow": [{"url": "http://l/"}]}}
+        base, attacks = self.sm._hypothesis_request_pair(card, [])
+        self.assertIsNone(base)
+        self.assertEqual(attacks, [])
