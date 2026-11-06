@@ -148,6 +148,15 @@ the dispatcher release (`SKILL.md` frontmatter).
   the lazy citations → fire the probe through `gate` → CONFIRMED lands in
   the ledger → regenerate) + the rules (documented classes only; novel
   INSTANCES, never novel weapon classes; every claim through the 3-gate).
+- **`hypothesis run [--id HYP-NNN]` — the engine executes its own cards.**
+  Builds the baseline→attack request pair from the card's probe (surface
+  params, variant payloads against the parent's param, CORS header pair),
+  passes BOTH urls through the live-fire gate, fires them, and runs the same
+  class verdict the batteries use. CONFIRMED → a new ledger finding;
+  non-decisive diff → HYPOTHESIS at conf 0.4; identical responses →
+  DISPROVEN, nothing registered. Card verdicts persist across regeneration
+  (a disproven card is never re-fired; repeated runs walk down the ranked
+  list). Chain cards are plans — they refuse cleanly rather than guess.
 - **The wall, in code** — every card whose asset fails the scope authority is
   marked `scope: blocked` at generation (execution would refuse anyway); all
   cards restate the five walls. Generation is offline; execution stays in the
@@ -162,9 +171,23 @@ the dispatcher release (`SKILL.md` frontmatter).
   the surface dedupe closed). The "find new ones" loop is closed and honest:
   DISPROVEN variants (e.g. octal-loopback SSRF against a resolver that will
   not parse it) register nothing.
+- **PROVEN again through `hypothesis run`** (the autonomous path): four
+  batteries over a live replica → 18 cards → the engine fired its own top
+  pick, honestly DISPROVEN the loopback/gopher/dict SSRF encodings and the
+  double-encoding traversal families, then CONFIRMED the `....//` filter-
+  evasion variant as a NEW finding (SPY-010) — and the disproven cards were
+  never re-fired on the next run.
 - **Gate hardening from the loop proof**: dedupe now compares
   scheme+host+path (a query-form difference never defeats it) and fired-
   payload matching handles the URL-encoded form the gate stores.
+- **THE PRIORS WIRE (dead wire found and connected)**: `train` has always
+  written `$SPYDERMONKEY_HOME/memory/spydermonkey-priors.json`, but the
+  ranker read a campaign-local file nothing produced — so the self-play loop
+  never influenced reasoning. `load_state` now merges the global learned
+  priors (per-class hit rates, Laplace-smoothed) with campaign overrides and
+  a BOUNDARY→IDOR/AUTHZ/MASSASSIGN alias map. Live check: with JWT learned at
+  0.89 and AUTHN at 0.22, JWT cards outrank AUTHN on the same surface — the
+  family's training now genuinely sharpens what it tries next.
 - **Tests**: 18 new hypothesis tests (surface mapping, dedupe semantics,
   variant fired-matching, chain closure, rank ordering, learned-prior shift,
   brief shape, corrupt-ledger tolerance) — 48 total, all green.

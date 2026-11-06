@@ -236,6 +236,12 @@ selftest that exercises each engine for real.
   `hypothesis brief` emits the MODEL BRIEF — the guidance document any model
   consumes: top cards + the exact loop (read `why` → load citations → fire
   the probe through `gate` → CONFIRMED lands in the ledger → regenerate).
+  `hypothesis run [--id HYP-NNN]` EXECUTES one card through the same 3-gate
+  discipline: baseline → attack → class verdict → ledger. CONFIRMED registers
+  a new finding; a non-decisive diff registers HYPOTHESIS; identical
+  responses register NOTHING and the card is marked DISPROVEN. Fired card
+  verdicts persist across regeneration — the engine never re-fires the same
+  hypothesis, and repeated `run` calls walk down the ranked list.
   The kernel plans `hypothesis-gen` automatically when confirmed classes and
   untested surface coexist. Walls: documented-PoC ADAPTATION only — novel
   INSTANCES of documented classes, never novel weapon classes.

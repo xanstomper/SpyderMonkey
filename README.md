@@ -10,7 +10,7 @@
 the tree, the router, the autonomous kernel, the published benchmarks, and the full
 engagement pipeline in one stdlib-only CLI.**
 
-[![Version](https://img.shields.io/badge/version-5.6.0-blueviolet?style=for-the-badge)](#the-cli)
+[![Version](https://img.shields.io/badge/version-5.11.0-blueviolet?style=for-the-badge)](#the-cli)
 [![Python](https://img.shields.io/badge/python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](#quickstart)
 [![Platform](https://img.shields.io/badge/platform-Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](#quickstart)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?style=for-the-badge)](#why-its-so-powerful)
@@ -552,7 +552,7 @@ git clone https://github.com/xanstomper/spydermonkey.git \
 | `chain detect\|plan --target T [--id CH-NNN]` | **10 chain patterns** — low findings combine into high-impact kill chains |
 | `context set\|show --target T` | session context: endpoints · roles · credentials · functions |
 | `testers --target T --url U [--url U2 …] \| --demo` | the **18 differential batteries**, deduped into the ledger |
-| `hypothesis gen\|brief --target T [--url U] [--kinds K]` | the **reasoning engine**: ranked hypothesis cards (surface/cve-map/variant/chain) + the model brief that guides any model through the 3-gate loop |
+| `hypothesis gen\|brief\|run --target T [--url U] [--kinds K] [--id HYP-NNN]` | the **reasoning engine**: ranked hypothesis cards (surface/cve-map/variant/chain), the model brief, and `run` — fires ONE card through the same 3-gate discipline (CONFIRMED → new ledger row · non-decisive → HYPOTHESIS · identical → DISPROVEN, nothing registered) |
 | `coverage --target T` | phase × deliverable matrix + findings histogram + the gap list |
 | `report --target T [--format md\|json\|sarif] [--output F]` | the joint **war report**: findings + proofs + chains + coverage + detection + pricing |
 | `relay init\|list\|exec\|remove` | remote execution nodes: Ed25519 ssh pairs, every exec scope-checked |
