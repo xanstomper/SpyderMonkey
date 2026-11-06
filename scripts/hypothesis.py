@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""SPYDERMONKEY HYPOTHESIS ENGINE — v5.6.0 THE REASONING ENGINE.
+"""SPYDERMONKEY HYPOTHESIS ENGINE — THE REASONING ENGINE (v5.6.0 · merged into the 5.11.0 lineage).
 
 Turns the family's existing datasets into ranked, testable, wall-checked
 hypotheses — the reasoning scaffold that guides ANY model (or the model-free
@@ -29,10 +29,11 @@ documents.
 from __future__ import annotations
 
 import json
+import os
 import re
 from pathlib import Path
 
-VERSION = "5.6.0"
+VERSION = "5.11.0"
 
 # ── the reasoning datasets ────────────────────────────────────────────────────
 # All vocabularies here are the family's OWN, proven ones: the param shapes are
@@ -276,6 +277,34 @@ SEVERITY_GUESS = {
 
 # ── state assembly ───────────────────────────────────────────────────────────
 
+def _priors(camp, _j) -> dict:
+    """The ranker's priors: campaign-local overrides, then the GLOBAL learned
+    priors that `train` (the self-play loop) writes —
+    $SPYDERMONKEY_HOME/memory/spydermonkey-priors.json — as per-class
+    hit rates, Laplace-smoothed into class_priors floats. Without this wire
+    the reasoning engine would ignore everything the family learned."""
+    merged = {}
+    local = _j("hypothesis-priors.json", {})
+    if isinstance(local, dict):
+        merged.update(local)
+    root = Path(os.environ.get("SPYDERMONKEY_HOME",
+                               str(Path.home() / ".redteam")))
+    gp = root / "memory" / "spydermonkey-priors.json"
+    if gp.exists():
+        try:
+            learned = json.loads(gp.read_text())
+        except Exception:
+            learned = {}
+        cp = merged.setdefault("class_priors", {})
+        for cls, d in learned.items():
+            if not isinstance(d, dict) or "runs" not in d:
+                continue
+            runs = max(1, int(d.get("runs", 1)))
+            hits = int(d.get("hits", 0))
+            cp.setdefault(str(cls).upper(), round((hits + 1) / (runs + 2), 3))
+    return merged
+
+
 def load_state(camp) -> dict:
     """Read the family state files the reasoning grounds on. `camp` is the
     campaign directory (Path). Pure readers — never write."""
@@ -302,7 +331,7 @@ def load_state(camp) -> dict:
         "context": _j("context.json", {"endpoints": [], "roles": [],
                                        "credentials": [], "functions": []}),
         "ledger": ledger,
-        "priors": _j("hypothesis-priors.json", {}),
+        "priors": _priors(camp, _j),
         "arsenal": _j("arsenal-state.json", {"runs": []}),
         "chains": _j("chain-state.json", {}).get("chains", []),
     }
@@ -603,6 +632,10 @@ CLASS_PRIOR = {
     "XSS": 0.5, "CRYPTO": 0.3,
 }
 KIND_WEIGHT = {"variant": 1.0, "cve-map": 0.9, "chain": 0.85, "surface": 0.7}
+# the canon classes `train` learns under cover card classes the dojo has no
+# direct twin for
+PRIOR_ALIASES = {"IDOR": "BOUNDARY", "AUTHZ": "BOUNDARY",
+                 "MASSASSIGN": "BOUNDARY", "BIZLOGIC": "REPLAY"}
 
 
 def rank(cards: list[dict], state: dict) -> list[dict]:
@@ -611,6 +644,8 @@ def rank(cards: list[dict], state: dict) -> list[dict]:
     for c in cards:
         base = CLASS_PRIOR.get(c["cls"], 0.5)
         learned = class_priors.get(c["cls"])
+        if learned is None and c["cls"] in PRIOR_ALIASES:
+            learned = class_priors.get(PRIOR_ALIASES[c["cls"]])
         score = (0.5 * base + 0.5 * learned) if isinstance(learned, (int, float)) else base
         score *= KIND_WEIGHT.get(c["kind"], 0.5)
         # confirmed classes on this estate are likelier to confirm again elsewhere

@@ -169,6 +169,40 @@ class RankAndBriefTests(unittest.TestCase):
         self.assertIn("CONFIRMED", " ".join(brief["loop"]))
 
 
+class PriorsTests(unittest.TestCase):
+    """The learned-priors wire: train writes, the ranker reads."""
+
+    def test_global_priors_are_loaded_and_smoothed(self):
+        import os
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as td:
+            mem = Path(td) / "memory"
+            mem.mkdir()
+            (mem / "spydermonkey-priors.json").write_text(json.dumps(
+                {"JWT": {"hits": 7, "runs": 7},
+                 "AUTHN": {"hits": 1, "runs": 7}}))
+            with mock.patch.dict(os.environ, {"SPYDERMONKEY_HOME": td}):
+                st = hy.load_state(Path(td))
+        cp = st["priors"]["class_priors"]
+        self.assertAlmostEqual(cp["JWT"], 8 / 9, places=3)   # Laplace
+        self.assertAlmostEqual(cp["AUTHN"], 2 / 9, places=3)
+
+    def test_learned_prior_moves_the_ranking(self):
+        st = _state(endpoints=["http://l/search?q=x",
+                               "http://l/token?token=a"])
+        st["priors"] = {"class_priors": {"JWT": 1.0, "XSS": 0.0,
+                                         "INJECTION": 0.0}}
+        ranked = hy.rank(hy.surface_hypotheses(st, "t"), st)
+        self.assertEqual(ranked[0]["cls"], "JWT")
+
+    def test_boundary_alias_feeds_idor(self):
+        st = _state(endpoints=["http://l/api/orders?org_id=acme"])
+        st["priors"] = {"class_priors": {"BOUNDARY": 1.0}}
+        ranked = hy.rank(hy.surface_hypotheses(st, "t"), st)
+        idor = next(c for c in ranked if c["cls"] == "IDOR")
+        self.assertGreater(idor["score"], 0.3)
+
+
 class StateTests(unittest.TestCase):
     def test_ledger_assets_backfill_the_surface(self):
         with tempfile.TemporaryDirectory() as td:
