@@ -1,0 +1,14 @@
+# S3 policy-gap matrix
+
+- source canon: `spydermonkey/technique-canon-8.md`
+- bindings: **WSTG-CONF-04** · **CWE-732** · **ATT&CK T1530**
+- generated: 2026-11-06
+
+## The technique
+
+Anonymous GET/LIST/PREFIX-divergence and policy-vs-ACL conflict classes. Decisive test: anonymous LIST on the bucket, one object GET — read-only rows.
+
+## Family use
+
+- decisive-test shape lives in the source canon
+- walls: validation-only · NO-GAIN · documented-class adaptation only

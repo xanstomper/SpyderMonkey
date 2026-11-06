@@ -243,12 +243,12 @@ def _slug(s):
 
 
 def _extract_blocks(text, headers):
-    """Split a reference doc into (title, body) chunks by ## AND ### headers —
+    """Split a reference doc into (title, body) chunks by ## ### AND #### headers —
     the deeper the header, the denser the tree."""
     out = []
     cur_title, cur = None, []
     for line in text.splitlines():
-        if line.startswith("## ") or line.startswith("### "):
+        if line.startswith("## ") or line.startswith("### ") or line.startswith("#### "):
             if cur_title and cur:
                 out.append((cur_title, "\n".join(cur).strip()))
             cur_title, cur = line.lstrip("#").strip(), []
@@ -561,6 +561,7 @@ def expand(json_mode=False, min_count=0):
                 f"# {title} — chain composition\n\n"
                 f"- source canon: `{src}.md`\n- base technique: `{base_slug}.md`\n"
                 f"- chain role: **{c_role}**\n\n"
+                f"## Chain roles\n\n- {c_role}\n\n"
                 f"## Pairing rule\n\n"
                 f"chain detect pairs same-origin findings (the `_origin()` key: "
                 f"scheme + netloc). This technique composes when a sibling finding "
@@ -686,8 +687,13 @@ def verify(json_mode=False):
                 errors.append(f"expanded link has no file: {item['href']}")
                 continue
             body = p.read_text(errors="replace")
-            for needle in ("## Context", "## The technique", "## Probe adjustment",
-                           "## Chain roles", "## Walls", "- source canon:"):
+            if item["href"].endswith("--chain.md"):
+                needles = ("## Chain roles", "## Pairing rule", "## Composition",
+                           "## Walls", "- source canon:")
+            else:
+                needles = ("## Context", "## The technique", "## Probe adjustment",
+                           "## Chain roles", "## Walls", "- source canon:")
+            for needle in needles:
                 if needle not in body:
                     errors.append(f"{item['href']}: missing '{needle}'")
     linked_all = linked | {i["href"]: i for i in expanded_links}

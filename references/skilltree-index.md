@@ -909,6 +909,50 @@ _WSTG/CWE/ATT&CK-bound, lazy-loaded. regenerate: skilltree.py_
 - [Withdrawal threshold and fee dodge](skills/spydermonkey/technique-canon/spydermonkey-technique-canon-withdrawal-threshold-and-fee-do.md) — `spydermonkey/technique-canon` · MASTG-RES · CWE-288 · T1557
 - [XInclude and SOAP param XXE](skills/spydermonkey/technique-canon/spydermonkey-technique-canon-xinclude-and-soap-param-xxe.md) — `spydermonkey/technique-canon` · WSTG-INPV-07 · CWE-611 · T1190
 - [XXE out-of-band and local-file](skills/spydermonkey/technique-canon/spydermonkey-technique-canon-xxe-out-of-band-and-local-file.md) — `spydermonkey/technique-canon` · WSTG-INPV-07 · CWE-611 · T1190
+- [API tier discovery via build](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-api-tier-discovery-via-build.md) — `spydermonkey/technique-canon-10` · WSTG-BUSL · CWE-200 · T1005
+- [App-files secret scan](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-app-files-secret-scan.md) — `spydermonkey/technique-canon-10` · WSTG-SESS · CWE-287 · T1528
+- [Backup archive classes](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-backup-archive-classes.md) — `spydermonkey/technique-canon-10` · WSTG-CONF-04 · CWE-530 · T1552
+- [BIMI/VMDM posture](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-bimi-vmdm-posture.md) — `spydermonkey/technique-canon-10` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [CAA and issuance policy](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-caa-and-issuance-policy.md) — `spydermonkey/technique-canon-10` · WSTG-CONF · CWE-693 · T1014
+- [Cache and temp leakage](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-cache-and-temp-leakage.md) — `spydermonkey/technique-canon-10` · WSTG-ATHN · CWE-287 · T1111
+- [Captive-portal classes (lab)](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-captive-portal-classes-lab.md) — `spydermonkey/technique-canon-10` · WSTG-INPV-06 · CWE-601 · T1190
+- [Certificate-error tolerance](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-certificate-error-tolerance.md) — `spydermonkey/technique-canon-10` · MASTG-PLATFORM · CWE-749 · T1557
+- [Cleartext traffic posture](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-cleartext-traffic-posture.md) — `spydermonkey/technique-canon-10` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [Clipboard exposure](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-clipboard-exposure.md) — `spydermonkey/technique-canon-10` · MASTG-RES · CWE-288 · T1557
+- [Custom wire-format replication](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-custom-wire-format-replicati.md) — `spydermonkey/technique-canon-10` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [Dangling client versions](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-dangling-client-versions.md) — `spydermonkey/technique-canon-10` · WSTG-ATHN · CWE-287 · T1111
+- [Database plaintext classes](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-database-plaintext-classes.md) — `spydermonkey/technique-canon-10` · WSTG-SESS · CWE-384 · T1550
+- [Deep-link hijack prep](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-deep-link-hijack-prep.md) — `spydermonkey/technique-canon-10` · MASTG-PLATFORM · CWE-927 · T1546
+- [DKIM rotation gaps](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-dkim-rotation-gaps.md) — `spydermonkey/technique-canon-10` · MASTG-RES · CWE-494 · T1601
+- [DNS-cookie and anycast classes](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-dns-cookie-and-anycast-class.md) — `spydermonkey/technique-canon-10` · WSTG-SESS-03 · CWE-1004 · T1550
+- [DNSSEC walking classes](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-dnssec-walking-classes.md) — `spydermonkey/technique-canon-10` · WSTG-INFO · CWE-200 · T1592
+- [Embedded config extraction](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-embedded-config-extraction.md) — `spydermonkey/technique-canon-10` · MASTG-RES · CWE-288 · T1557
+- [Exported component reach](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-exported-component-reach.md) — `spydermonkey/technique-canon-10` · MASTG-RES · CWE-288 · T1557
+- [Hardcoded key inventory](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-hardcoded-key-inventory.md) — `spydermonkey/technique-canon-10` · WSTG-CONF-04 · CWE-798 · T1552
+- [Header-leak classes](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-header-leak-classes.md) — `spydermonkey/technique-canon-10` · WSTG-BUSL-08 · CWE-841 · T1574
+- [IPC pending-intent leakage](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-ipc-pending-intent-leakage.md) — `spydermonkey/technique-canon-10` · MASTG-RES · CWE-288 · T1557
+- [Keychain/keystore posture](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-keychain-keystore-posture.md) — `spydermonkey/technique-canon-10` · MASTG-RES · CWE-288 · T1557
+- [Logs secret echo](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-logs-secret-echo.md) — `spydermonkey/technique-canon-10` · WSTG-SESS · CWE-287 · T1528
+- [Mailing-list archive leakage](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-mailing-list-archive-leakage.md) — `spydermonkey/technique-canon-10` · WSTG-BUSL-08 · CWE-841 · T1574
+- [MTA-STS and TLS-RPT absence](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-mta-sts-and-tls-rpt-absence.md) — `spydermonkey/technique-canon-10` · WSTG-INFO · CWE-359 · T1584
+- [Packet-type taxonomy rule](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-packet-type-taxonomy-rule.md) — `spydermonkey/technique-canon-10` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [Padding/signature posture](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-padding-signature-posture.md) — `spydermonkey/technique-canon-10` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [Protobuf schema mining](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-protobuf-schema-mining.md) — `spydermonkey/technique-canon-10` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [Random-source weakness](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-random-source-weakness.md) — `spydermonkey/technique-canon-10` · WSTG-BUSL-01 · CWE-681 · T1565
+- [Registrar and NS intel](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-registrar-and-ns-intel.md) — `spydermonkey/technique-canon-10` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [Root-detection placement](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-root-detection-placement.md) — `spydermonkey/technique-canon-10` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [Screenshot masking absence](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-screenshot-masking-absence.md) — `spydermonkey/technique-canon-10` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [SMTP extension inventory](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-smtp-extension-inventory.md) — `spydermonkey/technique-canon-10` · WSTG-ATHN · CWE-287 · T1111
+- [SPF macro and lookup-depth classes](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-spf-macro-and-lookup-depth-c.md) — `spydermonkey/technique-canon-10` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [STARTTLS/DANE posture](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-starttls-dane-posture.md) — `spydermonkey/technique-canon-10` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [Symbol-table posture](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-symbol-table-posture.md) — `spydermonkey/technique-canon-10` · MASTG-RES · CWE-288 · T1557
+- [Thrift/flatbuffers schema paths](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-thrift-flatbuffers-schema-pa.md) — `spydermonkey/technique-canon-10` · WSTG-ATHN-04 · CWE-307 · T1110
+- [TLS-pinning placement](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-tls-pinning-placement.md) — `spydermonkey/technique-canon-10` · WSTG-BUSL · CWE-200 · T1005
+- [Updater channel disclosure](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-updater-channel-disclosure.md) — `spydermonkey/technique-canon-10` · WSTG-INFO · CWE-200 · T1592
+- [WASM module mapping](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-wasm-module-mapping.md) — `spydermonkey/technique-canon-10` · MASTG-RES · CWE-288 · T1557
+- [Weak local crypto classes](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-weak-local-crypto-classes.md) — `spydermonkey/technique-canon-10` · WSTG-SESS · CWE-287 · T1528
+- [WebView bridge exposure](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-webview-bridge-exposure.md) — `spydermonkey/technique-canon-10` · MASTG-PLATFORM · CWE-749 · T1557
+- [Wildcard behavior mapping](skills/spydermonkey/technique-canon-10/spydermonkey-technique-canon-10-wildcard-behavior-mapping.md) — `spydermonkey/technique-canon-10` · WSTG-BUSL · CWE-200 · T1005
 - [.NET ObjectStateFormatter / ViewState](skills/spydermonkey/technique-canon-2/spydermonkey-technique-canon-2-net-objectstateformatter-view.md) — `spydermonkey/technique-canon-2` · WSTG-BUSL-08 · CWE-841 · T1574
 - [API version shadowing](skills/spydermonkey/technique-canon-2/spydermonkey-technique-canon-2-api-version-shadowing.md) — `spydermonkey/technique-canon-2` · WSTG-BUSL · CWE-200 · T1005
 - [API-key-as-URL-parameter](skills/spydermonkey/technique-canon-2/spydermonkey-technique-canon-2-api-key-as-url-parameter.md) — `spydermonkey/technique-canon-2` · WSTG-BUSL · CWE-200 · T1005
@@ -1089,6 +1133,91 @@ _WSTG/CWE/ATT&CK-bound, lazy-loaded. regenerate: skilltree.py_
 - [String-table decoder replay](skills/spydermonkey/technique-canon-7/spydermonkey-technique-canon-7-string-table-decoder-replay.md) — `spydermonkey/technique-canon-7` · WSTG-BUSL-06 · CWE-294 · T1550
 - [WASM module execution in-page](skills/spydermonkey/technique-canon-7/spydermonkey-technique-canon-7-wasm-module-execution-in-page.md) — `spydermonkey/technique-canon-7` · WSTG-SESS · CWE-384 · T1550
 - [Wire-format replication recipe](skills/spydermonkey/technique-canon-7/spydermonkey-technique-canon-7-wire-format-replication-recip.md) — `spydermonkey/technique-canon-7` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [AD app-registration exposure](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-ad-app-registration-exposure.md) — `spydermonkey/technique-canon-8` · MASTG-RES · CWE-494 · T1601
+- [Admission-policy absence](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-admission-policy-absence.md) — `spydermonkey/technique-canon-8` · WSTG-BUSL-06 · CWE-294 · T1550
+- [API batch abuse](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-api-batch-abuse.md) — `spydermonkey/technique-canon-8` · WSTG-BUSL · CWE-200 · T1005
+- [API broken-auth context](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-api-broken-auth-context.md) — `spydermonkey/technique-canon-8` · WSTG-ATHN · CWE-287 · T1111
+- [API field-level authorization](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-api-field-level-authorization.md) — `spydermonkey/technique-canon-8` · WSTG-ATHN · CWE-287 · T1111
+- [API key lineage leakage](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-api-key-lineage-leakage.md) — `spydermonkey/technique-canon-8` · WSTG-BUSL · CWE-200 · T1005
+- [API scope confusion](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-api-scope-confusion.md) — `spydermonkey/technique-canon-8` · WSTG-SESS · CWE-287 · T1528
+- [API SSRF via import/url fields](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-api-ssrf-via-import-url-field.md) — `spydermonkey/technique-canon-8` · WSTG-BUSL-06 · CWE-294 · T1550
+- [API versioning drift](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-api-versioning-drift.md) — `spydermonkey/technique-canon-8` · WSTG-BUSL · CWE-200 · T1005
+- [API-gateway bypass classes](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-api-gateway-bypass-classes.md) — `spydermonkey/technique-canon-8` · WSTG-ATHN · CWE-287 · T1111
+- [BFLA action-swap](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-bfla-action-swap.md) — `spydermonkey/technique-canon-8` · WSTG-BUSL-06 · CWE-294 · T1550
+- [Blob anonymous access](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-blob-anonymous-access.md) — `spydermonkey/technique-canon-8` · PTES-CON · CWE-250 · T1611
+- [Blob SAS token classes](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-blob-sas-token-classes.md) — `spydermonkey/technique-canon-8` · WSTG-SESS · CWE-287 · T1528
+- [BOLA object-swap](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-bola-object-swap.md) — `spydermonkey/technique-canon-8` · WSTG-ATHZ-04 · CWE-639 · T1068
+- [Cloud Functions ingress](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-cloud-functions-ingress.md) — `spydermonkey/technique-canon-8` · WSTG-ATHN · CWE-287 · T1111
+- [CloudFront behavior gaps](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-cloudfront-behavior-gaps.md) — `spydermonkey/technique-canon-8` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [ConfigMap/Secret exposure](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-configmap-secret-exposure.md) — `spydermonkey/technique-canon-8` · MASTG-RES · CWE-288 · T1557
+- [DynamoDB unauth indices](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-dynamodb-unauth-indices.md) — `spydermonkey/technique-canon-8` · WSTG-ATHN · CWE-287 · T1111
+- [Edge-worker injection surface](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-edge-worker-injection-surface.md) — `spydermonkey/technique-canon-8` · WSTG-INPV · CWE-74 · T1190
+- [etcd exposure](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-etcd-exposure.md) — `spydermonkey/technique-canon-8` · MASTG-RES · CWE-288 · T1557
+- [Function URL auth-absence](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-function-url-auth-absence.md) — `spydermonkey/technique-canon-8` · WSTG-ATHN · CWE-287 · T1111
+- [Function-app default hosts](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-function-app-default-hosts.md) — `spydermonkey/technique-canon-8` · WSTG-ATHN · CWE-287 · T1111
+- [Gateway authorizer gaps](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-gateway-authorizer-gaps.md) — `spydermonkey/technique-canon-8` · WSTG-ATHN · CWE-287 · T1111
+- [GCS policy classes](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-gcs-policy-classes.md) — `spydermonkey/technique-canon-8` · WSTG-ATHN · CWE-287 · T1111
+- [IAM assume-role trust exposure](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-iam-assume-role-trust-exposur.md) — `spydermonkey/technique-canon-8` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [IAM service-account keys](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-iam-service-account-keys.md) — `spydermonkey/technique-canon-8` · MASTG-RES · CWE-288 · T1557
+- [Ingress misroute classes](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-ingress-misroute-classes.md) — `spydermonkey/technique-canon-8` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [Key Vault posture](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-key-vault-posture.md) — `spydermonkey/technique-canon-8` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [Kubelet API classes](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-kubelet-api-classes.md) — `spydermonkey/technique-canon-8` · WSTG-ATHN · CWE-287 · T1111
+- [Lambda env/event classes](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-lambda-env-event-classes.md) — `spydermonkey/technique-canon-8` · WSTG-ATHN · CWE-287 · T1111
+- [Metadata classes](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-metadata-classes.md) — `spydermonkey/technique-canon-8` · WSTG-INPV-10 · CWE-918 · T1190
+- [Pod security classes](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-pod-security-classes.md) — `spydermonkey/technique-canon-8` · MASTG-RES · CWE-288 · T1557
+- [RBAC verb inventory](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-rbac-verb-inventory.md) — `spydermonkey/technique-canon-8` · MASTG-RES · CWE-288 · T1557
+- [Route53 delegation drift](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-route53-delegation-drift.md) — `spydermonkey/technique-canon-8` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [S3 policy-gap matrix](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-s3-policy-gap-matrix.md) — `spydermonkey/technique-canon-8` · WSTG-CONF-04 · CWE-732 · T1530
+- [S3 prefix divergence](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-s3-prefix-divergence.md) — `spydermonkey/technique-canon-8` · WSTG-CONF-04 · CWE-732 · T1530
+- [Secrets Manager paths](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-secrets-manager-paths.md) — `spydermonkey/technique-canon-8` · WSTG-ATHN · CWE-287 · T1111
+- [Service exposure matrix](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-service-exposure-matrix.md) — `spydermonkey/technique-canon-8` · WSTG-BUSL · CWE-200 · T1005
+- [SQS/SNS policy gaps](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-sqs-sns-policy-gaps.md) — `spydermonkey/technique-canon-8` · MASTG-RES · CWE-288 · T1557
+- [Unrestricted resource consumption](skills/spydermonkey/technique-canon-8/spydermonkey-technique-canon-8-unrestricted-resource-consump.md) — `spydermonkey/technique-canon-8` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [Actuator env classes](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-actuator-env-classes.md) — `spydermonkey/technique-canon-9` · WSTG-CONF-04 · CWE-530 · T1552
+- [Ajax admin-probe classes](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-ajax-admin-probe-classes.md) — `spydermonkey/technique-canon-9` · WSTG-ATHN · CWE-287 · T1111
+- [ALLOWED_HOSTS gaps](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-allowed-hosts-gaps.md) — `spydermonkey/technique-canon-9` · WSTG-SESS · CWE-384 · T1550
+- [Apex guest classes](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-apex-guest-classes.md) — `spydermonkey/technique-canon-9` · WSTG-ATHN · CWE-287 · T1111
+- [APP_KEY class](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-app-key-class.md) — `spydermonkey/technique-canon-9` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [Bot-token-in-bundle class](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-bot-token-in-bundle-class.md) — `spydermonkey/technique-canon-9` · WSTG-ATHN · CWE-287 · T1111
+- [customErrors off class](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-customerrors-off-class.md) — `spydermonkey/technique-canon-9` · WSTG-BUSL-07 · CWE-362 · T1499
+- [Debug log exposure](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-debug-log-exposure.md) — `spydermonkey/technique-canon-9` · MASTG-RES · CWE-288 · T1557
+- [Debug page classes](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-debug-page-classes.md) — `spydermonkey/technique-canon-9` · WSTG-CONF-04 · CWE-798 · T1552
+- [Devtools class](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-devtools-class.md) — `spydermonkey/technique-canon-9` · WSTG-CONF-04 · CWE-798 · T1552
+- [Express stack-trace class](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-express-stack-trace-class.md) — `spydermonkey/technique-canon-9` · WSTG-CONF-04 · CWE-530 · T1552
+- [Gateway route classes](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-gateway-route-classes.md) — `spydermonkey/technique-canon-9` · WSTG-INPV · CWE-74 · T1190
+- [Heapdump class](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-heapdump-class.md) — `spydermonkey/technique-canon-9` · MASTG-RES · CWE-288 · T1557
+- [Integration callback abuse](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-integration-callback-abuse.md) — `spydermonkey/technique-canon-9` · WSTG-ATHN · CWE-287 · T1111
+- [JBoss/JMX exposure](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-jboss-jmx-exposure.md) — `spydermonkey/technique-canon-9` · WSTG-ATHN · CWE-287 · T1111
+- [Jolokia/JMX classes](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-jolokia-jmx-classes.md) — `spydermonkey/technique-canon-9` · MASTG-RES · CWE-288 · T1557
+- [Joomla config classes](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-joomla-config-classes.md) — `spydermonkey/technique-canon-9` · WSTG-SESS · CWE-384 · T1550
+- [Joomla update-server](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-joomla-update-server.md) — `spydermonkey/technique-canon-9` · WSTG-INFO · CWE-200 · T1592
+- [Laravel .env class](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-laravel-env-class.md) — `spydermonkey/technique-canon-9` · MASTG-RES · CWE-288 · T1557
+- [Logfile actuator](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-logfile-actuator.md) — `spydermonkey/technique-canon-9` · WSTG-BUSL · CWE-200 · T1005
+- [Machine-key exposure](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-machine-key-exposure.md) — `spydermonkey/technique-canon-9` · WSTG-BUSL · CWE-200 · T1005
+- [Middleware bypass classes](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-middleware-bypass-classes.md) — `spydermonkey/technique-canon-9` · WSTG-BUSL · CWE-200 · T1005
+- [Next-data payload leaks](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-next-data-payload-leaks.md) — `spydermonkey/technique-canon-9` · WSTG-ATHN · CWE-287 · T1111
+- [Node source disclosure](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-node-source-disclosure.md) — `spydermonkey/technique-canon-9` · WSTG-INFO · CWE-200 · T1592
+- [Nuxt payload/SSR leaks](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-nuxt-payload-ssr-leaks.md) — `spydermonkey/technique-canon-9` · WSTG-BUSL-08 · CWE-841 · T1574
+- [Plugin fingerprint via assets](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-plugin-fingerprint-via-assets.md) — `spydermonkey/technique-canon-9` · MASTG-RES · CWE-288 · T1557
+- [Prototype pollution server-side](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-prototype-pollution-server-si.md) — `spydermonkey/technique-canon-9` · WSTG-SESS · CWE-384 · T1550
+- [Rails render-params](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-rails-render-params.md) — `spydermonkey/technique-canon-9` · WSTG-INPV · CWE-1321 · T1190
+- [Rails secrets-in-repo](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-rails-secrets-in-repo.md) — `spydermonkey/technique-canon-9` · WSTG-CONF-04 · CWE-798 · T1552
+- [REST user inventory](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-rest-user-inventory.md) — `spydermonkey/technique-canon-9` · WSTG-ATHN · CWE-287 · T1111
+- [REST view/post-state leak](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-rest-view-post-state-leak.md) — `spydermonkey/technique-canon-9` · WSTG-BUSL-08 · CWE-841 · T1574
+- [Salesforce LWR/Aura exposure](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-salesforce-lwr-aura-exposure.md) — `spydermonkey/technique-canon-9` · MASTG-RES · CWE-288 · T1557
+- [Services endpoint classes](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-services-endpoint-classes.md) — `spydermonkey/technique-canon-9` · WSTG-INFO · CWE-200 · T1592
+- [Static-export exposure](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-static-export-exposure.md) — `spydermonkey/technique-canon-9` · WSTG-ATHN · CWE-287 · T1111
+- [Static/media exposure](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-static-media-exposure.md) — `spydermonkey/technique-canon-9` · WSTG-ATHN · CWE-287 · T1111
+- [Storage listing class](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-storage-listing-class.md) — `spydermonkey/technique-canon-9` · WSTG-BUSL · CWE-200 · T1005
+- [Theme upload path classes](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-theme-upload-path-classes.md) — `spydermonkey/technique-canon-9` · WSTG-ATHN · CWE-287 · T1111
+- [Tomcat manager residue](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-tomcat-manager-residue.md) — `spydermonkey/technique-canon-9` · WSTG-CONF · CWE-530 · T1552
+- [Twig detection class](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-twig-detection-class.md) — `spydermonkey/technique-canon-9` · WSTG-INFO · CWE-200 · T1592
+- [Update-channel posture](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-update-channel-posture.md) — `spydermonkey/technique-canon-9` · WSTG-CRYPTO-04 · CWE-329 · T1573
+- [Update-module exposure](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-update-module-exposure.md) — `spydermonkey/technique-canon-9` · WSTG-ATHN · CWE-287 · T1111
+- [ViewState MAC classes](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-viewstate-mac-classes.md) — `spydermonkey/technique-canon-9` · WSTG-BUSL-08 · CWE-841 · T1574
+- [Webhook URL exposure (chat platforms)](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-webhook-url-exposure-chat-pla.md) — `spydermonkey/technique-canon-9` · WSTG-BUSL-06 · CWE-294 · T1550
+- [WebLogic/consola classes](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-weblogic-consola-classes.md) — `spydermonkey/technique-canon-9` · WSTG-ATHN · CWE-287 · T1111
+- [XMLRPC posture](skills/spydermonkey/technique-canon-9/spydermonkey-technique-canon-9-xmlrpc-posture.md) — `spydermonkey/technique-canon-9` · MASTG-RES · CWE-288 · T1557
 - [1. TLS backend audit (from the vantage VM)](skills/spydermonkey/tls-auth-audit/spydermonkey-tls-auth-audit-1-tls-backend-audit-from-the-van.md) — `spydermonkey/tls-auth-audit` · WSTG-SESS · CWE-384 · T1550
 - [2. Token/auth hunt (puppeteer on the VM)](skills/spydermonkey/tls-auth-audit/spydermonkey-tls-auth-audit-2-token-auth-hunt-puppeteer-on-t.md) — `spydermonkey/tls-auth-audit` · WSTG-BUSL-08 · CWE-841 · T1574
 - [3. Opaque token decoding](skills/spydermonkey/tls-auth-audit/spydermonkey-tls-auth-audit-3-opaque-token-decoding.md) — `spydermonkey/tls-auth-audit` · WSTG-BUSL-06 · CWE-294 · T1550

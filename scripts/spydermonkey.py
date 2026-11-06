@@ -98,7 +98,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "5.11.0"
+VERSION = "5.12.0"
 SCHEMA = 4
 
 
@@ -5417,26 +5417,6 @@ def _hypothesis_request_pair(card: dict, ledger: list) -> tuple:
              "headers": {"Origin": "https://cors.probe.invalid"}}
         return b, [("https://cors.probe.invalid", a)]
 
-    if probe.get("paths"):
-        # path-probe cards (HARVEST/DIRECTORY): the guaranteed-missing control
-        # path is the baseline; each candidate path is an attack. Soft-404
-        # targets answer identically and register NOTHING.
-        base = probe.get("base")
-        if not base:
-            for r in ledger:                       # cve-map cards: derive the
-                a = r.get("asset") or ""           # origin from estate evidence
-                if a.startswith(("http://", "https://")):
-                    sp2 = urlsplit(a)
-                    base = f"{sp2.scheme}://{sp2.netloc}/"
-                    break
-        if not base:
-            return None, []
-        control = probe.get("control") or "__spydermonkey_control__"
-        baseline = {"method": "GET", "url": base + control}
-        out = [(p, {"method": "GET", "url": base + p})
-               for p in probe["paths"]]
-        return baseline, out
-
     if card.get("kind") == "surface" and probe.get("attacks") and probe.get("url"):
         base = probe["url"]
         param = probe.get("param")
@@ -5450,6 +5430,36 @@ def _hypothesis_request_pair(card: dict, ledger: list) -> tuple:
             out.append((atk, {"method": "GET",
                               "url": base + "?" + urlencode(q)}))
         return {"method": "GET", "url": baseline}, out
+
+    if card.get("kind") == "surface" and probe.get("paths") and probe.get("control"):
+        # path-probe card: baseline = the CONTROL path (must 404/unique), attacks
+        # = each harvested path. The control keeps the 3-gate differential honest.
+        b = (probe.get("base") or card.get("asset") or "").rstrip("/")
+        if not b.startswith(("http://", "https://")):
+            return None, []
+        method = probe.get("method", "GET")
+        base = {"method": method, "url": b + "/" + str(probe["control"]).lstrip("/")}
+        attacks = [(p, {"method": method, "url": b + "/" + str(p).lstrip("/")})
+                   for p in probe["paths"]]
+        return base, attacks
+
+    if card.get("kind") == "cve-map" and probe.get("paths"):
+        # cve-map card: derive the origin from the ledger's first in-scope http
+        # asset; baseline = the control path on that origin, attacks = the paths.
+        paths = probe.get("paths") or ()
+        origin = ""
+        for r in ledger:
+            a = r.get("asset") or ""
+            if a.startswith(("http://", "https://")):
+                sp = urlsplit(a)
+                origin = f"{sp.scheme}://{sp.netloc}"
+                break
+        if not origin or not paths:
+            return None, []
+        base = {"method": "GET", "url": origin + "/__spydermonkey_control__"}
+        attacks = [(p, {"method": "GET", "url": origin + "/" + str(p).lstrip("/")})
+                   for p in paths]
+        return base, attacks
 
     if card.get("kind") == "variant" and probe.get("payloads"):
         parent = next((r for r in ledger
@@ -5479,11 +5489,9 @@ def _hypothesis_request_pair(card: dict, ledger: list) -> tuple:
 HYP_SIGNATURES = {
     "TRAVERSAL": ("root:x:0:0", "root:*:0:0", "daemon:"),
     "NOSQL": ('"authenticated": true', '"role": "admin"', '"bypass": true'),
-    "HARVEST": ("secret", "api_key", "apikey", "password=", "ref: refs/",
-                "begin private key", "phpinfo()", "database_url",
-                '{"paths"', "swagger", '"openapi"', "disk_free"),
-    "DIRECTORY": ("index of /", "<title>directory listing",
-                  "parent directory"),
+    "HARVEST": ("secret", "api_key", "password=", "ref: refs/",
+                "BEGIN PRIVATE KEY", "DATABASE_URL"),
+    "DIRECTORY": ("index of /", "<title>directory listing"),
     "AUTHN": ('"authenticated": true', '"bypass": true', '"role": "admin"'),
 }
 
