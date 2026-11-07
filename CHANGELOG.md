@@ -1,3 +1,5 @@
+# v7.4.4 — THE BAS TIER LANDED (repo kage): `kage coverage` = ATT&CK coverage board measured from the mirror (techniques × rules, --json); `kage export --format splunk|elastic|qradar` = SIEM-native JSONL beside Sigma — the purple layer speaks the defender's import formats. Verified live: 3/3 techniques, JSONL ingests, kage verify all-pass.
+
 # v7.4.3 — THE FLYWHEEL CLOSES: kairo validate = the range-proof gate before distribution
 
 - **KAIRO VALIDATE** (repo kairo, `70d88f0`): every synthesized vector is now
