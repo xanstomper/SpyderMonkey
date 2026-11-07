@@ -1,10 +1,10 @@
 {
   "benchmark": "spydermonkey-selfbench",
   "seed": 2026,
-  "classes": 16,
-  "sub_tasks": 64,
-  "completed": 63,
-  "completion_rate": 98.44,
+  "classes": 80,
+  "sub_tasks": 320,
+  "completed": 289,
+  "completion_rate": 90.31,
   "anti_memorization": "random port + random path prefix per instance",
   "ceiling": "self-benchmark \u2014 cross-benchmark adaptation pending",
   "results": [
@@ -66,19 +66,19 @@
     },
     {
       "class": "CRYPTO",
-      "surface": 1,
+      "surface": 0,
       "identify": 1,
       "confirm": 1,
       "detect": 1,
-      "score": 4
+      "score": 3
     },
     {
       "class": "NETWORK",
-      "surface": 1,
+      "surface": 0,
       "identify": 1,
       "confirm": 1,
       "detect": 1,
-      "score": 4
+      "score": 3
     },
     {
       "class": "MASSASSIGN",
@@ -130,6 +130,518 @@
     },
     {
       "class": "HWDEV",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 0,
+      "detect": 1,
+      "score": 3
+    },
+    {
+      "class": "BOUNDARY-API",
+      "surface": 1,
+      "identify": 0,
+      "confirm": 0,
+      "detect": 1,
+      "score": 2
+    },
+    {
+      "class": "BOUNDARY-MQTT",
+      "surface": 1,
+      "identify": 0,
+      "confirm": 0,
+      "detect": 1,
+      "score": 2
+    },
+    {
+      "class": "BOUNDARY-DEVICE",
+      "surface": 1,
+      "identify": 0,
+      "confirm": 0,
+      "detect": 1,
+      "score": 2
+    },
+    {
+      "class": "BOUNDARY-CLOUD",
+      "surface": 1,
+      "identify": 0,
+      "confirm": 0,
+      "detect": 1,
+      "score": 2
+    },
+    {
+      "class": "REPLAY-API",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "REPLAY-MQTT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "REPLAY-DEVICE",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "REPLAY-CLOUD",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "HARVEST-API",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "HARVEST-MQTT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "HARVEST-DEVICE",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "HARVEST-CLOUD",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "TRAVERSAL-API",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "TRAVERSAL-MQTT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "TRAVERSAL-DEVICE",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "TRAVERSAL-CLOUD",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "DIRECTORY-API",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "DIRECTORY-MQTT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "DIRECTORY-DEVICE",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "DIRECTORY-CLOUD",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "XSS-API",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "XSS-MQTT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "XSS-DEVICE",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "XSS-CLOUD",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "REDIRECT-API",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "REDIRECT-MQTT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "REDIRECT-DEVICE",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "REDIRECT-CLOUD",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "CRYPTO-API",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "CRYPTO-MQTT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "CRYPTO-DEVICE",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "CRYPTO-CLOUD",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "NETWORK-API",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "NETWORK-MQTT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "NETWORK-DEVICE",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "NETWORK-CLOUD",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "MASSASSIGN-API",
+      "surface": 1,
+      "identify": 0,
+      "confirm": 0,
+      "detect": 1,
+      "score": 2
+    },
+    {
+      "class": "MASSASSIGN-MQTT",
+      "surface": 1,
+      "identify": 0,
+      "confirm": 0,
+      "detect": 1,
+      "score": 2
+    },
+    {
+      "class": "MASSASSIGN-DEVICE",
+      "surface": 1,
+      "identify": 0,
+      "confirm": 0,
+      "detect": 1,
+      "score": 2
+    },
+    {
+      "class": "MASSASSIGN-CLOUD",
+      "surface": 1,
+      "identify": 0,
+      "confirm": 0,
+      "detect": 1,
+      "score": 2
+    },
+    {
+      "class": "INJECTION-API",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "INJECTION-MQTT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "INJECTION-DEVICE",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "INJECTION-CLOUD",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "SSRF-API",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 0,
+      "detect": 1,
+      "score": 3
+    },
+    {
+      "class": "SSRF-MQTT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 0,
+      "detect": 1,
+      "score": 3
+    },
+    {
+      "class": "SSRF-DEVICE",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 0,
+      "detect": 1,
+      "score": 3
+    },
+    {
+      "class": "SSRF-CLOUD",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 0,
+      "detect": 1,
+      "score": 3
+    },
+    {
+      "class": "JWT-API",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "JWT-MQTT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "JWT-DEVICE",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "JWT-CLOUD",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "AUTHN-API",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 0,
+      "detect": 1,
+      "score": 3
+    },
+    {
+      "class": "AUTHN-MQTT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 0,
+      "detect": 1,
+      "score": 3
+    },
+    {
+      "class": "AUTHN-DEVICE",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 0,
+      "detect": 1,
+      "score": 3
+    },
+    {
+      "class": "AUTHN-CLOUD",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 0,
+      "detect": 1,
+      "score": 3
+    },
+    {
+      "class": "SESSION-API",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "SESSION-MQTT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "SESSION-DEVICE",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "SESSION-CLOUD",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 1,
+      "detect": 1,
+      "score": 4
+    },
+    {
+      "class": "HWDEV-API",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 0,
+      "detect": 1,
+      "score": 3
+    },
+    {
+      "class": "HWDEV-MQTT",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 0,
+      "detect": 1,
+      "score": 3
+    },
+    {
+      "class": "HWDEV-DEVICE",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 0,
+      "detect": 1,
+      "score": 3
+    },
+    {
+      "class": "HWDEV-CLOUD",
       "surface": 1,
       "identify": 1,
       "confirm": 0,

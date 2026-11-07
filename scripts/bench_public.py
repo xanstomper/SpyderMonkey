@@ -378,13 +378,15 @@ def main():
         i = sys.argv.index("--suite")
         suite = sys.argv[i + 1] if i + 1 < len(sys.argv) else None
     seed = int(argv[0]) if argv else 2026
-    if len(argv) > 1 and argv[1] == "b":
-        payload = run_range_b(seed)
-    elif len(argv) > 1 and argv[1] == "suite" or suite:
+    if "--suite" in sys.argv:
+        # bare --suite = the dojo-derived cases in the public milestone shape;
+        # --suite FILE = the external suite file, run as-is, never authored here
         payload, err = run_suite(seed, suite)
         if err:
             print(f"✗ {err}", file=sys.stderr)
             return 1
+    elif len(argv) > 1 and argv[1] == "b":
+        payload = run_range_b(seed)
     else:
         payload, err = run_benchmark(seed)
         if err:

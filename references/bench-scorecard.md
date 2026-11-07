@@ -1,6 +1,6 @@
 # SPYDERMONKEY BENCHMARK SCORECARD
 
-- sub-tasks: **63/64** (98.44%)
+- sub-tasks: **289/320** (90.31%)
 - seed: 2026 · anti-memorization: random port + path prefix per instance
 - ceiling: **self-benchmark** (our range, our scoring) — cross-benchmark pending
 
@@ -13,8 +13,8 @@
 | DIRECTORY | 1 | 1 | 1 | 1 |
 | XSS | 1 | 1 | 1 | 1 |
 | REDIRECT | 1 | 1 | 1 | 1 |
-| CRYPTO | 1 | 1 | 1 | 1 |
-| NETWORK | 1 | 1 | 1 | 1 |
+| CRYPTO | 0 | 1 | 1 | 1 |
+| NETWORK | 0 | 1 | 1 | 1 |
 | MASSASSIGN | 1 | 1 | 1 | 1 |
 | INJECTION | 1 | 1 | 1 | 1 |
 | SSRF | 1 | 1 | 1 | 1 |
@@ -22,3 +22,67 @@
 | AUTHN | 1 | 1 | 1 | 1 |
 | SESSION | 1 | 1 | 1 | 1 |
 | HWDEV | 1 | 1 | 0 | 1 |
+| BOUNDARY-API | 1 | 0 | 0 | 1 |
+| BOUNDARY-MQTT | 1 | 0 | 0 | 1 |
+| BOUNDARY-DEVICE | 1 | 0 | 0 | 1 |
+| BOUNDARY-CLOUD | 1 | 0 | 0 | 1 |
+| REPLAY-API | 1 | 1 | 1 | 1 |
+| REPLAY-MQTT | 1 | 1 | 1 | 1 |
+| REPLAY-DEVICE | 1 | 1 | 1 | 1 |
+| REPLAY-CLOUD | 1 | 1 | 1 | 1 |
+| HARVEST-API | 1 | 1 | 1 | 1 |
+| HARVEST-MQTT | 1 | 1 | 1 | 1 |
+| HARVEST-DEVICE | 1 | 1 | 1 | 1 |
+| HARVEST-CLOUD | 1 | 1 | 1 | 1 |
+| TRAVERSAL-API | 1 | 1 | 1 | 1 |
+| TRAVERSAL-MQTT | 1 | 1 | 1 | 1 |
+| TRAVERSAL-DEVICE | 1 | 1 | 1 | 1 |
+| TRAVERSAL-CLOUD | 1 | 1 | 1 | 1 |
+| DIRECTORY-API | 1 | 1 | 1 | 1 |
+| DIRECTORY-MQTT | 1 | 1 | 1 | 1 |
+| DIRECTORY-DEVICE | 1 | 1 | 1 | 1 |
+| DIRECTORY-CLOUD | 1 | 1 | 1 | 1 |
+| XSS-API | 1 | 1 | 1 | 1 |
+| XSS-MQTT | 1 | 1 | 1 | 1 |
+| XSS-DEVICE | 1 | 1 | 1 | 1 |
+| XSS-CLOUD | 1 | 1 | 1 | 1 |
+| REDIRECT-API | 1 | 1 | 1 | 1 |
+| REDIRECT-MQTT | 1 | 1 | 1 | 1 |
+| REDIRECT-DEVICE | 1 | 1 | 1 | 1 |
+| REDIRECT-CLOUD | 1 | 1 | 1 | 1 |
+| CRYPTO-API | 1 | 1 | 1 | 1 |
+| CRYPTO-MQTT | 1 | 1 | 1 | 1 |
+| CRYPTO-DEVICE | 1 | 1 | 1 | 1 |
+| CRYPTO-CLOUD | 1 | 1 | 1 | 1 |
+| NETWORK-API | 1 | 1 | 1 | 1 |
+| NETWORK-MQTT | 1 | 1 | 1 | 1 |
+| NETWORK-DEVICE | 1 | 1 | 1 | 1 |
+| NETWORK-CLOUD | 1 | 1 | 1 | 1 |
+| MASSASSIGN-API | 1 | 0 | 0 | 1 |
+| MASSASSIGN-MQTT | 1 | 0 | 0 | 1 |
+| MASSASSIGN-DEVICE | 1 | 0 | 0 | 1 |
+| MASSASSIGN-CLOUD | 1 | 0 | 0 | 1 |
+| INJECTION-API | 1 | 1 | 1 | 1 |
+| INJECTION-MQTT | 1 | 1 | 1 | 1 |
+| INJECTION-DEVICE | 1 | 1 | 1 | 1 |
+| INJECTION-CLOUD | 1 | 1 | 1 | 1 |
+| SSRF-API | 1 | 1 | 0 | 1 |
+| SSRF-MQTT | 1 | 1 | 0 | 1 |
+| SSRF-DEVICE | 1 | 1 | 0 | 1 |
+| SSRF-CLOUD | 1 | 1 | 0 | 1 |
+| JWT-API | 1 | 1 | 1 | 1 |
+| JWT-MQTT | 1 | 1 | 1 | 1 |
+| JWT-DEVICE | 1 | 1 | 1 | 1 |
+| JWT-CLOUD | 1 | 1 | 1 | 1 |
+| AUTHN-API | 1 | 1 | 0 | 1 |
+| AUTHN-MQTT | 1 | 1 | 0 | 1 |
+| AUTHN-DEVICE | 1 | 1 | 0 | 1 |
+| AUTHN-CLOUD | 1 | 1 | 0 | 1 |
+| SESSION-API | 1 | 1 | 1 | 1 |
+| SESSION-MQTT | 1 | 1 | 1 | 1 |
+| SESSION-DEVICE | 1 | 1 | 1 | 1 |
+| SESSION-CLOUD | 1 | 1 | 1 | 1 |
+| HWDEV-API | 1 | 1 | 0 | 1 |
+| HWDEV-MQTT | 1 | 1 | 0 | 1 |
+| HWDEV-DEVICE | 1 | 1 | 0 | 1 |
+| HWDEV-CLOUD | 1 | 1 | 0 | 1 |
