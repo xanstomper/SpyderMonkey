@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 6.0.0
+version: 7.0.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -114,11 +114,21 @@ The dispatcher is now a control plane, not just a router:
   engine self-checks serially so a healthy engine is never reported red.
 
 Also in the toolbox: `bench` (offline route-level accuracy — 29/29 at v4.0.0) ·
-`arsenal` (1,600 scope-gated tool wrappers + 150 feeding chains — the v6.0 domain surge — recon/web/tls/net/
-dns/content/api/services/cms/win/osint/db/takeover/cloud/packet/fuzz —
+`arsenal` (1,605 scope-gated tool wrappers + 158 feeding chains — the v6.0 domain surge + the v7.0 fuzz domain:
+recon/web/tls/net/dns/content/api/services/cms/win/osint/db/takeover/cloud/packet/fuzz —
 structured run records, kernel `--out` results the loop absorbs) · **`catalog`**
-(v5.3.0 — 1,686-entry known-tool reference index, lazy-loaded metadata; info
-only, execution stays scope-gated via arsenal) · `fleet`
+(v7.0 — 68,255-entry known-tool index: 1,686 curated + the SURGE — 47,181
+Exploit-DB exploits, 14,235 Nuclei templates, 5,153 Metasploit modules —
+lazy-loaded metadata; info only, execution stays scope-gated via arsenal) ·
+**`discover`** (v7.0 THE SOURCE LANE — the source-discovery engine: read-only
+scan of the target's own code, sink grammars across 8 language families →
+ranked, gate-ready candidate cards in the HYP schema; the lane the
+Big-Sleep/XBOW-class systems own, now native) · **`attack`** (v7.0 THE ATT&CK
+MAP — 94,872 corpus files mapped to 32 MITRE ATT&CK techniques via the
+skilltree bindings; 269× Atomic Red Team's 353-test library, ART count
+fetched live) · **`bench_public.py suite`** (v7.0 — milestone-scored suite
+harness, AutoPenBench-shape recon/initial_access/objective, accepts external
+public-suite files) · `fleet`
 (parallel multi-agent dispatch, one agent per mandate) · `bench_live.py`
 (exploitation-level bench, throwaway HOME, localhost lab) · `mcp_server.py`
 (the family as 430 MCP tools) · `skilltree.py` (the technique library: 1,410 base
@@ -288,9 +298,11 @@ exercised, not asserted.
 - `ledger add|list|show|triage|verify|stats|export|update|sync --target T` — the hash-chained finding ledger (scope-blocked · deduped · evidence-gated)
 - `gate --target T --url U --attack-query Q [--confirm TOK] [--prove SPY-NNN]` — the 3-gate confirmation engine
 - `chain detect|plan --target T [--id CH-NNN]` — the 8-pattern chain detection engine
-- `context set|show --target T [--kind K --value V]` — session context (endpoints · roles · credentials · functions)
+- `context set|show --target T [--kind K --value V]` — session context (endpoints · roles · credentials · functions · **source** — a source root hands the kernel the v7.0 discovery lane)
 - `testers --target T --url U [--url U2 …] | --demo` — the 18 parallel sub-testers over the session context — **two-role AUTHZ differential**: the context's first credential is the privileged baseline, the second is the low-priv attack; a different 200 on the low role IS the bypass proof
 - `crawl --target T --url U [--depth N]` — **THE SURFACE ENGINE** (HackBrowser-equivalent, stdlib): same-origin BFS crawl mining links · forms · query params · JS `fetch/axios` API paths → the session context AUTO-FILLS — the testers strike what it finds, no hand-fed urls
+- `discover --target T --source PATH [--lang L] [--semgrep]` — **THE SOURCE LANE** (v7.0): read-only scan of the target's own source tree → ranked, gate-ready candidate cards (documented classes only, HYP schema, discovery-state.json) — the kernel plans it the moment a source root enters the context
+- `attack [--json]` — **THE ATT&CK MAP** (v7.0): the corpus indexed against MITRE ATT&CK (94,872 files · 32 techniques) with the live Atomic Red Team comparison
 - `coverage --target T` — coverage matrix + gap list
 - `report --target T [--format md|json|sarif] [--output F]` — the joint war report (campaign dir by default)
 - `relay init|list|exec|remove` — remote execution nodes (Ed25519 ssh pairs, scope-gated)
@@ -301,7 +313,7 @@ exercised, not asserted.
 - `scope init|check|show|add|remove|extend|history` — the shared estate gate (matching · deny precedence · expiry · audit)
 - `doctor [--fix]` — health check (engines · scope perms · corrupt states · canon · ledger · relays)
 - `bench` — offline route-level benchmark (29/29 = 100% at v4.0.0)
-- `arsenal list|plan|run|verify` — 1,600 tool wrappers + 150 feeding chains (recon/web/dns/osint/net + 120+ v6.0 domain chains incl. hw-* and cls-*) behind the shared scope authority; `run --chain C --out result.json` emits the kernel result schema (`absorb` ingests it)
+- `arsenal list|plan|run|verify` — 1,605 tool wrappers + 158 feeding chains (recon/web/dns/osint/net + 120+ v6.0 domain chains incl. hw-*/cls-* + the v7.0 fuzz domain: fuzz-file/fuzz-binary/fuzz-net/fuzz-minimize/fuzz-full) behind the shared scope authority; `run --chain C --out result.json` emits the kernel result schema (`absorb` ingests it)
 - `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` — one agent per mandate, dispatched in parallel
 
 Companion scripts (stdlib too):
@@ -309,6 +321,10 @@ Companion scripts (stdlib too):
 - `scripts/bench_live.py` — exploitation-level bench: throwaway HOME, dynamic port, localhost mini-targets
 - `scripts/mcp_server.py` — the family as 430 MCP tools (stdio JSON-RPC; batch + notifications; `--test`/`--list`)
 - `scripts/skilltree.py` — regenerate + `--verify` `references/skills/` + `references/skilltree-index.md` (1,410 technique files)
+- `scripts/discover.py` — the v7.0 source-discovery engine (sink grammars · taint scoring · HYP-schema cards · optional semgrep lane on fleet)
+- `scripts/attack_map.py` — regenerate `references/attack-coverage.json` (corpus → ATT&CK, live ART comparison)
+- `scripts/catalog_surge.py` — regenerate `references/tool-catalog-surge.json` (Exploit-DB · Nuclei · Metasploit public indexes)
+- `scripts/arsenal_fuzz.py` — the v7.0 fuzz domain (afl/honggfuzz/radamsa/boofuzz/jazzer wrappers + chains, discovery-based)
 
 ## Files
 
@@ -316,7 +332,7 @@ Companion scripts (stdlib too):
 - `CHANGELOG.md` — release notes
 - `scripts/spydermonkey.py` — the control-plane CLI
 - `scripts/scope_authority.py` — the shared estate gate
-- `scripts/arsenal.py` + `scripts/arsenal_hw.py` + `scripts/arsenal_domain.py` — the execution layer (1,600 scope-gated tool wrappers · 150 feeding chains · the hardware + domain surge)
+- `scripts/arsenal.py` + `scripts/arsenal_hw.py` + `scripts/arsenal_domain.py` + `scripts/arsenal_fuzz.py` — the execution layer (1,605 scope-gated tool wrappers · 158 feeding chains · the hardware + domain + fuzz surges)
 - `scripts/bench_live.py` — the exploitation-level bench
 - `scripts/mcp_server.py` — the family as MCP tools (stdio JSON-RPC)
 - `scripts/skilltree.py` — the technique-library generator + verifier
@@ -325,6 +341,8 @@ Companion scripts (stdlib too):
 - `references/mandates/` — 00-barbican.md … 09-dojo.md (machine-checked)
 - `references/technique-canon.md` … `-7.md` — the seven dense canon volumes feeding the tree
 - `references/skilltree-index.md` + `references/skills/` — the 1,410-file technique library
+- `references/tool-catalog-surge.json` — the v7.0 surge index (66,569 public-corpus entries)
+- `references/attack-coverage.json` — the v7.0 ATT&CK map (94,872 files · 32 techniques · live ART comparison)
 - `tests/test_spydermonkey.py` — stdlib test suite
 - `README.md` — the public front page (badges, family buttons, how-it-works)
 

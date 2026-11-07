@@ -1,3 +1,31 @@
+# v7.0.0 — THE DISCOVERY SURGE
+
+The lane the autonomous-research systems owned is now native:
+
+- **`discover` — THE SOURCE LANE**: stdlib source-discovery engine. Read-only
+  scan of the target's own source tree; sink grammars across 8 language
+  families (python/php/js/java/go/c/ruby/csharp) with taint-source scoring and
+  file-risk weighting → ranked HYP-schema cards, each carrying a gate-ready
+  probe recipe. Optional semgrep lane on fleet machines. Kernel-integrated:
+  `context set --kind source --value PATH` makes the planner schedule
+  `source-discover` automatically. Verified: 7/7 planted sinks found, 0 false
+  positives on a clean file, out-of-scope refused (rc=1).
+- **`attack` — THE ATT&CK MAP**: 94,872 of 179,904 corpus files mapped to 32
+  MITRE ATT&CK techniques via the skilltree bindings (52.7% coverage) — 269×
+  Atomic Red Team's 353-test library (ART count fetched live at map time).
+- **CATALOG SURGE**: 1,686 → 68,255 entries (47,181 Exploit-DB exploits ·
+  14,235 Nuclei templates · 5,153 Metasploit modules), lazy-loaded
+  (`tool-catalog-surge.json`), search/show fall through to it.
+- **FUZZ DOMAIN**: arsenal 1,600 → 1,605 wrappers, chains 150 → 158
+  (afl-fuzz/showmap/cmin/tmin, honggfuzz, radamsa, zzuf, jazzer, boofuzz;
+  fuzz-file/binary/net/minimize/full chains). Discovery-based — dormant on the
+  operator box, activates on fleet.
+- **SUITE BENCH**: `bench_public.py suite` — milestone-scored harness
+  (recon → initial_access → objective, AutoPenBench shape), accepts external
+  public-suite JSON files; family-dojo-derived run: 80 cases, 144/240 (60%).
+- **FIXED**: kernel planner crash — `_prior_order` unpacking bug at the
+  gate-prior stage killed any loop run reaching step 6 with a URL.
+
 # Changelog
 
 All notable changes to SPYDERMONKEY, newest first. Dates are UTC; versions are

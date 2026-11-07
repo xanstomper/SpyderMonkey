@@ -1,0 +1,468 @@
+{
+ "total_files": 179904,
+ "mapped_files": 94872,
+ "coverage_pct": 52.7,
+ "technique_count": 32,
+ "techniques": {
+  "T1190": {
+   "files": 15067,
+   "cwes": [
+    "CWE-113",
+    "CWE-1321",
+    "CWE-22",
+    "CWE-285",
+    "CWE-434",
+    "CWE-444",
+    "CWE-502",
+    "CWE-601",
+    "CWE-611",
+    "CWE-74",
+    "CWE-89",
+    "CWE-90",
+    "CWE-918",
+    "CWE-943"
+   ],
+   "classes": [
+    "cache",
+    "cassandra",
+    "graphql",
+    "grpc",
+    "header",
+    "host-header",
+    "imds",
+    "injection",
+    "ldap",
+    "metadata",
+    "mssql",
+    "mysql",
+    "nginx",
+    "pickle",
+    "poison",
+    "rails",
+    "redirect",
+    "sqlite",
+    "ssrf",
+    "upload",
+    "viewstate",
+    "xxe"
+   ]
+  },
+  "T1552": {
+   "files": 14100,
+   "cwes": [
+    "CWE-215",
+    "CWE-347",
+    "CWE-530",
+    "CWE-532",
+    "CWE-538",
+    "CWE-540",
+    "CWE-798"
+   ],
+   "classes": [
+    "actuator",
+    "backup",
+    "clipboard",
+    "django",
+    "dump",
+    "env",
+    "express",
+    "git",
+    "github",
+    "hardcoded",
+    "iis",
+    "jwt",
+    "laravel",
+    "registry",
+    "secret",
+    "spring",
+    "tomcat",
+    "wasm"
+   ]
+  },
+  "T1610": {
+   "files": 8552,
+   "cwes": [
+    "CWE-250"
+   ],
+   "classes": [
+    "etcd",
+    "kubelet",
+    "kubernetes",
+    "pipeline",
+    "service-account"
+   ]
+  },
+  "T1611": {
+   "files": 7781,
+   "cwes": [
+    "CWE-250"
+   ],
+   "classes": [
+    "container"
+   ]
+  },
+  "T1557": {
+   "files": 7316,
+   "cwes": [
+    "CWE-288",
+    "CWE-295",
+    "CWE-345",
+    "CWE-749",
+    "CWE-942"
+   ],
+   "classes": [
+    "ble",
+    "cors",
+    "pinning",
+    "radio",
+    "rfid",
+    "sdr",
+    "websocket",
+    "webview",
+    "wifi"
+   ]
+  },
+  "T1550": {
+   "files": 6325,
+   "cwes": [
+    "CWE-1004",
+    "CWE-287",
+    "CWE-294",
+    "CWE-347",
+    "CWE-384",
+    "CWE-601",
+    "CWE-613"
+   ],
+   "classes": [
+    "concurrent",
+    "cookie",
+    "idempoten",
+    "idempotency",
+    "lateral",
+    "oauth",
+    "replay",
+    "saml",
+    "session",
+    "sso",
+    "webhook"
+   ]
+  },
+  "T1592": {
+   "files": 5207,
+   "cwes": [
+    "CWE-200"
+   ],
+   "classes": [
+    "asn",
+    "breach",
+    "cms",
+    "disclosure",
+    "ja3",
+    "joomla",
+    "leak",
+    "wordpress"
+   ]
+  },
+  "T1110": {
+   "files": 4269,
+   "cwes": [
+    "CWE-284",
+    "CWE-307",
+    "CWE-521"
+   ],
+   "classes": [
+    "brute",
+    "captcha",
+    "password",
+    "rate",
+    "smtp"
+   ]
+  },
+  "T1111": {
+   "files": 4229,
+   "cwes": [
+    "CWE-287",
+    "CWE-308"
+   ],
+   "classes": [
+    "auth",
+    "mfa",
+    "webauthn"
+   ]
+  },
+  "T1584": {
+   "files": 3068,
+   "cwes": [
+    "CWE-295",
+    "CWE-345",
+    "CWE-350",
+    "CWE-359"
+   ],
+   "classes": [
+    "526",
+    "dkim",
+    "dmarc",
+    "dnssec",
+    "mail",
+    "mta-sts",
+    "origin-cert",
+    "spf",
+    "subdomain",
+    "takeover"
+   ]
+  },
+  "T1070": {
+   "files": 2111,
+   "cwes": [
+    "CWE-200"
+   ],
+   "classes": [
+    "ceiling",
+    "dedupe",
+    "timeline",
+    "trail",
+    "vantage"
+   ]
+  },
+  "T1601": {
+   "files": 2043,
+   "cwes": [
+    "CWE-494"
+   ],
+   "classes": [
+    "firmware",
+    "uart"
+   ]
+  },
+  "T1036": {
+   "files": 2040,
+   "cwes": [
+    "CWE-330"
+   ],
+   "classes": [
+    "entropy",
+    "provably",
+    "randomness"
+   ]
+  },
+  "T1068": {
+   "files": 1686,
+   "cwes": [
+    "CWE-250",
+    "CWE-285",
+    "CWE-639"
+   ],
+   "classes": [
+    "boundary",
+    "coupon",
+    "idor",
+    "privesc",
+    "subscription"
+   ]
+  },
+  "T1005": {
+   "files": 1547,
+   "cwes": [
+    "CWE-200",
+    "CWE-22"
+   ],
+   "classes": [
+    "crown",
+    "harvest",
+    "traversal"
+   ]
+  },
+  "T1528": {
+   "files": 1073,
+   "cwes": [
+    "CWE-287"
+   ],
+   "classes": [
+    "token"
+   ]
+  },
+  "T1565": {
+   "files": 997,
+   "cwes": [
+    "CWE-1336",
+    "CWE-681",
+    "CWE-840"
+   ],
+   "classes": [
+    "bet",
+    "math",
+    "precision",
+    "price",
+    "rounding",
+    "rtp"
+   ]
+  },
+  "T1189": {
+   "files": 978,
+   "cwes": [
+    "CWE-1321",
+    "CWE-79"
+   ],
+   "classes": [
+    "prototype",
+    "xss"
+   ]
+  },
+  "T1530": {
+   "files": 941,
+   "cwes": [
+    "CWE-284",
+    "CWE-732"
+   ],
+   "classes": [
+    "bucket",
+    "elasticsearch",
+    "kafka",
+    "memcached",
+    "rabbitmq",
+    "s3"
+   ]
+  },
+  "T1499": {
+   "files": 839,
+   "cwes": [
+    "CWE-362",
+    "CWE-444",
+    "CWE-840"
+   ],
+   "classes": [
+    "continuation",
+    "logic",
+    "queue",
+    "race"
+   ]
+  },
+  "T1574": {
+   "files": 763,
+   "cwes": [
+    "CWE-841"
+   ],
+   "classes": [
+    "state",
+    "transition"
+   ]
+  },
+  "T1573": {
+   "files": 642,
+   "cwes": [
+    "CWE-326",
+    "CWE-327",
+    "CWE-329"
+   ],
+   "classes": [
+    "iv",
+    "length-extension",
+    "padding"
+   ]
+  },
+  "T1195": {
+   "files": 532,
+   "cwes": [
+    "CWE-1357"
+   ],
+   "classes": [
+    "dependency",
+    "sdk"
+   ]
+  },
+  "T1558": {
+   "files": 523,
+   "cwes": [
+    "CWE-287"
+   ],
+   "classes": [
+    "as-rep",
+    "kerberos",
+    "null-session",
+    "relay"
+   ]
+  },
+  "T1014": {
+   "files": 470,
+   "cwes": [
+    "CWE-693"
+   ],
+   "classes": [
+    "caa",
+    "sri",
+    "waf"
+   ]
+  },
+  "T1555": {
+   "files": 469,
+   "cwes": [
+    "CWE-522",
+    "CWE-922"
+   ],
+   "classes": [
+    "cred",
+    "keychain"
+   ]
+  },
+  "T1546": {
+   "files": 384,
+   "cwes": [
+    "CWE-927"
+   ],
+   "classes": [
+    "deep-link"
+   ]
+  },
+  "T1083": {
+   "files": 262,
+   "cwes": [
+    "CWE-548"
+   ],
+   "classes": [
+    "directory"
+   ]
+  },
+  "T1059": {
+   "files": 254,
+   "cwes": [
+    "CWE-1336"
+   ],
+   "classes": [
+    "ssti"
+   ]
+  },
+  "T1078": {
+   "files": 193,
+   "cwes": [
+    "CWE-287",
+    "CWE-640"
+   ],
+   "classes": [
+    "rdp",
+    "reset"
+   ]
+  },
+  "T1021": {
+   "files": 110,
+   "cwes": [
+    "CWE-284"
+   ],
+   "classes": [
+    "vnc"
+   ]
+  },
+  "T0886": {
+   "files": 101,
+   "cwes": [
+    "CWE-284"
+   ],
+   "classes": [
+    "modbus"
+   ]
+  }
+ },
+ "comparison": {
+  "atomic_red_team_tests": 353,
+  "note": "ART = the largest public ATT&CK emulation library; our count = technique files mapped to ATT&CK IDs via the skilltree bindings"
+ }
+}

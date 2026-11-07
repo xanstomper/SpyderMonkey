@@ -98,7 +98,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "6.0.0"
+VERSION = "7.0.0"
 SCHEMA = 4
 
 
@@ -1807,7 +1807,7 @@ def _planner_directive(target, url=None, domain=None):
                     ("SSRF", "url=http://127.0.0.1:9/")]
     if url and "IDOR" not in classes:
         hole_classes.insert(0, ("IDOR", "org_id=foreign"))
-    for cls, probe_q in _prior_order([c for c, _ in hole_classes]):
+    for cls in _prior_order([c for c, _ in hole_classes]):
         probe_q = next(q for c, q in hole_classes if c == cls)
         if url and cls not in classes and f"gate-{cls}" not in done_ids:
             why = f"ledger hole: no {cls}-class finding — a focused 3-gate run"
@@ -1839,6 +1839,22 @@ def _planner_directive(target, url=None, domain=None):
                  "ranks unconfirmed instances (variants · cve-map · chains) "
                  "for the next pass",
                  "hypothesis-state.json with ranked, wall-checked cards",
+                 ["declared estates only", "documented-PoC adaptation only",
+                  "validation-only · NO-GAIN"])
+    # 7.55 THE SOURCE LANE — when the context carries a source root, the
+    # discovery engine reasons over the target's own code: candidate
+    # instances of documented classes, ranked, gate-ready.
+    _src = ctx.get("source")
+    if isinstance(_src, list):
+        _src = _src[0] if _src else None
+    if isinstance(_src, dict):
+        _src = _src.get("value")
+    if _src and "source-discover" not in done_ids:
+        return d("source-discover", "input_validation", "spy", "discover",
+                 ["discover", "--target", target, "--source", str(_src)],
+                 "a source root is in context — the discovery engine scans it "
+                 "read-only for documented-class instances the batteries never fired at",
+                 "discovery-state.json with ranked, gate-ready cards",
                  ["declared estates only", "documented-PoC adaptation only",
                   "validation-only · NO-GAIN"])
     # 7.6 fire the top card — the engine executes its own hypothesis
@@ -2105,6 +2121,16 @@ def cmd_loop(args):
     return KERNEL_EXIT["continue"]
 
 
+def _ctx_source(target: str) -> str:
+    """The context's source root (v7.0 source lane) — '.' when unset."""
+    v = _load_json(_camp(target) / "context.json", {}).get("source")
+    if isinstance(v, list):
+        v = v[0] if v else None
+    if isinstance(v, dict):
+        v = v.get("value")
+    return str(v) if v else "."
+
+
 def _autopilot_argv(dv):
     """Kernel directive ids → the REAL engine argv (own processes, real states).
     Engines always run via sys.executable — script exec-bits are not a given."""
@@ -2136,6 +2162,8 @@ def _autopilot_argv(dv):
         "chain-detect": [sm, "chain", "detect", "--target", t],
         "hypothesis-gen": [sm, "hypothesis", "gen", "--target", t],
         "hypothesis-run": [sm, "hypothesis", "run", "--target", t],
+        "source-discover": [sm, "discover", "--target", t,
+                            "--source", _ctx_source(t)],
         "kage-mirror": [str(SEC / "kage/scripts/kage.py"), "mirror", "--target", t],
         "shukaku-ingest": [str(SEC / "shukaku/scripts/shukaku.py"),
                            "ingest", "--target", t, "--finding", "kernel",
@@ -3631,7 +3659,8 @@ CONTEXT_KINDS = {"endpoints": "endpoints", "endpoint": "endpoints",
                  "urls": "endpoints", "roles": "roles", "role": "roles",
                  "credentials": "credentials", "credential": "credentials",
                  "creds": "credentials", "functions": "functions",
-                 "function": "functions"}
+                 "function": "functions", "source": "source",
+                 "source-root": "source", "code": "source"}
 
 
 def cmd_context(args):
@@ -4378,6 +4407,41 @@ def cmd_memory(args):
     return 0
 
 
+def cmd_attack(args) -> int:
+    """THE ATT&CK MAP — v7.0: the corpus indexed against MITRE ATT&CK via the
+    skilltree bindings; honest comparison against Atomic Red Team (live)."""
+    p = Path(__file__).resolve().parent.parent / "references" / "attack-coverage.json"
+    try:
+        doc = json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        print("✗ attack-coverage.json missing — run scripts/attack_map.py", file=sys.stderr)
+        return 1
+    if _json_mode(args):
+        print(json.dumps(doc, indent=2))
+        return 0
+    print(f"═══ ATT&CK COVERAGE — {doc['mapped_files']:,} / {doc['total_files']:,} "
+          f"files mapped ({doc['coverage_pct']}%) · {doc['technique_count']} techniques ═══")
+    art = (doc.get("comparison") or {}).get("atomic_red_team_tests")
+    if art:
+        print(f"  vs Atomic Red Team: {art} test files "
+              f"({doc['mapped_files'] / art:.0f}× the largest public emulation library)")
+    for t, v in list(doc["techniques"].items())[:15]:
+        print(f"  {t:8s} {v['files']:7,d} files  {','.join(v['cwes'][:3])}")
+    print("  map: references/attack-coverage.json · regenerate: scripts/attack_map.py")
+    return 0
+
+
+def cmd_discover(args) -> int:
+    """THE SOURCE LANE — v7.0: the discovery engine over the target's own
+    source. Read-only, scope-gated, documented classes only; cards land in
+    discovery-state.json and fire through the same 3-gate discipline."""
+    import discover as _disc
+    return _disc.run(
+        args.target, args.source, getattr(args, "lang", None),
+        int(getattr(args, "limit", 200) or 200),
+        bool(getattr(args, "semgrep", False)), bool(_json_mode(args)))
+
+
 def cmd_train(args):
     """SELF-PLAY TRAINING — the family attacks ITS OWN range (dojo replicas) and
     measures per-class hit rates; the priors file feeds the planner (probe
@@ -4574,6 +4638,27 @@ def _catalog() -> list:
     return _CATALOG_CACHE
 
 
+_CATALOG_SURGE_CACHE = None
+
+
+def _catalog_surge() -> list:
+    """v7.0 SURGE INDEX — the public corpora (Exploit-DB · Nuclei · Metasploit)
+    as a separate lazy-loaded file. Same discipline: a map, never an armory."""
+    global _CATALOG_SURGE_CACHE
+    if _CATALOG_SURGE_CACHE is None:
+        p = Path(__file__).resolve().parent.parent / "references" / "tool-catalog-surge.json"
+        try:
+            doc = json.loads(p.read_text(encoding="utf-8"))
+            sections = doc.get("sections", {}) if isinstance(doc, dict) else {}
+            rows: list = []
+            for v in sections.values():
+                rows.extend(v)
+            _CATALOG_SURGE_CACHE = rows
+        except Exception:
+            _CATALOG_SURGE_CACHE = []
+    return _CATALOG_SURGE_CACHE
+
+
 def cmd_catalog(args) -> int:
     cat = _catalog()
     action = getattr(args, "action", "stats") or "stats"
@@ -4593,20 +4678,27 @@ def cmd_catalog(args) -> int:
 
     if action == "stats":
         from collections import Counter
+        surge = _catalog_surge()
         top = Counter((r.get("cat") or "?").split("/")[0] for r in cat)
         mode = Counter(r.get("mode") for r in cat)
         src = Counter(r.get("src", "curated") for r in cat)
+        surge_src = Counter(r.get("src", "?") for r in surge)
         if getattr(args, "json", False):
-            print(json.dumps({"entries": len(cat), "by_top": dict(top.most_common()),
+            print(json.dumps({"entries": len(cat), "surge_entries": len(surge),
+                              "total": len(cat) + len(surge),
+                              "surge_by_src": dict(surge_src),
+                              "by_top": dict(top.most_common()),
                               "by_mode": dict(mode), "by_src": dict(src),
                               "note": "metadata only — execution via arsenal (scope-gated)"},
                              indent=2))
             return 0
-        print(f"═══ KNOWN TOOL CATALOG — {len(cat)} tools ═══")
+        print(f"═══ KNOWN TOOL CATALOG — {len(cat)} tools + {len(surge)} surge = {len(cat) + len(surge)} ═══")
         print("  reference index · nothing here executes · arsenal fires installed tools, scope-gated")
         for k, v in top.most_common():
             print(f"  {k:12s} {v}")
         print(f"  mode: {dict(mode)} · source: {dict(src)}")
+        for k, v in surge_src.most_common():
+            print(f"  surge {k:18s} {v}")
         return 0
 
     if action == "categories":
@@ -4641,6 +4733,18 @@ def cmd_catalog(args) -> int:
                 if q in (r.get("name") or "").lower()
                 or q in (r.get("desc") or "").lower()
                 or q in (r.get("cat") or "").lower()]
+        # v7.0 surge fall-through: the public corpora answer when curated is thin
+        if len(rows) < limit:
+            seen = {(r.get("name") or "").lower() for r in rows}
+            for r in _catalog_surge():
+                if len(rows) >= limit:
+                    break
+                nm = (r.get("name") or "").lower()
+                if nm in seen:
+                    continue
+                if q in nm or q in (r.get("desc") or "").lower() or q in (r.get("cat") or "").lower():
+                    rows.append(r)
+                    seen.add(nm)
         rows = _filtered(rows)
         total = len(rows)
         rows = rows[:limit]
@@ -4659,6 +4763,10 @@ def cmd_catalog(args) -> int:
             raise UsageError("catalog show needs a tool name")
         exact = [r for r in cat if (r.get("name") or "").lower() == q]
         r = (exact or [r for r in cat if q in (r.get("name") or "").lower()] or [None])[0]
+        if not r:
+            surge = _catalog_surge()
+            exact = [s for s in surge if (s.get("name") or "").lower() == q]
+            r = (exact or [s for s in surge if q in (s.get("name") or "").lower()] or [None])[0]
         if not r:
             print(f"✗ catalog: no tool named '{term}'", file=sys.stderr)
             return 1
@@ -6652,6 +6760,16 @@ def _build_parser() -> argparse.ArgumentParser:
     tr.add_argument("--classes", help="comma list (default: every dojo class)")
     tr.add_argument("--port", type=int, default=8850)
     tr.add_argument("--json", action="store_true")
+    dv7 = sub.add_parser("discover", help="THE SOURCE LANE (v7.0): read-only scan of the target's own source → ranked, gate-ready candidate cards (documented classes only)")
+    dv7.add_argument("--target", required=True)
+    dv7.add_argument("--source", required=True, help="local source tree (read-only)")
+    dv7.add_argument("--lang", help="python|php|js|java|go|c|ruby|csharp")
+    dv7.add_argument("--limit", type=int, default=200)
+    dv7.add_argument("--semgrep", action="store_true",
+                     help="fold semgrep results when the binary exists (fleet machines)")
+    dv7.add_argument("--json", action="store_true")
+    am = sub.add_parser("attack", help="THE ATT&CK MAP (v7.0): the corpus indexed against MITRE ATT&CK — vs Atomic Red Team, live")
+    am.add_argument("--json", action="store_true")
     mm = sub.add_parser("memory", help="ESTATE MEMORY: what the family knows about a target")
     mm.add_argument("--target", required=True)
     mm.add_argument("--forget", action="store_true")
@@ -6955,6 +7073,10 @@ def _dispatch(a) -> int:
         if a.action == "run":
             return cmd_hypothesis_run(a)
         return cmd_hypothesis(a)
+    if a.cmd == "discover":
+        return cmd_discover(a)
+    if a.cmd == "attack":
+        return cmd_attack(a)
     if a.cmd == "context":
         if a.action in ("set", "remove") and not (a.kind and a.value):
             raise UsageError(f"context {a.action} needs --kind and --value")

@@ -40,7 +40,7 @@ from urllib.parse import urlsplit
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "6.0.0"
+VERSION = "7.0.0"
 
 # tool → (capability, canon classes it feeds, plan line, args builder)
 ARSENAL = {
@@ -1000,6 +1000,13 @@ try:
     CHAINS_MERGED_V60 = _added
 except ImportError:  # domain module absent → base arsenal only
     CHAINS_MERGED_V60 = 0
+# v7.0 — the fuzz domain: coverage-guided + mutation + protocol fuzzing.
+try:
+    import arsenal_fuzz as af
+    FUZZ_MERGED_V70 = af.merge_fuzz(ARSENAL, CHAINS, CHAIN_NAMES, FEED_PARSE,
+                                    TAKES_EXTRA, HTTP_TOOLS)
+except ImportError:  # fuzz module absent → arsenal without the fuzz lane
+    FUZZ_MERGED_V70 = 0
 
 
 def _host(target: str) -> str:
