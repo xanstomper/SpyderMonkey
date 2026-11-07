@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/cf-wp-origin-bypass-recipe.md`
 - bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

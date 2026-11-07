@@ -2,7 +2,7 @@
 
 - source canon: `3am-shinjitsu/arsenal-05-client-side.md`
 - bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

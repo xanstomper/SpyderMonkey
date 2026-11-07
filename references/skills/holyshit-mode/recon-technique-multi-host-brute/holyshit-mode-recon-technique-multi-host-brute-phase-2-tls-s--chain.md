@@ -20,9 +20,9 @@ chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). 
 
 ## Composition
 
-- OpenSSL `s_client -connect` cert SAN revealed: `openinfra.f***REDACTED***.org`, `*.opendata.f***REDACTED***.org`
+- OpenSSL `s_client -connect` cert SAN revealed: `openinfra.example-target.org`, `*.opendata.example-target.org`
 - These internal infra hosts are not linked from the public site — SAN extraction is the only discovery vector
-- Technique: `openssl s_client -connect f***REDACTED***.org:443 -servername f***REDACTED***.org`
+- Technique: `openssl s_client -connect example-target.org:443 -servername example-target.org`
 
 ## Walls
 

@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/breach-regulator-osint.md`
 - bindings: **PTES-OPSEC** · **CWE-200** · **ATT&CK T1070**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

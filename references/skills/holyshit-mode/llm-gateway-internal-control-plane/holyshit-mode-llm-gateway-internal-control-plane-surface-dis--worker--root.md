@@ -26,7 +26,7 @@
 2. **`/api/models` (the management catalog) is often keyless** even when `/v1/models`
    (the OpenAI-compatible list) requires a key — the docs spell this split out. `GET /api/models`
    keyless leaks the **entire catalog**: every model, its provider rows, billing fields, AND the
-   **internal `base_url` of each routing lane** (e.g. `wm.x***REDACTED***.ai/v1`, `gateway.x***REDACTED***.ai/qwen/v1`,
+   **internal `base_url` of each routing lane** (e.g. `wm.example-target.ai/v1`, `gateway.example-target.ai/qwen/v1`,
    `...us-east.modal.direct/v1`). Grep every provider row's `base_url` — that's the internal fleet.
 3. **Enumerate `*.internal-tld` subdomains** (crt.sh + `socket.getaddrinfo` on a wordlist).
    The catalog base_urls reveal the fleet; confirm each host answers from the internet.

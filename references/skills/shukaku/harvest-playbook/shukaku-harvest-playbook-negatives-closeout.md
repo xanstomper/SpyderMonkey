@@ -2,7 +2,7 @@
 
 - source canon: `shukaku/harvest-playbook.md`
 - bindings: **WSTG-INFO** · **CWE-200** · **ATT&CK T1592**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

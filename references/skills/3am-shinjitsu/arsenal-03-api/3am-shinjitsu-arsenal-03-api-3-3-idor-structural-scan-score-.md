@@ -2,7 +2,7 @@
 
 - source canon: `3am-shinjitsu/arsenal-03-api.md`
 - bindings: **WSTG-ATHZ-04** · **CWE-639** · **ATT&CK T1068**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

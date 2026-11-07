@@ -20,11 +20,11 @@ chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). 
 
 ## Composition
 
-Server-side PKCE Supabase/GoTrue is the OPPOSITE of the g***REDACTED*** client-side-exposed version:
+Server-side PKCE Supabase/GoTrue is the OPPOSITE of the example-target client-side-exposed version:
 - **Zero `createClient`/`anonKey`/`supabase` refs in ANY crawled JS chunk** → anon key never ships
   to the browser; GoTrue signup/verify unreachable keyless.
 - **`redirect_to` is hardcoded server-side** in the OAuth authorize URL (every `redirect_to=<evil>`
-  override ignored) → no OAuth redirect_uri forge (contrast: g***REDACTED*** forwarded verbatim).
+  override ignored) → no OAuth redirect_uri forge (contrast: example-target forwarded verbatim).
 - Turnstile on every bootstrap route; opaque DB `session_id`; `spend-unlock` → `no_session`.
 When these all hold, say "auth wall hardened, no unauth forge" and move on — do NOT brute or
 fabricate a bypass. The real find is then the internal fleet, not the auth stack.

@@ -1,8 +1,8 @@
-# Contrast vs the vulnerable GoTrue variant (g***REDACTED***/g***REDACTED***)
+# Contrast vs the vulnerable GoTrue variant (example-target/example-target)
 
 - source canon: `holyshit-mode/hardened-gateway-internal-fleet-proto-surface.md`
 - bindings: **MASTG-RES** · **CWE-288** · **ATT&CK T1557**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 
@@ -14,7 +14,7 @@
 
 The earlier findings (redirect_uri forwarded verbatim, anon key client-exposed, unthrottled code
 exchange) come from an **un-hardened GoTrue deployment**. Always fingerprint BEFORE assuming: server-side
-PKCE + no client anon key + hardcoded redirect_to ⇒ the g***REDACTED*** chain does not apply; pivot.
+PKCE + no client anon key + hardcoded redirect_to ⇒ the example-target chain does not apply; pivot.
 
 ## Family use
 

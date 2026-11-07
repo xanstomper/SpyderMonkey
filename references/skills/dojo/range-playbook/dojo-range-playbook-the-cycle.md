@@ -2,7 +2,7 @@
 
 - source canon: `dojo/range-playbook.md`
 - bindings: **WSTG-SESS** · **CWE-287** · **ATT&CK T1550**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

@@ -2,7 +2,7 @@
 
 - source canon: `undercroft/undercroft-playbook.md`
 - bindings: **WSTG-BUSL-01** · **CWE-681** · **ATT&CK T1565**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

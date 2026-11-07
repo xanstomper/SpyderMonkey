@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/compromise-vs-observation-and-hardened-gateway-reengagement.md`
 - bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

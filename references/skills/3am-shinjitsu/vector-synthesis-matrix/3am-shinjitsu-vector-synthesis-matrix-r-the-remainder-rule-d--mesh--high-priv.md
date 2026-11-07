@@ -27,7 +27,7 @@ Pair (F, S) not in the table → derive mechanically, 60 seconds:
 
 Derivation example: (3 Type-coercion × H Multi-host) → "send the object-where-string
 payload to the mirror host's twin endpoint, where the validator is one version older" —
-this is exactly how the g***REDACTED*** mirrors got probed.
+this is exactly how the example-target mirrors got probed.
 
 ## Probe adjustment (mesh × high-priv)
 

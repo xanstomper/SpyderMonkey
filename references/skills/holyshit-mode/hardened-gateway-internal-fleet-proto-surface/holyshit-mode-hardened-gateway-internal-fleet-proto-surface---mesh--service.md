@@ -1,4 +1,4 @@
-# Contrast vs the vulnerable GoTrue variant (g***REDACTED***/g***REDACTED***) — mesh / service
+# Contrast vs the vulnerable GoTrue variant (example-target/example-target) — mesh / service
 
 - source canon: `holyshit-mode/hardened-gateway-internal-fleet-proto-surface.md`
 - base technique: `holyshit-mode-hardened-gateway-internal-fleet-proto-surface-.md`
@@ -20,7 +20,7 @@
 
 The earlier findings (redirect_uri forwarded verbatim, anon key client-exposed, unthrottled code
 exchange) come from an **un-hardened GoTrue deployment**. Always fingerprint BEFORE assuming: server-side
-PKCE + no client anon key + hardcoded redirect_to ⇒ the g***REDACTED*** chain does not apply; pivot.
+PKCE + no client anon key + hardcoded redirect_to ⇒ the example-target chain does not apply; pivot.
 
 ## Probe adjustment (mesh × service)
 

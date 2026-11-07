@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/recon-technique-multi-host-brute.md`
 - bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

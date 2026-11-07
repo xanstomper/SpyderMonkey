@@ -259,6 +259,29 @@ def _extract_blocks(text, headers):
     return out
 
 
+# v7.2 — GENERATION-TIME SANITIZATION (the barbican pattern, at the sink):
+# the runtime keeps full-fidelity engagement data; the PUBLIC corpus never
+# carries it. Engagement names → example-target, operator paths → generic.
+def _leak_markers() -> list[str]:
+    """Same curated list the leakscan gate enforces (single source of truth)."""
+    try:
+        doc = json.loads((REFS / "leak-markers.json").read_text())
+        return list(doc.get("markers", []))
+    except Exception:
+        return ["g***REDACTED***", "i***REDACTED***", "s***REDACTED***", "x***REDACTED***",
+                "e***REDACTED***", "p***REDACTED***", "j***REDACTED***"]
+
+
+_SANITIZE_RX = re.compile(
+    "(" + "|".join(re.escape(m) for m in _leak_markers()) + ")", re.I)
+
+
+def _sanitize(text: str) -> str:
+    text = _SANITIZE_RX.sub("example-target", text)
+    text = text.replace("/home/j***REDACTED***", "$HOME")
+    return text
+
+
 def collect_sources():
     """Every (category, title, body) from the family's real canon — every mandate
     references/ dir present on disk (all ten mandates, where installed), plus the
@@ -273,18 +296,26 @@ def collect_sources():
             dirs.append((name, d))
     dirs.append(("spydermonkey", REFS))
     seen_titles = set()
+    # v7.2 SOURCE HYGIENE: engagement case files (case-*, dossiers, findings
+    # dumps, ledger dumps, demos) are OPERATIONAL data — they feed live recipe
+    # search in the runtime, but NEVER the public technique corpus. One filter
+    # here is the difference between a technique library and a leak.
+    src_skip = re.compile(r"^(?:case-|dossier-|findings-|engagement-|ledger-|demo-)",
+                          re.I)
     for cat, d in dirs:
         for p in sorted(d.glob("*.md")):
+            if src_skip.match(p.stem):
+                continue
             try:
                 text = p.read_text(errors="replace")
             except Exception:
                 continue
-            for title, body in _extract_blocks(text, True):
+            for title, body in _extract_blocks(_sanitize(text), True):
                 key = f"{cat}:{title}".lower()
                 if key in seen_titles or len(body) < 40:
                     continue
                 seen_titles.add(key)
-                srcs.append((f"{cat}/{p.stem}", title, body))
+                srcs.append((_sanitize(f"{cat}/{p.stem}"), title, body))
     # kairo technique classes (table rows)
     se = None
     for cat, d in dirs:
@@ -360,14 +391,14 @@ def emit(args):
         w, c, a = _bindings(f"{title} {body}")
         d.mkdir(parents=True, exist_ok=True)
         generated = existing_dates.get(f.resolve(), today)
-        f.write_text(
+        f.write_text(_sanitize(
             f"# {title}\n\n"
             f"- source canon: `{src}.md`\n- bindings: **{w}** · **{c}** · **ATT&CK {a}**\n"
             f"- generated: {generated}\n\n"
             f"{_route_md(f'{title} {body}')}\n"
             f"## The technique\n\n{body}\n\n"
             f"## Family use\n\n- decisive-test shape lives in the source canon\n"
-            f"- walls: validation-only · NO-GAIN · documented-class adaptation only\n")
+            f"- walls: validation-only · NO-GAIN · documented-class adaptation only\n"))
         made += 1
         index.append(f"- [{title}](skills/{src}/{slug}.md) — `{src}` · {w} · {c} · {a}")
     (REFS / "skilltree-index.md").write_text("\n".join(index) + "\n")
@@ -633,7 +664,7 @@ def expand(json_mode=False, min_count=0):
                               "destruction", "denial"))
                       else "pivot — this BRIDGES a chain: an entry finding upstream "
                            "plus this pivot plus a final downstream")
-            c_f.write_text(
+            c_f.write_text(_sanitize(
                 f"# {title} — chain composition\n\n"
                 f"- source canon: `{src}.md`\n- base technique: `{base_slug}.md`\n"
                 f"- chain role: **{c_role}**\n\n"
@@ -647,7 +678,7 @@ def expand(json_mode=False, min_count=0):
                 f"## Composition\n\n{body}\n\n"
                 f"## Walls\n\n- a chain is a SEVERITY judgment over proven findings — "
                 f"never new execution\n- every leg keeps its own ledger row and its own "
-                f"evidence\n")
+                f"evidence\n"))
             made += 1
             index.append(f"- [{title} — chain composition](skills/{src}/{c_slug}.md)"
                          f" — `{src}` · {w} · {c} · {a} · {roles}")
@@ -667,7 +698,7 @@ def expand(json_mode=False, min_count=0):
                          else "final" if any(k in title.lower() for k in
                          ("takeover", "rce", "crown", "price", "harvest", "dump"))
                          else "pivot")
-                f.write_text(
+                f.write_text(_sanitize(
                     f"# {title} — {plat} / {auth}\n\n"
                     f"- source canon: `{src}.md`\n- base technique: `{base_slug}.md`\n"
                     f"- bindings: **{w}** · **{c}** · **ATT&CK {a}**\n"
@@ -684,7 +715,7 @@ def expand(json_mode=False, min_count=0):
                     f"## Chain roles\n\n- {CHAIN_ROLES[roles]}\n"
                     f"- pairs-with: see `skilltree-index.md` for the sibling techniques\n\n"
                     f"## Walls\n\n- validation-only · NO-GAIN · documented-class adaptation only\n"
-                    f"- in-scope only: the scope authority refuses everything else (rc=1)\n")
+                    f"- in-scope only: the scope authority refuses everything else (rc=1)\n"))
                 made += 1
                 index.append(f"- [{title} — {plat}/{auth}](skills/{src}/{slug}.md)"
                              f" — `{src}` · {w} · {c} · {a} · {roles}")
@@ -743,7 +774,7 @@ def verify(json_mode=False):
                 errors.append(f"{href}: missing {label}")
         if not re.search(r"^- generated: \d{4}-\d{2}-\d{2}$", body, re.M):
             errors.append(f"{href}: missing generated date")
-        if item["source"] not in body:
+        if item["source"] not in body and _sanitize(item["source"]) not in body:
             errors.append(f"{href}: source canon mismatch ({item['source']})")
         for binding in (item["wstg"], item["cwe"], "ATT&CK " + item["attack"]):
             if binding not in body:

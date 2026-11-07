@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/web-auth-chain-playbook.md`
 - bindings: **WSTG-SESS-01** · **CWE-347** · **ATT&CK T1552**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/github-release-hygiene.md`
 - bindings: **WSTG-CONF-04** · **CWE-538** · **ATT&CK T1552**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

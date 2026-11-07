@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/recon-technique-multi-host-brute.md`
 - bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 
@@ -12,7 +12,7 @@
 
 ## The technique
 
-- doc.f***REDACTED***.org returned a Next.js SPA shell (21,395 bytes, identical for ALL paths — SPA fallback)
+- doc.example-target.org returned a Next.js SPA shell (21,395 bytes, identical for ALL paths — SPA fallback)
 - Key technique: download and grep the JS bundle (`/_next/static/chunks/...`) instead of reading rendered HTML
 - The JS bundle contained siteConfig and revealed `x-refresh-password`/`x-export-password` auth headers
 - Also leaked: turnstile key, publicSignup flag, storageKeyPrefix — enough to understand the auth model

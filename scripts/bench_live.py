@@ -120,7 +120,7 @@ def _engine_root() -> Path:
     # The bench often runs under a throwaway HOME; search real homes too.
     candidates = [Path.home() / ".hermes/skills/security"]
     candidates += [Path(p) / ".hermes/skills/security"
-                   for p in ("/home/j***REDACTED***", "/home/runner", "/root")]
+                   for p in (os.path.expanduser("~"), "/home/runner", "/root")]
     for c in candidates:
         if (c / "shukaku").exists():
             return c

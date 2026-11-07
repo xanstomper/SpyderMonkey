@@ -2,7 +2,7 @@
 
 - source canon: `3am-shinjitsu/arsenal-01-network-edge.md`
 - bindings: **WSTG-ATHN-04** · **CWE-307** · **ATT&CK T1110**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

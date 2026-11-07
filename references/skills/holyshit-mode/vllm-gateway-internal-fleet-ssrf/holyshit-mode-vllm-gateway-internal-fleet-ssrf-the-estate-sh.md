@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/vllm-gateway-internal-fleet-ssrf.md`
 - bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 
@@ -15,7 +15,7 @@
 - **Public gateway + web platform = hardened** (server-side auth, keyless-recon-only). The
   compromisable surface on THIS class of product is the **internal serving fleet** the public
   gateway routes through — one misconfigured lane = whole crown.
-- Fleet pattern: `*.x***REDACTED***.ai` with per-provider lanes. `gateway.<d>/{glm,qwen}/v1` were
+- Fleet pattern: `*.example-target.ai` with per-provider lanes. `gateway.<d>/{glm,qwen}/v1` were
   **properly keyed (401 Invalid API Key)** while `wm.<d>` (deepseek lane) left `/invocations` +
   `/scale_elastic_ep` + `/generative_scoring` + `/load` + `/detokenize` **completely unauth**.
   **Contrast = proof of misconfiguration**, not platform-wide behavior.

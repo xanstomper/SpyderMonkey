@@ -1,4 +1,4 @@
-# Class lesson: side-pipeline trust split (session-verified 2026-10-10, g***REDACTED***.xyz) — gateway / service
+# Class lesson: side-pipeline trust split (session-verified 2026-10-10, example-target.xyz) — gateway / service
 
 - source canon: `holyshit-mode/web-auth-chain-playbook.md`
 - base technique: `holyshit-mode-web-auth-chain-playbook-class-lesson-side-pipe.md`
@@ -19,8 +19,8 @@
 ## The technique
 
 Platforms gate the FLAGSHIP endpoint (text chat, `/v1/*`) hard while SISTER pipelines sharing the
-same session trust root stay open. g***REDACTED***.xyz: text chat turnstile-gated, `/v1` needed an sk_
-key — but `chat.g***REDACTED***.xyz/api/media/*` (speech/images/transcriptions) accepted the SAME
+same session trust root stay open. example-target.xyz: text chat turnstile-gated, `/v1` needed an sk_
+key — but `chat.example-target.xyz/api/media/*` (speech/images/transcriptions) accepted the SAME
 unverified phone session with `X-Chat-Auth-Mode: account` + `X-Website-Route: chat-app`, no
 turnstile, no email verification → free Gemini TTS (WAV), free FLUX images (1024px PNG), and a
 free Gemini 2.5 Flash VLM via the transcriptions multipart endpoint (send an image file with a

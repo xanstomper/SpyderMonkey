@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/web-auth-chain-playbook.md`
 - bindings: **WSTG-PARA** · **CWE-113** · **ATT&CK T1190**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 
@@ -14,7 +14,7 @@
 
 - Cloudflare 1010 blocks python urllib — use curl with browser User-Agent + Origin headers.
 - holyleadger.py: statuses are only {confirmed, hypothesis, inconclusive, negative};
-  report flags are `--target X --out file`; needs `HOLYSHIT_SCRIPT_DIR=/home/j***REDACTED***/.hermes/scripts`.
+  report flags are `--target X --out file`; needs `HOLYSHIT_SCRIPT_DIR=$HOME/.hermes/scripts`.
 
 ## Family use
 

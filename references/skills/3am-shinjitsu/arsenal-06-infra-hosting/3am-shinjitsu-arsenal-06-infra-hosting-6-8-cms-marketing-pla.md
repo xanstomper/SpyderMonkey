@@ -2,7 +2,7 @@
 
 - source canon: `3am-shinjitsu/arsenal-06-infra-hosting.md`
 - bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

@@ -2,7 +2,7 @@
 
 - source canon: `3am-shinjitsu/arsenal-06-infra-hosting.md`
 - bindings: **WSTG-BUSL-06** · **CWE-294** · **ATT&CK T1550**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 
@@ -15,7 +15,7 @@
 - Identical CDN IPs + VERBATIM error envelopes across sister brands = shared backend.
 - Ledger the cross-brand session-replay hypothesis (cookie domain scope, shared `state`).
 - Sister-brand CT logs surface staging hosts (`stagsrv` class) and dangling routes.
-- Family orbit = the compromisable surface when the core is hardened (g***REDACTED*** lesson).
+- Family orbit = the compromisable surface when the core is hardened (example-target lesson).
 
 ## Family use
 

@@ -2,7 +2,7 @@
 
 - source canon: `spydermonkey/mandate.md`
 - bindings: **WSTG-ATHZ-04** · **CWE-639** · **ATT&CK T1068**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

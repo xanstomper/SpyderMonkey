@@ -19,7 +19,7 @@
 ## The technique
 
 Admin-claim injection into JWT `user_metadata` (role/is_admin/credits persist verbatim through
-phone signup) is a finding only if a BACKEND endpoint trusts the claim. g***REDACTED***.xyz's backend
+phone signup) is a finding only if a BACKEND endpoint trusts the claim. example-target.xyz's backend
 gates on its own DB (`profiles.email_verified` middleware on all /api/account/*) — dead end
 despite full claim persistence. Locate the real gate before scoring JWT-claim escalation.
 

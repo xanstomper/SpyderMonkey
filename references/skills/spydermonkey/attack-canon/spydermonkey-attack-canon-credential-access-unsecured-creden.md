@@ -2,7 +2,7 @@
 
 - source canon: `spydermonkey/attack-canon.md`
 - bindings: **WSTG-CONF-04** · **CWE-530** · **ATT&CK T1552**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

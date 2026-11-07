@@ -2,7 +2,7 @@
 
 - source canon: `spydermonkey/technique-canon-2.md`
 - bindings: **WSTG-BUSL-05** · **CWE-285** · **ATT&CK T1068**
-- generated: 2026-11-06
+- generated: 2026-11-07
 
 ## Route
 

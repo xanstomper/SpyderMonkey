@@ -2,7 +2,7 @@
 
 - source canon: `spydermonkey/technique-canon-8.md`
 - bindings: **WSTG-CRYPTO-04** · **CWE-329** · **ATT&CK T1573**
-- generated: 2026-11-06
+- generated: 2026-11-07
 
 ## Route
 

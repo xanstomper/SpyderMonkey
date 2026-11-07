@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/web-integrity-masking-leaks.md`
 - bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 
@@ -22,7 +22,7 @@ Method:
    `set(tuple(sorted(set(re.findall(r'"([a-z_]{3,30})":', obj)))))` over
    `\{"id":\d+,...\}` matches.
 3. Diff the shapes: which ones carry identity fields for masked users?
-   On g***REDACTED***: 197/200 leaderboard rows leaked real names via `display_username`
+   On example-target: 197/200 leaderboard rows leaked real names via `display_username`
    while 1,300+ bet-feed rows masked correctly (but still shipped IDs + live
    wallet balances in real units).
 

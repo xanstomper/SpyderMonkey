@@ -2,7 +2,7 @@
 
 - source canon: `3am-shinjitsu/arsenal-07-supply-chain.md`
 - bindings: **WSTG-CONF-04** · **CWE-530** · **ATT&CK T1552**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

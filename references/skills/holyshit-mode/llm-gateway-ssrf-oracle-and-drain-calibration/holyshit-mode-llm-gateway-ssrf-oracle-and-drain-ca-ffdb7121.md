@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/llm-gateway-ssrf-oracle-and-drain-calibration.md`
 - bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 
@@ -15,7 +15,7 @@
 Do not assume an OAuth gateway can be session-forged. On a **server-side-PKCE Supabase/GoTrue** gateway:
 - the **anon key never ships to the browser** (0 `supabase` refs in all bundles) — can't hit GoTrue
   signup/verify keyless;
-- **`redirect_to` is hardcoded server-side** (all override attempts ignored) — not the g***REDACTED***
+- **`redirect_to` is hardcoded server-side** (all override attempts ignored) — not the example-target
   open-redirect forge;
 - Turnstile gates `/auth/create-account`, `/auth/otp`, `/auth/password/signin`; `spend-unlock` is
   session-gated; every `/api/*` is 401.

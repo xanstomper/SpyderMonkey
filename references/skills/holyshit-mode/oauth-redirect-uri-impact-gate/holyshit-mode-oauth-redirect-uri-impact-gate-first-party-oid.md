@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/oauth-redirect-uri-impact-gate.md`
 - bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 
@@ -12,7 +12,7 @@
 
 ## The technique
 
-Platforms that offer "Login with X" via their own OIDC provider (`/oauth/authorize` + `/api/oauth/token`) are a SEPARATE auth surface from the Supabase GoTrue external OAuth (Discord/Google). On g***REDACTED***.xyz the first-party flow used:
+Platforms that offer "Login with X" via their own OIDC provider (`/oauth/authorize` + `/api/oauth/token`) are a SEPARATE auth surface from the Supabase GoTrue external OAuth (Discord/Google). On example-target.xyz the first-party flow used:
 
 - PKCE S256 with `crypto.getRandomValues(48)` verifier — proper, not bruteable
 - `code_challenge_method: S256`, nonce, sessionStorage state binding

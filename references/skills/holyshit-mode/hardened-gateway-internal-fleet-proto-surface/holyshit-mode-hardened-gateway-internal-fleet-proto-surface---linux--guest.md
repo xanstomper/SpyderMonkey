@@ -22,7 +22,7 @@
   **server-side** (server initiates PKCE); zero `supabase`/`eyJ` anon-key in all fetched bundles. GoTrue
   `/auth/v1/*` keyless → `401 No API key found`.
 - **`redirect_to` is hardcoded server-side**; override attempts (`https://evil`, `//evil`,
-  `javascript:`, legit) are ignored. The g***REDACTED*** GoTrue redirect_uri-override forge does NOT apply.
+  `javascript:`, legit) are ignored. The example-target GoTrue redirect_uri-override forge does NOT apply.
   Fingerprint: `sb-<ref>-auth-token-code-verifier` PKCE cookie + `code_challenge_method=s256`.
 - **Turnstile gates every bootstrap** (`/auth/otp`, `/auth/create-account`, `/auth/password/signin` →
   `captcha_failed` 403). Send an empty body to enumerate required fields before captcha blocks.

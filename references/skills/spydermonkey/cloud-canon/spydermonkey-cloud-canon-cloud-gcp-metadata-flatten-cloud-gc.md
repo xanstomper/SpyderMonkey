@@ -2,7 +2,7 @@
 
 - source canon: `spydermonkey/cloud-canon.md`
 - bindings: **WSTG-INPV-10** · **CWE-918** · **ATT&CK T1190**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

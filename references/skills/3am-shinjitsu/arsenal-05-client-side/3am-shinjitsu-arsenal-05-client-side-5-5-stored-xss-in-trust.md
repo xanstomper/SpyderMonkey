@@ -2,7 +2,7 @@
 
 - source canon: `3am-shinjitsu/arsenal-05-client-side.md`
 - bindings: **WSTG-SESS** · **CWE-384** · **ATT&CK T1550**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

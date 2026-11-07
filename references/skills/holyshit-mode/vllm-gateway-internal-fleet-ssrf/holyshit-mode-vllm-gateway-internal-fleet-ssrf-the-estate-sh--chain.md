@@ -23,7 +23,7 @@ chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). 
 - **Public gateway + web platform = hardened** (server-side auth, keyless-recon-only). The
   compromisable surface on THIS class of product is the **internal serving fleet** the public
   gateway routes through — one misconfigured lane = whole crown.
-- Fleet pattern: `*.x***REDACTED***.ai` with per-provider lanes. `gateway.<d>/{glm,qwen}/v1` were
+- Fleet pattern: `*.example-target.ai` with per-provider lanes. `gateway.<d>/{glm,qwen}/v1` were
   **properly keyed (401 Invalid API Key)** while `wm.<d>` (deepseek lane) left `/invocations` +
   `/scale_elastic_ep` + `/generative_scoring` + `/load` + `/detokenize` **completely unauth**.
   **Contrast = proof of misconfiguration**, not platform-wide behavior.

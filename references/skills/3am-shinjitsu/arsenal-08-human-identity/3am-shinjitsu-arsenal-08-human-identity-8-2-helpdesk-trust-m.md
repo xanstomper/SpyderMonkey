@@ -2,7 +2,7 @@
 
 - source canon: `3am-shinjitsu/arsenal-08-human-identity.md`
 - bindings: **WSTG-ATHN-08** · **CWE-521** · **ATT&CK T1110**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

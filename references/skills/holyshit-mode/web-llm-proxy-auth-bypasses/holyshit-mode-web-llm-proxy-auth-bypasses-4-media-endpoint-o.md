@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/web-llm-proxy-auth-bypasses.md`
 - bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 
@@ -25,7 +25,7 @@ When the main chat endpoint (`/api/chat`) is gated by turnstile/"human verificat
   modalities, freeTier). Filter `outputModalities` to find image/audio/text models.
 - Failures to expect: `unsupported_provider` (bad model prefix format — use `provider/model`),
   upstream 401/404 for providers whose keys are dead (unorouter), `turnstile_required` only
-  on Gratisfy-PROVIDED chat models (media path exempt).
+  on example-target-PROVIDED chat models (media path exempt).
 
 ## Family use
 

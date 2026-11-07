@@ -21,7 +21,7 @@
 - `web_search <target> breach leak ransomware` + ransomware.live + Breachsense-class trackers
   + news. Corroborate what the victim CONFIRMED ("withdrawal requests were added to the
   database" = proven DB-write access) before theorizing.
-- FULL WORKED CASE: `case-g***REDACTED***-adjacent-infra.md` (holyshit refs, normative by reference).
+- FULL WORKED CASE: `case-example-target-adjacent-infra.md` (holyshit refs, normative by reference).
 
 ## Probe adjustment (gateway × unauth)
 

@@ -2,7 +2,7 @@
 
 - source canon: `kairo/offensive-hardware-batteries.md`
 - bindings: **MASTG-RES** · **CWE-494** · **ATT&CK T1601**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

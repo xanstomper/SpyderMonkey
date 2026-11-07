@@ -2,7 +2,7 @@
 
 - source canon: `kairo/synthesis-engine.md`
 - bindings: **MASTG-RES** · **CWE-288** · **ATT&CK T1557**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

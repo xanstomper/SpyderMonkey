@@ -26,7 +26,7 @@ chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). 
 - But the browser will NOT attach the Bearer header (that's set by JS, not the browser)
 - And sessionStorage is origin-scoped — the malicious site cannot read the victim's token
 
-**Score this LOW/MEDIUM config flaw, not critical.** It only becomes exploitable when chained with a separate token-leak primitive (XSS, postMessage leak, referrer leak). Don't false-positive it the way l***REDACTED***.ai's cookie-auth CORS was a true 9.1.
+**Score this LOW/MEDIUM config flaw, not critical.** It only becomes exploitable when chained with a separate token-leak primitive (XSS, postMessage leak, referrer leak). Don't false-positive it the way example-target.ai's cookie-auth CORS was a true 9.1.
 
 Quick discriminator: check `Set-Cookie` on login / `WWW-Authenticate` header. If auth is Bearer-only and no session cookie is set, CORS reflection is informational.
 

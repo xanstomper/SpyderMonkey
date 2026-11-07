@@ -23,7 +23,7 @@ chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). 
 - Identical CDN IPs + VERBATIM error envelopes across sister brands = shared backend.
 - Ledger the cross-brand session-replay hypothesis (cookie domain scope, shared `state`).
 - Sister-brand CT logs surface staging hosts (`stagsrv` class) and dangling routes.
-- Family orbit = the compromisable surface when the core is hardened (g***REDACTED*** lesson).
+- Family orbit = the compromisable surface when the core is hardened (example-target lesson).
 
 ## Walls
 

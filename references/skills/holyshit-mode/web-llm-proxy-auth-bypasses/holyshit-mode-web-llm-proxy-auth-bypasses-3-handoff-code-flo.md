@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/web-llm-proxy-auth-bypasses.md`
 - bindings: **WSTG-BUSL-06** · **CWE-294** · **ATT&CK T1550**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

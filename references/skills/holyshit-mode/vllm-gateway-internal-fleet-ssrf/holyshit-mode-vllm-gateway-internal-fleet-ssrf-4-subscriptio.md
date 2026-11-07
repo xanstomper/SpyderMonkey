@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/vllm-gateway-internal-fleet-ssrf.md`
 - bindings: **WSTG-BUSL-05** · **CWE-285** · **ATT&CK T1068**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

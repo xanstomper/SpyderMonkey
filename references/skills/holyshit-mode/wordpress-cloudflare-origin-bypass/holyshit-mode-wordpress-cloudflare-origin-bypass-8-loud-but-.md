@@ -2,7 +2,7 @@
 
 - source canon: `holyshit-mode/wordpress-cloudflare-origin-bypass.md`
 - bindings: **WSTG-CONF-09** · **CWE-350** · **ATT&CK T1584**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

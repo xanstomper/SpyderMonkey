@@ -2,7 +2,7 @@
 
 - source canon: `spydermonkey/technique-canon-3.md`
 - bindings: **PTES-CON** · **CWE-250** · **ATT&CK T1610**
-- generated: 2026-11-06
+- generated: 2026-11-07
 
 ## Route
 

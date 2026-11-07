@@ -2,7 +2,7 @@
 
 - source canon: `spydermonkey/technique-canon-3.md`
 - bindings: **MASTG-PLATFORM** · **CWE-927** · **ATT&CK T1546**
-- generated: 2026-11-06
+- generated: 2026-11-07
 
 ## Route
 

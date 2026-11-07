@@ -21,7 +21,7 @@ chain detect pairs same-origin findings (the `_origin()` key: scheme + netloc). 
 ## Composition
 
 - Subdomain brute-force using a short AI-infra wordlist: `api`, `doc`, `internal`, `status`, `staging`, `metrics`, etc.
-- Hit: `internal.f***REDACTED***.org` → 107.173.46.170 (non-Cloudflare IP — separate infra tier, ports filtered)
+- Hit: `internal.example-target.org` → 107.173.46.170 (non-Cloudflare IP — separate infra tier, ports filtered)
 - Hits: `doc.`, `staging.`, `status.` → Cloudflare-protected hosts
 - Note: DNS resolution of internal/ staging/ status subdomains is itself an info leak (infra topology exposure)
 

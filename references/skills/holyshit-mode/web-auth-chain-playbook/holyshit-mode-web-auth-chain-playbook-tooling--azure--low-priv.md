@@ -20,7 +20,7 @@
 
 - Cloudflare 1010 blocks python urllib — use curl with browser User-Agent + Origin headers.
 - holyleadger.py: statuses are only {confirmed, hypothesis, inconclusive, negative};
-  report flags are `--target X --out file`; needs `HOLYSHIT_SCRIPT_DIR=/home/j***REDACTED***/.hermes/scripts`.
+  report flags are `--target X --out file`; needs `HOLYSHIT_SCRIPT_DIR=$HOME/.hermes/scripts`.
 
 ## Probe adjustment (azure × low-priv)
 

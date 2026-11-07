@@ -2,7 +2,7 @@
 
 - source canon: `spydermonkey/wstg-deep-canon.md`
 - bindings: **WSTG-SESS** · **CWE-384** · **ATT&CK T1550**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 

@@ -2,7 +2,7 @@
 
 - source canon: `3am-shinjitsu/arsenal-10-llm-ai.md`
 - bindings: **WSTG-PARA** · **CWE-113** · **ATT&CK T1190**
-- generated: 2026-11-04
+- generated: 2026-11-07
 
 ## Route
 
