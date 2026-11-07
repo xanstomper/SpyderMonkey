@@ -1,3 +1,27 @@
+# v7.3.0 — THE MATERIALIZATION LANE (the catalog becomes the armory)
+
+- **`catalog runbook` / `catalog materialize`** — every surge index line is now
+  turnable into a REAL artifact with a runnable recipe, for all 66,569 entries:
+  - exploit-db: `edb-<id>` → the actual exploit SOURCE from the exploitdb tree
+    (searchsploit or shallow mirror), extension-aware build line (gcc/g++/
+    python3/ruby/php/perl), usage header extracted from the payload itself
+  - nuclei: `CVE-<year>-<n>` → the actual YAML template from the
+    nuclei-templates mirror (verified live: CVE-2012-4242.yaml, 2,238 bytes,
+    real detection template on disk) — fire via `nuclei -t`
+  - metasploit: module path → the actual .rb from the install, msfconsole line
+  - `runbook` = zero side effects; `materialize` = mirrors built on first use
+    (shallow clones, reused after); `--dry-run` touches nothing
+- **`catalog show` / `search --json` now carry `how`** — every surge entry the
+  model inspects shows the exact runbook/materialize command. The model knows
+  what it IS and HOW TO PERFORM it, not just a name.
+- **`arsenal install` URL lane** — stdlib-only static-binary acquisition for
+  the flagship Go tools (nuclei/httpx/subfinder/naabu/katana/dnsx/tlsx/asnmap/
+  gau/ffuf/bettercap): GitHub 'latest' API → '<os>_<arch>' archive →
+  ~/.local/bin, no toolchain required. Fixes the go-install-only fragility:
+  a bare box gets a working nuclei in one command.
+- **Tests: 71/71 ALL PASS** (5 new: runbook all kinds, dry-run purity, URL
+  lane precedence, how-field, EDB build recipe). selftest 14/14.
+
 # v7.2.0 — THE ACQUISITION LANE
 
 - **`arsenal install` — the arsenal is now a CATALOG, not a hope.** On-demand

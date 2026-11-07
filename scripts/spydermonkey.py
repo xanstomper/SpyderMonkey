@@ -98,7 +98,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "7.2.0"
+VERSION = "7.3.0"
 SCHEMA = 4
 
 
@@ -4674,16 +4674,42 @@ def _catalog_surge() -> list:
 
 
 def cmd_catalog(args) -> int:
-    cat = _catalog()
     action = getattr(args, "action", "stats") or "stats"
+    if action in ("runbook", "materialize"):
+        if not getattr(args, "kind", None) or not getattr(args, "id", None):
+            raise UsageError(f"catalog {action} needs --kind and --id")
+        mz = Path(__file__).resolve().parent / "catalog_materialize.py"
+        argv = [sys.executable, str(mz), action, "--kind", args.kind,
+                "--id", args.id]
+        if action == "materialize":
+            if getattr(args, "out", None):
+                argv += ["--out", args.out]
+            if getattr(args, "dry_run", False):
+                argv += ["--dry-run"]
+        if getattr(args, "json", False):
+            argv += ["--json"]
+        return subprocess.run(argv).returncode
+    cat = _catalog()
     cat_filter = (getattr(args, "cat", None) or "").lower().strip()
     limit = max(1, int(getattr(args, "limit", 50) or 50))
     term = getattr(args, "term", None) or ""
 
     def _rows(rows):
-        return [{"name": r.get("name"), "cat": r.get("cat"),
-                 "desc": r.get("desc"), "mode": r.get("mode"),
-                 "src": r.get("src", "curated")} for r in rows]
+        kind = {"exploit-db": "exploit-db", "nuclei-templates": "nuclei",
+                "metasploit": "metasploit"}
+        out = []
+        for r in rows:
+            row = {"name": r.get("name"), "cat": r.get("cat"),
+                   "desc": r.get("desc"), "mode": r.get("mode"),
+                   "src": r.get("src", "curated")}
+            k = kind.get(row["src"])
+            if k:
+                row["how"] = (f"spydermonkey catalog runbook --kind {k} --id "
+                              f"{row['name']}   (materialize → "
+                              f"spydermonkey catalog materialize --kind {k} "
+                              f"--id {row['name']})")
+            out.append(row)
+        return out
 
     def _filtered(rows):
         if not cat_filter:
@@ -4792,6 +4818,9 @@ def cmd_catalog(args) -> int:
         print(f"  mode     : {r.get('mode')}")
         print(f"  source   : {r.get('src', 'curated')}")
         print(f"  about    : {r.get('desc')}")
+        how = _rows([r])[0].get("how")
+        if how:
+            print(f"  how      : {how}")
         print("  NOTE: reference only — execution goes through `arsenal` (scope-gated)")
         return 0
 
@@ -6927,12 +6956,19 @@ def _build_parser() -> argparse.ArgumentParser:
     ar.add_argument("--timeout", type=int, default=300)
     ar.add_argument("--output-dir")
 
-    cg = sub.add_parser("catalog", help="KNOWN TOOL CATALOG: 1,053+ offensive tools — lazy-loaded reference metadata (info only; execution = arsenal, scope-gated)")
-    cg.add_argument("action", choices=("stats", "categories", "list", "search", "show"),
+    cg = sub.add_parser("catalog", help="KNOWN TOOL CATALOG: 1,053+ offensive tools + v7.3 MATERIALIZATION (real artifacts, not metadata)")
+    cg.add_argument("action", choices=("stats", "categories", "list", "search", "show",
+                                       "runbook", "materialize"),
                     nargs="?", default="stats")
     cg.add_argument("term", nargs="?", help="search term / tool name for show")
     cg.add_argument("--cat", help="filter by category prefix (e.g. web, recon/dns, wifi, ad)")
     cg.add_argument("--limit", type=int, default=50)
+    cg.add_argument("--kind", choices=("exploit-db", "nuclei", "metasploit"),
+                    help="runbook/materialize corpus")
+    cg.add_argument("--id", help="runbook/materialize entry (edb-16929, CVE-2012-4242, xslt_password_reset, or path)")
+    cg.add_argument("--out", help="materialize: target dir (default: cwd)")
+    cg.add_argument("--dry-run", action="store_true",
+                    help="materialize: print every command, touch nothing")
 
     fl = sub.add_parser("fleet", help="PARALLEL multi-agent dispatch: one agent per mandate")
     fl.add_argument("--goal", required=True)

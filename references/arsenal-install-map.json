@@ -93,7 +93,10 @@
    "brew": "arping"
   },
   "asnmap": {
-   "go": "github.com/projectdiscovery/asnmap/cmd/asnmap@latest"
+   "go": "github.com/projectdiscovery/asnmap/cmd/asnmap@latest",
+   "url": {
+    "repo": "projectdiscovery/asnmap"
+   }
   },
   "assetfinder": {
    "go": "github.com/tomnomnom/assetfinder@latest"
@@ -115,7 +118,10 @@
   },
   "bettercap": {
    "apt": "bettercap",
-   "go": "github.com/bettercap/bettercap@latest"
+   "go": "github.com/bettercap/bettercap@latest",
+   "url": {
+    "repo": "bettercap/bettercap"
+   }
   },
   "binwalk": {
    "apt": "binwalk"
@@ -346,7 +352,10 @@
    "pip": "dnstwist"
   },
   "dnsx": {
-   "go": "github.com/projectdiscovery/dnsx/cmd/dnsx@latest"
+   "go": "github.com/projectdiscovery/dnsx/cmd/dnsx@latest",
+   "url": {
+    "repo": "projectdiscovery/dnsx"
+   }
   },
   "docker": {
    "apt": "docker.io"
@@ -407,7 +416,10 @@
   },
   "ffuf": {
    "apt": "ffuf",
-   "go": "github.com/ffuf/ffuf/v2@latest"
+   "go": "github.com/ffuf/ffuf/v2@latest",
+   "url": {
+    "repo": "ffuf/ffuf"
+   }
   },
   "ffuf-vhost": {
    "apt": "ffuf",
@@ -456,7 +468,10 @@
    "apt": "bluez"
   },
   "gau": {
-   "go": "github.com/lc/gau/v2/cmd/gau@latest"
+   "go": "github.com/lc/gau/v2/cmd/gau@latest",
+   "url": {
+    "repo": "lc/gau"
+   }
   },
   "gauplus": {
    "go": "github.com/bp0lr/gauplus@latest"
@@ -572,7 +587,10 @@
    "apt": "hping3"
   },
   "httpx": {
-   "go": "github.com/projectdiscovery/httpx/cmd/httpx@latest"
+   "go": "github.com/projectdiscovery/httpx/cmd/httpx@latest",
+   "url": {
+    "repo": "projectdiscovery/httpx"
+   }
   },
   "httrack": {
    "apt": "httrack"
@@ -660,7 +678,10 @@
    "apt": "jwt-tool"
   },
   "katana": {
-   "go": "github.com/projectdiscovery/katana/cmd/katana@latest"
+   "go": "github.com/projectdiscovery/katana/cmd/katana@latest",
+   "url": {
+    "repo": "projectdiscovery/katana"
+   }
   },
   "kerbrute": {
    "go": "github.com/ropnop/kerbrute@latest"
@@ -818,7 +839,10 @@
    "apt": "default-mysql-client"
   },
   "naabu": {
-   "go": "github.com/projectdiscovery/naabu/v2/cmd/naabu@latest"
+   "go": "github.com/projectdiscovery/naabu/v2/cmd/naabu@latest",
+   "url": {
+    "repo": "projectdiscovery/naabu"
+   }
   },
   "nbtscan": {
    "apt": "nbtscan"
@@ -974,7 +998,10 @@
    "pacman": "bind-tools"
   },
   "nuclei": {
-   "go": "github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest"
+   "go": "github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest",
+   "url": {
+    "repo": "projectdiscovery/nuclei"
+   }
   },
   "nuclei-cves": {
    "apt": "nuclei"
@@ -1240,7 +1267,10 @@
    "apt": "stunnel"
   },
   "subfinder": {
-   "go": "github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest"
+   "go": "github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest",
+   "url": {
+    "repo": "projectdiscovery/subfinder"
+   }
   },
   "sublist3r": {
    "pip": "sublist3r"
@@ -1284,7 +1314,10 @@
    "pip": "theHarvester"
   },
   "tlsx": {
-   "go": "github.com/projectdiscovery/tlsx/cmd/tlsx@latest"
+   "go": "github.com/projectdiscovery/tlsx/cmd/tlsx@latest",
+   "url": {
+    "repo": "projectdiscovery/tlsx"
+   }
   },
   "tplmap": {
    "pip": "tplmap"

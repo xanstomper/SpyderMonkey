@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 7.2.0
+version: 7.3.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -123,7 +123,10 @@ structured run records, kernel `--out` results the loop absorbs) · **`arsenal i
 pre-installed, nothing installs implicit) · **`catalog`**
 (v7.0 — 68,255-entry known-tool index: 1,686 curated + the SURGE — 47,181
 Exploit-DB exploits, 14,235 Nuclei templates, 5,153 Metasploit modules —
-lazy-loaded metadata; info only, execution stays scope-gated via arsenal) ·
+lazy-loaded metadata; info only, execution stays scope-gated via arsenal;
+v7.3 MATERIALIZATION: `catalog runbook|materialize --kind exploit-db|nuclei|metasploit
+--id <entry>` turns any index line into a REAL artifact on disk + its runbook —
+search/show JSON carries `how` on every surge entry) ·
 **`discover`** (v7.0 THE SOURCE LANE — the source-discovery engine: read-only
 scan of the target's own code, sink grammars across 8 language families →
 ranked, gate-ready candidate cards in the HYP schema; the lane the
@@ -320,13 +323,15 @@ exercised, not asserted.
 - `scope init|check|show|add|remove|extend|history` — the shared estate gate (matching · deny precedence · expiry · audit)
 - `doctor [--fix]` — health check (engines · scope perms · corrupt states · canon · ledger · relays)
 - `bench` — offline route-level benchmark (29/29 = 100% at v4.0.0)
-- `arsenal list|plan|run|install|verify` — 1,605 tool wrappers + 158 feeding chains (recon/web/dns/osint/net + 120+ v6.0 domain chains incl. hw-*/cls-* + the v7.0 fuzz domain: fuzz-file/fuzz-binary/fuzz-net/fuzz-minimize/fuzz-full) behind the shared scope authority; `run --chain C --out result.json` emits the kernel result schema (`absorb` ingests it); `install --tool T[,T..]|--chain C --machine local|relay` is the ACQUISITION LANE (plan-only until a machine is named, 463 recipes, manager-aware apt/dnf/pacman/apk/brew/pip/cargo/go/npm/gem)
+- `arsenal list|plan|run|install|verify` — 1,605 tool wrappers + 158 feeding chains (recon/web/dns/osint/net + 120+ v6.0 domain chains incl. hw-*/cls-* + the v7.0 fuzz domain: fuzz-file/fuzz-binary/fuzz-net/fuzz-minimize/fuzz-full) behind the shared scope authority; `run --chain C --out result.json` emits the kernel result schema (`absorb` ingests it); `install --tool T[,T..]|--chain C --machine local|relay` is the ACQUISITION LANE (plan-only until a machine is named, 463 recipes, manager-aware apt/dnf/pacman/apk/brew/url/pip/cargo/go/npm/gem — url = stdlib GitHub-latest static binary, no toolchain)
+- `catalog stats|categories|list|search|show|runbook|materialize` — the tool reference + THE MATERIALIZATION LANE (v7.3): `runbook` prints the execution recipe for any of the 66,569 surge entries (zero side effects); `materialize` fetches the REAL artifact (exploit source / nuclei YAML / msf module) from local mirrors — every surge row carries `how` in show/search JSON
 - `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` — one agent per mandate, dispatched in parallel
 
 Companion scripts (stdlib too):
 - `scripts/scope_authority.py` — the one estate gate (exact/subdomain/wildcard/CIDR/URL/port · deny · expiry · rate · audit · atomic writes)
 - `scripts/bench_live.py` — exploitation-level bench: throwaway HOME, dynamic port, localhost mini-targets
 - `scripts/mcp_server.py` — the family as 430 MCP tools (stdio JSON-RPC; batch + notifications; `--test`/`--list`)
+- `scripts/catalog_materialize.py` — THE MATERIALIZATION LANE (v7.3): runbook/materialize for the 66,569-entry surge (exploit-db source · nuclei YAML · msf module; stdlib, mirrors on first use)
 - `scripts/skilltree.py` — regenerate + `--verify` `references/skills/` + `references/skilltree-index.md` (1,410 technique files)
 - `scripts/discover.py` — the v7.0 source-discovery engine (sink grammars · taint scoring · HYP-schema cards · optional semgrep lane on fleet)
 - `scripts/attack_map.py` — regenerate `references/attack-coverage.json` (corpus → ATT&CK, live ART comparison)

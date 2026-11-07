@@ -300,6 +300,50 @@ class CliTests(unittest.TestCase):
         r = run([str(SCRIPTS / "arsenal.py"), "verify"], self.env)
         self.assertEqual(r.returncode, 0, r.stderr + r.stdout)
 
+    # ── v7.3 catalog materialization ─────────────────────────────────────────
+
+    def test_catalog_runbook_all_kinds(self):
+        for kind, ident in (("exploit-db", "edb-16929"),
+                            ("nuclei", "CVE-2012-4242"),
+                            ("metasploit", "msf-auxiliary-admin-2wire-xslt_password_reset")):
+            r = self.cli(["catalog", "runbook", "--kind", kind, "--id", ident])
+            self.assertEqual(r.returncode, 0, r.stderr + r.stdout)
+            self.assertIn("gate", r.stdout.lower() + r.stderr.lower())
+        # a real nuclei CVE from the surge resolves to a real template path
+        d = self.j(["catalog", "runbook", "--kind", "nuclei", "--id",
+                    "CVE-2012-4242", "--json"])
+        self.assertTrue(d["ok"])
+        self.assertIn("cves/2012/CVE-2012-4242.yaml", d["path"])
+        # the EDB runbook carries the build/run recipe (the how-to-perform)
+        e = self.j(["catalog", "runbook", "--kind", "exploit-db", "--id",
+                    "edb-16929", "--json"])
+        self.assertTrue(any("build" in s for s in e["steps"]))
+        self.assertTrue(any("gcc" in s for s in e["steps"]))
+
+    def test_catalog_materialize_dry_run_touches_nothing(self):
+        before = set((Path(self.env["SPYDERMONKEY_HOME"])).glob("*")) if \
+            Path(self.env["SPYDERMONKEY_HOME"]).exists() else set()
+        r = self.cli(["catalog", "materialize", "--kind", "exploit-db",
+                      "--id", "edb-16929", "--dry-run", "--json"])
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertTrue(d["ok"])
+        self.assertTrue(any("16929" in e for e in d["events"]))
+        after = set((Path(self.env["SPYDERMONKEY_HOME"])).glob("*")) if \
+            Path(self.env["SPYDERMONKEY_HOME"]).exists() else set()
+        self.assertEqual(before, after)  # no mirror, no artifact — dry-run held
+
+    def test_arsenal_url_lane_resolves_before_go(self):
+        import arsenal as ars
+        r = ars.resolve_install("nuclei")
+        self.assertTrue(r["managed"])
+        self.assertTrue(any(c["manager"] == "url" for c in r["cmds"]))
+
+    def test_catalog_show_carries_how(self):
+        d = self.j(["catalog", "show", "edb-16929", "--json"])
+        self.assertEqual(d["tool"]["src"], "exploit-db")
+        self.assertIn("materialize", d["tool"]["how"])
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -44,7 +44,7 @@ from urllib.parse import urlsplit
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "7.2.0"
+VERSION = "7.3.0"
 
 # tool → (capability, canon classes it feeds, plan line, args builder)
 ARSENAL = {
@@ -1356,12 +1356,89 @@ def _distro_manager() -> str | None:
 
 _MGR_EXE = {"apt": "apt-get", "dnf": "dnf", "pacman": "pacman", "apk": "apk",
             "brew": "brew", "pip": "pip3", "cargo": "cargo", "go": "go",
-            "npm": "npm", "gem": "gem"}
-_MGR_ORDER = ("apt", "dnf", "pacman", "apk", "brew", "pip", "cargo", "go", "npm", "gem")
+            "npm": "npm", "gem": "gem", "url": "url"}
+_MGR_ORDER = ("apt", "dnf", "pacman", "apk", "brew", "url", "pip", "cargo",
+              "go", "npm", "gem")
 
 
 def _manager_present(m: str) -> bool:
+    if m == "url":
+        return True  # stdlib urllib — the static-binary lane needs no toolchain
     return shutil.which(_MGR_EXE[m]) is not None
+
+
+def url_downloader():
+    """stdlib-only static-binary lane: GitHub 'latest' release → ~/.local/bin.
+
+    Returns (ok, detail). Resolves the release via the GitHub API, picks the
+    '<os>_<arch>' archive (zip/tar.gz), extracts and installs the binary.
+    """
+    import platform as _platform
+    import tarfile
+    import urllib.request
+    import zipfile
+
+    def _pick(repo: str) -> tuple[str, str] | None:
+        try:
+            with urllib.request.urlopen(
+                    f"https://api.github.com/repos/{repo}/releases/latest",
+                    timeout=25) as r:
+                rel = json.loads(r.read().decode("utf-8"))
+        except Exception:
+            return None
+        tag = rel.get("tag_name") or ""
+        osn = {"linux": "linux", "darwin": "macOS"}.get(sys.platform, "linux")
+        arch = {"x86_64": "amd64", "amd64": "amd64", "aarch64": "arm64",
+                "arm64": "arm64"}.get(_platform.machine().lower(), "amd64")
+        needle = f"{osn}_{arch}".lower()
+        assets = [a.get("browser_download_url", "") for a in rel.get("assets", [])]
+        want = [u for u in assets
+                if needle in u.lower() and u.lower().endswith((".zip", ".tar.gz", ".tgz"))]
+        if not want:
+            return None
+        want.sort(key=lambda u: (u.lower().endswith(".zip"), u))
+        return tag, want[-1] if len(want) > 1 else want[0]
+
+    def _install(tool: str, repo: str) -> tuple[bool, str]:
+        picked = _pick(repo)
+        if not picked:
+            return False, f"no {sys.platform} archive found for {repo} (api/latest)"
+        _tag, url = picked
+        bindir = Path.home() / ".local" / "bin"
+        bindir.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="arsenal-url-") as td:
+            tdp = Path(td)
+            arch = tdp / url.rsplit("/", 1)[-1]
+            try:
+                urllib.request.urlretrieve(url, arch)
+            except Exception as e:
+                return False, f"download failed: {e}"
+            got = None
+            if url.lower().endswith(".zip"):
+                with zipfile.ZipFile(arch) as z:
+                    names = z.namelist()
+                    hit = next((n for n in names if Path(n).name == tool), None)
+                    if hit is None:
+                        hit = next((n for n in names if Path(n).name in
+                                    (tool, f"{tool}.exe")), None)
+                    if hit is None:
+                        return False, f"binary '{tool}' not in {url.rsplit('/',1)[-1]}"
+                    z.extract(hit, tdp)
+                    got = tdp / hit
+            else:
+                with tarfile.open(arch) as t:
+                    hit = next((m for m in t.getmembers()
+                                if Path(m.name).name == tool), None)
+                    if hit is None:
+                        return False, f"binary '{tool}' not in archive"
+                    t.extract(hit, tdp)
+                    got = tdp / hit.name
+            dest = bindir / tool
+            shutil.copy2(got, dest)
+            os.chmod(dest, 0o755)
+        return True, f"{tool} → {dest} (release {_tag})"
+
+    return _install
 
 
 def resolve_install(tool: str) -> dict:
@@ -1406,6 +1483,10 @@ def resolve_install(tool: str) -> dict:
                 cmd = f"npm install {pkg}"
             elif mgr == "gem":
                 cmd = f"gem install {pkg}"
+            elif mgr == "url":
+                repo = pkg.get("repo") if isinstance(pkg, dict) else pkg
+                cmd = (f"resolve latest release of {repo} → "
+                       f"~/.local/bin/{tool} (stdlib downloader)")
             else:
                 continue
             cmds.append({"manager": mgr, "command": cmd})
@@ -1476,6 +1557,7 @@ def cmd_install(args):
         return 0
     if machine == "local":
         rc_all = 0
+        dl = url_downloader()
         for r in missing:
             if not r["cmds"]:
                 print(f"✗ {r['tool']}: no recipe — manual install "
@@ -1485,6 +1567,18 @@ def cmd_install(args):
             rc = -1
             for c in r["cmds"]:
                 print(f"▸ {r['tool']}: {c['command']}")
+                if c["manager"] == "url":
+                    repo = _install_map().get(r["tool"], {}).get("url", {})
+                    repo = repo.get("repo") if isinstance(repo, dict) else repo
+                    if not repo:
+                        rc = 1
+                        continue
+                    ok, detail = dl(r["tool"], repo)
+                    print(f"    {'✓' if ok else '✗'} {detail}")
+                    rc = 0 if ok else 1
+                    if ok:
+                        break
+                    continue
                 rc = subprocess.run(c["command"], shell=True).returncode
                 if rc == 0:
                     break

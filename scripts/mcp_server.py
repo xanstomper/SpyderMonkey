@@ -24,7 +24,7 @@ from pathlib import Path
 import arsenal  # noqa: E402  (single source of truth for tools + chains)
 import arsenal_domain as ad  # noqa: E402  (class vocabulary / priority order)
 
-VERSION = "7.2.0"
+VERSION = "7.3.0"
 PROTOCOL = "2024-11-05"
 SM = str(Path(__file__).resolve().parent / "spydermonkey.py")
 NAME_RE = re.compile(r"^[a-z][a-z0-9_]{1,63}$")
@@ -35,7 +35,6 @@ def _engine_root() -> Path:
     if env:
         return Path(env).expanduser()
     candidates = [Path.home() / ".hermes/skills/security",
-                  Path("/home/j***REDACTED***/.hermes/skills/security"),
                   Path("/root/.hermes/skills/security")]
     for c in candidates:
         if c.exists():

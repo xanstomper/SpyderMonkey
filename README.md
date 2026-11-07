@@ -564,7 +564,7 @@ git clone https://github.com/xanstomper/spydermonkey.git \
 | `doctor [--fix]` | full health check: engines · scope perms · corrupt states · canon · ledger · relays |
 | `bench` | offline route-level benchmark |
 | `arsenal list\|plan\|run\|install\|verify` | the execution layer — tool catalog, feeding chains, kernel-schema output; **`install`** (v7.2.0) pulls any tool/chain onto the machine you name (`--machine local` or a relay node) from 463 recipes |
-| `catalog stats\|categories\|list\|search\|show` | **1,053-entry known-tool reference** — lazy-loaded metadata (info only; execution stays scope-gated via arsenal) |
+| `catalog stats\|categories\|list\|search\|show\|runbook\|materialize` | **66,569-entry known-tool reference** (EDB + Nuclei + Metasploit); **v7.3.0 materialization** — `runbook` prints the execution recipe for any entry, `materialize` puts the REAL artifact on disk (each row's `how` in show/search) |
 | `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` | one agent per mandate, dispatched in parallel |
 | `skilltree [--expand] [--verify] [--count]` | the corpus: 837 base → 11,683 files, deterministic, 0 orphans |
 | `crawl --target T --url U [--depth N]` | surface mining: links · whole-form-blocks (method+fields) · JS api-paths → context |
