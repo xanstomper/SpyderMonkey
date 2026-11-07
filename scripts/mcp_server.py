@@ -21,7 +21,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-VERSION = "5.16.0"
+VERSION = "5.17.0"
 PROTOCOL = "2024-11-05"
 SM = str(Path(__file__).resolve().parent / "spydermonkey.py")
 NAME_RE = re.compile(r"^[a-z][a-z0-9_]{1,63}$")
@@ -718,7 +718,9 @@ def h_arsenal_run(a):
 _CHAINS = ["recon", "web", "tls", "net", "dns", "content", "api", "services",
            "cms", "win", "osint", "db", "takeover", "cloud", "packet", "fuzz",
            "cve-sweep", "exposure-sweep", "takeover-full", "cloud-full",
-           "db-full", "mail-full", "cms-full"]
+           "db-full", "mail-full", "cms-full",
+           "hw-wifi", "hw-ble", "hw-rfid", "hw-sdr", "hw-esp", "hw-iot",
+           "hw-audio"]
 _CHAIN_INPUT = {
     "type": "object",
     "properties": {

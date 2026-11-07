@@ -37,7 +37,7 @@ python3 -m py_compile scripts/spydermonkey.py scripts/scope_authority.py \
 
 echo "── dispatcher CLI · tree · router · version · kernel"
 python3 $S --help > /dev/null
-python3 $S version --json | grep '"version": "5.16.0"' > /dev/null
+python3 $S version --json | grep '"version": "5.17.0"' > /dev/null
 python3 $S tree | grep BARBICAN > /dev/null
 python3 $S tree | grep SHIKI > /dev/null
 python3 $S tree | grep KAGE > /dev/null
@@ -182,7 +182,7 @@ python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); assert d["ok"] and 
 test "$(grep -c '^- \[' references/skilltree-expanded-index.md)" -ge 10000
 printf '{"jsonrpc":"2.0","id":1,"method":"tools/list"}\n{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"version","arguments":{}}}\n' \
   | python3 scripts/mcp_server.py > "$HOME/mcp.jsonl"
-python3 -c 'import json,sys; rows=[json.loads(l) for l in open(sys.argv[1]) if l.strip()]; assert len(rows) == 2; assert len(rows[0]["result"]["tools"]) >= 52; assert "5.16.0" in json.dumps(rows[1])' "$HOME/mcp.jsonl"
+python3 -c 'import json,sys; rows=[json.loads(l) for l in open(sys.argv[1]) if l.strip()]; assert len(rows) == 2; assert len(rows[0]["result"]["tools"]) >= 86; assert "5.17.0" in json.dumps(rows[1])' "$HOME/mcp.jsonl"
 test -f references/mandate.md
 
 echo "── stdlib test suite"
@@ -214,12 +214,12 @@ else
   wait || true
 fi
 
-echo "── DOJO v2: 15 classes · bench self-verifies"
+echo "── DOJO v2: 16 classes · bench self-verifies"
 if [ ! -f "$DOJO" ]; then
   echo "  (dojo engine not present — skipping)"
 else
   D="$DOJO"
-  python3 "$D" catalog | grep '15 buildable' > /dev/null
+  python3 "$D" catalog | grep '16 buildable' > /dev/null
   python3 "$D" bench --class BOUNDARY --port 8812 | grep 'CONFIRMED' > /dev/null
   python3 "$D" bench --class JWT --port 8813 | grep 'CONFIRMED' > /dev/null
   python3 "$D" verify | grep 'ALL PASS' > /dev/null

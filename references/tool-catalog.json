@@ -7369,5 +7369,103 @@
   "desc": "Kali Linux tool \u2014 Services and Other Tools (kali.org/tools/tailscale)",
   "mode": "active",
   "src": "kali"
+ },
+ {
+  "name": "gatttool",
+  "cat": "hw/ble",
+  "desc": "Generic Attribute (GATT) client for BLE read/write on own peripherals",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "hcitool",
+  "cat": "hw/ble",
+  "desc": "Bluetooth adapter control: lescan/info on own adapter",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "bluetoothctl",
+  "cat": "hw/ble",
+  "desc": "Modern BLE controller: scan, pair, connect, services",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "nfc-poll",
+  "cat": "hw/rfid",
+  "desc": "Poll for NFC tags on own reader; list UID/type",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "hackrf_transfer",
+  "cat": "hw/sdr",
+  "desc": "HackRF RX/TX: raw IQ capture (433/868MHz lab bands)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "hackrf_sweep",
+  "cat": "hw/sdr",
+  "desc": "HackRF wide spectrum sweep with log file",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "rtl_fm",
+  "cat": "hw/sdr",
+  "desc": "RTL-SDR FM demod to audio stream",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "multimon-ng",
+  "cat": "hw/sdr/audio",
+  "desc": "Decode DTMF/FSK/POCSAG/AFSK from audio or IQ demod",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "esptool",
+  "cat": "hw/esp",
+  "desc": "ESP32-class chip identity + flash read/dump (own controller)",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "tuya-cli",
+  "cat": "hw/iot",
+  "desc": "Tuya local API control of own smart devices",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "mosquitto_sub",
+  "cat": "hw/iot",
+  "desc": "MQTT subscribe to own broker topics",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "mosquitto_pub",
+  "cat": "hw/iot",
+  "desc": "MQTT publish to own broker lab topics",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "zigbee2mqtt",
+  "cat": "hw/iot",
+  "desc": "Zigbee coordinator bridge/state queries on own network",
+  "mode": "passive",
+  "root": 1
+ },
+ {
+  "name": "minimodem",
+  "cat": "hw/audio",
+  "desc": "Data-over-audio modem (AFSK/FSK) TX/RX for lab research",
+  "mode": "active",
+  "root": 1
  }
 ]

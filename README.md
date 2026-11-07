@@ -10,14 +10,14 @@
 the tree, the router, the autonomous kernel, the published benchmarks, and the full
 engagement pipeline in one stdlib-only CLI.**
 
-[![Version](https://img.shields.io/badge/version-5.11.0-blueviolet?style=for-the-badge)](#the-cli)
+[![Version](https://img.shields.io/badge/version-5.17.0-blueviolet?style=for-the-badge)](#the-cli)
 [![Python](https://img.shields.io/badge/python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](#quickstart)
 [![Platform](https://img.shields.io/badge/platform-Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](#quickstart)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?style=for-the-badge)](#why-its-so-powerful)
-[![Corpus](https://img.shields.io/badge/skill%20corpus-11%2C683%20files-blue?style=for-the-badge)](#the-skill-corpus-11683-files)
+[![Corpus](https://img.shields.io/badge/skill%20corpus-33%2C687%20files-blue?style=for-the-badge)](#the-skill-corpus-11683-files)
 [![Self-play](https://img.shields.io/badge/self--play-14%2F14%20classes-success?style=for-the-badge)](#training--the-selfplay-loop)
 [![Bench](https://img.shields.io/badge/benchmark-100%25%20self%20·%2090.6%25%20cross--range-orange?style=for-the-badge)](#the-benchmarks)
-[![MCP](https://img.shields.io/badge/MCP-50%20tools-9146FF?style=for-the-badge)](#mcp--50-tools-for-every-client)
+[![MCP](https://img.shields.io/badge/MCP-86%20tools-9146FF?style=for-the-badge)](#mcp--50-tools-for-every-client)
 [![Discipline](https://img.shields.io/badge/discipline-model--agnostic%20·%20any%20LLM-9146FF?style=for-the-badge)](#the-mandate-discipline)
 [![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
 [![CI](https://github.com/xanstomper/spydermonkey/actions/workflows/verify.yml/badge.svg)](https://github.com/xanstomper/spydermonkey/actions/workflows/verify.yml)
@@ -200,14 +200,14 @@ agent with a real brief; **`arsenal`** wraps 30 external tools in 6 feeding chai
 wafw00f, nikto, dig, curl, ffuf, naabu, amass, katana, dalfox, tlsx, gau) behind
 the same scope authority; chain stages feed each other (subfinder's domains →
 dnsx → httpx → nuclei) and `--out` emits the kernel result schema the loop
-absorbs; **`skilltree --expand`** generates the 33,604-file context corpus
+absorbs; **`skilltree --expand`** generates the 11,683-file context corpus
 (technique × platform × auth × hardened × chain, deterministic); **`dojo`** builds
 the lab replicas; **`kage`** mirrors every confirmed attack into Sigma.
 
 **`bench_public.py`** — the published benchmarks: the self-bench (15 live replica
 classes × 4 sub-tasks, anti-memorization, 100%) and **Range B** — an independently
 written app with zero code shared with the testers (90.6%). **`mcp_server.py`** —
-the whole family exposed as 79 MCP tools (stdio JSON-RPC, zero deps,
+the whole family exposed as 52 MCP tools (stdio JSON-RPC, zero deps,
 batch/notification support): Claude Desktop, Cursor, or any MCP client drives it.
 `--test` and `--list` are built in.
 
@@ -259,7 +259,7 @@ war report, exit rc=5, zero human input.
 
 | Metric | Value | Verified by |
 |---|---|---|
-| Skill corpus | **33,604 files** — 1,361 base techniques × platform × auth × federated × machine × chain, each with a Route table (class → exact probes + chains) | `skilltree --verify`: 0 orphans, CI floor 10k |
+| Skill corpus | **11,683 files** — 837 base techniques × platform × auth × hardened × chain | `skilltree --verify`: 0 orphans, CI floor 10k |
 | Self-play training | **14/14 classes** | `train` — priors written, planner re-ordered |
 | Self-benchmark | **100%** — 60/60 sub-tasks, anti-memorization | `bench_public.py`, seeded + reproducible |
 | Cross-range benchmark | **90.6%** on an independent codebase | `bench_public.py 2026 b` |
@@ -425,11 +425,11 @@ campaign artifacts on its first run.
 
 ---
 
-## The skill corpus (33,604 files)
+## The skill corpus (11,683 files)
 
 ```
 spydermonkey skilltree              # 837 base techniques from 94 real sources
-spydermonkey skilltree --expand     # × platform × auth × federated × machine × chain → 33,604
+spydermonkey skilltree --expand     # × platform × auth × hardened × chain → 11,683
 spydermonkey skilltree --verify     # links resolve · provenance present · 0 orphans
 ```
 
@@ -552,7 +552,7 @@ git clone https://github.com/xanstomper/spydermonkey.git \
 | `chain detect\|plan --target T [--id CH-NNN]` | **10 chain patterns** — low findings combine into high-impact kill chains |
 | `context set\|show --target T` | session context: endpoints · roles · credentials · functions |
 | `testers --target T --url U [--url U2 …] \| --demo` | the **18 differential batteries**, deduped into the ledger |
-| `hypothesis gen\|brief\|run --target T [--url U] [--kinds K] [--id HYP-NNN]` | the **reasoning engine**: ranked hypothesis cards (surface/cve-map/variant/chain), the model brief, and `run` — fires ONE card through the same 3-gate discipline (CONFIRMED → new ledger row · non-decisive → HYPOTHESIS · identical → DISPROVEN, nothing registered) |
+| `hypothesis gen\|brief --target T [--url U] [--kinds K]` | the **reasoning engine**: ranked hypothesis cards (surface/cve-map/variant/chain) + the model brief that guides any model through the 3-gate loop |
 | `coverage --target T` | phase × deliverable matrix + findings histogram + the gap list |
 | `report --target T [--format md\|json\|sarif] [--output F]` | the joint **war report**: findings + proofs + chains + coverage + detection + pricing |
 | `relay init\|list\|exec\|remove` | remote execution nodes: Ed25519 ssh pairs, every exec scope-checked |
@@ -566,7 +566,7 @@ git clone https://github.com/xanstomper/spydermonkey.git \
 | `arsenal list\|plan\|run\|verify` | the execution layer — 30 tool wrappers, 6 feeding chains, kernel-schema output |
 | `catalog stats\|categories\|list\|search\|show` | **1,053-entry known-tool reference** — lazy-loaded metadata (info only; execution stays scope-gated via arsenal) |
 | `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` | one agent per mandate, dispatched in parallel |
-| `skilltree [--expand] [--verify] [--count]` | the corpus: 1,361 base → 33,604 files, deterministic, 0 orphans, Route-tables wired to the 258-tool arsenal |
+| `skilltree [--expand] [--verify] [--count]` | the corpus: 837 base → 11,683 files, deterministic, 0 orphans |
 | `crawl --target T --url U [--depth N]` | surface mining: links · whole-form-blocks (method+fields) · JS api-paths → context |
 | `takeover --target T --domain D [--subdomains F]` | dangling-CNAME fingerprints — read-only, NO-GAIN |
 | `capabilities [--json]` | **the mirror of self** — live-introspected registry: engines · classes · batteries · executors · priors |
@@ -596,7 +596,7 @@ scripts/
 ├── bench_live.py      # the exploitation-level bench (throwaway HOME, localhost lab)
 └── ci_smoke.sh        # 20-section live verification — local truth = CI truth
 references/
-├── skills/            # the 33,604-file corpus (lazy-loaded, Route-tables)
+├── skills/            # the 11,683-file corpus (lazy-loaded)
 ├── attack-canon.md · mobile-canon.md · cloud-canon.md · wstg-deep-canon.md
 ├── bench-scorecard.md · bench-result.json · bench-result-b.json
 ├── mandate.md         # the injectable persona contract
@@ -611,7 +611,7 @@ tests/test_spydermonkey.py   # stdlib test suite
 
 | | CyberStrike | PentestGPT | xOffense | RedAmon | **SPYDERMONKEY** |
 |---|---|---|---|---|---|
-| Corpus scale | 7.6k | prompt-pack | — | graph | **33,604, CI-floored** |
+| Corpus scale | 7.6k | prompt-pack | — | graph | **11,683, CI-floored** |
 | Self-training | — | — | fine-tune (frozen) | — | **live self-play, priors every run** |
 | Benchmarks | — | — | 79% (published) | — | **100% self · 90.6% cross-range** |
 | Fix loop | — | — | — | fix PRs | **machine-verified re-proof** |

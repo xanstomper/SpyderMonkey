@@ -98,7 +98,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "5.16.0"
+VERSION = "5.17.0"
 SCHEMA = 4
 
 

@@ -40,7 +40,7 @@ from urllib.parse import urlsplit
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "5.16.0"
+VERSION = "5.17.0"
 
 # tool → (capability, canon classes it feeds, plan line, args builder)
 ARSENAL = {
@@ -985,6 +985,15 @@ CANON_KW = {
 }
 
 
+# v5.17 — the hardware domain (RF/BLE/RFID/SDR/ESP/smart-home/audio) folds in
+# at import time: discovery-based, scope-gated, own-device/lab walls included.
+try:
+    from arsenal_hw import merge_hw
+    merge_hw(ARSENAL, CHAINS, CHAIN_NAMES)
+except ImportError:  # arsenal_hw.py absent → hardware domain simply not merged
+    pass
+
+
 def _host(target: str) -> str:
     if "://" in target:
         return urlsplit(target).hostname or target
@@ -1377,7 +1386,7 @@ def main(argv=None):
     r = sub.add_parser("run", help="execute (scope-gated)")
     r.add_argument("--target", required=True)
     r.add_argument("--only", help="comma-separated tool list")
-    r.add_argument("--chain", help="execute a feeding chain: recon | web | tls | net | dns | content | api | services | cms | win | osint | db | takeover | cloud | packet | fuzz")
+    r.add_argument("--chain", help="execute a feeding chain: recon | web | tls | net | dns | content | api | services | cms | win | osint | db | takeover | cloud | packet | fuzz | hw-wifi | hw-ble | hw-rfid | hw-sdr | hw-esp | hw-iot | hw-audio")
     r.add_argument("--out", help="write the kernel result-schema JSON (spydermonkey absorb ingests it)")
     r.add_argument("--dry-run", action="store_true")
     r.add_argument("--wordlist", help="gobuster/ffuf wordlist path")

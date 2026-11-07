@@ -5,6 +5,39 @@ the dispatcher release (`SKILL.md` frontmatter).
 
 
 
+## v5.17.0 — THE HARDWARE DOMAIN (2026-11-07)
+
+- **`arsenal_hw.py` — the real hardware execution layer.** 35 new scope-gated
+  tool wrappers (wifi: airmon-ng/wash/reaver/aircrack-ng/wifite/kismet/mdk4/
+  bettercap · BLE: hcitool/bluetoothctl/gatttool/ubertooth-btle/btlejack/
+  btscanner · RFID: nfc-*/mfoc/mfterm/proxmark3 · SDR: hackrf_*/rtl_sdr/rtl_fm/
+  rtl_433/multimon-ng · ESP: esptool · smart-home: mosquitto_*/tuya-cli/
+  zigbee2mqtt · audio: sox/ffmpeg/minimodem). Discovery-based (activate where
+  the binary exists), merged at import time, no installs on the operator box.
+- **7 hardware feeding chains → 30 total:** hw-wifi · hw-ble · hw-rfid ·
+  hw-sdr · hw-esp · hw-iot · hw-audio — each a documented stage sequence,
+  scope-gated, own-device/lab walls in every plan line.
+- **MCP 79 → 86 tools:** the seven hw chains exposed as `arsenal_chain_hw_*`
+  (same dry_run/scope semantics as the rest).
+- **Catalog 1,053 → 1,067:** +14 real hardware entries (gatttool, hcitool,
+  bluetoothctl, nfc-poll, hackrf_transfer/sweep, rtl_sdr/fm/433, multimon-ng,
+  esptool, tuya-cli, mosquitto_sub/pub, zigbee2mqtt, minimodem).
+- **`hardware-canon.md` — new canon volume (source 113 → 114)** — Plane 5
+  AUDIO & SPEAKER research (data-over-audio, ultrasonic feasibility, DTMF,
+  speaker fingerprinting, audio-exfil POC — own files/own devices only) ·
+  Plane 6 smart-home & LED strips (ESP flash dump, MQTT topic audit, Tuya
+  local API, zigbee key exchange, OTA capture) · Plane 7 the chain→probe
+  route table. The four plane sections generate +4 base technique cards.
+- **Technique corpus 33,604 → 33,687 files** (1,365 base + 32,322 expanded,
+  0 orphans) — skilltree ALL PASS, sources 114.
+- **Dojo class 16: HWDEV** — smart-home device-registry replica (reserved
+  master id 0000 serves the master key — IDOR on device registry), bench
+  CONFIRMED live on 127.0.0.1. dojo docstring v2.1.
+- Verified: skilltree ALL PASS · selftest · ci_smoke · dojo bench HWDEV
+  CONFIRMED · arsenal 293 wrappers / 30 chains.
+
+
+
 ## v5.16.0 — TOKEN-CARRYOVER FLOWS + ASVS CANON (2026-11-06)
 
 - **_flow_http v2: token carryover.** Steps declare save_as (+ save_from:
