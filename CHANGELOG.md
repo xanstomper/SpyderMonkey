@@ -1,3 +1,21 @@
+# v7.1.0 — REAL DATAFLOW
+
+- **`discover` deep lane**: stdlib-ast intra-procedural taint analysis for
+  Python — sources tracked through assignments/propagation into sinks with the
+  flow chain as card evidence. Verified: 4/4 INDIRECT multi-line flows found
+  (source 5+ lines from the sink, through 2 variables — the ±1-line regex
+  window structurally cannot see them); 0 false positives on sanitized
+  (int()/secure_filename) and parameterized files; original 7/7 fixture holds;
+  out-of-scope refusal rc=1.
+- **Tightened taint sources**: word-boundary fix (`user` no longer matches
+  inside `users`, `form` no longer inside `transform`) — regex-lane FPs down.
+- **Regex-lane discipline on parsed python**: when the AST lane is live,
+  untailed regex shapes on .py files are dropped (the AST lane is the
+  precision backstop; sanitized/parameterized shapes were its noise).
+- **MCP +2**: `discover_source` and `attack_map` are family tools now (443
+  total) — any MCP client drives the source lane and the ATT&CK map. Verified
+  live over the JSON-RPC pipe.
+
 # v7.0.0 — THE DISCOVERY SURGE
 
 The lane the autonomous-research systems owned is now native:

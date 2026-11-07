@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 7.0.0
+version: 7.1.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -301,7 +301,7 @@ exercised, not asserted.
 - `context set|show --target T [--kind K --value V]` — session context (endpoints · roles · credentials · functions · **source** — a source root hands the kernel the v7.0 discovery lane)
 - `testers --target T --url U [--url U2 …] | --demo` — the 18 parallel sub-testers over the session context — **two-role AUTHZ differential**: the context's first credential is the privileged baseline, the second is the low-priv attack; a different 200 on the low role IS the bypass proof
 - `crawl --target T --url U [--depth N]` — **THE SURFACE ENGINE** (HackBrowser-equivalent, stdlib): same-origin BFS crawl mining links · forms · query params · JS `fetch/axios` API paths → the session context AUTO-FILLS — the testers strike what it finds, no hand-fed urls
-- `discover --target T --source PATH [--lang L] [--semgrep]` — **THE SOURCE LANE** (v7.0): read-only scan of the target's own source tree → ranked, gate-ready candidate cards (documented classes only, HYP schema, discovery-state.json) — the kernel plans it the moment a source root enters the context
+- `discover --target T --source PATH [--lang L] [--semgrep]` — **THE SOURCE LANE** (v7.1): read-only scan of the target's own source tree → ranked, gate-ready candidate cards (documented classes only, HYP schema, discovery-state.json) — the kernel plans it the moment a source root enters the context. **v7.1: REAL DATAFLOW** — stdlib-ast intra-procedural taint analysis for python (source → propagation → sink with the flow chain as evidence); verified on indirect multi-line flows the ±1-line regex window structurally cannot see, 0 false positives on sanitized/parameterized files
 - `attack [--json]` — **THE ATT&CK MAP** (v7.0): the corpus indexed against MITRE ATT&CK (94,872 files · 32 techniques) with the live Atomic Red Team comparison
 - `coverage --target T` — coverage matrix + gap list
 - `report --target T [--format md|json|sarif] [--output F]` — the joint war report (campaign dir by default)

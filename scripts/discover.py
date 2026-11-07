@@ -60,7 +60,7 @@ TAINT_SOURCE = re.compile(
     r"(?:request|Request|req\b|\bGET\b|\bPOST\b|\bparams\b|query|form|body|"
     r"payload|input|argv|args|headers|cookies|environ|os\.environ|user|"
     r"client|_GET|_POST|_REQUEST|_COOKIE|searchParams|URLSearchParams|"
-    r"readLine|stdin|recv|socket\.recv)",
+    r"readLine|stdin|recv|socket\.recv)\b",
 )
 
 # file-path risk bonus: names that suggest the file matters more
@@ -267,9 +267,19 @@ class _Budget:
 
 def scan_tree(source: Path, lang_filter: str | None = None,
               max_files: int = MAX_FILES) -> list[dict]:
-    """Walk the tree read-only; return raw rule hits with taint scoring."""
+    """Walk the tree read-only; return raw rule hits with taint scoring.
+
+    v7.1: .py files additionally get REAL intra-procedural taint analysis
+    (discover_taint.analyze — stdlib ast dataflow), which catches indirect
+    flows the ±1-line regex window structurally cannot. Regex hits and AST
+    hits are merged, deduped by (cls, file, line-bucket)."""
     hits: list[dict] = []
     budget = _Budget(max_files)
+    py_files: list[Path] = []
+    try:
+        import discover_taint as dt
+    except ImportError:
+        dt = None
     for root, dirs, files in os.walk(source):
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS and not d.startswith(".")]
         for fn in files:
@@ -282,13 +292,15 @@ def scan_tree(source: Path, lang_filter: str | None = None,
                 continue
             if ext in SKIP_EXT or fn.endswith(".min.js"):
                 continue
+            if lang == "python":
+                py_files.append(p)
+            risky = 1 if RISKY_PATH.search(str(p)) else 0
             try:
                 if p.stat().st_size > MAX_FILE_BYTES:
                     continue
                 text = p.read_text(encoding="utf-8", errors="replace")
             except OSError:
                 continue
-            risky = 1 if RISKY_PATH.search(str(p)) else 0
             lines = text.splitlines()
             for lang_rules in ([lang] if lang else []):
                 for cls, rx, sev, why, cites in GRAMMARS.get(lang_rules, []):
@@ -298,6 +310,8 @@ def scan_tree(source: Path, lang_filter: str | None = None,
                             continue
                         window = "\n".join(lines[max(0, i - 1): i + 2])
                         tainted = 1 if TAINT_SOURCE.search(window) else 0
+                        if dt is not None and lang_rules == "python" and not tainted:
+                            continue  # AST lane is the backstop — untailed regex shapes on parsed python are sanitized/parameterized noise
                         sym = (m.group(0)[:48] or cls)
                         base = {"critical": 4, "high": 3, "medium": 2, "low": 1}[sev]
                         score = base + tainted * 2 + risky
@@ -307,13 +321,27 @@ def scan_tree(source: Path, lang_filter: str | None = None,
                             "why": why, "citations": cites,
                             "tainted": tainted, "score": score,
                         })
+    # ── v7.1 deep lane: AST dataflow for Python ───────────────────────────
+    if dt:
+        for p in py_files:
+            try:
+                if p.stat().st_size > MAX_FILE_BYTES:
+                    continue
+                text = p.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            for h in dt.analyze(text, str(p)):
+                h.setdefault("citations", ["attack-canon"])
+                h.setdefault("tainted", 1)
+                hits.append(h)
     return hits
 
 
 def _dedupe(hits: list[dict]) -> list[dict]:
     seen: set[tuple] = set()
     out = []
-    for h in sorted(hits, key=lambda x: -x["score"]):
+    for h in sorted(hits, key=lambda x: (-x["score"],
+                                         0 if x.get("lang") == "python-ast" else 1)):
         key = (h["cls"], h["file"], h["line"] // 3)
         if key in seen:
             continue

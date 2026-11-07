@@ -24,7 +24,7 @@ from pathlib import Path
 import arsenal  # noqa: E402  (single source of truth for tools + chains)
 import arsenal_domain as ad  # noqa: E402  (class vocabulary / priority order)
 
-VERSION = "7.0.0"
+VERSION = "7.1.0"
 PROTOCOL = "2024-11-05"
 SM = str(Path(__file__).resolve().parent / "spydermonkey.py")
 NAME_RE = re.compile(r"^[a-z][a-z0-9_]{1,63}$")
@@ -214,6 +214,20 @@ def h_train(a):
     if a.get("classes"):
         argv += ["--classes", a["classes"]]
     return _run_sm(argv, timeout=600)
+
+
+def h_discover_source(a):
+    _need(a, "target", "source")
+    argv = ["discover", "--target", a["target"], "--source", a["source"]]
+    if a.get("lang"):
+        argv += ["--lang", a["lang"]]
+    if a.get("semgrep"):
+        argv += ["--semgrep"]
+    return _run_sm(argv, timeout=600)
+
+
+def h_attack_map(a):
+    return _run_sm(["attack"], timeout=120)
 
 
 def h_memory(a):
@@ -559,6 +573,13 @@ TOOLS = [
      "required": ["target", "domain"]},
     {"name": "train", "description": "SELF-PLAY: attack the dojo range, learn per-class priors (the planner orders by what works).",
      "inputSchema": _props(target=_s("campaign"), classes=_s("comma list (default: all)"))},
+    {"name": "discover_source", "description": "THE SOURCE LANE (v7.1): read-only scan of the target's own source tree — regex grammars + stdlib-ast intra-procedural taint analysis → ranked, gate-ready candidate cards (documented classes only).",
+     "inputSchema": _props(target=_s("campaign"), source=_s("local source tree (read-only)"),
+                           lang=_s("python|php|js|java|go|c|ruby|csharp"),
+                           semgrep=_b("fold semgrep results when present (fleet)")),
+     "required": ["target", "source"]},
+    {"name": "attack_map", "description": "THE ATT&CK MAP (v7.0): the corpus indexed against MITRE ATT&CK — live Atomic Red Team comparison.",
+     "inputSchema": _props()},
     {"name": "memory", "description": "ESTATE MEMORY: what the family knows about a target (--forget wipes).",
      "inputSchema": _props(target=_s("campaign"), forget=_b("wipe the memory")),
      "required": ["target"]},
@@ -672,6 +693,7 @@ HANDLERS = {
     "kernel_absorb": h_kernel_absorb, "kernel_loop": h_kernel_loop,
     "capabilities": h_capabilities, "protect_scan": h_protect_scan,
     "takeover": h_takeover, "train": h_train, "memory": h_memory,
+    "discover_source": h_discover_source, "attack_map": h_attack_map,
     "ledger_list": h_ledger_list, "ledger_show": h_ledger_show,
     "ledger_triage": h_ledger_triage, "ledger_stats": h_ledger_stats,
     "ledger_verify": h_ledger_verify, "ledger_export": h_ledger_export,
