@@ -40,7 +40,7 @@ from urllib.parse import urlsplit
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "7.1.0"
+VERSION = "7.1.1"
 
 # tool → (capability, canon classes it feeds, plan line, args builder)
 ARSENAL = {
