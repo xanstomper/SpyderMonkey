@@ -1,3 +1,17 @@
+# v7.4.3 — THE FLYWHEEL CLOSES: kairo validate = the range-proof gate before distribution
+
+- **KAIRO VALIDATE** (repo kairo, `70d88f0`): every synthesized vector is now
+  proven against the dojo replicas BEFORE it ships — spawn the class replica,
+  strike it, only a confirm-string HIT marks the vector VALIDATED. Explicit
+  class maps (AUTHBYPASS→AUTHN/JWT/SESSION, BOUNDARY, REPLAY, ENTITLEMENT,
+  DBLAYER) with honest NO-REPLICA for everything else (STATEBYPASS, MATH,
+  HWFLASH, DOMTAKE, ...) — nothing is ever falsely validated. `compile
+  --require-validated` ships ONLY range-proven vectors. The loop closes:
+  synthesize → validate → distribute → absorb → kage-mirror.
+- Tests 77/77 (incl. the range-gate test: AUTHBYPASS proves, STATEBYPASS stays
+  NO-REPLICA). Verified live: 2 validated / 2 no-replica / 0 failed, and the
+  gated compile ships exactly the validated ones.
+
 # v7.4.2 — THE CLOSED LOOP: real engagements feed the weight store · squads ship briefs
 
 - **SHARED WEIGHT STORE WIRING**: every real engagement now writes the priors

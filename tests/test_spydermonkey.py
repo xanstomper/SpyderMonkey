@@ -275,6 +275,29 @@ class CliTests(unittest.TestCase):
         self.assertIn("one-paste pack", txt)
         self.assertIn("## Lane knowledge", txt)
 
+    def test_kairo_validate_range_gate(self):
+        kairo = Path.home() / ".hermes" / "skills" / "security" / "kairo" \
+            / "scripts" / "kairo.py"
+        if not kairo.exists():
+            self.skipTest("kairo engine not on disk")
+        camp = Path(self.env["HOME"]) / ".redteam" / "campaigns" / "kfly"
+        camp.mkdir(parents=True, exist_ok=True)
+        (camp / "hardware-state.json").write_text(json.dumps({"vectors": [
+            {"id": "V-1", "class": "AUTHBYPASS", "technique": "t", "proof": "p",
+             "delta": "d", "source": "s", "target": "https://example.test/api"},
+            {"id": "V-2", "class": "STATEBYPASS", "technique": "t", "proof": "p",
+             "delta": "d", "source": "s", "target": "device-x"},
+        ]}))
+        r = run([sys.executable, str(kairo), "validate", "--target", "kfly"],
+                self.env, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        st = json.loads((camp / "hardware-state.json").read_text())
+        by_id = {v["id"]: v for v in st["vectors"]}
+        self.assertIs(by_id["V-1"]["validated"], True,
+                      "AUTHBYPASS must range-prove via dojo AUTHN")
+        self.assertIsNone(by_id["V-2"]["validated"],
+                          "no-replica classes stay honest, never validated")
+
     def test_kernel_next_is_state_driven(self):
         d = self.j(["next", "--target", "camp1", "--domain", "example.test", "--json"])
         self.assertFalse(d["done"])
