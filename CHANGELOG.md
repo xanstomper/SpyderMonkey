@@ -15,6 +15,13 @@
 - **MCP +2**: `discover_source` and `attack_map` are family tools now (443
   total) — any MCP client drives the source lane and the ATT&CK map. Verified
   live over the JSON-RPC pipe.
+- **FIXED**: `loop --plan-only` replanned the same directive forever (planned
+  steps never advanced the planner). Planned steps now persist and the planner
+  counts them in plan-only mode only — a real run still fires everything.
+- **SELFTEST +2 (30 checks)**: `discover` runs a real fixture (tainted flows →
+  sqli+cmdi cards required) and `attack-map` (mapped_files > 0, ≥ 20
+  techniques) — the source lane is exercised, not asserted.
+
 
 # v7.0.0 — THE DISCOVERY SURGE
 

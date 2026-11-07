@@ -1728,7 +1728,7 @@ def _kernel_save(target, st):
     (_camp(target) / "kernel-state.json").write_text(json.dumps(st, indent=2) + "\n")
 
 
-def _planner_directive(target, url=None, domain=None):
+def _planner_directive(target, url=None, domain=None, include_planned: bool = False):
     """THE PLANNER — deterministic, state-driven. Reads every family state and
     returns the ONE next action that closes the biggest gap. No model needed:
     the reasoning is policy in code; a model only adds judgment on top."""
@@ -1740,7 +1740,8 @@ def _planner_directive(target, url=None, domain=None):
                                              "credentials": [], "functions": []})
     chains = _load_json(camp / "chain-state.json", {}).get("chains", [])
     kstate = _kernel_state(target)
-    done_ids = {s.get("directive_id") for s in kstate["steps"] if s.get("absorbed")}
+    done_ids = {s.get("directive_id") for s in kstate["steps"]
+                if s.get("absorbed") or (s.get("planned") and include_planned)}
 
     def d(did, phase, mandate, action, argv, why, expect, walls):
         return {"directive_id": did, "step": len(kstate["steps"]) + 1,
@@ -2001,7 +2002,8 @@ def cmd_loop(args):
     if args.plan_only:
         n = 0
         while True:
-            dv = _planner_directive(args.target, url=url, domain=domain)
+            dv = _planner_directive(args.target, url=url, domain=domain,
+                                    include_planned=True)
             if dv is None:
                 break
             n += 1
@@ -2010,6 +2012,9 @@ def cmd_loop(args):
             st["steps"].append({"directive_id": dv["directive_id"],
                                 "step": dv["step"], "exit": None,
                                 "absorbed": False, "planned": True, "at": _now()})
+            # the planner reads the DISK state — persist each planned step or
+            # the next iteration replans the same directive forever
+            _kernel_save(args.target, st)
             if n >= args.max_steps:
                 break
         _kernel_save(args.target, st)
@@ -6388,6 +6393,27 @@ def _run_selftest(quick: bool = False) -> dict:
         if not quick:
             json_run("bench", ["bench"],
                      lambda p: p.get("passed", 0) >= 27 and p.get("accuracy", 0) >= 90,
+                     timeout=60)
+            # v7.1 — the source lane: a REAL fixture, real dataflow, exercised
+            fixture = tmp / "selftest-fixture" / "app.py"
+            fixture.parent.mkdir(parents=True, exist_ok=True)
+            fixture.write_text(
+                "import os\nfrom flask import request\n"
+                "def run_diag():\n"
+                "    raw = request.form.get('cmd')\n"
+                "    os.system('systemctl ' + raw)\n"
+                "def look():\n"
+                "    q = request.args.get('q')\n"
+                "    sql = 'SELECT * FROM u WHERE n=' + q\n"
+                "    cur.execute(sql)\n")
+            json_run("discover", ["discover", "--target", "127.0.0.1",
+                                  "--source", str(fixture.parent)],
+                     lambda p: p.get("cards", 0) >= 2
+                     and {"sqli", "cmdi"} <= set(p.get("by_cls", {})),
+                     timeout=60)
+            json_run("attack-map", ["attack"],
+                     lambda p: p.get("mapped_files", 0) > 0
+                     and p.get("technique_count", 0) >= 20,
                      timeout=60)
 
         scope_file = str(tmp / "scope.json")
