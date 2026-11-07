@@ -4,6 +4,12 @@
 - bindings: **WSTG-PARA** · **CWE-113** · **ATT&CK T1190**
 - generated: 2026-11-06
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 metadata.google.internal classes + service-account key exposure in artifacts. Decisive test: metadata header requirement (Metadata-Flavor) honored/refused — the delta is the posture.

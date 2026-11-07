@@ -5,6 +5,12 @@
 - bindings: **WSTG-SESS-01** · **CWE-347** · **ATT&CK T1552**
 - context: **grpc** · auth **low-priv** · chain role **pivot**
 
+## Route
+
+- probes: `sqlmap`, `nosqlmap`, `tplmap`, `commix`, `crlfuzz`, `dotdotpwn`, `nmap-http-sqli`, `nmap-shellshock`
+- chains: `fuzz`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: reflection/list methods first; protobuf definitions are the schema oracle

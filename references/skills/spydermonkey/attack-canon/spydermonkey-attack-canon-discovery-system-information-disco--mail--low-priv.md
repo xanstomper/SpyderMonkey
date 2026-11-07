@@ -5,6 +5,12 @@
 - bindings: **WSTG-PARA** · **CWE-113** · **ATT&CK T1190**
 - context: **mail** · auth **low-priv** · chain role **entry**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: spf/dkim/dmarc record surface — spoofing and spoofability live in the record math

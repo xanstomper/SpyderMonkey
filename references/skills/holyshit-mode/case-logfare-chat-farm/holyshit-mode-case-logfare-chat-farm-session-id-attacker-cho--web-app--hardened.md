@@ -5,6 +5,12 @@
 - bindings: **WSTG-SESS** · **CWE-384** · **ATT&CK T1550**
 - context: **web-app** · auth **hardened** · chain role **pivot**
 
+## Route
+
+- probes: `sqlmap`, `nosqlmap`, `tplmap`, `commix`, `crlfuzz`, `dotdotpwn`, `nmap-http-sqli`, `nmap-shellshock`
+- chains: `fuzz`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: strike through the browser/proxy path; the 3-gate differential runs on the reflected/accepted value

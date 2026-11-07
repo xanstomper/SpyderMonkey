@@ -4,6 +4,12 @@
 - bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `s3scanner`, `cloudbrute`, `cloudlist`, `kube-hunter`, `shodan`
+- chains: `cloud-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 `dev/staging/uat` = Cloudflare Access SSO; `capi-automation` S3 = AccessDenied both regions; live-stream S3 = AccessDenied; all sensitive `/api/v2/*` 401 unauth; pvp `/api/v1|v2` = geo-403; pvp arena socket disconnects anon AND user:null-token connects at the namespace gate; `duel.getid.ee` = GetId KYC dashboard login (hypothesis 30).

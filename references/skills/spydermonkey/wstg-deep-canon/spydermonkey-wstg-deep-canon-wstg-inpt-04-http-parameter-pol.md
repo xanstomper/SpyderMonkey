@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-02** · **CWE-840** · **ATT&CK T1565**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - class: duplicate params — parser disagreement between tiers

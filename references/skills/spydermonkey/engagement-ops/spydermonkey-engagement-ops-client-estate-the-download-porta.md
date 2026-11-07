@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
 - generated: 2026-11-06
 
+## Route
+
+- probes: `nmap`, `masscan`, `naabu`, `zmap`, `nc`, `fping`, `nmap-allports`
+- chains: `net`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 When a target ships native clients (and the bounty scope covers them), the public download landing

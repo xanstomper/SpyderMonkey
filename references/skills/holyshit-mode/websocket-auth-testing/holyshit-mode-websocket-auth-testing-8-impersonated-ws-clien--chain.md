@@ -4,6 +4,12 @@
 - base technique: `holyshit-mode-websocket-auth-testing-8-impersonated-ws-clien.md`
 - chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Chain roles
 
 - pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream

@@ -4,6 +4,12 @@
 - base technique: `holyshit-mode-case-duelbits-com-2026-11-02-round-3-vermes-de.md`
 - chain role: **final — this CLOSES a chain: shukaku prices what it reaches; chain detect looks for the entries that feed it**
 
+## Route
+
+- probes: `wpscan`, `cmseek`, `droopescan`, `cmsmap`, `nmap-wp-plugins`, `nmap-drupal-enum`
+- chains: `cms-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Chain roles
 
 - final — this CLOSES a chain: shukaku prices what it reaches; chain detect looks for the entries that feed it

@@ -4,6 +4,12 @@
 - bindings: **WSTG-ATHZ-04** · **CWE-639** · **ATT&CK T1068**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - Tier-2 consent gate holds: glm-5/grok-4.6 → 403 `consent_required` (real server gate; mass-assigned tier/role/can_use_premium/consent fields accepted `{"ok":true}` but stripped — verify by GET-back + retry, not the 200).

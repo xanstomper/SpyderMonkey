@@ -4,6 +4,12 @@
 - bindings: **WSTG-INPV-05** · **CWE-89** · **ATT&CK T1190**
 - generated: 2026-11-06
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 Payload stored in profile/asset fields, executed by a LATER query (admin render, export job). Decisive test: your own stored payload flipping an error class in a downstream render you can read — the downstream context is the proof.

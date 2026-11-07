@@ -4,6 +4,12 @@
 - bindings: **WSTG-ATHZ-04** · **CWE-639** · **ATT&CK T1068**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `sqlmap`, `nosqlmap`, `tplmap`, `commix`, `crlfuzz`, `dotdotpwn`, `nmap-http-sqli`, `nmap-shellshock`
+- chains: `fuzz`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 1. `/v1/chat/completions` no key → `401 invalid_api_key` (uniform). 12-burst: zero 429.

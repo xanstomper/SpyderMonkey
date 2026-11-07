@@ -5,6 +5,12 @@
 - bindings: **WSTG-SESS** · **CWE-287** · **ATT&CK T1528**
 - context: **azure** · auth **unauth** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: identity surface — read-only enumeration (shukaku hunt semantics)

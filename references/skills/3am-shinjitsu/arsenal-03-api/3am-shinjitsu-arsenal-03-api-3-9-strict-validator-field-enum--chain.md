@@ -4,6 +4,12 @@
 - base technique: `3am-shinjitsu-arsenal-03-api-3-9-strict-validator-field-enum.md`
 - chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Chain roles
 
 - pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream

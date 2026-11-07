@@ -4,6 +4,12 @@
 - base technique: `holyshit-mode-case-gonka-api-crown-chain-confirmed-live-scor.md`
 - chain role: **final — this CLOSES a chain: shukaku prices what it reaches; chain detect looks for the entries that feed it**
 
+## Route
+
+- probes: `nmap-smtp-commands`, `nmap-smtp-enum-users`, `swaks`, `dig-mx`, `dig-txt`
+- chains: `mail-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Chain roles
 
 - final — this CLOSES a chain: shukaku prices what it reaches; chain detect looks for the entries that feed it

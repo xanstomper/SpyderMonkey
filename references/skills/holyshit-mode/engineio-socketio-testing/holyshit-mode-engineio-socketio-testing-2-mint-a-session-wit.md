@@ -4,6 +4,12 @@
 - bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `httpx`, `nuclei-tokens`, `arjun`, `kiterunner`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - CDN-node affinity (Fastly/Varnish) kills sequential polling from python: handshake 200 + sid, then every follow-up poll = `{"code":1,"message":"Session ID unknown"}` — requests land on different edge nodes and the in-memory engine session is gone. Cookie-pinning (`io=<sid>`) does NOT reliably fix it.

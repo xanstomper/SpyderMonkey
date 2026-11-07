@@ -4,6 +4,12 @@
 - bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `httpx`, `nuclei-tokens`, `arjun`, `kiterunner`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - 95 `pg_shared_context_poisoning_persistent` — standing directive planted via one unauth POST /pg/chat persisted in the GLOBAL buffer and fired in other users' later completions. Proof: 3-request pattern (clean baseline → plant+ACK → clean request; reasoning trace leaked the planted text verbatim; subtle [SYSTEM NOTICE] banner payload appeared in user-visible content). Chain: pg_chat_no_auth→plant_standing_instruction→persists_in_global_buffer→injected_into_other_users_completions→content_control:confirmed.

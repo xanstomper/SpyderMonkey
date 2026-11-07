@@ -5,6 +5,12 @@
 - bindings: **WSTG-BUSL-05** · **CWE-285** · **ATT&CK T1068**
 - context: **android** · auth **machine** · chain role **final**
 
+## Route
+
+- probes: `sqlmap`, `nosqlmap`, `tplmap`, `commix`, `crlfuzz`, `dotdotpwn`, `nmap-http-sqli`, `nmap-shellshock`
+- chains: `fuzz`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: the check often lives client-side — frida/objection at the runtime, MASTG methodology

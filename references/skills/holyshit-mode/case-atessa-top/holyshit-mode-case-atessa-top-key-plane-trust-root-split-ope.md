@@ -4,6 +4,12 @@
 - bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `httpx`, `nuclei-tokens`, `arjun`, `kiterunner`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - Key opens `/v1/*` fully (30-model catalog incl. grok-4.7 family, kimi-k3, muse-spark, nano-banana-pro; Anthropic + Responses APIs both 429 at quota).

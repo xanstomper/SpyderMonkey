@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `wpscan`, `cmseek`, `droopescan`, `cmsmap`, `nmap-wp-plugins`, `nmap-drupal-enum`
+- chains: `cms-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 "Study the source and systems" round. Recovered the missing lazy chunks

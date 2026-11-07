@@ -4,6 +4,12 @@
 - bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-smtp-commands`, `nmap-smtp-enum-users`, `swaks`, `dig-mx`, `dig-txt`
+- chains: `mail-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 The session-3 "email delivery fully broken" negative is DEAD — "Confirm Email Change" from hello@verify.gratisfy.xyz lands in Mailinator in ~25s (second time this target invalidated a stored negative; re-test email paths before citing them as walls).

@@ -5,6 +5,12 @@
 - bindings: **WSTG-ATHZ-04** · **CWE-639** · **ATT&CK T1068**
 - context: **ios** · auth **machine** · chain role **entry**
 
+## Route
+
+- probes: `httpx`, `nuclei-tokens`, `arjun`, `kiterunner`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: the check often lives client-side — runtime inspection, MASTG/MASVS methodology

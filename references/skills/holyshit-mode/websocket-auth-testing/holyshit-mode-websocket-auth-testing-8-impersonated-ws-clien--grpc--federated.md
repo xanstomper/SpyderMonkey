@@ -5,6 +5,12 @@
 - bindings: **WSTG-SESS** · **CWE-384** · **ATT&CK T1550**
 - context: **grpc** · auth **federated** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: reflection/list methods first; protobuf definitions are the schema oracle

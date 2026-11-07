@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-05** · **CWE-285** · **ATT&CK T1068**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-smtp-commands`, `nmap-smtp-enum-users`, `swaks`, `dig-mx`, `dig-txt`
+- chains: `mail-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - Race: parallel redeem/withdraw/transfer on ONE connection (single-packet) — operator's own

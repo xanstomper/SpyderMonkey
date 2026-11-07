@@ -5,6 +5,12 @@
 - bindings: **WSTG-ADV-01** · **CWE-444** · **ATT&CK T1190**
 - context: **api** · auth **federated** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: strike the JSON body + query string; content-type and parameter placement change the probe shape

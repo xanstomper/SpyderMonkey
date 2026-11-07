@@ -4,6 +4,12 @@
 - bindings: **WSTG-SESS** · **CWE-384** · **ATT&CK T1550**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap`, `masscan`, `naabu`, `zmap`, `nc`, `fping`, `nmap-allports`
+- chains: `net`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - **Infinite-loop targets**: `subprocess.run(..., timeout=40)` raises TimeoutExpired BEFORE stdout/stderr are captured — you lose the run and crash the harness. Use the `timeout(1)` coreutils wrapper and assert `returncode == 124` as the expected "ran until timeout" pass.

@@ -5,6 +5,12 @@
 - bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
 - context: **iot** · auth **machine** · chain role **final**
 
+## Route
+
+- probes: `nmap-smtp-commands`, `nmap-smtp-enum-users`, `swaks`, `dig-mx`, `dig-txt`
+- chains: `mail-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: radio/serial surface — BLE/NFC/UART classes, lab hardware only

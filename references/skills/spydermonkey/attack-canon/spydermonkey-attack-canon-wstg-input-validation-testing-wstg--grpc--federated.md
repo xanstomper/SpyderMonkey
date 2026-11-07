@@ -5,6 +5,12 @@
 - bindings: **WSTG-INPV** · **CWE-74** · **ATT&CK T1190**
 - context: **grpc** · auth **federated** · chain role **pivot**
 
+## Route
+
+- probes: `dalfox`, `xsstrike`, `xsser`
+- chains: `web`, `api`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: reflection/list methods first; protobuf definitions are the schema oracle

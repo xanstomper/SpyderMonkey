@@ -5,6 +5,12 @@
 - bindings: **WSTG-BUSL-01** · **CWE-681** · **ATT&CK T1565**
 - context: **android** · auth **federated** · chain role **pivot**
 
+## Route
+
+- probes: `httpx`, `nuclei-tokens`, `arjun`, `kiterunner`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: the check often lives client-side — frida/objection at the runtime, MASTG methodology

@@ -4,6 +4,12 @@
 - bindings: **WSTG-SESS** · **CWE-384** · **ATT&CK T1550**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 `Session(impersonate="chrome110")` is the practical client for CF-fronted WS testing:

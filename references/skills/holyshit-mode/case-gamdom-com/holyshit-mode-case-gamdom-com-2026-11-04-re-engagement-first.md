@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-01** · **CWE-681** · **ATT&CK T1565**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `httpx`, `nuclei-tokens`, `arjun`, `kiterunner`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 All traffic via Vermes (barbican gate correctly BLOCKED the home IP). Scope authority initialized (gamdom.com, perabet.com, 217.23.12.109; default-deny, max-rate 20). Three passive captures (60s/300s/600s, connect-frames only, zero emits, one connection each):

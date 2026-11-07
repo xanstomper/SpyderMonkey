@@ -4,6 +4,12 @@
 - base technique: `spydermonkey-technique-canon-8-route53-delegation-drift.md`
 - chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
 
+## Route
+
+- probes: `subfinder`, `amass`, `dnsx`, `subzy`, `dnstwist`, `dig-cname`, `dig-axfr`, `nuclei-takeover`, `urlcrazy`, `assetfinder`, `findomain`
+- chains: `dns`, `takeover-full`, `osint`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Chain roles
 
 - pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream

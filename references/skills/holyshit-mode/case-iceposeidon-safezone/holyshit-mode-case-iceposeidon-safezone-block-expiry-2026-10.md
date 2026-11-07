@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `httpx`, `nuclei-tokens`, `arjun`, `kiterunner`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - Per-IP origin block expired on its own (~24h retry-after honored). Re-sweep immediately when retry-after lapses — same routes that 403'd now return 200/400/401.

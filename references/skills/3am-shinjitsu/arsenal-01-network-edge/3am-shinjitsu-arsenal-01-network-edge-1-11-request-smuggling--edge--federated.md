@@ -5,6 +5,12 @@
 - bindings: **WSTG-ADV-02** · **CWE-444** · **ATT&CK T1190**
 - context: **edge** · auth **federated** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: rate/segmentation differences — masscan-class first, then the app layer

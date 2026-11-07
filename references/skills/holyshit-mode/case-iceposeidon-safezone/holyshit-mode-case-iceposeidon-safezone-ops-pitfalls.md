@@ -4,6 +4,12 @@
 - bindings: **WSTG-SESS** · **CWE-384** · **ATT&CK T1550**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - holyleadger `add` positional grammar (bit three times this session): `add <class_id> <status> [--target T] [--score N] --technique "..."` — status is a REQUIRED positional right after class_id, never a flag; `add hypothesis --technique ...` without status errors with a confusing "the following arguments are required: status" even though the flag form looks complete.

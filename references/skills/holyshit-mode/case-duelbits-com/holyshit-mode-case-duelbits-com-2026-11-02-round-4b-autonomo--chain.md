@@ -4,6 +4,12 @@
 - base technique: `holyshit-mode-case-duelbits-com-2026-11-02-round-4b-autonomo.md`
 - chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
 
+## Route
+
+- probes: `sslscan`, `sslyze`, `testssl`, `tlsx`, `ssh-audit`, `openssl`, `nmap-ssl-ciphers`, `nmap-script-ssl`, `ssh-keyscan`
+- chains: `tls`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Chain roles
 
 - pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream

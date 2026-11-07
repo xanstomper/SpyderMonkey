@@ -4,6 +4,12 @@
 - bindings: **WSTG-SESS** · **CWE-384** · **ATT&CK T1550**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 1. Crash oracle (STILL OPEN, watcher armed): `~/holyshit-mode/scripts/sz_crash_watch.py` (stdlib, verified) rapid-polls `/public/gambling/crash` at 350ms once a game goes active — tests whether `crash_point_hundredths` arrives pre-crash. Game idle all session (`{"game":null}`). Run with `python3 -u` when piping output (banner buffering). Logs: `~/holyshit-mode/logs/crash_watch.log`.

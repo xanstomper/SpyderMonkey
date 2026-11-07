@@ -5,6 +5,12 @@
 - bindings: **WSTG-BUSL-06** · **CWE-294** · **ATT&CK T1550**
 - context: **cloud** · auth **unauth** · chain role **pivot**
 
+## Route
+
+- probes: `httpx`, `nuclei-tokens`, `arjun`, `kiterunner`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: control-plane exposure — read-only, crown the class

@@ -4,6 +4,12 @@
 - bindings: **WSTG-ADV-02** · **CWE-444** · **ATT&CK T1190**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - ONE CL.TE differential probe max; timing-only. Any ambiguity = stop, document, never iterate.

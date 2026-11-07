@@ -5,6 +5,12 @@
 - bindings: **WSTG-ATHZ-04** · **CWE-639** · **ATT&CK T1068**
 - context: **api** · auth **machine** · chain role **pivot**
 
+## Route
+
+- probes: `httpx`, `nuclei-tokens`, `arjun`, `kiterunner`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: strike the JSON body + query string; content-type and parameter placement change the probe shape

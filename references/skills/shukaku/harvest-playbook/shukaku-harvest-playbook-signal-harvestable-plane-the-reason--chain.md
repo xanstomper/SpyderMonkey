@@ -4,6 +4,12 @@
 - base technique: `shukaku-harvest-playbook-signal-harvestable-plane-the-reason.md`
 - chain role: **entry — this OPENS a chain: everything after pairs with it; chain detect looks for same-origin findings that follow**
 
+## Route
+
+- probes: `nmap-http-backup`, `nmap-robots`, `nmap-sitemap`, `snallygaster`, `wget-mirror`, `httrack`, `gau`, `git-dumper`, `trufflehog`, `gitleaks`
+- chains: `exposure-sweep`, `content`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Chain roles
 
 - entry — this OPENS a chain: everything after pairs with it; chain detect looks for same-origin findings that follow

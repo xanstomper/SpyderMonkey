@@ -4,6 +4,12 @@
 - base technique: `spydermonkey-engagement-ops-reflected-xss-triage-raw-query-s.md`
 - chain role: **pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream**
 
+## Route
+
+- probes: `dalfox`, `xsstrike`, `xsser`
+- chains: `web`, `api`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Chain roles
 
 - pivot — this BRIDGES a chain: an entry finding upstream plus this pivot plus a final downstream

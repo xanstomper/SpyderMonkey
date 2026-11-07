@@ -5,6 +5,12 @@
 - bindings: **WSTG-BUSL-05** · **CWE-285** · **ATT&CK T1068**
 - context: **kubernetes** · auth **low-priv** · chain role **pivot**
 
+## Route
+
+- probes: `httpx`, `nuclei-tokens`, `arjun`, `kiterunner`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: RBAC/service-account surface — read-only enumeration, crown the exposure

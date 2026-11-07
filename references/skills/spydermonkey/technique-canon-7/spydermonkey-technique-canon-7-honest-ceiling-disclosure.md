@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
 - generated: 2026-11-06
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 When the read-only space is exhausted, the ceiling is STATED with the inventory of lanes tried — the negative-with-value finding (the SPY-091 secret-hunt closure class). Decisive test: the coverage gap-list names every closed lane.

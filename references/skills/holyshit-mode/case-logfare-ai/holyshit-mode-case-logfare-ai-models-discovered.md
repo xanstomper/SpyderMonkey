@@ -4,6 +4,12 @@
 - bindings: **MASTG-RES** · **CWE-494** · **ATT&CK T1601**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - Tier 1 (premium): ling-3.0-flash-vl, sdxl-lightning, flux-2-klein-4b, flux-2-klein-9b, flux-2-dev, logfare/auto, flux-1-schnell, gemma-4-26b

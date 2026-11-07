@@ -5,6 +5,12 @@
 - bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
 - context: **iac** · auth **low-priv** · chain role **pivot**
 
+## Route
+
+- probes: `nmap`, `masscan`, `naabu`, `zmap`, `nc`, `fping`, `nmap-allports`
+- chains: `net`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: template/state files are the infrastructure inventory — read-only crown of the exposure

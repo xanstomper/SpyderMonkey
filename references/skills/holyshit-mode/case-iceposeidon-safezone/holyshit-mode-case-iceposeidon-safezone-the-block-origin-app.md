@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `httpx`, `nuclei-tokens`, `arjun`, `kiterunner`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - Every dynamic api route: `403 {"error":"Blocked"}` + `retry-after: 86309` (~24h), Caddy origin. Same from curl AND browser stack. Includes `/oauth/login/kick` — login impossible from blocked IP, so "just use my account" does NOT fix an IP ban; say so before asking the user to log in.

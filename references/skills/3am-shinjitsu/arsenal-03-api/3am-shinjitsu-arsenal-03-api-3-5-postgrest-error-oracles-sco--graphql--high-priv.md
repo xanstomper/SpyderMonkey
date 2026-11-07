@@ -5,6 +5,12 @@
 - bindings: **WSTG-SESS-01** · **CWE-347** · **ATT&CK T1552**
 - context: **graphql** · auth **high-priv** · chain role **entry**
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: aliases and batched queries bypass field-level checks; type confusion lives in the schema

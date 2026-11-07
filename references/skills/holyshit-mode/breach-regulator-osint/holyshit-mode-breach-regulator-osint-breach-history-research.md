@@ -4,6 +4,12 @@
 - bindings: **PTES-OPSEC** · **CWE-200** · **ATT&CK T1070**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 1. `web_search "<target> hack OR breach OR vulnerability OR exploit"` — the first hit names

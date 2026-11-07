@@ -5,6 +5,12 @@
 - bindings: **WSTG-SESS-01** · **CWE-347** · **ATT&CK T1552**
 - context: **grpc** · auth **machine** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-smtp-commands`, `nmap-smtp-enum-users`, `swaks`, `dig-mx`, `dig-txt`
+- chains: `mail-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: reflection/list methods first; protobuf definitions are the schema oracle

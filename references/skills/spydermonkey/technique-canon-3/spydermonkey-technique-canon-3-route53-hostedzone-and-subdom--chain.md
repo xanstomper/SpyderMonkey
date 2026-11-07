@@ -4,6 +4,12 @@
 - base technique: `spydermonkey-technique-canon-3-route53-hostedzone-and-subdom.md`
 - chain role: **entry — this OPENS a chain: everything after pairs with it; chain detect looks for same-origin findings that follow**
 
+## Route
+
+- probes: `subfinder`, `amass`, `dnsx`, `subzy`, `dnstwist`, `dig-cname`, `dig-axfr`, `nuclei-takeover`, `urlcrazy`, `assetfinder`, `findomain`
+- chains: `dns`, `takeover-full`, `osint`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Chain roles
 
 - entry — this OPENS a chain: everything after pairs with it; chain detect looks for same-origin findings that follow

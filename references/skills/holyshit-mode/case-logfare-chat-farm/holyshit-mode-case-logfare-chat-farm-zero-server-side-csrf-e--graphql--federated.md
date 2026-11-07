@@ -5,6 +5,12 @@
 - bindings: **WSTG-BUSL** · **CWE-200** · **ATT&CK T1005**
 - context: **graphql** · auth **federated** · chain role **final**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: aliases and batched queries bypass field-level checks; type confusion lives in the schema

@@ -5,6 +5,12 @@
 - bindings: **WSTG-CONF-04** · **CWE-530** · **ATT&CK T1552**
 - context: **kubernetes** · auth **unauth** · chain role **entry**
 
+## Route
+
+- probes: `nmap`, `masscan`, `naabu`, `zmap`, `nc`, `fping`, `nmap-allports`
+- chains: `net`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: RBAC/service-account surface — read-only enumeration, crown the exposure

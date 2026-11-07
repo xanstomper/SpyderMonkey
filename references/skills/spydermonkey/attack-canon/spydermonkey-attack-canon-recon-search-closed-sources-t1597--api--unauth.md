@@ -5,6 +5,12 @@
 - bindings: **PTES-PE** · **CWE-522** · **ATT&CK T1555**
 - context: **api** · auth **unauth** · chain role **entry**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: strike the JSON body + query string; content-type and parameter placement change the probe shape

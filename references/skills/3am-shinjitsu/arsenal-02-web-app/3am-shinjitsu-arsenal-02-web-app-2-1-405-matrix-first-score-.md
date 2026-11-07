@@ -4,6 +4,12 @@
 - bindings: **WSTG-CRYPTO-04** · **CWE-329** · **ATT&CK T1573**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - DECISIVE: for each discovered path: `curl -s -o /dev/null -w '%{http_code} %{content_type}'

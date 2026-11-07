@@ -4,6 +4,12 @@
 - bindings: **MASTG-RES** · **CWE-288** · **ATT&CK T1557**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 A coming-soon/maintenance mode often hard-503s the HTML storefront (`Retry-After: 600`) at

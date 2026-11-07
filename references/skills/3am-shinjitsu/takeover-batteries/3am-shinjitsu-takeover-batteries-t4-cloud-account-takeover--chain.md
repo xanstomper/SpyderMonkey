@@ -4,6 +4,12 @@
 - base technique: `3am-shinjitsu-takeover-batteries-t4-cloud-account-takeover.md`
 - chain role: **final — this CLOSES a chain: shukaku prices what it reaches; chain detect looks for the entries that feed it**
 
+## Route
+
+- probes: `nmap-http-backup`, `nmap-robots`, `nmap-sitemap`, `snallygaster`, `wget-mirror`, `httrack`, `gau`, `git-dumper`, `trufflehog`, `gitleaks`
+- chains: `exposure-sweep`, `content`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Chain roles
 
 - final — this CLOSES a chain: shukaku prices what it reaches; chain detect looks for the entries that feed it

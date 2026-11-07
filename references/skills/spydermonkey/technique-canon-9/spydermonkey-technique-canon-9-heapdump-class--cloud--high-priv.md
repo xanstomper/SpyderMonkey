@@ -5,6 +5,12 @@
 - bindings: **MASTG-RES** · **CWE-288** · **ATT&CK T1557**
 - context: **cloud** · auth **high-priv** · chain role **final**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: control-plane exposure — read-only, crown the class

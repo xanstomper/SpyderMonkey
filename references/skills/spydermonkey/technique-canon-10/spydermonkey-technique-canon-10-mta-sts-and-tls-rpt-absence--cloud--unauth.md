@@ -5,6 +5,12 @@
 - bindings: **WSTG-INFO** · **CWE-359** · **ATT&CK T1584**
 - context: **cloud** · auth **unauth** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: control-plane exposure — read-only, crown the class

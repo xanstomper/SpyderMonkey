@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-06** · **CWE-294** · **ATT&CK T1550**
 - generated: 2026-11-06
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - base64url-decode the first bytes of custom tokens; many schemes expose

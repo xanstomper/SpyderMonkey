@@ -4,6 +4,12 @@
 - bindings: **WSTG-SESS-01** · **CWE-347** · **ATT&CK T1552**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `sqlmap`, `nosqlmap`, `tplmap`, `commix`, `crlfuzz`, `dotdotpwn`, `nmap-http-sqli`, `nmap-shellshock`
+- chains: `fuzz`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - `private_model_gate_hardened` (20): 11-variant bypass matrix (case, space, %00, dot, //, :latest, ?query, array-typed model, stream, second host, URL-encoding) all 403/404. `no_access`(403) vs `model_not_found`(404) = model-exists oracle; gate is real code.

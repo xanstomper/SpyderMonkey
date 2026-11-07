@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-05** · **CWE-285** · **ATT&CK T1068**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `httpx`, `whatweb`, `webanalyze`, `nmap-waf-fingerprint`, `katana`, `gospider`, `hakrawler`
+- chains: `recon`, `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - Faucet: `POST /public/cx-bucks/claim`; config `GET /public/cx-bucks/rewards`. Response reason enum `ok|claimed|on_cooldown|disabled|requirements_not_met`; gates `min_account_age_days`, `min_global_level`; ledger grant kinds include `website_claim`, `chat_reward`, `trivia_reward`. REQUIRES Kick session — untested (blocked).

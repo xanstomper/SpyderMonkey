@@ -5,6 +5,12 @@
 - bindings: **WSTG-BUSL-02** · **CWE-840** · **ATT&CK T1565**
 - context: **web-app** · auth **high-priv** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: strike through the browser/proxy path; the 3-gate differential runs on the reflected/accepted value

@@ -5,6 +5,12 @@
 - bindings: **WSTG-SESS** · **CWE-287** · **ATT&CK T1528**
 - context: **iac** · auth **federated** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: template/state files are the infrastructure inventory — read-only crown of the exposure

@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL** · **CWE-200** · **ATT&CK T1005**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `s3scanner`, `cloudbrute`, `cloudlist`, `kube-hunter`, `shodan`
+- chains: `cloud-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - holyleadger.py: `add <name> <confirmed|inconclusive|hypothesis|negative> --score N --technique "..." --target X`; report via `report --target X --out path`. Invalid status/class values exit 2 silently — stick to the four.

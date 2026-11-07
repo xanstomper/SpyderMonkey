@@ -4,6 +4,12 @@
 - base technique: `holyshit-mode-case-obsidian-y-api-holy-shit-2-shared-global-.md`
 - chain role: **entry — this OPENS a chain: everything after pairs with it; chain detect looks for same-origin findings that follow**
 
+## Route
+
+- probes: `sqlmap`, `nosqlmap`, `tplmap`, `commix`, `crlfuzz`, `dotdotpwn`, `nmap-http-sqli`, `nmap-shellshock`
+- chains: `fuzz`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Chain roles
 
 - entry — this OPENS a chain: everything after pairs with it; chain detect looks for same-origin findings that follow

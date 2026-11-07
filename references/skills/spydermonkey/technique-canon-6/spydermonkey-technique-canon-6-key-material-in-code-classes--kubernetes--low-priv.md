@@ -5,6 +5,12 @@
 - bindings: **WSTG-BUSL** · **CWE-200** · **ATT&CK T1005**
 - context: **kubernetes** · auth **low-priv** · chain role **pivot**
 
+## Route
+
+- probes: `sslscan`, `sslyze`, `testssl`, `tlsx`, `ssh-audit`, `openssl`, `nmap-ssl-ciphers`, `nmap-script-ssl`, `ssh-keyscan`
+- chains: `tls`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: RBAC/service-account surface — read-only enumeration, crown the exposure

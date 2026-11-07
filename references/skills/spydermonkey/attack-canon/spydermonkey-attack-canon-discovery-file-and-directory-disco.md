@@ -4,6 +4,12 @@
 - bindings: **WSTG-PATH** · **CWE-22** · **ATT&CK T1005**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `gobuster`, `ffuf`, `dirsearch`, `dirb`, `feroxbuster`, `wfuzz`, `dirhunt`
+- chains: `content`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - class: locating sensitive files

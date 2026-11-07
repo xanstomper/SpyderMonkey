@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-05** · **CWE-285** · **ATT&CK T1068**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `s3scanner`, `cloudbrute`, `cloudlist`, `kube-hunter`, `shodan`
+- chains: `cloud-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 The web model page (`/models/<slug>`) embeds the FULL entitlement config in `self.__next_f`

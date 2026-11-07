@@ -5,6 +5,12 @@
 - bindings: **WSTG-SESS** · **CWE-287** · **ATT&CK T1528**
 - context: **android** · auth **low-priv** · chain role **final**
 
+## Route
+
+- probes: `nmap-http-backup`, `nmap-robots`, `nmap-sitemap`, `snallygaster`, `wget-mirror`, `httrack`, `gau`, `git-dumper`, `trufflehog`, `gitleaks`
+- chains: `exposure-sweep`, `content`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: the check often lives client-side — frida/objection at the runtime, MASTG methodology

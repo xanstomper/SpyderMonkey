@@ -5,6 +5,12 @@
 - bindings: **MASTG-RES** · **CWE-288** · **ATT&CK T1557**
 - context: **android** · auth **low-priv** · chain role **pivot**
 
+## Route
+
+- probes: `httpx`, `whatweb`, `webanalyze`, `nmap-waf-fingerprint`, `katana`, `gospider`, `hakrawler`
+- chains: `recon`, `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: the check often lives client-side — frida/objection at the runtime, MASTG methodology

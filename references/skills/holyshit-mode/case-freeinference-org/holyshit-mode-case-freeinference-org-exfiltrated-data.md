@@ -4,6 +4,12 @@
 - bindings: **WSTG-SESS** · **CWE-287** · **ATT&CK T1528**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - **Nodes (4)**: h200a, h200b, rtx6000b, spark2 — all online

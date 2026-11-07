@@ -4,6 +4,12 @@
 - bindings: **WSTG-ATHN-04** · **CWE-307** · **ATT&CK T1110**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-smtp-commands`, `nmap-smtp-enum-users`, `swaks`, `dig-mx`, `dig-txt`
+- chains: `mail-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - Rated from artifacts only: which MFA method, whether office refs are public, SIM-portal

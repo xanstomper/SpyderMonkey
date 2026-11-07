@@ -4,6 +4,12 @@
 - base technique: `3am-shinjitsu-universal-coverage-u09-data-stores-backups.md`
 - chain role: **entry — this OPENS a chain: everything after pairs with it; chain detect looks for same-origin findings that follow**
 
+## Route
+
+- probes: `nmap`, `masscan`, `naabu`, `zmap`, `nc`, `fping`, `nmap-allports`
+- chains: `net`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Chain roles
 
 - entry — this OPENS a chain: everything after pairs with it; chain detect looks for same-origin findings that follow

@@ -4,6 +4,12 @@
 - base technique: `holyshit-mode-case-logfare-ai-recon-summary.md`
 - chain role: **entry — this OPENS a chain: everything after pairs with it; chain detect looks for same-origin findings that follow**
 
+## Route
+
+- probes: `s3scanner`, `cloudbrute`, `cloudlist`, `kube-hunter`, `shodan`
+- chains: `cloud-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Chain roles
 
 - entry — this OPENS a chain: everything after pairs with it; chain detect looks for same-origin findings that follow

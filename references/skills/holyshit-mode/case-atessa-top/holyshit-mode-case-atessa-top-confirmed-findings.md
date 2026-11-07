@@ -4,6 +4,12 @@
 - bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-smtp-commands`, `nmap-smtp-enum-users`, `swaks`, `dig-mx`, `dig-txt`
+- chains: `mail-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 1. **Pre-auth routing-table oracle (45):** unauth `POST /v1/chat/completions` — AUTH-GATED set (401) = live routes: claude-sonnet-4-6, claude-opus-4-6/4-7/4-8, claude-haiku-4-5-20251001, mai-voice-2, whisper-large-v3-turbo; all others → 503 `No providers available` (auth NEVER checked). Dumps live provider config pre-auth; any future non-gated provider addition is reachable unauth until auth-order is fixed. Whitespace suffix (`"claude-sonnet-4-6 "`) dodged the exact-match gate for some IDs.

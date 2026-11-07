@@ -5,6 +5,12 @@
 - bindings: **WSTG-INPV-05** · **CWE-89** · **ATT&CK T1190**
 - context: **websocket** · auth **high-priv** · chain role **final**
 
+## Route
+
+- probes: `nmap-http-backup`, `nmap-robots`, `nmap-sitemap`, `snallygaster`, `wget-mirror`, `httrack`, `gau`, `git-dumper`, `trufflehog`, `gitleaks`
+- chains: `exposure-sweep`, `content`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: state carries across frames — the replay/state-bypass classes apply frame-to-frame

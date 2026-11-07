@@ -5,6 +5,12 @@
 - bindings: **WSTG-BUSL-02** · **CWE-840** · **ATT&CK T1565**
 - context: **host** · auth **high-priv** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: era-stack banner mapping (kaisha cve) before any rung

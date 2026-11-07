@@ -5,6 +5,12 @@
 - bindings: **WSTG-CONF-04** · **CWE-530** · **ATT&CK T1552**
 - context: **azure** · auth **unauth** · chain role **entry**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: identity surface — read-only enumeration (shukaku hunt semantics)

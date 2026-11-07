@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-02** · **CWE-840** · **ATT&CK T1565**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `s3scanner`, `cloudbrute`, `cloudlist`, `kube-hunter`, `shodan`
+- chains: `cloud-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - class: a principal that can pass a role to a service it controls

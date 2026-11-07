@@ -5,6 +5,12 @@
 - bindings: **WSTG-INPV-10** · **CWE-918** · **ATT&CK T1190**
 - context: **cloud** · auth **federated** · chain role **final**
 
+## Route
+
+- probes: `nmap-http-backup`, `nmap-robots`, `nmap-sitemap`, `snallygaster`, `wget-mirror`, `httrack`, `gau`, `git-dumper`, `trufflehog`, `gitleaks`
+- chains: `exposure-sweep`, `content`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: control-plane exposure — read-only, crown the class

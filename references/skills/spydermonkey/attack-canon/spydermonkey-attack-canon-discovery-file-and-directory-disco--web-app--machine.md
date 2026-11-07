@@ -5,6 +5,12 @@
 - bindings: **WSTG-PATH** · **CWE-22** · **ATT&CK T1005**
 - context: **web-app** · auth **machine** · chain role **pivot**
 
+## Route
+
+- probes: `gobuster`, `ffuf`, `dirsearch`, `dirb`, `feroxbuster`, `wfuzz`, `dirhunt`
+- chains: `content`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: strike through the browser/proxy path; the 3-gate differential runs on the reflected/accepted value

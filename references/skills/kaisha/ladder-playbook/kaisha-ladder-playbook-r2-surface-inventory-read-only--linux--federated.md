@@ -5,6 +5,12 @@
 - bindings: **MASTG-RES** · **CWE-798** · **ATT&CK T1552**
 - context: **linux** · auth **federated** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: read-only inventory first (kaisha rungs), then the documented class match

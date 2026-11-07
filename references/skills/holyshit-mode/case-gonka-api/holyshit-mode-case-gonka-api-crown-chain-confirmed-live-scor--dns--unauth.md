@@ -5,6 +5,12 @@
 - bindings: **MASTG-RES** · **CWE-288** · **ATT&CK T1557**
 - context: **dns** · auth **unauth** · chain role **final**
 
+## Route
+
+- probes: `nmap-smtp-commands`, `nmap-smtp-enum-users`, `swaks`, `dig-mx`, `dig-txt`
+- chains: `mail-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: record/cname surface — the domtake chain starts here

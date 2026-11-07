@@ -5,6 +5,12 @@
 - bindings: **WSTG-CRYPTO-04** · **CWE-329** · **ATT&CK T1573**
 - context: **ci-cd** · auth **low-priv** · chain role **final**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: pipeline config/runner surface — secrets and lateral movement ride the runners

@@ -5,6 +5,12 @@
 - bindings: **WSTG-BUSL-06** · **CWE-294** · **ATT&CK T1550**
 - context: **firmware** · auth **machine** · chain role **pivot**
 
+## Route
+
+- probes: `sslscan`, `sslyze`, `testssl`, `tlsx`, `ssh-audit`, `openssl`, `nmap-ssl-ciphers`, `nmap-script-ssl`, `ssh-keyscan`
+- chains: `tls`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: the check lives in the image — uart/flash/ota paths, no-gain read-only dumps

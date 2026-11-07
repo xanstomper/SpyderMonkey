@@ -5,6 +5,12 @@
 - bindings: **WSTG-BUSL-01** · **CWE-681** · **ATT&CK T1565**
 - context: **linux** · auth **high-priv** · chain role **pivot**
 
+## Route
+
+- probes: `nmap`, `masscan`, `naabu`, `zmap`, `nc`, `fping`, `nmap-allports`
+- chains: `net`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: read-only inventory first (kaisha rungs), then the documented class match
