@@ -207,7 +207,7 @@ the lab replicas; **`kage`** mirrors every confirmed attack into Sigma.
 **`bench_public.py`** — the published benchmarks: the self-bench (15 live replica
 classes × 4 sub-tasks, anti-memorization, 100%) and **Range B** — an independently
 written app with zero code shared with the testers (90.6%). **`mcp_server.py`** —
-the whole family exposed as 52 MCP tools (stdio JSON-RPC, zero deps,
+the whole family exposed as 79 MCP tools (stdio JSON-RPC, zero deps,
 batch/notification support): Claude Desktop, Cursor, or any MCP client drives it.
 `--test` and `--list` are built in.
 

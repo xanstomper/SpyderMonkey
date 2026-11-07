@@ -21,7 +21,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-VERSION = "5.14.0"
+VERSION = "5.15.0"
 PROTOCOL = "2024-11-05"
 SM = str(Path(__file__).resolve().parent / "spydermonkey.py")
 NAME_RE = re.compile(r"^[a-z][a-z0-9_]{1,63}$")
@@ -689,6 +689,65 @@ HANDLERS = {
     "undercroft_probe_table": h_undercroft_probe_table,
     "holyshit_surface": h_holyshit_surface, "dojo_catalog": h_dojo_catalog,
 }
+
+
+# v5.15 — THE 23 CHAINS AS MCP TOOLS: every feeding chain + single-tool runs,
+# scope-gated through the arsenal (which gates through the shared authority).
+def h_arsenal_chain(a):
+    _need(a, "target")
+    argv = ["arsenal", "run", "--target", a["target"], "--json"]
+    if a.get("chain"):
+        argv += ["--chain", a["chain"]]
+    if a.get("only"):
+        argv += ["--only", a["only"]]
+    if a.get("dry_run"):
+        argv += ["--dry-run"]
+    if a.get("wordlist"):
+        argv += ["--wordlist", a["wordlist"]]
+    if a.get("timeout"):
+        argv += ["--timeout", str(int(a["timeout"]))]
+    return _run_sm(argv, timeout=max(60, int(a.get("timeout") or 300) + 30))
+
+
+def h_arsenal_run(a):
+    a = dict(a)
+    a["chain"] = None
+    return h_arsenal_chain(a)
+
+
+_CHAINS = ["recon", "web", "tls", "net", "dns", "content", "api", "services",
+           "cms", "win", "osint", "db", "takeover", "cloud", "packet", "fuzz",
+           "cve-sweep", "exposure-sweep", "takeover-full", "cloud-full",
+           "db-full", "mail-full", "cms-full"]
+_CHAIN_INPUT = {
+    "type": "object",
+    "properties": {
+        "target": {"type": "string", "description": "In-scope target (host or url)."},
+        "dry_run": {"type": "boolean", "description": "Plan only — nothing executes."},
+        "wordlist": {"type": "string", "description": "Optional wordlist/resolver path."},
+        "timeout": {"type": "integer", "description": "Per-tool timeout seconds (default 300)."},
+    },
+    "required": ["target"],
+}
+_RUN_INPUT = dict(_CHAIN_INPUT)
+_RUN_INPUT["properties"] = dict(_CHAIN_INPUT["properties"])
+_RUN_INPUT["properties"]["only"] = {"type": "string",
+    "description": "Comma-separated arsenal tool ids (e.g. sslscan,nuclei)."}
+_RUN_INPUT["required"] = ["target"]
+
+for _c in _CHAINS:
+    TOOLS.append({"name": f"arsenal_chain_{_c.replace('-', '_')}",
+                  "description": f"Scope-gated execution of the '{_c}' feeding chain "
+                                 f"(stages feed each other; every stage passes the shared "
+                                 f"scope authority; dry_run=true plans without executing).",
+                  "inputSchema": dict(_CHAIN_INPUT)})
+    HANDLERS[f"arsenal_chain_{_c.replace('-', '_')}"] = h_arsenal_chain
+
+TOOLS.append({"name": "arsenal_run",
+              "description": "Scope-gated execution of ONE OR MORE named arsenal tools "
+                             "(--only sslscan,nuclei...). Refuses out-of-estate targets (rc=1).",
+              "inputSchema": _RUN_INPUT})
+HANDLERS["arsenal_run"] = h_arsenal_run
 
 
 def _tool_text(result) -> tuple[str, dict | None]:
