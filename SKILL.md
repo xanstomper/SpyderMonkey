@@ -321,7 +321,9 @@ exercised, not asserted.
 - `status [--target T] [--fast]` — family meta-status: versions + engine presence + campaign states + ledger counts
 - `verify [--fast] [--no-selftest]` — meta self-check: subcommands · contracts · ten engines · selftest · LIVE gate proof
 - `selftest [--quick]` — 27-check end-to-end test in a throwaway HOME
-- `mandate [--file]` — print (or locate) the injectable persona contract
+- `mandate [--file] [--session] [--pack]` — print (or locate) the injectable persona contract; `--pack`
+  emits the ONE-PASTE OPERATOR PACK (persona + rails: walls · route table · kernel loop ·
+  evidence contract · engine menu — ~2k tokens, injectable into ANY model as system prompt)
 - `scope init|check|show|add|remove|extend|history` — the shared estate gate (matching · deny precedence · expiry · audit)
 - `doctor [--fix]` — health check (engines · scope perms · corrupt states · canon · ledger · relays)
 - `bench` — offline route-level benchmark (29/29 = 100% at v4.0.0)

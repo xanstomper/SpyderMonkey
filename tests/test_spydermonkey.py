@@ -196,6 +196,20 @@ class CliTests(unittest.TestCase):
         self.assertEqual(b["passed"], b["total"])
         self.assertGreaterEqual(b["accuracy"], 100.0)
 
+    def test_mandate_pack_is_complete_and_compact(self):
+        r = self.cli(["mandate", "--pack"])
+        self.assertEqual(r.returncode, 0, r.stderr)
+        text = r.stdout
+        for marker in ("THE WALLS", "DECLARED ESTATES ONLY", "DOCUMENTED-PoC",
+                       "NEVER THIRD PARTIES", "THE KERNEL LOOP", "THE EVIDENCE CONTRACT",
+                       "THE ROUTE TABLE", "3-gate", "hypothesis conf 0.4",
+                       "---8<--- END MANDATE PACK ---8<---"):
+            self.assertIn(marker, text, marker)
+        self.assertLess(len(text.split()), 2600, "pack must stay under ~3k tokens")
+        p = self.cli(["mandate", "--pack", "--file"])
+        self.assertEqual(p.returncode, 0)
+        self.assertTrue(Path(p.stdout.strip()).exists(), p.stdout)
+
     def test_kernel_next_is_state_driven(self):
         d = self.j(["next", "--target", "camp1", "--domain", "example.test", "--json"])
         self.assertFalse(d["done"])

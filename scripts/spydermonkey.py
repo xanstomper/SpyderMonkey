@@ -603,6 +603,8 @@ def cmd_verify(args):
     mandate = self.parent.parent / "references" / "mandate.md"
     if not mandate.exists():
         bad.append("mandate file")
+    if not (self.parent.parent / "references" / "mandate-pack.md").exists():
+        bad.append("mandate pack file")
     for meta in MANDATES.values():
         contract = self.parent.parent / "references" / "mandates" / meta["contract"]
         if not contract.exists():
@@ -1429,6 +1431,13 @@ def cmd_bench(args):
 
 
 def cmd_mandate(args):
+    if getattr(args, "pack", False):
+        pfile = Path(__file__).resolve().parent.parent / "references" / "mandate-pack.md"
+        if args.file:
+            print(str(pfile))
+            return 0
+        print(pfile.read_text())
+        return 0
     if getattr(args, "session", False):
         sfile = Path(__file__).resolve().parent.parent / "references" / "mandate-session.md"
         if args.file:
@@ -6929,6 +6938,9 @@ def _build_parser() -> argparse.ArgumentParser:
     mf.add_argument("--file", action="store_true", help="print path only")
     mf.add_argument("--session", action="store_true",
                     help="print the session-hijack mandate (the /spydermonkey injection contract) instead")
+    mf.add_argument("--pack", action="store_true",
+                    help="print the one-paste operator pack (persona + rails: walls · route table · loop · "
+                         "evidence contract · engine menu — ~2k tokens, injectable into ANY model) instead")
 
     sc = sub.add_parser("scope", help="the scope authority: init · check · show · add · remove · history · extend")
     sc.add_argument("action", choices=("init", "check", "show", "add", "remove",
