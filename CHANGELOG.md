@@ -5,6 +5,18 @@ the dispatcher release (`SKILL.md` frontmatter).
 
 
 
+## v5.15.0 — THE CHAINS AS MCP TOOLS (2026-11-06)
+
+- **MCP 52 → 79 tools.** All 23 feeding chains exposed as callable MCP tools
+  (arsenal_chain_recon … arsenal_chain_cms_full — dry_run plans without
+  executing) + `arsenal_run` for named single/multi-tool runs. Every call is
+  scope-gated through the arsenal's shared authority — out-of-estate targets
+  refuse at rc=1.
+- No installs on the operator box (operator directive): dormant wrappers stay
+  defined-and-routable; they activate wherever the fleet runs.
+- Verified: mcp --test green (79 tools) · live lab chain call scope_ok=true ·
+  selftest + ci_smoke green before push.
+
 ## v5.14.0 — THE METHODOLOGIES CLAIMED: WSTG + MASTG FULL CANON (2026-11-06)
 
 - **Arsenal 258 → 296 wrappers.** NSE batch 5 (http-grep, http-malware-host,

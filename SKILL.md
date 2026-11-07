@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 5.14.0
+version: 5.15.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -121,7 +121,7 @@ structured run records, kernel `--out` results the loop absorbs) · **`catalog`*
 only, execution stays scope-gated via arsenal) · `fleet`
 (parallel multi-agent dispatch, one agent per mandate) · `bench_live.py`
 (exploitation-level bench, throwaway HOME, localhost lab) · `mcp_server.py`
-(the family as 52 MCP tools) · `skilltree.py` (the technique library: 1,337 base
+(the family as 79 MCP tools) · `skilltree.py` (the technique library: 1,337 base
 files + the CONTEXT CORPUS — `--expand` generates 33k technique × platform ×
 auth × federated × machine files with chain-role tags + **Route tables** (class → exact arsenal probes/chains) — deterministic, `--verify` checks both indexes). The **multi-step gate** (v5.13): flow cards carry a `__PAYLOAD__` marker through a request SEQUENCE with cookie carryover — logic chains (login → action → result) prove or disprove through the same 3-gate discipline.
 
@@ -302,7 +302,7 @@ exercised, not asserted.
 Companion scripts (stdlib too):
 - `scripts/scope_authority.py` — the one estate gate (exact/subdomain/wildcard/CIDR/URL/port · deny · expiry · rate · audit · atomic writes)
 - `scripts/bench_live.py` — exploitation-level bench: throwaway HOME, dynamic port, localhost mini-targets
-- `scripts/mcp_server.py` — the family as 52 MCP tools (stdio JSON-RPC; batch + notifications; `--test`/`--list`)
+- `scripts/mcp_server.py` — the family as 79 MCP tools (stdio JSON-RPC; batch + notifications; `--test`/`--list`)
 - `scripts/skilltree.py` — regenerate + `--verify` `references/skills/` + `references/skilltree-index.md` (722 technique files)
 
 ## Files
