@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 5.15.0
+version: 5.16.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -121,9 +121,9 @@ structured run records, kernel `--out` results the loop absorbs) · **`catalog`*
 only, execution stays scope-gated via arsenal) · `fleet`
 (parallel multi-agent dispatch, one agent per mandate) · `bench_live.py`
 (exploitation-level bench, throwaway HOME, localhost lab) · `mcp_server.py`
-(the family as 79 MCP tools) · `skilltree.py` (the technique library: 1,337 base
-files + the CONTEXT CORPUS — `--expand` generates 33k technique × platform ×
-auth × federated × machine files with chain-role tags + **Route tables** (class → exact arsenal probes/chains) — deterministic, `--verify` checks both indexes). The **multi-step gate** (v5.13): flow cards carry a `__PAYLOAD__` marker through a request SEQUENCE with cookie carryover — logic chains (login → action → result) prove or disprove through the same 3-gate discipline.
+(the family as 79 MCP tools) · `skilltree.py` (the technique library: 1,361 base
+files + the CONTEXT CORPUS — `--expand` generates 33.6k technique × platform ×
+auth × federated × machine files with chain-role tags + **Route tables** (class → exact arsenal probes/chains) — deterministic, `--verify` checks both indexes). The **multi-step gate** (v5.13): flow cards carry a `__PAYLOAD__` marker through a request SEQUENCE with cookie + token carryover — logic chains (login → action → result) prove or disprove through the same 3-gate discipline.
 
 ## The Mandate Discipline (v1.1.0 — the Kimiko architecture, model-agnostic)
 

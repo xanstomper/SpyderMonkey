@@ -5,6 +5,20 @@ the dispatcher release (`SKILL.md` frontmatter).
 
 
 
+## v5.16.0 — TOKEN-CARRYOVER FLOWS + ASVS CANON (2026-11-06)
+
+- **_flow_http v2: token carryover.** Steps declare save_as (+ save_from:
+  body|headers:<name>, save_pattern: regex) and later steps reference
+  {{name}} in url/headers/body — substituted per-run. login → extract token →
+  authed action is now a provable flow (PROVEN live on a lab server: the
+  server saw Bearer tkn_... extracted from the login body). 2 new tests
+  (33 in the hypothesis suite, 63 total).
+- **Technique corpus 33,052 → 33,604 files** (1,361 base + 32,243 expanded,
+  0 orphans): canon-13 — the ASVS control families as VERIFICATION probes
+  (authN/authZ/session/data-protection/comms/injection/error/business-logic
+  — how an authorized tester proves each control's absence).
+- Verified: skilltree ALL PASS · selftest 28/28 · ci_smoke ALL PASS.
+
 ## v5.15.0 — THE CHAINS AS MCP TOOLS (2026-11-06)
 
 - **MCP 52 → 79 tools.** All 23 feeding chains exposed as callable MCP tools

@@ -21,7 +21,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-VERSION = "5.15.0"
+VERSION = "5.16.0"
 PROTOCOL = "2024-11-05"
 SM = str(Path(__file__).resolve().parent / "spydermonkey.py")
 NAME_RE = re.compile(r"^[a-z][a-z0-9_]{1,63}$")
