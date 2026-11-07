@@ -288,7 +288,7 @@ class CliTests(unittest.TestCase):
             {"id": "V-2", "class": "STATEBYPASS", "technique": "t", "proof": "p",
              "delta": "d", "source": "s", "target": "device-x"},
         ]}))
-        r = run([sys.executable, str(kairo), "validate", "--target", "kfly"],
+        r = run([str(kairo), "validate", "--target", "kfly"],
                 self.env, timeout=120)
         self.assertEqual(r.returncode, 0, r.stderr)
         st = json.loads((camp / "hardware-state.json").read_text())
