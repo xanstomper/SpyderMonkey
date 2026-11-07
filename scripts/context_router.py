@@ -1,0 +1,251 @@
+#!/usr/bin/env python3
+"""SPYDERMONKEY CONTEXT ROUTER — the retrieval layer (v7.4 rail: any model, the
+right knowledge in context at the right moment).
+
+Read-only, deterministic, stdlib. Indexes the family's real corpora:
+  · canon    — the 30+ reference canon volumes (full text, tokenized)
+  · skill    — the curated skilltree index (1,114 technique entries, WSTG/CWE/T tags)
+  · expanded — the expanded technique corpus (138k+ platform × auth × federated files)
+  · tool     — the 66,569-entry tool-catalog surge (exploit-db · nuclei · metasploit)
+
+The index cache lives under $SPYDERMONKEY_HOME/cache/ (never under references/ —
+the corpus is read-only). Scoring is deterministic (rarity-weighted term overlap
+with a title boost); the same query always returns the same ranked hits.
+
+CLI:  context_router.py query --terms "ssrf jwt" [--top N] [--budget CHARS]
+                               [--kinds canon,skill,tool,expanded] [--json]
+      context_router.py stats [--json]
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import math
+import os
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+REFERENCES = ROOT / "references"
+
+KINDS = ("canon", "skill", "expanded", "tool")
+KIND_WEIGHT = {"canon": 3.0, "skill": 2.2, "expanded": 1.6, "tool": 1.0}
+
+STOP = {
+    "the", "a", "an", "and", "or", "for", "to", "of", "in", "on", "with",
+    "by", "from", "via", "how", "what", "is", "are", "it", "its", "this",
+    "that", "be", "as", "at", "we", "you", "your", "their", "they", "can",
+    "will", "not", "no", "but", "do", "does", "did", "has", "have", "had",
+    "was", "were", "would", "could", "should", "into", "over", "under",
+    "than", "then", "there", "here", "when", "which", "who", "whom", "all",
+    "any", "each", "more", "most", "some", "such", "only", "own", "same",
+    "so", "too", "very", "just", "also", "get", "got", "use", "using",
+    "used", "one", "two", "etc", "e", "g", "vs", "aka", "s",
+}
+
+TOKEN_RE = re.compile(r"[a-z0-9][a-z0-9\-_+.]*")
+
+
+def tokenize(text: str) -> set[str]:
+    out = set()
+    for m in TOKEN_RE.finditer(text.lower()):
+        t = m.group(0)
+        if len(t) >= 3 and t not in STOP and not t.isdigit():
+            out.add(t)
+    return out
+
+
+def _stamp() -> str:
+    latest = 0.0
+    for p in REFERENCES.glob("*.md"):
+        latest = max(latest, p.stat().st_mtime)
+    for p in (REFERENCES / "skilltree-index.md",
+              REFERENCES / "skilltree-expanded-index.md"):
+        latest = max(latest, p.stat().st_mtime)
+    surge = REFERENCES / "tool-catalog-surge.json"
+    if surge.exists():
+        latest = max(latest, surge.stat().st_mtime)
+    return f"{latest:.0f}"
+
+
+def _index_path() -> Path:
+    home = Path(os.environ.get("SPYDERMONKEY_HOME",
+                               str(Path.home() / ".redteam")))
+    cache = home / "cache"
+    cache.mkdir(parents=True, exist_ok=True)
+    return cache / "context-index.json"
+
+
+def build_index() -> dict:
+    """Build (or load cached) the corpus index. Read-only on references/."""
+    ipath = _index_path()
+    stamp = _stamp()
+    if ipath.exists():
+        try:
+            idx = json.loads(ipath.read_text())
+            if idx.get("stamp") == stamp:
+                return idx
+        except Exception:
+            pass
+
+    docs = []
+
+    # 1) canon volumes — full text tokenized, first-350-char snippet
+    for p in sorted(REFERENCES.glob("*canon.md")):
+        text = p.read_text(errors="replace")
+        toks = tokenize(text)
+        if not toks:
+            continue
+        snip = re.sub(r"\s+", " ", text).strip()[:350]
+        docs.append({"k": "canon", "id": p.name, "t": p.name,
+                     "tags": "", "snip": snip,
+                     "toks": sorted(toks),
+                     "ttoks": sorted(tokenize(p.name))})
+
+    # 2) curated skilltree index — title + WSTG/CWE/T tags
+    LINE_RE = re.compile(r"- \[(.+?)\]\(([^)]+)\) — (.*)$")
+    for idx_file, kind in (("skilltree-index.md", "skill"),
+                           ("skilltree-expanded-index.md", "expanded")):
+        p = REFERENCES / idx_file
+        if not p.exists():
+            continue
+        for line in p.read_text(errors="replace").splitlines():
+            m = LINE_RE.match(line.strip())
+            if not m:
+                continue
+            title, path, tail = m.group(1), m.group(2), m.group(3)
+            toks = tokenize(title + " " + tail)
+            if not toks:
+                continue
+            docs.append({"k": kind, "id": path, "t": title, "tags": tail.strip(),
+                         "snip": tail.strip()[:220], "toks": sorted(toks),
+                         "ttoks": sorted(tokenize(title))})
+
+    # 3) tool-catalog surge — name + cat + desc
+    surge = REFERENCES / "tool-catalog-surge.json"
+    if surge.exists():
+        try:
+            data = json.loads(surge.read_text())
+            for entries in data.get("sections", {}).values():
+                for e in entries:
+                    name = e.get("name", "")
+                    desc = e.get("desc", "")
+                    cat = e.get("cat", "")
+                    toks = tokenize(name + " " + desc + " " + cat)
+                    if not toks:
+                        continue
+                    docs.append({"k": "tool", "id": name, "t": name,
+                                 "tags": cat, "snip": desc[:220],
+                                 "toks": sorted(toks),
+                                 "ttoks": sorted(tokenize(name))})
+        except Exception:
+            pass
+
+    df: dict[str, int] = {}
+    for d in docs:
+        for t in set(d["toks"]):
+            df[t] = df.get(t, 0) + 1
+
+    idx = {"stamp": stamp, "docs": docs, "df": df}
+    try:
+        ipath.write_text(json.dumps(idx, separators=(",", ":")))
+    except Exception:
+        pass
+    return idx
+
+
+def query(terms: str, top: int = 8, budget: int | None = None,
+          kinds: tuple[str, ...] | None = None) -> list[dict]:
+    """Ranked retrieval. Deterministic: score = rarity-weighted term overlap
+    with a 2× title boost, kind weight, then (score desc, id)."""
+    idx = build_index()
+    qtoks = tokenize(terms)
+    if not qtoks:
+        return []
+    df = idx["df"]
+    allow = set(kinds) if kinds else set(KINDS)
+
+    scored = []
+    for d in idx["docs"]:
+        if d["k"] not in allow:
+            continue
+        dtoks = set(d["toks"])
+        ttoks = set(d.get("ttoks", ()))
+        hit = qtoks & dtoks
+        if not hit:
+            continue
+        s = 0.0
+        for t in hit:
+            w = KIND_WEIGHT[d["k"]] * (2.0 if t in ttoks else 1.0)
+            s += w / (1.0 + math.log2(1.0 + df.get(t, 1)))
+        scored.append((s, d))
+
+    scored.sort(key=lambda x: (-x[0], x[1]["id"]))
+    hits = []
+    used = 0
+    for s, d in scored:
+        entry = {"kind": d["k"], "id": d["id"], "title": d["t"],
+                 "tags": d.get("tags", ""), "score": round(s, 4),
+                 "snippet": d.get("snip", "")}
+        hits.append(entry)
+        if budget is not None and len(entry["snippet"]) > 0:
+            used += len(entry["snippet"])
+            if used >= budget and len(hits) >= 1:
+                break
+        if len(hits) >= top:
+            break
+    return hits
+
+
+def stats() -> dict:
+    idx = build_index()
+    counts: dict[str, int] = {}
+    for d in idx["docs"]:
+        counts[d["k"]] = counts.get(d["k"], 0) + 1
+    return {"stamp": idx["stamp"], "docs": len(idx["docs"]), "terms": len(idx["df"]),
+            "kinds": counts, "cache": str(_index_path())}
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(prog="context_router", description=__doc__.split("\n")[0])
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    q = sub.add_parser("query", help="ranked retrieval over the family corpora")
+    q.add_argument("--terms", required=True, help="space/comma separated terms")
+    q.add_argument("--top", type=int, default=8)
+    q.add_argument("--budget", type=int, default=None, help="max snippet chars")
+    q.add_argument("--kinds", default=",".join(KINDS),
+                   help="comma list of canon,skill,expanded,tool")
+    q.add_argument("--json", action="store_true")
+    s = sub.add_parser("stats", help="index stats")
+    s.add_argument("--json", action="store_true")
+    args = ap.parse_args()
+
+    if args.cmd == "stats":
+        st = stats()
+        if args.json:
+            print(json.dumps(st, indent=2))
+        else:
+            print(f"context index: {st['docs']} docs · {st['terms']} terms · "
+                  f"stamp {st['stamp']}")
+            for k, v in sorted(st["kinds"].items()):
+                print(f"  {k:9s} {v}")
+            print(f"  cache at {st['cache']}")
+        return 0
+
+    kinds = tuple(k.strip() for k in args.kinds.split(",") if k.strip())
+    hits = query(args.terms, top=args.top, budget=args.budget, kinds=kinds)
+    if args.json:
+        print(json.dumps({"terms": args.terms, "count": len(hits), "hits": hits},
+                         indent=2))
+        return 0
+    print(f"▸ {args.terms} — {len(hits)} hit(s)")
+    for h in hits:
+        print(f"  [{h['kind']:8s}] {h['title']}")
+        print(f"           {h['id']}  {h['tags']}")
+        print(f"           {h['snippet'][:160]}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

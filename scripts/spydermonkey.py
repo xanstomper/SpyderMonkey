@@ -97,8 +97,9 @@ from pathlib import Path
 # dispatcher still works when invoked through a symlink or from any cwd.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
+import context_router as cr  # noqa: E402
 
-VERSION = "7.3.0"
+VERSION = "7.4.0"
 SCHEMA = 4
 
 
@@ -456,6 +457,83 @@ def cmd_route(args):
     return 0
 
 
+WALLS_ONELINER = ("declared estates only · documented-PoC adaptation · "
+                  "validation-only NO-GAIN · never social / never third parties · "
+                  "zero documents · destructive end-states refused → disclosure")
+
+
+def cmd_inject(args):
+    """THE CONTEXT PACKET (v7.4 — the retrieval layer): route verdict + kernel
+    directive + session state + the top canon/skill/tool knowledge for the goal,
+    in one compact block a model consumes as-is. No model needed to compose it:
+    routing, planning and retrieval are deterministic policy in code."""
+    _ensure_campaign(args.target)
+    goal = args.goal or ""
+    route = _route_goal(goal)
+    nxt = _planner_directive(args.target)
+    ctx = _load_json(_camp(args.target) / "context.json",
+                     {"endpoints": [], "roles": [], "credentials": [],
+                      "functions": []})
+    ledger = _ledger_load(args.target)
+    confirmed = [r for r in ledger if r.get("status") == "CONFIRMED"]
+    classes = sorted({str(r.get("cls", "")).upper() for r in confirmed
+                      if r.get("cls")})
+    terms = " ".join([goal, route["primary"], *classes]).strip()
+    kinds = tuple(k.strip() for k in args.kinds.split(",")
+                  if k.strip()) if args.kinds else None
+    hits = cr.query(terms, top=args.top, budget=args.budget, kinds=kinds)
+
+    directive = None
+    if nxt is not None:
+        real = _autopilot_argv(nxt)
+        directive = {"id": nxt.get("directive_id") or nxt.get("id"),
+                     "mandate": nxt.get("mandate"),
+                     "command": (" ".join(real) if real
+                                 else "spydermonkey " + " ".join(nxt.get("argv", [])))}
+
+    payload = {
+        "target": args.target,
+        "goal": goal,
+        "route": {"primary": route["primary"], "sequence": route["sequence"]},
+        "directive": directive,
+        "state": {
+            "endpoints": len(ctx.get("endpoints", [])),
+            "roles": len(ctx.get("roles", [])),
+            "credentials": len(ctx.get("credentials", [])),
+            "functions": len(ctx.get("functions", [])),
+            "confirmed": len(confirmed),
+            "classes": classes,
+        },
+        "walls": WALLS_ONELINER,
+        "knowledge": hits,
+        "terms": terms,
+    }
+    if _json_mode(args):
+        _emit(args, payload)
+        return 0
+    print(f"═══ CONTEXT PACKET — {args.target} ═══")
+    print(f"ROUTE    : '{goal or '(no goal)'}' → {route['primary']}"
+          + (f" (+ {' → '.join(route['sequence'][1:])})"
+             if len(route['sequence']) > 1 else ""))
+    if directive:
+        print(f"DIRECTIVE: {directive['id']} · {directive['mandate']}"
+              f" — {directive['command']}")
+    else:
+        print("DIRECTIVE: kernel — no open directive (all phases have deliverables)")
+    st = payload["state"]
+    print(f"STATE    : {st['endpoints']} endpoints · {st['roles']} roles · "
+          f"{st['credentials']} creds · {st['functions']} funcs · "
+          f"{st['confirmed']} confirmed"
+          + (f" [{', '.join(st['classes'])}]" if st['classes'] else ""))
+    print(f"WALLS    : {payload['walls']}")
+    print(f"KNOWLEDGE ({len(hits)} hit(s) for '{terms}')")
+    for h in hits:
+        print(f"  [{h['kind']:8s}] {h['title']}")
+        print(f"           {h['id']}  {h['tags']}")
+        print(f"           {h['snippet'][:200]}")
+    return 0
+
+
 def cmd_run(args):
     """The full pipeline = SHIKI assault (the proven path)."""
     shiki = FAMILY["shiki"][0]
@@ -597,7 +675,8 @@ def cmd_verify(args):
                  "ledger", "gate", "chain", "context", "testers", "coverage",
                  "report", "relay", "campaign", "mandates", "next", "selftest",
                  "crawl", "takeover", "capabilities", "protect", "train",
-                 "memory", "remediate", "watch", "serve", "version", "catalog"):
+                 "memory", "remediate", "watch", "serve", "version", "catalog",
+                 "inject"):
         if want not in help_out:
             bad.append(f"subcommand {want}")
     mandate = self.parent.parent / "references" / "mandate.md"
@@ -6934,6 +7013,14 @@ def _build_parser() -> argparse.ArgumentParser:
     md.add_argument("action", choices=("list", "show", "verify"))
     md.add_argument("--name")
 
+    ij = sub.add_parser("inject", help="THE CONTEXT PACKET (v7.4 retrieval layer): route verdict + kernel directive + session state + top canon/skill/tool knowledge for a goal — one block a model consumes as-is")
+    ij.add_argument("--target", required=True)
+    ij.add_argument("--goal", default="", help="goal words to route + retrieve on")
+    ij.add_argument("--top", type=int, default=8, help="max knowledge hits")
+    ij.add_argument("--budget", type=int, default=6000, help="max knowledge snippet chars")
+    ij.add_argument("--kinds", default=None,
+                    help="comma list of canon,skill,expanded,tool (default all)")
+
     mf = sub.add_parser("mandate", help="print the injectable mandate (persona contract)")
     mf.add_argument("--file", action="store_true", help="print path only")
     mf.add_argument("--session", action="store_true",
@@ -7219,6 +7306,8 @@ def _dispatch(a) -> int:
         return cmd_campaign(a)
     if a.cmd == "mandates":
         return cmd_mandates(a)
+    if a.cmd == "inject":
+        return cmd_inject(a)
     if a.cmd == "mandate":
         return cmd_mandate(a)
     if a.cmd == "arsenal":

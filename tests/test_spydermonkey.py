@@ -210,6 +210,28 @@ class CliTests(unittest.TestCase):
         self.assertEqual(p.returncode, 0)
         self.assertTrue(Path(p.stdout.strip()).exists(), p.stdout)
 
+    def test_inject_context_packet(self):
+        r = self.cli(["inject", "--target", "camp1", "--goal",
+                      "find jwt ssrf in the api", "--json"])
+        self.assertEqual(r.returncode, 0, r.stderr)
+        p = json.loads(r.stdout)
+        self.assertIn("undercroft", p["route"]["sequence"])
+        self.assertTrue(p["walls"].startswith("declared estates only"))
+        self.assertGreaterEqual(len(p["knowledge"]), 1)
+        t = self.cli(["inject", "--target", "camp1", "--goal", "privesc sudo suid"])
+        self.assertEqual(t.returncode, 0, t.stderr)
+        self.assertIn("KNOWLEDGE", t.stdout)
+        self.assertIn("ROUTE", t.stdout)
+
+    def test_context_router_is_deterministic(self):
+        import context_router as crr
+        a = crr.query("jwt forge", top=4)
+        b = crr.query("jwt forge", top=4)
+        self.assertEqual(a, b)
+        self.assertTrue(a)
+        self.assertTrue(all(h["kind"] in ("canon", "skill", "expanded", "tool")
+                            for h in a))
+
     def test_kernel_next_is_state_driven(self):
         d = self.j(["next", "--target", "camp1", "--domain", "example.test", "--json"])
         self.assertFalse(d["done"])

@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 7.3.0
+version: 7.4.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -312,6 +312,7 @@ exercised, not asserted.
 - `testers --target T --url U [--url U2 …] | --demo` — the 18 parallel sub-testers over the session context — **two-role AUTHZ differential**: the context's first credential is the privileged baseline, the second is the low-priv attack; a different 200 on the low role IS the bypass proof
 - `crawl --target T --url U [--depth N]` — **THE SURFACE ENGINE** (HackBrowser-equivalent, stdlib): same-origin BFS crawl mining links · forms · query params · JS `fetch/axios` API paths → the session context AUTO-FILLS — the testers strike what it finds, no hand-fed urls
 - `discover --target T --source PATH [--lang L] [--semgrep]` — **THE SOURCE LANE** (v7.1): read-only scan of the target's own source tree → ranked, gate-ready candidate cards (documented classes only, HYP schema, discovery-state.json) — the kernel plans it the moment a source root enters the context. **v7.1: REAL DATAFLOW** — stdlib-ast intra-procedural taint analysis for python (source → propagation → sink with the flow chain as evidence); verified on indirect multi-line flows the ±1-line regex window structurally cannot see, 0 false positives on sanitized/parameterized files
+- `inject --target T --goal G [--top N] [--budget CHARS] [--kinds K]` — **THE CONTEXT PACKET (v7.4 — the retrieval layer)**: route verdict + kernel directive + session state + the top canon/skill/tool knowledge for the goal — one block any model consumes as-is; deterministic read-only retrieval over 205k indexed docs (30+ canons · skilltree · expanded corpus · the 66,569-tool surge), no model needed to compose it
 - `attack [--json]` — **THE ATT&CK MAP** (v7.2, post-leak-purge): the corpus indexed against MITRE ATT&CK (80,517 files · 32 techniques · 57.8%) with the live Atomic Red Team comparison
 - `leakscan [--history]` / `scripts/leakscan.py` — **THE NO-LEAKS GATE** (v7.2): engagement markers × every tracked file (+ every historical blob with --history); rc=1 on any hit — wired into selftest
 - `fleet_provision.py --detect|--emit` — **REAL FLEET ACTIVATION** (v7.2): read-only census here; emits `fleet-provision.sh` for fleet VMs (934/1,605 wrappers activate: 4 host packages + 71 direct + 853 riding with nmap/msf/nuclei/impacket)
@@ -338,6 +339,7 @@ Companion scripts (stdlib too):
 - `scripts/catalog_materialize.py` — THE MATERIALIZATION LANE (v7.3): runbook/materialize for the 66,569-entry surge (exploit-db source · nuclei YAML · msf module; stdlib, mirrors on first use)
 - `scripts/skilltree.py` — regenerate + `--verify` `references/skills/` + `references/skilltree-index.md` (1,410 technique files)
 - `scripts/discover.py` — the v7.0 source-discovery engine (sink grammars · taint scoring · HYP-schema cards · optional semgrep lane on fleet)
+- `scripts/context_router.py` — **THE RETRIEVAL LAYER (v7.4)**: deterministic 205k-doc index (canon · skilltree · expanded corpus · catalog surge) with rarity-weighted ranking; read-only, cached under `$SPYDERMONKEY_HOME/cache/`
 - `scripts/attack_map.py` — regenerate `references/attack-coverage.json` (corpus → ATT&CK, live ART comparison)
 - `scripts/catalog_surge.py` — regenerate `references/tool-catalog-surge.json` (Exploit-DB · Nuclei · Metasploit public indexes)
 - `scripts/arsenal_fuzz.py` — the v7.0 fuzz domain (afl/honggfuzz/radamsa/boofuzz/jazzer wrappers + chains, discovery-based)

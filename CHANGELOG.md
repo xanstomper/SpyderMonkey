@@ -1,3 +1,21 @@
+# v7.4.0 — THE CONTEXT LAYER (retrieval rail: any model, the right knowledge in context)
+
+- **CONTEXT ROUTER** (`scripts/context_router.py` — new): deterministic, read-only
+  retrieval over 205,809 indexed docs — the 30+ canon volumes (full-text), the
+  curated skilltree index (1,114 entries), the expanded technique corpus (138k+
+  platform × auth variants), and the 66,569-entry tool surge. Rarity-weighted
+  term scoring with a 2× title boost; same query → same ranked hits, byte
+  budget respected. Index cached under `$SPYDERMONKEY_HOME/cache/`; the corpus
+  itself is never written.
+- **`inject --target T --goal G`** — THE CONTEXT PACKET: route verdict + kernel
+  directive + session state + the top canon/skill/tool knowledge in one block a
+  model consumes as-is — the retrieval rail closes: the model reasons with the
+  exact pages, zero wasted context. Wired into `verify`.
+- `mandate --pack` (v7.3.1) + `inject`: the one-paste persona + the right
+  knowledge = the "any model 100x / any agent 1000x" delivery mechanism.
+- Version bumped 7.3.0 → 7.4.0 across dispatcher, arsenal, MCP server,
+  materializer, SKILL.md. Tests 74/74.
+
 # v7.2.0 — THE LEAK PURGE + REAL FLEET
 
 **SECURITY: engagement data out of the public repo — enforced forever.**
