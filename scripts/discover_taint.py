@@ -122,6 +122,21 @@ class _Scope:
         return s
 
 
+def _tainted_returns(tree, text: str) -> set[str]:
+    """INTER-PROCEDURAL PRE-PASS: this-file functions with ANY return path
+    carrying a source-derived value — calling them taints the result."""
+    out = set()
+    for fn in [n for n in ast.walk(tree)
+               if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]:
+        for node in ast.walk(fn):
+            if isinstance(node, ast.Return) and node.value is not None:
+                seg = ast.get_source_segment(text, node.value) or ""
+                if SOURCE_RX.search(seg):
+                    out.add(fn.name)
+                    break
+    return out
+
+
 def analyze(text: str, filename: str, max_cards: int = 200) -> list[dict]:
     """Return discovery-style hit dicts for one Python file."""
     try:
@@ -130,6 +145,7 @@ def analyze(text: str, filename: str, max_cards: int = 200) -> list[dict]:
         return []
     lines = text.splitlines()
     hits: list[dict] = []
+    tainted_helpers = _tainted_returns(tree, text)
 
     def seg(node) -> str:
         s = ast.get_source_segment(text, node)
@@ -153,11 +169,19 @@ def analyze(text: str, filename: str, max_cards: int = 200) -> list[dict]:
                             break
                     else:
                         if isinstance(value, ast.Call):
-                            # taint flows through calls of tainted args
-                            for a in ast.walk(value):
-                                if isinstance(a, ast.Name) and a.id in scope.tainted:
-                                    tainted_chain = scope.tainted[a.id] + [f"→ {vsrc[:60]}"]
-                                    break
+                            fname = _call_name(value)
+                            # taint flows through calls of tainted args OR
+                            # through this-file helpers that return source data
+                            helper = fname and (fname.split(".")[-1] in tainted_helpers
+                                                or fname in tainted_helpers)
+                            if helper:
+                                tainted_chain = [f"{fname}() returns source-derived data",
+                                                 f"→ {vsrc[:60]}"]
+                            else:
+                                for a in ast.walk(value):
+                                    if isinstance(a, ast.Name) and a.id in scope.tainted:
+                                        tainted_chain = scope.tainted[a.id] + [f"→ {vsrc[:60]}"]
+                                        break
                 if tainted_chain:
                     targets = stmt.targets if isinstance(stmt, ast.Assign) else [stmt.target]
                     for t in targets:
@@ -236,10 +260,23 @@ def analyze(text: str, filename: str, max_cards: int = 200) -> list[dict]:
             if SOURCE_RX.search(asrc):
                 chain = [f"{asrc[:60]} → {name}(...)"]
             else:
-                for nm, ch in scope.tainted.items():
-                    if re.search(rf"\b{re.escape(nm)}\b", asrc):
-                        chain = ch + [f"→ {name}(...)"]
-                        break
+                # a helper call wrapping the arg carries its taint through
+                helper_hit = None
+                for sub in ast.walk(arg):
+                    if isinstance(sub, ast.Call):
+                        fn2 = _call_name(sub)
+                        if fn2 and (fn2.split(".")[-1] in tainted_helpers
+                                    or fn2 in tainted_helpers):
+                            helper_hit = fn2
+                            break
+                if helper_hit:
+                    chain = [f"{helper_hit}() returns source-derived data",
+                             f"→ {name}(...)"]
+                else:
+                    for nm, ch in scope.tainted.items():
+                        if re.search(rf"\b{re.escape(nm)}\b", asrc):
+                            chain = ch + [f"→ {name}(...)"]
+                            break
             if chain:
                 line = getattr(node, "lineno", 0)
                 hits.append({
@@ -289,3 +326,69 @@ def _target_names(t) -> list[str]:
         elif isinstance(n, ast.Subscript):
             stack.append(n.value)
     return out
+
+
+# ── JS file-scope dataflow (no stdlib parser — assignment-map tracking) ────
+JS_SOURCE = re.compile(
+    r"(?:req(?:uest)?\.(?:query|body|params|headers|cookies|session)|"
+    r"location\.(?:search|hash|href)|document\.(?:URL|documentURI|referrer)|"
+    r"window\.name|event\.data|postMessage|URLSearchParams|searchParams)",
+)
+JS_SINKS = re.compile(
+    r"(?:\.innerHTML\s*=|\.outerHTML\s*=|document\.write\s*\(|"
+    r"insertAdjacentHTML\s*\(|dangerouslySetInnerHTML|\.src\s*=|\.href\s*=|"
+    r"eval\s*\(|setTimeout\s*\(\s*[A-Za-z_$]|Function\s*\()")
+JS_SANITIZE = re.compile(r"(?:escape|sanitize|dompurify|purify|encodeURI|"
+                         r"textContent|createTextNode|validator|validate)", re.I)
+JS_ASSIGN = re.compile(r"^\s*(?:const|let|var)?\s*([A-Za-z_$][\w$]*)\s*=\s*(.+?);?\s*$")
+
+
+def js_file_scope(text: str, filename: str, max_cards: int = 100) -> list[dict]:
+    """File-wide taint map for JS: tainted vars tracked from their assignment
+    line to ANY sink line in the file — catches flows the ±1-line window
+    structurally cannot (assignment on line 5, sink on line 40)."""
+    lines = text.splitlines()
+    tainted: dict[str, list[str]] = {}
+    hits: list[dict] = []
+    for i, line in enumerate(lines, 1):
+        m = JS_ASSIGN.match(line)
+        if not m:
+            continue
+        var, rhs = m.group(1), m.group(2)
+        if JS_SANITIZE.search(rhs):
+            tainted.pop(var, None)          # sanitized → cleaned
+            continue
+        if JS_SOURCE.search(rhs):
+            tainted[var] = [f"{var} = {rhs.strip()[:56]} (line {i})"]
+            continue
+        for nm, ch in tainted.items():
+            if re.search(rf"\b{re.escape(nm)}\b", rhs):
+                tainted[var] = ch + [f"→ {var} = {rhs.strip()[:40]} (line {i})"]
+                break
+    for i, line in enumerate(lines, 1):
+        m = JS_SINKS.search(line)
+        if not m:
+            continue
+        if JS_SANITIZE.search(line):
+            continue
+        chain = None
+        if JS_SOURCE.search(line):
+            chain = [f"source inline at sink (line {i}) → {m.group(0)}"]
+        else:
+            for nm, ch in tainted.items():
+                if re.search(rf"\b{re.escape(nm)}\b", line):
+                    chain = ch + [f"→ sink {m.group(0).strip()} (line {i})"]
+                    break
+        if chain:
+            hits.append({
+                "cls": "xss", "lang": "js-flow", "sev": "high",
+                "file": filename, "line": i,
+                "sym": m.group(0).strip()[:48],
+                "why": "DOM/script sink reachable from a source-tracked "
+                       "assignment chain (CWE-79/95)",
+                "flow": chain[-4:], "citations": ["wstg-deep-canon"],
+                "tainted": 1, "score": 5,
+            })
+            if len(hits) >= max_cards:
+                break
+    return hits

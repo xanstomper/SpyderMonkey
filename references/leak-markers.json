@@ -1,21 +1,21 @@
 {
  "markers": [
-  "g***REDACTED***",
-  "i***REDACTED***",
-  "s***REDACTED***",
-  "x***REDACTED***",
-  "e***REDACTED***",
-  "p***REDACTED***",
-  "d***REDACTED***",
-  "g***REDACTED***",
-  "l***REDACTED***",
-  "c***REDACTED***",
-  "a***REDACTED***",
-  "a***REDACTED***",
-  "g***REDACTED***",
-  "f***REDACTED***",
-  "j***REDACTED***",
-  "d***REDACTED***"
+  "gamdom",
+  "iceposeidon",
+  "safezone",
+  "xplabs",
+  "experientiallabs",
+  "perabet",
+  "duelbits",
+  "gratisfy",
+  "logfare",
+  "coreprobe",
+  "atessa",
+  "apimart",
+  "gonka",
+  "freeinference",
+  "jewboy420",
+  "duel-com"
  ],
  "note": "engagement/identity markers that must NEVER ship in the public repo. Consumed by scripts/leakscan.py (push gate) and scripts/skilltree.py (generation-time sanitization). When a new case-*.md is opened in holyshit-mode, add its distinctive name here."
 }

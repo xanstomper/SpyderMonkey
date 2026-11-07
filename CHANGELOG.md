@@ -1,3 +1,44 @@
+# v7.2.0 — THE LEAK PURGE + REAL FLEET
+
+**SECURITY: engagement data out of the public repo — enforced forever.**
+
+- **LEAKSCAN GATE** (`scripts/leakscan.py`): scans every tracked file against
+  the curated marker list (`references/leak-markers.json` — engagement names +
+  operator identity, single source of truth) and exits 1 on any hit.
+  `--history` pickaxes every marker across ALL committed blobs. Wired into
+  selftest — no engagement data ships again without a red test.
+- **SOURCE HYGIENE** (skilltree.py): engagement case files (`case-*`,
+  dossiers, findings dumps) never enter the corpus; every source tag, slug,
+  filename, and payload passes generation-time sanitization (barbican's
+  pattern, at the sink). Corpus: 179,904 → 139,222 files — the 40k delta WAS
+  the engagement data. Verify ALL PASS, 0 orphans.
+- **HISTORY REWRITTEN**: git-filter-repo erased 34,176 engagement paths and
+  replaced marker strings across every historical blob; force-pushed.
+- **HONEST NUMBERS POST-PURGE**: ATT&CK map 80,517/139,222 files (57.8%) · 32
+  techniques. The earlier 94,872 was engagement-inflated.
+- **FLEET PROVISIONING** (`scripts/fleet_provision.py`): the operator-box
+  rule stands (never installs here) — `--emit` writes `fleet-provision.sh`
+  for fleet VMs: 4 host packages + 71 direct installs activate 934/1,605
+  wrappers (853 ride with nmap/msf/nuclei/impacket); the 600-long-tail tools
+  ship documented, not fake-mapped. `--detect` = read-only census.
+- **TAINT SCOPE**: python taint is now INTER-PROCEDURAL (this-file helpers
+  that return source-derived data taint their callers — 3/3 helper-flow
+  fixtures) + JS file-scope dataflow (assignment-map tracking, flow chain as
+  evidence — catches source line 2 → sink line 40; the ±1 window could not).
+  Regex lane defers to the flow lanes on parsed files: sanitized
+  (int()/secure_filename/DOMPurify) shapes stop flagging.
+- **SUITE BENCH 60% → 81.67%**: milestone scoring decoupled from the strike
+  branch (a stale-variable bug of mine); the 3-branch strike (POST
+  differential / query battery / fingerprint confirm) ported in. Remaining 23
+  fails are named per-class battery gaps (BOUNDARY-*, HWDEV, CRYPTO/NETWORK
+  recon) — work items, not hidden numbers.
+- **MCP NAME_RE** aligned with the MCP spec (hyphens legal).
+- **`agents/`**: AGENT.md (the injectable mandate), claude-command.md,
+  README — any agent pulls the repo and adopts the family in one step, then
+  `loop --agent-cmd` makes the kernel its operating system.
+- **catalog stats** now report surge age (⚠ stale past 14d → re-run
+  catalog_surge.py).
+
 # v7.3.0 — THE MATERIALIZATION LANE (the catalog becomes the armory)
 
 - **`catalog runbook` / `catalog materialize`** — every surge index line is now

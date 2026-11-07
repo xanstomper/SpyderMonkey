@@ -310,8 +310,8 @@ def scan_tree(source: Path, lang_filter: str | None = None,
                             continue
                         window = "\n".join(lines[max(0, i - 1): i + 2])
                         tainted = 1 if TAINT_SOURCE.search(window) else 0
-                        if dt is not None and lang_rules == "python" and not tainted:
-                            continue  # AST lane is the backstop — untailed regex shapes on parsed python are sanitized/parameterized noise
+                        if dt is not None and lang_rules in ("python", "js") and not tainted:
+                            continue  # flow lanes (python-ast / js-flow) are the backstop — untailed regex shapes on parsed files are sanitized/parameterized noise
                         sym = (m.group(0)[:48] or cls)
                         base = {"critical": 4, "high": 3, "medium": 2, "low": 1}[sev]
                         score = base + tainted * 2 + risky
@@ -334,6 +334,25 @@ def scan_tree(source: Path, lang_filter: str | None = None,
                 h.setdefault("citations", ["attack-canon"])
                 h.setdefault("tainted", 1)
                 hits.append(h)
+    if dt:
+        for p in py_files:
+            pass  # python handled above
+        import os as _os
+        for root, dirs, files in _os.walk(source):
+            dirs[:] = [x for x in dirs if x not in SKIP_DIRS and not x.startswith(".")]
+            for fn in files:
+                if fn.endswith(".min.js") or fn.rsplit(".",1)[-1].lower() not in ("js","mjs","cjs","jsx","ts","tsx"):
+                    continue
+                p = Path(root) / fn
+                try:
+                    if p.stat().st_size > MAX_FILE_BYTES:
+                        continue
+                    text = p.read_text(encoding="utf-8", errors="replace")
+                except OSError:
+                    continue
+                for h in dt.js_file_scope(text, str(p)):
+                    h.setdefault("tainted", 1)
+                    hits.append(h)
     return hits
 
 

@@ -139,8 +139,8 @@ public-suite files) · `fleet`
 (parallel multi-agent dispatch, one agent per mandate) · `bench_live.py`
 (exploitation-level bench, throwaway HOME, localhost lab) · `mcp_server.py`
 (the family as 430 MCP tools) · `skilltree.py` (the technique library: 1,410 base
-files + the CONTEXT CORPUS — `--expand` generates 178k+ technique × platform ×
-auth × federated × machine files with chain-role tags + **Route tables** (class → exact arsenal probes/chains) — deterministic, `--verify` checks both indexes). The **multi-step gate** (v5.13): flow cards carry a `__PAYLOAD__` marker through a request SEQUENCE with cookie + token carryover — logic chains (login → action → result) prove or disprove through the same 3-gate discipline.
+files + the CONTEXT CORPUS — `--expand` generates 138k+ technique × platform ×
+auth × federated × machine files (sanitized — engagement data never enters) with chain-role tags + **Route tables** (class → exact arsenal probes/chains) — deterministic, `--verify` checks both indexes). The **multi-step gate** (v5.13): flow cards carry a `__PAYLOAD__` marker through a request SEQUENCE with cookie + token carryover — logic chains (login → action → result) prove or disprove through the same 3-gate discipline.
 
 ## The Mandate Discipline (v1.1.0 — the Kimiko architecture, model-agnostic)
 
@@ -312,7 +312,9 @@ exercised, not asserted.
 - `testers --target T --url U [--url U2 …] | --demo` — the 18 parallel sub-testers over the session context — **two-role AUTHZ differential**: the context's first credential is the privileged baseline, the second is the low-priv attack; a different 200 on the low role IS the bypass proof
 - `crawl --target T --url U [--depth N]` — **THE SURFACE ENGINE** (HackBrowser-equivalent, stdlib): same-origin BFS crawl mining links · forms · query params · JS `fetch/axios` API paths → the session context AUTO-FILLS — the testers strike what it finds, no hand-fed urls
 - `discover --target T --source PATH [--lang L] [--semgrep]` — **THE SOURCE LANE** (v7.1): read-only scan of the target's own source tree → ranked, gate-ready candidate cards (documented classes only, HYP schema, discovery-state.json) — the kernel plans it the moment a source root enters the context. **v7.1: REAL DATAFLOW** — stdlib-ast intra-procedural taint analysis for python (source → propagation → sink with the flow chain as evidence); verified on indirect multi-line flows the ±1-line regex window structurally cannot see, 0 false positives on sanitized/parameterized files
-- `attack [--json]` — **THE ATT&CK MAP** (v7.0): the corpus indexed against MITRE ATT&CK (94,872 files · 32 techniques) with the live Atomic Red Team comparison
+- `attack [--json]` — **THE ATT&CK MAP** (v7.2, post-leak-purge): the corpus indexed against MITRE ATT&CK (80,517 files · 32 techniques · 57.8%) with the live Atomic Red Team comparison
+- `leakscan [--history]` / `scripts/leakscan.py` — **THE NO-LEAKS GATE** (v7.2): engagement markers × every tracked file (+ every historical blob with --history); rc=1 on any hit — wired into selftest
+- `fleet_provision.py --detect|--emit` — **REAL FLEET ACTIVATION** (v7.2): read-only census here; emits `fleet-provision.sh` for fleet VMs (934/1,605 wrappers activate: 4 host packages + 71 direct + 853 riding with nmap/msf/nuclei/impacket)
 - `coverage --target T` — coverage matrix + gap list
 - `report --target T [--format md|json|sarif] [--output F]` — the joint war report (campaign dir by default)
 - `relay init|list|exec|remove` — remote execution nodes (Ed25519 ssh pairs, scope-gated)

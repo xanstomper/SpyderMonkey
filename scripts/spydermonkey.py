@@ -4718,7 +4718,14 @@ def cmd_catalog(args) -> int:
 
     if action == "stats":
         from collections import Counter
+        from datetime import datetime as _dt, timezone as _tz
         surge = _catalog_surge()
+        surge_age = None
+        try:
+            sp = Path(__file__).resolve().parent.parent / "references" / "tool-catalog-surge.json"
+            surge_age = (_dt.now(_tz.utc) - _dt.fromtimestamp(sp.stat().st_mtime, _tz.utc)).days
+        except Exception:
+            pass
         top = Counter((r.get("cat") or "?").split("/")[0] for r in cat)
         mode = Counter(r.get("mode") for r in cat)
         src = Counter(r.get("src", "curated") for r in cat)
@@ -4729,6 +4736,7 @@ def cmd_catalog(args) -> int:
                               "surge_by_src": dict(surge_src),
                               "by_top": dict(top.most_common()),
                               "by_mode": dict(mode), "by_src": dict(src),
+                              "surge_age_days": surge_age,
                               "note": "metadata only — execution via arsenal (scope-gated)"},
                              indent=2))
             return 0
@@ -4739,6 +4747,9 @@ def cmd_catalog(args) -> int:
         print(f"  mode: {dict(mode)} · source: {dict(src)}")
         for k, v in surge_src.most_common():
             print(f"  surge {k:18s} {v}")
+        if surge_age is not None:
+            mark = "✓ fresh" if surge_age <= 14 else f"⚠ STALE ({surge_age}d) — run: python3 scripts/catalog_surge.py"
+            print(f"  surge age: {surge_age}d {mark}")
         return 0
 
     if action == "categories":

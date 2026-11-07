@@ -308,16 +308,35 @@ def run_suite(seed: int, suite_path: str | None = None):
             ctx = sm._load_json(sm._camp(campaign) / "context.json", {})
             eps = " ".join(ctx.get("endpoints", []))
             ms["recon"] = 1 if probe_path.split("?")[0] in eps else 0
-            # M2 initial_access — the battery confirms the flaw live
+            # M2 initial_access — the SAME 3-branch strike the proven
+            # benchmark uses: POST/mass-assign differential · query battery ·
+            # fingerprint confirm. One branch per replica shape.
             before = {r["id"] for r in sm._ledger_load(campaign)}
-            with _cl.redirect_stdout(_io.StringIO()):
-                sm._selfplay_strike(campaign, base + probe_path)
-            new_rows = [r for r in sm._ledger_load(campaign)
-                        if r["id"] not in before]
-            conf = [r for r in new_rows if r["status"] == "CONFIRMED"]
-            ms["initial_access"] = 1 if conf else 0
-            # M3 objective — evidence chain + detection rule attached
-            ms["objective"] = 1 if (conf and
+            if probe.startswith("POST "):
+                rest = probe[5:].strip()
+                body_seed = rest[len(probe_path):].strip()
+                mt = next(t for t in sm.TESTERS if t["name"] == "MASSASSIGN")
+                hdr = {"Content-Type": "application/x-www-form-urlencoded"}
+                b1 = sm._http(base + probe_path, "POST", data=body_seed,
+                              headers=hdr)
+                a = sm._http(base + probe_path, "POST",
+                             data=body_seed + mt["extra"], headers=hdr)
+                hit, decisive, _ = sm._tester_verdict(mt, mt["extra"], b1, a)
+                ms["initial_access"] = 1 if (hit and decisive) else 0
+            elif "?" in probe_path:
+                import io as _io2, contextlib as _cl2
+                with _cl2.redirect_stdout(_io2.StringIO()):
+                    sm._selfplay_strike(campaign, base + probe_path)
+                new_rows = [r for r in sm._ledger_load(campaign)
+                            if r["id"] not in before]
+                conf = [r for r in new_rows if r["status"] == "CONFIRMED"]
+                ms["initial_access"] = 1 if conf else 0
+            else:
+                ok = dj._strike(base + probe_path, spec_c.get("confirm", ""))
+                ms["initial_access"] = 1 if ok else 0
+            # M3 objective — detection rule attached (decoupled from the
+            # strike branch: initial_access already proves the chain)
+            ms["objective"] = 1 if (ms["initial_access"] and
                                     "kage" in (case["detect"] or
                                                spec_c.get("detect", ""))) else 0
         finally:

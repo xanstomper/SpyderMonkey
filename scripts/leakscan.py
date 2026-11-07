@@ -30,9 +30,9 @@ def _markers() -> list[str]:
 
 
 CORE_FALLBACK = [
-    "g***REDACTED***", "i***REDACTED***", "s***REDACTED***", "x***REDACTED***", "e***REDACTED***",
-    "p***REDACTED***", "d***REDACTED***", "g***REDACTED***", "l***REDACTED***", "c***REDACTED***", "a***REDACTED***",
-    "a***REDACTED***", "g***REDACTED***", "f***REDACTED***", "j***REDACTED***", "d***REDACTED***",
+    "gamdom", "iceposeidon", "safezone", "xplabs", "experientiallabs",
+    "perabet", "duelbits", "gratisfy", "logfare", "coreprobe", "atessa",
+    "apimart", "gonka", "freeinference", "jewboy420", "duel-com",
 ]
 
 

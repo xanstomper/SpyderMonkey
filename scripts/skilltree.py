@@ -268,8 +268,8 @@ def _leak_markers() -> list[str]:
         doc = json.loads((REFS / "leak-markers.json").read_text())
         return list(doc.get("markers", []))
     except Exception:
-        return ["g***REDACTED***", "i***REDACTED***", "s***REDACTED***", "x***REDACTED***",
-                "e***REDACTED***", "p***REDACTED***", "j***REDACTED***"]
+        return ["gamdom", "iceposeidon", "safezone", "xplabs",
+                "experientiallabs", "perabet", "jewboy420"]
 
 
 _SANITIZE_RX = re.compile(
@@ -278,7 +278,7 @@ _SANITIZE_RX = re.compile(
 
 def _sanitize(text: str) -> str:
     text = _SANITIZE_RX.sub("example-target", text)
-    text = text.replace("/home/j***REDACTED***", "$HOME")
+    text = text.replace("/home/jewboy420", "$HOME")
     return text
 
 

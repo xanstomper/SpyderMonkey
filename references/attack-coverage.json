@@ -1,11 +1,11 @@
 {
- "total_files": 139222,
- "mapped_files": 80517,
- "coverage_pct": 57.8,
+ "total_files": 179904,
+ "mapped_files": 94872,
+ "coverage_pct": 52.7,
  "technique_count": 32,
  "techniques": {
   "T1190": {
-   "files": 13029,
+   "files": 15067,
    "cwes": [
     "CWE-113",
     "CWE-1321",
@@ -48,7 +48,7 @@
    ]
   },
   "T1552": {
-   "files": 11008,
+   "files": 14100,
    "cwes": [
     "CWE-215",
     "CWE-347",
@@ -80,7 +80,7 @@
    ]
   },
   "T1610": {
-   "files": 7507,
+   "files": 8552,
    "cwes": [
     "CWE-250"
    ],
@@ -93,7 +93,7 @@
    ]
   },
   "T1611": {
-   "files": 6815,
+   "files": 7781,
    "cwes": [
     "CWE-250"
    ],
@@ -102,7 +102,7 @@
    ]
   },
   "T1557": {
-   "files": 5792,
+   "files": 7316,
    "cwes": [
     "CWE-288",
     "CWE-295",
@@ -123,7 +123,7 @@
    ]
   },
   "T1550": {
-   "files": 5151,
+   "files": 6325,
    "cwes": [
     "CWE-1004",
     "CWE-287",
@@ -148,7 +148,7 @@
    ]
   },
   "T1592": {
-   "files": 4731,
+   "files": 5207,
    "cwes": [
     "CWE-200"
    ],
@@ -164,7 +164,7 @@
    ]
   },
   "T1110": {
-   "files": 3999,
+   "files": 4269,
    "cwes": [
     "CWE-284",
     "CWE-307",
@@ -179,7 +179,7 @@
    ]
   },
   "T1111": {
-   "files": 3544,
+   "files": 4229,
    "cwes": [
     "CWE-287",
     "CWE-308"
@@ -191,7 +191,7 @@
    ]
   },
   "T1584": {
-   "files": 2995,
+   "files": 3068,
    "cwes": [
     "CWE-295",
     "CWE-345",
@@ -211,8 +211,31 @@
     "takeover"
    ]
   },
+  "T1070": {
+   "files": 2111,
+   "cwes": [
+    "CWE-200"
+   ],
+   "classes": [
+    "ceiling",
+    "dedupe",
+    "timeline",
+    "trail",
+    "vantage"
+   ]
+  },
+  "T1601": {
+   "files": 2043,
+   "cwes": [
+    "CWE-494"
+   ],
+   "classes": [
+    "firmware",
+    "uart"
+   ]
+  },
   "T1036": {
-   "files": 1921,
+   "files": 2040,
    "cwes": [
     "CWE-330"
    ],
@@ -237,18 +260,8 @@
     "subscription"
    ]
   },
-  "T1601": {
-   "files": 1482,
-   "cwes": [
-    "CWE-494"
-   ],
-   "classes": [
-    "firmware",
-    "uart"
-   ]
-  },
   "T1005": {
-   "files": 1437,
+   "files": 1547,
    "cwes": [
     "CWE-200",
     "CWE-22"
@@ -259,19 +272,8 @@
     "traversal"
    ]
   },
-  "T1189": {
-   "files": 876,
-   "cwes": [
-    "CWE-1321",
-    "CWE-79"
-   ],
-   "classes": [
-    "prototype",
-    "xss"
-   ]
-  },
   "T1528": {
-   "files": 835,
+   "files": 1073,
    "cwes": [
     "CWE-287"
    ],
@@ -279,50 +281,8 @@
     "token"
    ]
   },
-  "T1499": {
-   "files": 830,
-   "cwes": [
-    "CWE-362",
-    "CWE-444",
-    "CWE-840"
-   ],
-   "classes": [
-    "continuation",
-    "logic",
-    "queue",
-    "race"
-   ]
-  },
-  "T1070": {
-   "files": 805,
-   "cwes": [
-    "CWE-200"
-   ],
-   "classes": [
-    "ceiling",
-    "dedupe",
-    "timeline",
-    "trail",
-    "vantage"
-   ]
-  },
-  "T1530": {
-   "files": 799,
-   "cwes": [
-    "CWE-284",
-    "CWE-732"
-   ],
-   "classes": [
-    "bucket",
-    "elasticsearch",
-    "kafka",
-    "memcached",
-    "rabbitmq",
-    "s3"
-   ]
-  },
   "T1565": {
-   "files": 774,
+   "files": 997,
    "cwes": [
     "CWE-1336",
     "CWE-681",
@@ -337,6 +297,56 @@
     "rtp"
    ]
   },
+  "T1189": {
+   "files": 978,
+   "cwes": [
+    "CWE-1321",
+    "CWE-79"
+   ],
+   "classes": [
+    "prototype",
+    "xss"
+   ]
+  },
+  "T1530": {
+   "files": 941,
+   "cwes": [
+    "CWE-284",
+    "CWE-732"
+   ],
+   "classes": [
+    "bucket",
+    "elasticsearch",
+    "kafka",
+    "memcached",
+    "rabbitmq",
+    "s3"
+   ]
+  },
+  "T1499": {
+   "files": 839,
+   "cwes": [
+    "CWE-362",
+    "CWE-444",
+    "CWE-840"
+   ],
+   "classes": [
+    "continuation",
+    "logic",
+    "queue",
+    "race"
+   ]
+  },
+  "T1574": {
+   "files": 763,
+   "cwes": [
+    "CWE-841"
+   ],
+   "classes": [
+    "state",
+    "transition"
+   ]
+  },
   "T1573": {
    "files": 642,
    "cwes": [
@@ -348,16 +358,6 @@
     "iv",
     "length-extension",
     "padding"
-   ]
-  },
-  "T1574": {
-   "files": 561,
-   "cwes": [
-    "CWE-841"
-   ],
-   "classes": [
-    "state",
-    "transition"
    ]
   },
   "T1195": {
@@ -462,7 +462,7 @@
   }
  },
  "comparison": {
-  "atomic_red_team_tests": null,
+  "atomic_red_team_tests": 353,
   "note": "ART = the largest public ATT&CK emulation library; our count = technique files mapped to ATT&CK IDs via the skilltree bindings"
  }
 }
