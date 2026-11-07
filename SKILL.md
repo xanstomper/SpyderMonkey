@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 5.13.0
+version: 5.14.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -114,15 +114,15 @@ The dispatcher is now a control plane, not just a router:
   engine self-checks serially so a healthy engine is never reported red.
 
 Also in the toolbox: `bench` (offline route-level accuracy — 29/29 at v4.0.0) ·
-`arsenal` (258 scope-gated tool wrappers + 23 feeding chains — recon/web/tls/net/
+`arsenal` (296 scope-gated tool wrappers + 23 feeding chains — recon/web/tls/net/
 dns/content/api/services/cms/win/osint/db/takeover/cloud/packet/fuzz —
 structured run records, kernel `--out` results the loop absorbs) · **`catalog`**
 (v5.3.0 — 1,053-entry known-tool reference index, lazy-loaded metadata; info
 only, execution stays scope-gated via arsenal) · `fleet`
 (parallel multi-agent dispatch, one agent per mandate) · `bench_live.py`
 (exploitation-level bench, throwaway HOME, localhost lab) · `mcp_server.py`
-(the family as 52 MCP tools) · `skilltree.py` (the technique library: 1,255 base
-files + the CONTEXT CORPUS — `--expand` generates 31.2k technique × platform ×
+(the family as 52 MCP tools) · `skilltree.py` (the technique library: 1,337 base
+files + the CONTEXT CORPUS — `--expand` generates 33k technique × platform ×
 auth × federated × machine files with chain-role tags + **Route tables** (class → exact arsenal probes/chains) — deterministic, `--verify` checks both indexes). The **multi-step gate** (v5.13): flow cards carry a `__PAYLOAD__` marker through a request SEQUENCE with cookie carryover — logic chains (login → action → result) prove or disprove through the same 3-gate discipline.
 
 ## The Mandate Discipline (v1.1.0 — the Kimiko architecture, model-agnostic)
@@ -296,7 +296,7 @@ exercised, not asserted.
 - `scope init|check|show|add|remove|extend|history` — the shared estate gate (matching · deny precedence · expiry · audit)
 - `doctor [--fix]` — health check (engines · scope perms · corrupt states · canon · ledger · relays)
 - `bench` — offline route-level benchmark (29/29 = 100% at v4.0.0)
-- `arsenal list|plan|run|verify` — 258 tool wrappers + 23 feeding chains (recon · web · tls · net · dns · content · api · services · cms · win · osint · db · takeover · cloud · packet · fuzz · cve-sweep · exposure-sweep · takeover-full · cloud-full · db-full · mail-full · cms-full) behind the shared scope authority; `run --chain C --out result.json` emits the kernel result schema (`absorb` ingests it)
+- `arsenal list|plan|run|verify` — 296 tool wrappers + 23 feeding chains (recon · web · tls · net · dns · content · api · services · cms · win · osint · db · takeover · cloud · packet · fuzz · cve-sweep · exposure-sweep · takeover-full · cloud-full · db-full · mail-full · cms-full) behind the shared scope authority; `run --chain C --out result.json` emits the kernel result schema (`absorb` ingests it)
 - `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` — one agent per mandate, dispatched in parallel
 
 Companion scripts (stdlib too):
@@ -311,7 +311,7 @@ Companion scripts (stdlib too):
 - `CHANGELOG.md` — release notes
 - `scripts/spydermonkey.py` — the control-plane CLI
 - `scripts/scope_authority.py` — the shared estate gate
-- `scripts/arsenal.py` — the execution layer (258 scope-gated tool wrappers · 23 feeding chains)
+- `scripts/arsenal.py` — the execution layer (296 scope-gated tool wrappers · 23 feeding chains)
 - `scripts/bench_live.py` — the exploitation-level bench
 - `scripts/mcp_server.py` — the family as MCP tools (stdio JSON-RPC)
 - `scripts/skilltree.py` — the technique-library generator + verifier

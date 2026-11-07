@@ -5,6 +5,28 @@ the dispatcher release (`SKILL.md` frontmatter).
 
 
 
+## v5.14.0 — THE METHODOLOGIES CLAIMED: WSTG + MASTG FULL CANON (2026-11-06)
+
+- **Arsenal 258 → 296 wrappers.** NSE batch 5 (http-grep, http-malware-host,
+  http-method-tamper, http-phpself-xss, http-stored-xss, http-title, http-trace,
+  http-vuln-cve2014-8877, http-wordpress-enum, rdp-vuln-ms12-020, rmi-dumpregistry,
+  rsync-list-modules, smb2-vuln-uptime, smb-enum-domains/groups, smb-ls,
+  smb-mbenum, smb-os-discovery, smb-vuln cve2009-3103/cve2017-7494/ms06-025/
+  ms07-029/ms08-067/ms10-054/ms10-061, smtp-vuln cve2010-4344/cve2011-1764,
+  snmp-sysdesc, ssh-auth-methods, ssh-hostkey, tftp-enum, whois-domain,
+  wsdd-discover) + nuclei ssrf/xss/lfi/rce template lanes + skipfish.
+- **Technique corpus 31,172 → 33,052 files** (1,337 base + 31,715 expanded,
+  0 orphans): canon-11 — the FULL WSTG test catalog claimed (info-gathering,
+  authN, authZ, session, data-validation, error, crypto, business-logic,
+  file/upload, API — every test as a technique with probe shape + decisive
+  test + walls) + canon-12 — the MASTG check catalog claimed (storage, crypto,
+  auth, network, platform, resilience classes, LAB-ONLY framing).
+- **The documented universe is now claimed end-to-end:** WSTG + MASTG + API
+  top-10 + cloud per-service + framework/CMS + AD/K8s + binary/protocol RE +
+  DNS/email + the engagement canons. Every block carries a Route table into
+  the 296-tool arsenal.
+- Verified: arsenal verify ALL PASS · skilltree ALL PASS · selftest 28/28.
+
 ## v5.13.0 — THE BRIEFING DISCIPLINE · ROUTE TABLES · MULTI-STEP GATE (2026-11-06)
 
 - **The mandate changes how agents work (v5.13):** the Briefing Discipline —

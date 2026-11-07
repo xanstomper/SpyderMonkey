@@ -200,7 +200,7 @@ agent with a real brief; **`arsenal`** wraps 30 external tools in 6 feeding chai
 wafw00f, nikto, dig, curl, ffuf, naabu, amass, katana, dalfox, tlsx, gau) behind
 the same scope authority; chain stages feed each other (subfinder's domains →
 dnsx → httpx → nuclei) and `--out` emits the kernel result schema the loop
-absorbs; **`skilltree --expand`** generates the 31,172-file context corpus
+absorbs; **`skilltree --expand`** generates the 33,052-file context corpus
 (technique × platform × auth × hardened × chain, deterministic); **`dojo`** builds
 the lab replicas; **`kage`** mirrors every confirmed attack into Sigma.
 
@@ -259,7 +259,7 @@ war report, exit rc=5, zero human input.
 
 | Metric | Value | Verified by |
 |---|---|---|
-| Skill corpus | **31,172 files** — 1,255 base techniques × platform × auth × federated × machine × chain, each with a Route table (class → exact probes + chains) | `skilltree --verify`: 0 orphans, CI floor 10k |
+| Skill corpus | **33,052 files** — 1,337 base techniques × platform × auth × federated × machine × chain, each with a Route table (class → exact probes + chains) | `skilltree --verify`: 0 orphans, CI floor 10k |
 | Self-play training | **14/14 classes** | `train` — priors written, planner re-ordered |
 | Self-benchmark | **100%** — 60/60 sub-tasks, anti-memorization | `bench_public.py`, seeded + reproducible |
 | Cross-range benchmark | **90.6%** on an independent codebase | `bench_public.py 2026 b` |
@@ -425,11 +425,11 @@ campaign artifacts on its first run.
 
 ---
 
-## The skill corpus (31,172 files)
+## The skill corpus (33,052 files)
 
 ```
 spydermonkey skilltree              # 837 base techniques from 94 real sources
-spydermonkey skilltree --expand     # × platform × auth × federated × machine × chain → 31,172
+spydermonkey skilltree --expand     # × platform × auth × federated × machine × chain → 33,052
 spydermonkey skilltree --verify     # links resolve · provenance present · 0 orphans
 ```
 
@@ -566,7 +566,7 @@ git clone https://github.com/xanstomper/spydermonkey.git \
 | `arsenal list\|plan\|run\|verify` | the execution layer — 30 tool wrappers, 6 feeding chains, kernel-schema output |
 | `catalog stats\|categories\|list\|search\|show` | **1,053-entry known-tool reference** — lazy-loaded metadata (info only; execution stays scope-gated via arsenal) |
 | `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` | one agent per mandate, dispatched in parallel |
-| `skilltree [--expand] [--verify] [--count]` | the corpus: 1,255 base → 31,172 files, deterministic, 0 orphans, Route-tables wired to the 258-tool arsenal |
+| `skilltree [--expand] [--verify] [--count]` | the corpus: 1,337 base → 33,052 files, deterministic, 0 orphans, Route-tables wired to the 258-tool arsenal |
 | `crawl --target T --url U [--depth N]` | surface mining: links · whole-form-blocks (method+fields) · JS api-paths → context |
 | `takeover --target T --domain D [--subdomains F]` | dangling-CNAME fingerprints — read-only, NO-GAIN |
 | `capabilities [--json]` | **the mirror of self** — live-introspected registry: engines · classes · batteries · executors · priors |
@@ -596,7 +596,7 @@ scripts/
 ├── bench_live.py      # the exploitation-level bench (throwaway HOME, localhost lab)
 └── ci_smoke.sh        # 20-section live verification — local truth = CI truth
 references/
-├── skills/            # the 31,172-file corpus (lazy-loaded, Route-tables)
+├── skills/            # the 33,052-file corpus (lazy-loaded, Route-tables)
 ├── attack-canon.md · mobile-canon.md · cloud-canon.md · wstg-deep-canon.md
 ├── bench-scorecard.md · bench-result.json · bench-result-b.json
 ├── mandate.md         # the injectable persona contract
@@ -611,7 +611,7 @@ tests/test_spydermonkey.py   # stdlib test suite
 
 | | CyberStrike | PentestGPT | xOffense | RedAmon | **SPYDERMONKEY** |
 |---|---|---|---|---|---|
-| Corpus scale | 7.6k | prompt-pack | — | graph | **31,172, CI-floored** |
+| Corpus scale | 7.6k | prompt-pack | — | graph | **33,052, CI-floored** |
 | Self-training | — | — | fine-tune (frozen) | — | **live self-play, priors every run** |
 | Benchmarks | — | — | 79% (published) | — | **100% self · 90.6% cross-range** |
 | Fix loop | — | — | — | fix PRs | **machine-verified re-proof** |
