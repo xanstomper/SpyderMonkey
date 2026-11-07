@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 7.1.1
+version: 7.2.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -116,7 +116,11 @@ The dispatcher is now a control plane, not just a router:
 Also in the toolbox: `bench` (offline route-level accuracy — 29/29 at v4.0.0) ·
 `arsenal` (1,605 scope-gated tool wrappers + 158 feeding chains — the v6.0 domain surge + the v7.0 fuzz domain:
 recon/web/tls/net/dns/content/api/services/cms/win/osint/db/takeover/cloud/packet/fuzz —
-structured run records, kernel `--out` results the loop absorbs) · **`catalog`**
+structured run records, kernel `--out` results the loop absorbs) · **`arsenal install`**
+(v7.2 THE ACQUISITION LANE — the catalog pulls tools when needed: 463 recipes in
+`references/arsenal-install-map.json`, plan-only until the operator names a machine:
+`--machine local` (this box) or `--machine <relay>` (any paired node); nothing is
+pre-installed, nothing installs implicit) · **`catalog`**
 (v7.0 — 68,255-entry known-tool index: 1,686 curated + the SURGE — 47,181
 Exploit-DB exploits, 14,235 Nuclei templates, 5,153 Metasploit modules —
 lazy-loaded metadata; info only, execution stays scope-gated via arsenal) ·
@@ -166,11 +170,14 @@ walls as the stop conditions:
   refused both ways.
 - **Loop control**: verdict first, minimum decisive test, batch within noise
   budgets, register everything, drift before re-assert.
-- **Operator-box rule (standing)**: NEVER install tooling on the operator's
-  machine to "activate" dormant arsenal wrappers — the arsenal is
-  discovery-based by design; dormant wrappers stay defined-and-routable and
-  activate on fleet/engagement machines (the VM, CI, fresh checkouts). On the
-  operator box: ship builds/syncs/code, never package installs.
+- **Operator-box rule (standing, v7.2 amendment)**: NEVER install tooling on the
+  operator's machine to "activate" dormant arsenal wrappers WITHOUT an explicit
+  choice — the arsenal is a CATALOG by design: dormant wrappers stay
+  defined-and-routable until the operator needs them, then the acquisition lane
+  pulls them onto the machine the operator NAMES (`arsenal install --tool T
+  --machine local` for this box, `--machine <relay>` for a paired node; bare
+  `arsenal install --chain C` prints the plan and executes nothing). Implicit
+  installs remain forbidden; explicit, operator-named acquisition is the lane.
 
 `spydermonkey mandate` prints the injectable block (`references/mandate.md`) —
 paste it as the system prompt of ANY model/agent and it operates the family under
@@ -313,7 +320,7 @@ exercised, not asserted.
 - `scope init|check|show|add|remove|extend|history` — the shared estate gate (matching · deny precedence · expiry · audit)
 - `doctor [--fix]` — health check (engines · scope perms · corrupt states · canon · ledger · relays)
 - `bench` — offline route-level benchmark (29/29 = 100% at v4.0.0)
-- `arsenal list|plan|run|verify` — 1,605 tool wrappers + 158 feeding chains (recon/web/dns/osint/net + 120+ v6.0 domain chains incl. hw-*/cls-* + the v7.0 fuzz domain: fuzz-file/fuzz-binary/fuzz-net/fuzz-minimize/fuzz-full) behind the shared scope authority; `run --chain C --out result.json` emits the kernel result schema (`absorb` ingests it)
+- `arsenal list|plan|run|install|verify` — 1,605 tool wrappers + 158 feeding chains (recon/web/dns/osint/net + 120+ v6.0 domain chains incl. hw-*/cls-* + the v7.0 fuzz domain: fuzz-file/fuzz-binary/fuzz-net/fuzz-minimize/fuzz-full) behind the shared scope authority; `run --chain C --out result.json` emits the kernel result schema (`absorb` ingests it); `install --tool T[,T..]|--chain C --machine local|relay` is the ACQUISITION LANE (plan-only until a machine is named, 463 recipes, manager-aware apt/dnf/pacman/apk/brew/pip/cargo/go/npm/gem)
 - `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` — one agent per mandate, dispatched in parallel
 
 Companion scripts (stdlib too):
@@ -342,6 +349,7 @@ Companion scripts (stdlib too):
 - `references/technique-canon.md` … `-7.md` — the seven dense canon volumes feeding the tree
 - `references/skilltree-index.md` + `references/skills/` — the 1,410-file technique library
 - `references/tool-catalog-surge.json` — the v7.0 surge index (66,569 public-corpus entries)
+- `references/arsenal-install-map.json` — the v7.2 acquisition recipes (463 tools · manager × package)
 - `references/attack-coverage.json` — the v7.0 ATT&CK map (94,872 files · 32 techniques · live ART comparison)
 - `tests/test_spydermonkey.py` — stdlib test suite
 - `README.md` — the public front page (badges, family buttons, how-it-works)

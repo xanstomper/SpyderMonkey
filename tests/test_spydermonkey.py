@@ -264,6 +264,42 @@ class CliTests(unittest.TestCase):
         self.assertGreaterEqual(len(lines[0]["result"]["tools"]), 43)
         self.assertIn(sm.VERSION, json.dumps(lines[1]["result"]))
 
+    # ── v7.2 acquisition lane ────────────────────────────────────────────────
+
+    def test_arsenal_install_plan_covers_hw_esp(self):
+        d = self.j(["arsenal", "install", "--chain", "hw-esp", "--json"])
+        names = {t["tool"] for t in d["tools"]}
+        self.assertTrue({"esptool", "mosquitto_sub", "mosquitto_pub"} <= names)
+        self.assertEqual(d["machine"], "none (plan only)")
+        self.assertIn("to_install", d)
+
+    def test_arsenal_install_plan_covers_hw_audio(self):
+        d = self.j(["arsenal", "install", "--chain", "hw-audio", "--json"])
+        names = {t["tool"] for t in d["tools"]}
+        self.assertTrue({"sox", "ffmpeg", "minimodem", "multimon-ng"} <= names)
+        managed = [t for t in d["tools"] if not t["installed"] and t["managed"]]
+        self.assertTrue(managed)  # recipes exist, not all guessed
+
+    def test_arsenal_install_recipe_resolution(self):
+        import arsenal as ars
+        r = ars.resolve_install("esptool")
+        self.assertTrue(r["managed"])
+        self.assertTrue(r["cmds"])
+        r2 = ars.resolve_install("binwalk")
+        self.assertTrue(r2["managed"])
+        self.assertTrue(r2["cmds"])
+        r3 = ars.resolve_install("no-such-tool-zzz")
+        # unknown: every family probe class can degrade safely — guess or manual,
+        # but never a crash and never an unlabelled command
+        self.assertIn(r3["managed"], (True, False))
+        for c in r3["cmds"]:
+            self.assertIn(c["manager"], ("apt", "pip", "cargo", "go", "npm", "gem",
+                                         "dnf", "pacman", "apk", "brew"))
+
+    def test_arsenal_verify_covers_install_map(self):
+        r = run([str(SCRIPTS / "arsenal.py"), "verify"], self.env)
+        self.assertEqual(r.returncode, 0, r.stderr + r.stdout)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

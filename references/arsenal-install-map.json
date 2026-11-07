@@ -1,0 +1,1440 @@
+{
+ "map_version": "7.2.0",
+ "note": "Catalog-driven on-demand acquisition for the arsenal. A tool's recipe lists the managers that can install it; the resolver picks the first manager present on the target machine (native pkg manager first, then pip/cargo/go/npm/gem). Missing recipes fall back to an apt guess, flagged. Install never runs implicit \u2014 the operator names a machine (arsenal install --machine local|relay-name).",
+ "tools": {
+  "2john": {
+   "apt": "john"
+  },
+  "403bypasser": {
+   "pip": "403bypasser"
+  },
+  "DNSExfil": {
+   "note": "clone: https://github.com/Arno0x/DNSExfil"
+  },
+  "ROPgadget": {
+   "pip": "ROPgadget"
+  },
+  "adb": {
+   "apt": "adb"
+  },
+  "adfind": {
+   "note": "sophos release: https://www.sophos.com/en-us/support/adfind-distribution"
+  },
+  "adidnsdump": {
+   "pip": "adidnsdump"
+  },
+  "afl": {
+   "apt": "afl++"
+  },
+  "afl-cmin": {
+   "apt": "afl++",
+   "note": "afl variant"
+  },
+  "afl-fuzz": {
+   "apt": "afl++",
+   "brew": "afl-fuzz"
+  },
+  "afl-showmap": {
+   "apt": "afl++"
+  },
+  "afl-tmin": {
+   "apt": "afl++"
+  },
+  "age": {
+   "apt": "age"
+  },
+  "aircrack-ng": {
+   "apt": "aircrack-ng"
+  },
+  "aireplay-ng": {
+   "apt": "aircrack-ng"
+  },
+  "airgeddon": {
+   "apt": "airgeddon"
+  },
+  "airmon-ng": {
+   "apt": "aircrack-ng"
+  },
+  "airodump-ng": {
+   "apt": "aircrack-ng"
+  },
+  "altdns": {
+   "pip": "altdns"
+  },
+  "amass": {
+   "apt": "amass",
+   "brew": "amass",
+   "go": "github.com/owasp-amass/amass/v4/...@master"
+  },
+  "amass-intel": {
+   "apt": "amass",
+   "note": "amass subcommand"
+  },
+  "amicontained": {
+   "go": "github.com/genuinetools/amicontained@latest"
+  },
+  "androguard": {
+   "pip": "androguard"
+  },
+  "apifuzzer": {
+   "pip": "apifuzzer"
+  },
+  "apktool": {
+   "apt": "apktool"
+  },
+  "arjun": {
+   "pip": "arjun"
+  },
+  "arp-scan": {
+   "apt": "arp-scan"
+  },
+  "arping": {
+   "apt": "iputils-arping",
+   "brew": "arping"
+  },
+  "asnmap": {
+   "go": "github.com/projectdiscovery/asnmap/cmd/asnmap@latest"
+  },
+  "assetfinder": {
+   "go": "github.com/tomnomnom/assetfinder@latest"
+  },
+  "avet": {
+   "note": "clone: https://github.com/govolution/avet"
+  },
+  "aws": {
+   "pip": "awscli"
+  },
+  "az": {
+   "note": "microsoft repo: https://learn.microsoft.com/cli/azure/install"
+  },
+  "azurehound": {
+   "pip": "azurehound"
+  },
+  "baksmali": {
+   "apt": "smali"
+  },
+  "bettercap": {
+   "apt": "bettercap",
+   "go": "github.com/bettercap/bettercap@latest"
+  },
+  "binwalk": {
+   "apt": "binwalk"
+  },
+  "bkcrack": {
+   "apt": "bkcrack"
+  },
+  "bkhive": {
+   "apt": "bkhive"
+  },
+  "bleah": {
+   "pip": "bleah"
+  },
+  "bloodhound": {
+   "apt": "bloodhound"
+  },
+  "bluetoothctl": {
+   "apt": "bluez"
+  },
+  "boofuzz": {
+   "pip": "boofuzz"
+  },
+  "breach-parse": {
+   "pip": "breach-parse"
+  },
+  "btlejack": {
+   "pip": "btlejack"
+  },
+  "btscanner": {
+   "apt": "btscanner"
+  },
+  "bulk_extractor": {
+   "apt": "bulk-extractor"
+  },
+  "bypass-403": {
+   "pip": "bypass-403"
+  },
+  "c-jwt-cracker": {
+   "apt": "c-jwt-cracker"
+  },
+  "caldera": {
+   "note": "server: https://caldera.mitre.org/"
+  },
+  "can-i-take-over-xyz": {
+   "pip": "can-i-take-over-xyz"
+  },
+  "candump": {
+   "apt": "can-utils"
+  },
+  "cansend": {
+   "apt": "can-utils"
+  },
+  "cansniffer": {
+   "apt": "can-utils"
+  },
+  "capa": {
+   "pip": "capa"
+  },
+  "capinfos": {
+   "apt": "wireshark-common"
+  },
+  "capsh": {
+   "apt": "libcap2-bin"
+  },
+  "cdk": {
+   "note": "github release: https://github.com/cdk-team/CDK/releases"
+  },
+  "censys": {
+   "pip": "censys"
+  },
+  "certigo": {
+   "go": "github.com/square/certigo@latest"
+  },
+  "certtool": {
+   "apt": "gnutls-bin"
+  },
+  "changeme": {
+   "pip": "changeme"
+  },
+  "chaos": {
+   "go": "github.com/projectdiscovery/chaos-client/cmd/chaos@latest"
+  },
+  "checkov": {
+   "pip": "checkov"
+  },
+  "checksec": {
+   "pip": "checksec"
+  },
+  "chisel": {
+   "go": "github.com/jpillora/chisel@latest"
+  },
+  "chntpw": {
+   "apt": "chntpw"
+  },
+  "cipherscan": {
+   "pip": "cipherscan"
+  },
+  "clairvoyance": {
+   "pip": "clairvoyance"
+  },
+  "cloud_enum": {
+   "pip": "cloud_enum"
+  },
+  "cloudbrute": {
+   "go": "github.com/0xsha/cloudbrute@latest"
+  },
+  "cloudfox": {
+   "go": "github.com/BishopFox/cloudfox@latest"
+  },
+  "cloudlist": {
+   "go": "github.com/projectdiscovery/cloudlist/cmd/cloudlist@latest"
+  },
+  "cloudmapper": {
+   "pip": "cloudmapper"
+  },
+  "cmseek": {
+   "apt": "cmseek"
+  },
+  "cmsmap": {
+   "pip": "cmsmap"
+  },
+  "commix": {
+   "apt": "commix"
+  },
+  "cors-scanner": {
+   "pip": "cors-scanner"
+  },
+  "corsy": {
+   "pip": "corsy"
+  },
+  "covenant": {
+   "note": "build from source: https://github.com/cobbr/Covenant"
+  },
+  "cowpatty": {
+   "apt": "cowpatty"
+  },
+  "crane": {
+   "go": "github.com/google/go-containerregistry/cmd/crane@latest"
+  },
+  "creddump": {
+   "pip": "creddump"
+  },
+  "cribdrag": {
+   "pip": "cribdrag"
+  },
+  "crlfuzz": {
+   "go": "github.com/dwisiswant0/crlfuzz/cmd/crlfuzz@latest"
+  },
+  "crowbar": {
+   "apt": "crowbar"
+  },
+  "crunch": {
+   "apt": "crunch"
+  },
+  "cryptcat": {
+   "apt": "cryptcat"
+  },
+  "ctfr": {
+   "pip": "ctfr"
+  },
+  "curl": {
+   "apt": "curl"
+  },
+  "curl-cors": {
+   "note": "wrapper variant of curl",
+   "pip": "curl_cffi"
+  },
+  "curl-trace": {
+   "apt": "curl"
+  },
+  "dalfox": {
+   "go": "github.com/hahwul/dalfox/v2@latest"
+  },
+  "deepce": {
+   "note": "download: https://github.com/stealthcopter/deepce"
+  },
+  "deimosC2": {
+   "note": "build from source: https://github.com/DeimosC2/DeimosC2"
+  },
+  "dex2jar": {
+   "apt": "dex2jar"
+  },
+  "dig": {
+   "apk": "bind-tools",
+   "apt": "dnsutils",
+   "pacman": "bind-tools"
+  },
+  "dig-mx": {
+   "apt": "dnsutils",
+   "note": "dig subcommand"
+  },
+  "dig-txt": {
+   "apt": "dnsutils"
+  },
+  "dirb": {
+   "apt": "dirb"
+  },
+  "direwolf": {
+   "apt": "direwolf"
+  },
+  "dirhunt": {
+   "pip": "dirhunt"
+  },
+  "dirsearch": {
+   "pip": "dirsearch"
+  },
+  "dive": {
+   "apt": "dive"
+  },
+  "dnscat2": {
+   "apt": "dnscat2"
+  },
+  "dnsenum": {
+   "apt": "dnsenum"
+  },
+  "dnsgen": {
+   "pip": "dnsgen"
+  },
+  "dnsmap": {
+   "apt": "dnsmap"
+  },
+  "dnsrecon": {
+   "apt": "dnsrecon",
+   "pip": "dnsrecon"
+  },
+  "dnstwist": {
+   "apt": "dnstwist",
+   "pip": "dnstwist"
+  },
+  "dnsx": {
+   "go": "github.com/projectdiscovery/dnsx/cmd/dnsx@latest"
+  },
+  "docker": {
+   "apt": "docker.io"
+  },
+  "dockle": {
+   "go": "github.com/goodwithtech/dockle@latest"
+  },
+  "donut": {
+   "apt": "donut"
+  },
+  "dotdotpwn": {
+   "apt": "dotdotpwn"
+  },
+  "droopescan": {
+   "pip": "droopescan"
+  },
+  "dtd-finder": {
+   "pip": "dtdfinder"
+  },
+  "editcap": {
+   "apt": "wireshark-common"
+  },
+  "enum4linux": {
+   "apt": "enum4linux"
+  },
+  "enum4linux-ng": {
+   "pip": "enum4linux-ng"
+  },
+  "esphome": {
+   "pip": "esphome"
+  },
+  "esptool": {
+   "pip": "esptool"
+  },
+  "ettercap": {
+   "apt": "ettercap-text-only",
+   "brew": "ettercap"
+  },
+  "evil-winrm": {
+   "gem": "evil-winrm"
+  },
+  "exiftool": {
+   "apt": "libimage-exiftool-perl"
+  },
+  "fatrat": {
+   "note": "clone: https://github.com/Screetsec/TheFatRat"
+  },
+  "fcrackzip": {
+   "apt": "fcrackzip"
+  },
+  "feroxbuster": {
+   "apt": "feroxbuster",
+   "cargo": "feroxbuster"
+  },
+  "ffmpeg": {
+   "apt": "ffmpeg",
+   "brew": "ffmpeg"
+  },
+  "ffuf": {
+   "apt": "ffuf",
+   "go": "github.com/ffuf/ffuf/v2@latest"
+  },
+  "ffuf-vhost": {
+   "apt": "ffuf",
+   "note": "ffuf subcommand"
+  },
+  "fierce": {
+   "pip": "fierce"
+  },
+  "file": {
+   "apt": "file"
+  },
+  "findmyhash": {
+   "pip": "findmyhash"
+  },
+  "findomain": {
+   "cargo": "findomain"
+  },
+  "floss": {
+   "pip": "flare-floss"
+  },
+  "fls": {
+   "apt": "sleuthkit"
+  },
+  "fluxion": {
+   "apt": "fluxion"
+  },
+  "foremost": {
+   "apt": "foremost"
+  },
+  "fping": {
+   "apt": "fping"
+  },
+  "frida": {
+   "pip": "frida-tools"
+  },
+  "frp": {
+   "apt": "frp"
+  },
+  "fsstat": {
+   "apt": "sleuthkit"
+  },
+  "gattacker": {
+   "note": "clone: https://github.com/skylot/gattacker"
+  },
+  "gatttool": {
+   "apt": "bluez"
+  },
+  "gau": {
+   "go": "github.com/lc/gau/v2/cmd/gau@latest"
+  },
+  "gauplus": {
+   "go": "github.com/bp0lr/gauplus@latest"
+  },
+  "gcloud": {
+   "note": "google repo: https://cloud.google.com/sdk/docs/install"
+  },
+  "gdb": {
+   "apt": "gdb"
+  },
+  "genpmk": {
+   "apt": "genpmk"
+  },
+  "ghidra": {
+   "apt": "ghidra"
+  },
+  "github-subdomains": {
+   "go": "github.com/gwen001/github-subdomains@latest"
+  },
+  "gitleaks": {
+   "go": "github.com/gitleaks/gitleaks/v8@latest"
+  },
+  "gnutls-cli": {
+   "apt": "gnutls-bin"
+  },
+  "gobuster": {
+   "apt": "gobuster",
+   "go": "github.com/OJ/gobuster/v3@latest"
+  },
+  "gobuster-s3": {
+   "apt": "gobuster",
+   "note": "gobuster subcommand"
+  },
+  "gobuster-vhost": {
+   "apt": "gobuster"
+  },
+  "gopherus": {
+   "note": "clone: https://github.com/tarunkant/Gopherus"
+  },
+  "gospider": {
+   "go": "github.com/jaeles-project/gospider@latest"
+  },
+  "gotestwaf": {
+   "go": "github.com/wallarm/gotestwaf@latest"
+  },
+  "govulncheck": {
+   "go": "golang.org/x/vuln/cmd/govulncheck@latest"
+  },
+  "gpg": {
+   "apt": "gnupg"
+  },
+  "gpp-decrypt": {
+   "apt": "gpp-decrypt"
+  },
+  "graphql-cop": {
+   "pip": "graphql-cop"
+  },
+  "graphqlmap": {
+   "pip": "graphqlmap"
+  },
+  "grpcurl": {
+   "apt": "grpcurl",
+   "go": "github.com/fullstorydev/grpcurl/cmd/grpcurl@latest"
+  },
+  "grype": {
+   "apt": "grype"
+  },
+  "h8mail": {
+   "pip": "h8mail"
+  },
+  "hackrf_info": {
+   "apt": "hackrf"
+  },
+  "hackrf_sweep": {
+   "apt": "hackrf"
+  },
+  "hackrf_transfer": {
+   "apt": "hackrf"
+  },
+  "hadolint": {
+   "apt": "hadolint"
+  },
+  "haktrails": {
+   "go": "github.com/hakluke/haktrails@latest"
+  },
+  "hashcat": {
+   "apt": "hashcat"
+  },
+  "hashcat-utils": {
+   "apt": "hashcat-utils"
+  },
+  "havoc": {
+   "note": "build from source: https://github.com/HavocFramework/Havoc"
+  },
+  "hcitool": {
+   "apt": "bluez"
+  },
+  "helm": {
+   "apt": "helm"
+  },
+  "holehe": {
+   "pip": "holehe"
+  },
+  "honggfuzz": {
+   "apt": "honggfuzz"
+  },
+  "host": {
+   "apk": "bind-tools",
+   "apt": "dnsutils",
+   "pacman": "bind-tools"
+  },
+  "hping3": {
+   "apt": "hping3"
+  },
+  "httpx": {
+   "go": "github.com/projectdiscovery/httpx/cmd/httpx@latest"
+  },
+  "httrack": {
+   "apt": "httrack"
+  },
+  "hydra": {
+   "apt": "hydra"
+  },
+  "icat": {
+   "apt": "sleuthkit"
+  },
+  "idevice_id": {
+   "apt": "libimobiledevice-utils"
+  },
+  "ideviceinfo": {
+   "apt": "libimobiledevice-utils"
+  },
+  "ike-scan": {
+   "apt": "ike-scan"
+  },
+  "impacket-GetNPUsers": {
+   "pip": "impacket"
+  },
+  "impacket-GetUserSPNs": {
+   "pip": "impacket"
+  },
+  "impacket-atexec": {
+   "pip": "impacket"
+  },
+  "impacket-dcomexec": {
+   "pip": "impacket"
+  },
+  "impacket-describeticket": {
+   "pip": "impacket"
+  },
+  "impacket-mssqlclient": {
+   "pip": "impacket"
+  },
+  "impacket-ntlmrelayx": {
+   "pip": "impacket"
+  },
+  "impacket-psexec": {
+   "pip": "impacket"
+  },
+  "impacket-rpcdump": {
+   "pip": "impacket"
+  },
+  "impacket-secretsdump": {
+   "pip": "impacket"
+  },
+  "impacket-secretsdump-local": {
+   "pip": "impacket"
+  },
+  "impacket-smbclient": {
+   "pip": "impacket"
+  },
+  "impacket-smbexec": {
+   "pip": "impacket"
+  },
+  "impacket-wmiexec": {
+   "pip": "impacket"
+  },
+  "insomniac": {
+   "go": "github.com/Nicocha30/insomniac@latest"
+  },
+  "irecovery": {
+   "apt": "irecovery"
+  },
+  "jadx": {
+   "apt": "jadx"
+  },
+  "jazzer": {
+   "note": "java fuzzer \u2014 github release: https://github.com/CodeIntelligenceTesting/jazzer/releases"
+  },
+  "john": {
+   "apt": "john",
+   "brew": "john-jumbo"
+  },
+  "joomscan": {
+   "apt": "joomscan"
+  },
+  "jsteg": {
+   "apt": "jsteg"
+  },
+  "jwt_tool": {
+   "apt": "jwt-tool"
+  },
+  "katana": {
+   "go": "github.com/projectdiscovery/katana/cmd/katana@latest"
+  },
+  "kerbrute": {
+   "go": "github.com/ropnop/kerbrute@latest"
+  },
+  "kismet": {
+   "apt": "kismet"
+  },
+  "kiterunner": {
+   "note": "github release only: https://github.com/assetnote/kiterunner/releases"
+  },
+  "kube-bench": {
+   "apt": "kube-bench"
+  },
+  "kube-hunter": {
+   "pip": "kube-hunter"
+  },
+  "kubeaudit": {
+   "go": "github.com/Shopify/kubeaudit@latest"
+  },
+  "kubectl": {
+   "apt": "kubectl"
+  },
+  "kubescape": {
+   "apt": "kubescape"
+  },
+  "ldapdomaindump": {
+   "pip": "ldapdomaindump"
+  },
+  "ldapsearch": {
+   "apt": "ldap-utils"
+  },
+  "ligolo-ng": {
+   "go": "github.com/nicocha30/ligolo-ng/cmd/ligolo-agent@latest"
+  },
+  "linenum": {
+   "note": "download: https://github.com/rebootuser/LinEnum"
+  },
+  "linkfinder": {
+   "pip": "linkfinder"
+  },
+  "linpeas": {
+   "note": "download: https://github.com/carlospolop/PEASS-ng"
+  },
+  "linux-exploit-suggester": {
+   "note": "download: https://github.com/mzet-/linux-exploit-suggester"
+  },
+  "linux-smart-enumeration": {
+   "note": "download: https://github.com/dievus/linux-smart-enumeration"
+  },
+  "lsassy": {
+   "pip": "lsassy"
+  },
+  "lse": {
+   "note": "download: https://github.com/diego-treitos/linux-smart-enumeration"
+  },
+  "ltrace": {
+   "apt": "ltrace"
+  },
+  "macchanger": {
+   "apt": "macchanger"
+  },
+  "macro_pack": {
+   "pip": "maco_pack"
+  },
+  "maigret": {
+   "pip": "maigret"
+  },
+  "masscan": {
+   "apt": "masscan"
+  },
+  "massdns": {
+   "apt": "massdns"
+  },
+  "mat2": {
+   "apt": "mat2"
+  },
+  "mbtget": {
+   "apt": "mbtget"
+  },
+  "mdk4": {
+   "apt": "mdk4"
+  },
+  "medusa": {
+   "apt": "medusa"
+  },
+  "memcstat": {
+   "apt": "libmemcached-tools"
+  },
+  "mergecap": {
+   "apt": "wireshark-common"
+  },
+  "merlin": {
+   "note": "github release: https://github.com/Ne0nd0g/merlin/releases"
+  },
+  "metagoofil": {
+   "apt": "metagoofil"
+  },
+  "mfoc": {
+   "apt": "mfoc"
+  },
+  "mfterm": {
+   "apt": "mfterm"
+  },
+  "minimodem": {
+   "apt": "minimodem"
+  },
+  "minisign": {
+   "apt": "minisign"
+  },
+  "mmls": {
+   "apt": "sleuthkit"
+  },
+  "mobsf": {
+   "pip": "mobsf"
+  },
+  "modbus-cli": {
+   "npm": "-g modbus-cli"
+  },
+  "modpoll": {
+   "apt": "modpoll"
+  },
+  "mongosh": {
+   "note": "needs MongoDB repo \u2014 https://www.mongodb.com/docs/mongodb-shell/install/"
+  },
+  "morphHTA": {
+   "note": "clone: https://github.com/frozenjava/MorphHTA"
+  },
+  "mosquitto_pub": {
+   "apt": "mosquitto-clients"
+  },
+  "mosquitto_sub": {
+   "apt": "mosquitto-clients"
+  },
+  "mp3stego": {
+   "apt": "mp3stego"
+  },
+  "mqtt-pwn": {
+   "pip": "mqtt-pwn"
+  },
+  "msfconsole": {
+   "apt": "metasploit-framework",
+   "note": "or official installer"
+  },
+  "msfvenom": {
+   "apt": "metasploit-framework"
+  },
+  "mtr": {
+   "apt": "mtr"
+  },
+  "multimon-ng": {
+   "apt": "multimon-ng",
+   "brew": "multimon-ng"
+  },
+  "mysql": {
+   "apt": "default-mysql-client"
+  },
+  "naabu": {
+   "go": "github.com/projectdiscovery/naabu/v2/cmd/naabu@latest"
+  },
+  "nbtscan": {
+   "apt": "nbtscan"
+  },
+  "nc": {
+   "apt": "netcat-openbsd"
+  },
+  "ncrack": {
+   "apt": "ncrack"
+  },
+  "nemesis": {
+   "apt": "nemesis"
+  },
+  "netdiscover": {
+   "apt": "netdiscover"
+  },
+  "netexec": {
+   "note": "or pipx install netexec \u2014 binary 'nxc'",
+   "pip": "netexec"
+  },
+  "netsniff-ng": {
+   "apt": "netsniff-ng"
+  },
+  "nfc-list": {
+   "apt": "libnfc-bin"
+  },
+  "nfc-mfclassic": {
+   "apt": "libnfc-bin"
+  },
+  "nfc-poll": {
+   "apt": "libnfc-bin"
+  },
+  "ngrep": {
+   "apt": "ngrep"
+  },
+  "nikto": {
+   "apt": "nikto"
+  },
+  "nmap": {
+   "apt": "nmap"
+  },
+  "nmap-aspnet-debug": {
+   "apt": "nmap"
+  },
+  "nmap-cookie-flags": {
+   "apt": "nmap"
+  },
+  "nmap-cve-drupal": {
+   "apt": "nmap"
+  },
+  "nmap-drupal-enum": {
+   "apt": "nmap"
+  },
+  "nmap-http-backup": {
+   "apt": "nmap"
+  },
+  "nmap-http-cors": {
+   "apt": "nmap"
+  },
+  "nmap-http-methods": {
+   "apt": "nmap"
+  },
+  "nmap-iis-shortname": {
+   "apt": "nmap"
+  },
+  "nmap-imap-caps": {
+   "apt": "nmap"
+  },
+  "nmap-mongodb-info": {
+   "apt": "nmap"
+  },
+  "nmap-mssql-info": {
+   "apt": "nmap"
+  },
+  "nmap-mysql-empty": {
+   "apt": "nmap"
+  },
+  "nmap-mysql-info": {
+   "apt": "nmap"
+  },
+  "nmap-pop3-caps": {
+   "apt": "nmap"
+  },
+  "nmap-redis-info": {
+   "apt": "nmap"
+  },
+  "nmap-robots": {
+   "apt": "nmap"
+  },
+  "nmap-s7-info": {
+   "apt": "nmap"
+  },
+  "nmap-script-ssl": {
+   "apt": "nmap"
+  },
+  "nmap-sitemap": {
+   "apt": "nmap"
+  },
+  "nmap-slowloris-check": {
+   "apt": "nmap"
+  },
+  "nmap-smb-doublepulsar": {
+   "apt": "nmap"
+  },
+  "nmap-smtp-commands": {
+   "apt": "nmap"
+  },
+  "nmap-smtp-enum-users": {
+   "apt": "nmap"
+  },
+  "nmap-smtp-relay": {
+   "apt": "nmap"
+  },
+  "nmap-ssl-ccs": {
+   "apt": "nmap"
+  },
+  "nmap-ssl-ccs-injection": {
+   "apt": "nmap"
+  },
+  "nmap-ssl-dh-params": {
+   "apt": "nmap"
+  },
+  "nmap-ssl-enum-ciphers": {
+   "apt": "nmap"
+  },
+  "nmap-ssl-heartbleed": {
+   "apt": "nmap"
+  },
+  "nmap-vuln": {
+   "apt": "nmap"
+  },
+  "nmap-vulners": {
+   "apt": "nmap"
+  },
+  "nmap-waf-detect": {
+   "apt": "nmap"
+  },
+  "nmap-waf-fingerprint": {
+   "apt": "nmap"
+  },
+  "nmap-wp-plugins": {
+   "apt": "nmap"
+  },
+  "nosqlmap": {
+   "pip": "nosqlmap"
+  },
+  "nping": {
+   "note": "ships with nmap"
+  },
+  "nslookup": {
+   "apk": "bind-tools",
+   "apt": "dnsutils",
+   "pacman": "bind-tools"
+  },
+  "nuclei": {
+   "go": "github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest"
+  },
+  "nuclei-cves": {
+   "apt": "nuclei"
+  },
+  "nuclei-exposures": {
+   "apt": "nuclei"
+  },
+  "nuclei-takeover": {
+   "apt": "nuclei"
+  },
+  "objection": {
+   "pip": "objection"
+  },
+  "one_gadget": {
+   "gem": "one_gadget"
+  },
+  "onesixtyone": {
+   "apt": "onesixtyone"
+  },
+  "openssl": {
+   "apt": "openssl"
+  },
+  "outguess": {
+   "apt": "outguess"
+  },
+  "packeth": {
+   "apt": "packeth"
+  },
+  "pacu": {
+   "pip": "pacu"
+  },
+  "patator": {
+   "pip": "patator"
+  },
+  "phishery": {
+   "apt": "phishery"
+  },
+  "phoneinfoga": {
+   "go": "github.com/sundowndev/phoneinfoga/v2@latest"
+  },
+  "phpggc": {
+   "apt": "phpggc"
+  },
+  "pngcheck": {
+   "apt": "pngcheck"
+  },
+  "prowler": {
+   "pip": "prowler"
+  },
+  "proxmark3": {
+   "apt": "proxmark3"
+  },
+  "proxychains4": {
+   "apt": "proxychains-ng"
+  },
+  "pspy": {
+   "note": "download: https://github.com/DominicBreuker/pspy"
+  },
+  "psql": {
+   "apt": "postgresql-client"
+  },
+  "puredns": {
+   "go": "github.com/d3mondev/puredns/v2@latest"
+  },
+  "pwncat": {
+   "pip": "pwncat-cs"
+  },
+  "pypykatz": {
+   "pip": "pypykatz"
+  },
+  "radamsa": {
+   "apt": "radamsa"
+  },
+  "radare2": {
+   "apt": "radare2"
+  },
+  "rage": {
+   "cargo": "rage"
+  },
+  "reaver": {
+   "apt": "reaver"
+  },
+  "redis-cli": {
+   "apt": "redis-tools",
+   "brew": "redis",
+   "pacman": "redis"
+  },
+  "restler": {
+   "note": "build: https://github.com/microsoft/restler-fuzzer"
+  },
+  "retdec": {
+   "note": "installer: https://retdec.com/installation/"
+  },
+  "rfcat": {
+   "pip": "rfcat"
+  },
+  "rizin": {
+   "apt": "rizin"
+  },
+  "ropper": {
+   "pip": "ropper"
+  },
+  "rpcclient": {
+   "apt": "smbclient"
+  },
+  "rtl_433": {
+   "apt": "rtl-433",
+   "pacman": "rtl_433"
+  },
+  "rtl_fm": {
+   "apt": "rtl-sdr"
+  },
+  "rtl_sdr": {
+   "apt": "rtl-sdr"
+  },
+  "rubeus": {
+   "note": "github release: https://github.com/GhostPack/Rubeus/releases"
+  },
+  "rustscan": {
+   "cargo": "rustscan"
+  },
+  "s3scanner": {
+   "pip": "s3scanner"
+  },
+  "s7brute": {
+   "note": "clone: https://github.com/GHSecurityLab/s7brute"
+  },
+  "samdump2": {
+   "apt": "samdump2"
+  },
+  "scalpel": {
+   "apt": "scalpel"
+  },
+  "scarecrow": {
+   "pip": "scarecrow"
+  },
+  "schemathesis": {
+   "pip": "schemathesis"
+  },
+  "scoutsuite": {
+   "pip": "scoutsuite"
+  },
+  "searchsploit": {
+   "apt": "exploitdb"
+  },
+  "setoolkit": {
+   "apt": "set"
+  },
+  "shellter": {
+   "apt": "shellter"
+  },
+  "sherlock": {
+   "pip": "sherlock"
+  },
+  "shodan": {
+   "pip": "shodan"
+  },
+  "shuffledns": {
+   "go": "github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest"
+  },
+  "skopeo": {
+   "apt": "skopeo"
+  },
+  "sliver": {
+   "apt": "sliver"
+  },
+  "smali": {
+   "apt": "smali"
+  },
+  "smbclient": {
+   "apt": "smbclient"
+  },
+  "smbmap": {
+   "pip": "smbmap"
+  },
+  "smod": {
+   "pip": "smod"
+  },
+  "smtp-user-enum": {
+   "apt": "smtp-user-enum"
+  },
+  "snallygaster": {
+   "pip": "snallygaster"
+  },
+  "snmpbulkget": {
+   "apt": "snmp"
+  },
+  "snmpenum": {
+   "pip": "snmpenum"
+  },
+  "snmpget": {
+   "apt": "snmp"
+  },
+  "snmpset": {
+   "apt": "snmp"
+  },
+  "snmpwalk": {
+   "apt": "snmp",
+   "brew": "net-snmp"
+  },
+  "snoop": {
+   "apt": "snoopy"
+  },
+  "socat": {
+   "apt": "socat"
+  },
+  "social-analyzer": {
+   "npm": "social-analyzer"
+  },
+  "socialscan": {
+   "pip": "socialscan"
+  },
+  "sox": {
+   "apt": "sox",
+   "brew": "sox"
+  },
+  "sqlmap": {
+   "apt": "sqlmap",
+   "pip": "sqlmap"
+  },
+  "ssh-audit": {
+   "apt": "ssh-audit",
+   "pip": "ssh-audit"
+  },
+  "ssldump": {
+   "apt": "ssldump"
+  },
+  "sslscan": {
+   "apt": "sslscan",
+   "brew": "sslscan"
+  },
+  "sslyze": {
+   "pip": "sslyze"
+  },
+  "sstimap": {
+   "pip": "sstimap"
+  },
+  "stegbreak": {
+   "apt": "stegbreak"
+  },
+  "stegcracker": {
+   "pip": "stegcracker"
+  },
+  "stegdetect": {
+   "apt": "stegdetect"
+  },
+  "steghide": {
+   "apt": "steghide"
+  },
+  "stegosploit": {
+   "pip": "stegosploit"
+  },
+  "stegseek": {
+   "apt": "stegseek"
+  },
+  "strace": {
+   "apt": "strace"
+  },
+  "strings": {
+   "apt": "binutils"
+  },
+  "stunnel": {
+   "apt": "stunnel"
+  },
+  "subfinder": {
+   "go": "github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest"
+  },
+  "sublist3r": {
+   "pip": "sublist3r"
+  },
+  "subzy": {
+   "go": "github.com/PentestPad/subzy@latest"
+  },
+  "swaks": {
+   "apt": "swaks"
+  },
+  "syft": {
+   "apt": "syft"
+  },
+  "tcpdump": {
+   "apt": "tcpdump"
+  },
+  "tcpreplay": {
+   "apt": "tcpreplay"
+  },
+  "tcprewrite": {
+   "apt": "tcpreplay"
+  },
+  "terraform": {
+   "apt": "terraform"
+  },
+  "terrascan": {
+   "pip": "terrascan"
+  },
+  "testssl": {
+   "apt": "testssl.sh",
+   "brew": "testssl"
+  },
+  "text2pcap": {
+   "apt": "wireshark-common"
+  },
+  "tfsec": {
+   "apt": "tfsec"
+  },
+  "theharvester": {
+   "apt": "theharvester",
+   "pip": "theHarvester"
+  },
+  "tlsx": {
+   "go": "github.com/projectdiscovery/tlsx/cmd/tlsx@latest"
+  },
+  "tplmap": {
+   "pip": "tplmap"
+  },
+  "traceroute": {
+   "apt": "traceroute"
+  },
+  "trivy": {
+   "apt": "trivy"
+  },
+  "trufflehog": {
+   "apt": "trufflehog"
+  },
+  "tshark": {
+   "apt": "tshark"
+  },
+  "tsk_recover": {
+   "apt": "sleuthkit"
+  },
+  "tuya-cli": {
+   "bin": "tuya",
+   "npm": "@tuyapi/cli"
+  },
+  "ubertooth-btle": {
+   "apt": "ubertooth"
+  },
+  "unicornscan": {
+   "apt": "unicornscan"
+  },
+  "unix-privesc-check": {
+   "apt": "unix-privesc-check"
+  },
+  "veil": {
+   "apt": "veil"
+  },
+  "volatility": {
+   "pip": "volatility"
+  },
+  "volatility3": {
+   "pip": "volatility3"
+  },
+  "vulscan": {
+   "note": "clone: https://github.com/scipag/vulscan"
+  },
+  "wafninja": {
+   "note": "clone: https://github.com/khalilbijjou/WAFNinja"
+  },
+  "wafw00f": {
+   "apt": "wafw00f",
+   "pip": "wafw00f"
+  },
+  "wapiti": {
+   "apt": "wapiti",
+   "pip": "wapiti"
+  },
+  "wappalyzer": {
+   "npm": "wappalyzer"
+  },
+  "wash": {
+   "apt": "reaver"
+  },
+  "wavsteg": {
+   "note": "clone: https://github.com/ragibson/Steganography"
+  },
+  "waybackurls": {
+   "go": "github.com/tomnomnom/waybackurls@latest"
+  },
+  "webtech": {
+   "pip": "webtech"
+  },
+  "weevely": {
+   "pip": "weevely"
+  },
+  "wfuzz": {
+   "apt": "wfuzz",
+   "pip": "wfuzz"
+  },
+  "wget": {
+   "apt": "wget"
+  },
+  "wget-mirror": {
+   "apt": "wget"
+  },
+  "whatsmyname": {
+   "pip": "whatsmyname"
+  },
+  "whatwaf": {
+   "pip": "whatwaf"
+  },
+  "whatweb": {
+   "apt": "whatweb",
+   "brew": "whatweb"
+  },
+  "whois": {
+   "apt": "whois"
+  },
+  "wifiphisher": {
+   "apt": "wifiphisher"
+  },
+  "wifite": {
+   "apt": "wifite"
+  },
+  "windapsearch": {
+   "pip": "windapsearch"
+  },
+  "winpeas": {
+   "note": "download: https://github.com/carlospolop/PEASS-ng"
+  },
+  "wpscan": {
+   "apt": "wpscan",
+   "gem": "wpscan"
+  },
+  "xortool": {
+   "pip": "xortool"
+  },
+  "xprobe2": {
+   "apt": "xprobe2"
+  },
+  "xsser": {
+   "apt": "xsser"
+  },
+  "xsstrike": {
+   "pip": "xsstrike"
+  },
+  "xxeinjector": {
+   "note": "clone: https://github.com/enjoiz/XXEinjector"
+  },
+  "yara": {
+   "apt": "yara"
+  },
+  "yersinia": {
+   "apt": "yersinia"
+  },
+  "ysoserial": {
+   "note": "github release: https://github.com/frohoff/ysoserial/releases"
+  },
+  "zaproxy": {
+   "apt": "zaproxy"
+  },
+  "zigbee2mqtt": {
+   "note": "npm project: https://www.zigbee2mqtt.io/guide/installation/"
+  },
+  "zmap": {
+   "apt": "zmap"
+  },
+  "zsteg": {
+   "gem": "zsteg"
+  },
+  "zzuf": {
+   "apt": "zzuf"
+  }
+ }
+}

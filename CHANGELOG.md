@@ -1,3 +1,25 @@
+# v7.2.0 — THE ACQUISITION LANE
+
+- **`arsenal install` — the arsenal is now a CATALOG, not a hope.** On-demand
+  acquisition: `arsenal install --tool T[,T..] | --chain C [--machine local|<relay>]
+  [--dry-run]`. Nothing installs implicit — bare invocations print the exact plan
+  (recipe tag, manager, command) and execute only after the operator names a
+  machine: `--machine local` for this box, `--machine <relay>` for any paired
+  relay node (reuses `relay exec` over ssh, scope-checked).
+- **`references/arsenal-install-map.json` — 463 recipes** covering every feeding
+  chain tool (recon/web/tls/net/dns/content/api/services/cms/win/osint/db/
+  takeover/cloud/packet/fuzz incl. all hw-* hardware chains and the fuzz domain),
+  manager-aware: apt/dnf/pacman/apk for the host distro, then pip/cargo/go/npm/gem.
+  Wrapper variants (nmap-*, nuclei-*, impacket-*) resolve to their parent
+  package. Unknown tools degrade to a flagged apt guess or an explicit manual
+  note — never an unlabelled command.
+- **Operator-box rule amended (v7.2)** — implicit installs remain forbidden;
+  explicit operator-named acquisition is now the lane (`--machine local`).
+- **`arsenal verify` extended** — install-map integrity, full chain coverage
+  (463/463), and a live install-plan dry-run check on hw-esp.
+- **Tests**: 4 new suite entries (hw-esp/hw-audio plan coverage, recipe
+  resolution incl. unknown-tool degradation, verify gate). 67/67 ALL PASS.
+
 # v7.1.0 — REAL DATAFLOW
 
 - **`discover` deep lane**: stdlib-ast intra-procedural taint analysis for

@@ -563,7 +563,7 @@ git clone https://github.com/xanstomper/spydermonkey.git \
 | `scope init\|check\|show\|add\|remove\|extend\|history` | the estate gate — shared matching, deny precedence, expiry, audit history |
 | `doctor [--fix]` | full health check: engines · scope perms · corrupt states · canon · ledger · relays |
 | `bench` | offline route-level benchmark |
-| `arsenal list\|plan\|run\|verify` | the execution layer — 30 tool wrappers, 6 feeding chains, kernel-schema output |
+| `arsenal list\|plan\|run\|install\|verify` | the execution layer — tool catalog, feeding chains, kernel-schema output; **`install`** (v7.2.0) pulls any tool/chain onto the machine you name (`--machine local` or a relay node) from 463 recipes |
 | `catalog stats\|categories\|list\|search\|show` | **1,053-entry known-tool reference** — lazy-loaded metadata (info only; execution stays scope-gated via arsenal) |
 | `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` | one agent per mandate, dispatched in parallel |
 | `skilltree [--expand] [--verify] [--count]` | the corpus: 837 base → 11,683 files, deterministic, 0 orphans |

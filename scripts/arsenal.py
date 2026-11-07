@@ -19,6 +19,10 @@ Commands:
   list                          what's installed (tool × capability × class)
   plan    --target T            the full run plan per class (nothing executes)
   run     --target T [--only T1,T2] [--dry-run]   execute (scope-gated)
+  install --tool T[,T..] | --chain C [--machine local|relay] [--dry-run]
+                                ACQUISITION LANE: pull a tool/chain onto the
+                                machine the operator names (plan-only without
+                                --machine; recipes in references/arsenal-install-map.json)
   verify                        self-check in a throwaway scope
 
 Exit: 0 ok · 1 gate/scope refusal · 2 usage.
@@ -40,7 +44,7 @@ from urllib.parse import urlsplit
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "7.1.1"
+VERSION = "7.2.0"
 
 # tool → (capability, canon classes it feeds, plan line, args builder)
 ARSENAL = {
@@ -1309,6 +1313,217 @@ def cmd_run(args):
     return 0
 
 
+# ── v7.2 — THE ACQUISITION LANE: catalog-driven on-demand install ─────────────
+# The arsenal is a tool CATALOG: 1,600+ wrappers, 460+ install recipes. `install`
+# pulls a tool or a whole chain onto the machine the operator NAMES — this box
+# (--machine local) or a relay node (--machine NAME). Nothing executes without a
+# named machine: bare `arsenal install --chain C` prints the plan only.
+INSTALL_MAP_CACHE = None
+
+
+def _install_map() -> dict:
+    global INSTALL_MAP_CACHE
+    if INSTALL_MAP_CACHE is None:
+        p = (Path(__file__).resolve().parent.parent / "references"
+             / "arsenal-install-map.json")
+        try:
+            INSTALL_MAP_CACHE = json.loads(p.read_text()).get("tools", {})
+        except Exception:
+            INSTALL_MAP_CACHE = {}
+    return INSTALL_MAP_CACHE
+
+
+def _distro_manager() -> str | None:
+    if sys.platform == "darwin":
+        return "brew"
+    id_l = ""
+    try:
+        for line in Path("/etc/os-release").read_text().splitlines():
+            if line.startswith("ID="):
+                id_l = line.split("=", 1)[1].strip().strip('"').lower()
+    except OSError:
+        pass
+    if id_l in ("debian", "ubuntu", "linuxmint", "kali", "pop", "raspbian", "pureos"):
+        return "apt"
+    if id_l in ("fedora", "rhel", "centos", "rocky", "almalinux", "amzn"):
+        return "dnf"
+    if id_l in ("arch", "manjaro", "endeavouros", "cachyos"):
+        return "pacman"
+    if id_l in ("alpine",):
+        return "apk"
+    return None
+
+
+_MGR_EXE = {"apt": "apt-get", "dnf": "dnf", "pacman": "pacman", "apk": "apk",
+            "brew": "brew", "pip": "pip3", "cargo": "cargo", "go": "go",
+            "npm": "npm", "gem": "gem"}
+_MGR_ORDER = ("apt", "dnf", "pacman", "apk", "brew", "pip", "cargo", "go", "npm", "gem")
+
+
+def _manager_present(m: str) -> bool:
+    return shutil.which(_MGR_EXE[m]) is not None
+
+
+def resolve_install(tool: str) -> dict:
+    """tool → plan entry: {tool, installed, managed, guess, cmds, bin, note}.
+
+    cmds = [{"manager": m, "command": str}] in execution order. Unknown tools
+    fall back to a same-name apt guess (flagged guess=True) or a manual note.
+    """
+    m = _install_map().get(tool, {})
+    note = m.get("note", "")
+    bin_name = m.get("bin", tool)
+    cmds: list[dict] = []
+    guess = False
+    distro = _distro_manager()
+    if m:
+        for mgr in _MGR_ORDER:
+            pkg = m.get(mgr)
+            if not pkg:
+                continue
+            if mgr in ("apt", "dnf", "pacman", "apk") and distro and mgr != distro:
+                continue
+            if not _manager_present(mgr):
+                continue
+            if mgr == "apt":
+                cmd = f"sudo -n apt-get install -y {pkg}"
+            elif mgr == "dnf":
+                cmd = f"sudo -n dnf install -y {pkg}"
+            elif mgr == "pacman":
+                cmd = f"sudo -n pacman -S --noconfirm {pkg}"
+            elif mgr == "apk":
+                cmd = f"sudo -n apk add {pkg}"
+            elif mgr == "brew":
+                cmd = f"brew install {pkg}"
+            elif mgr == "pip":
+                cmd = (f"pip3 install --user {pkg} || "
+                       f"pip3 install --user --break-system-packages {pkg}")
+            elif mgr == "cargo":
+                cmd = f"cargo install {pkg}"
+            elif mgr == "go":
+                cmd = f"go install {pkg}"
+            elif mgr == "npm":
+                cmd = f"npm install {pkg}"
+            elif mgr == "gem":
+                cmd = f"gem install {pkg}"
+            else:
+                continue
+            cmds.append({"manager": mgr, "command": cmd})
+            break
+    if not cmds and _manager_present("apt"):
+        cmds.append({"manager": "apt",
+                     "command": f"sudo -n apt-get install -y {tool}"})
+        guess = True
+    return {"tool": tool, "installed": False, "managed": bool(m), "guess": guess,
+            "cmds": cmds, "bin": bin_name, "note": note}
+
+
+def cmd_install(args):
+    tools: list[str] = []
+    if getattr(args, "tool", None):
+        tools += [t.strip() for t in args.tool.split(",") if t.strip()]
+    if getattr(args, "chain", None):
+        c = args.chain
+        if c not in CHAIN_NAMES:
+            print(f"✗ unknown chain '{c}' — see `arsenal run --help` for the list",
+                  file=sys.stderr)
+            return 2
+        tools += list(CHAINS[c])
+    if not tools:
+        print("✗ arsenal install needs --tool T[,T..] or --chain C", file=sys.stderr)
+        return 2
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for t in tools:
+        if t not in seen:
+            seen.add(t)
+            ordered.append(t)
+    inv = installed()
+    plan = []
+    for t in ordered:
+        r = resolve_install(t)
+        r["installed"] = t in inv
+        plan.append(r)
+    missing = [r for r in plan if not r["installed"]]
+    machine = getattr(args, "machine", None)
+    if getattr(args, "dry_run", False) or not machine:
+        rows = [{"tool": r["tool"], "installed": r["installed"],
+                 "managed": r["managed"], "guess": r["guess"],
+                 "commands": [c["command"] for c in r["cmds"]],
+                 "bin": r["bin"], "note": r["note"]} for r in plan]
+        payload = {"version": VERSION, "machine": machine or "none (plan only)",
+                   "tools": rows, "total": len(plan),
+                   "already_installed": len(plan) - len(missing),
+                   "to_install": len(missing),
+                   "hint": "re-run with --machine local (this box) or "
+                           "--machine <relay-name> to execute"}
+        if getattr(args, "json", False):
+            _emit(args, payload)
+            return 0
+        print(f"═══ ARSENAL INSTALL PLAN — {len(plan)} tools · "
+              f"machine: {machine or 'none — plan only'} ═══")
+        for r in plan:
+            if r["installed"]:
+                print(f"  ✓ {r['tool']:18s} already installed")
+                continue
+            tag = "guessed" if r["guess"] else ("recipe" if r["managed"] else "MANUAL")
+            print(f"  ▸ {r['tool']:18s} [{tag}]")
+            for c in r["cmds"]:
+                print(f"      {c['manager']:8s} {c['command']}")
+            if r["note"]:
+                print(f"      note: {r['note']}")
+        print(f"═══ {len(missing)} to install — name the machine to execute ═══")
+        return 0
+    if machine == "local":
+        rc_all = 0
+        for r in missing:
+            if not r["cmds"]:
+                print(f"✗ {r['tool']}: no recipe — manual install "
+                      f"({r['note'] or 'see canon'})", file=sys.stderr)
+                rc_all = 1
+                continue
+            rc = -1
+            for c in r["cmds"]:
+                print(f"▸ {r['tool']}: {c['command']}")
+                rc = subprocess.run(c["command"], shell=True).returncode
+                if rc == 0:
+                    break
+            if rc != 0:
+                print(f"✗ {r['tool']} install failed (rc={rc})", file=sys.stderr)
+                rc_all = 1
+        inv2 = installed()
+        newly = sorted(t for t in ordered if t in inv2 and t not in inv)
+        still = sorted(t for t in ordered if t not in inv2)
+        print(f"═══ local install done: +{len(newly)} {newly or '—'}")
+        if still:
+            print(f"    still missing: {still} — bins may land in ~/.local/bin, "
+                  f"~/go/bin, ~/.cargo/bin (add to PATH)")
+        return rc_all
+    dispatcher = Path(__file__).resolve().parent / "spydermonkey.py"
+    if not dispatcher.exists():
+        print("✗ relay install needs scripts/spydermonkey.py for relay exec",
+              file=sys.stderr)
+        return 2
+    rc_all = 0
+    for r in missing:
+        if not r["cmds"]:
+            print(f"✗ {r['tool']}: no recipe on relay ({r['note'] or 'manual'})",
+                  file=sys.stderr)
+            rc_all = 1
+            continue
+        for c in r["cmds"][:1]:
+            argv = [sys.executable, str(dispatcher), "relay", "exec",
+                    "--name", machine, "--cmd", c["command"]]
+            print(f"▸ {r['tool']} @ {machine}: {c['command']}")
+            rc = subprocess.run(argv).returncode
+            if rc != 0:
+                print(f"✗ relay install {r['tool']} failed (rc={rc})", file=sys.stderr)
+                rc_all = 1
+    print(f"═══ relay install done — verify: spydermonkey relay exec --name "
+          f"{machine} --cmd 'which <tool>' ═══")
+    return rc_all
+
+
 def cmd_verify(args):
     bad = []
     self = Path(__file__).resolve()
@@ -1324,6 +1539,28 @@ def cmd_verify(args):
         bad.append("arsenal-inventory")
     if set(CHAINS) != CHAIN_NAMES:
         bad.append("chains")
+    # v7.2: the acquisition lane self-check — map parses, chains covered,
+    # plan dry-run resolves on the lab chain.
+    imap = _install_map()
+    if len(imap) < 400:
+        bad.append("install-map")
+    chain_tools = [t for c in CHAINS.values() for t in c
+                   if not t.startswith(("nmap-", "nuclei-"))]
+    unresolved = [t for t in chain_tools
+                  if t not in imap and not resolve_install(t)["cmds"]]
+    if unresolved:
+        bad.append(f"install-map-uncovered:{','.join(sorted(set(unresolved))[:5])}")
+    r = subprocess.run([sys.executable, str(self), "install", "--chain",
+                        "hw-esp", "--dry-run", "--json"],
+                       capture_output=True, text=True)
+    if r.returncode != 0:
+        bad.append("install-plan")
+    else:
+        try:
+            if json.loads(r.stdout).get("to_install", -1) < 0:
+                bad.append("install-plan")
+        except Exception:
+            bad.append("install-plan")
     with tempfile.TemporaryDirectory(prefix="arsenal-verify-") as td:
         absent = str(Path(td) / "no-scope.json")
         r = subprocess.run([sys.executable, str(self), "run", "--target",
@@ -1407,12 +1644,17 @@ def main(argv=None):
     r.add_argument("--wordlist", help="gobuster/ffuf wordlist path")
     r.add_argument("--timeout", type=int, default=300)
     r.add_argument("--output-dir")
+    ins = sub.add_parser("install", help="ACQUISITION LANE: pull a tool or whole chain onto a named machine")
+    ins.add_argument("--tool", help="comma-separated tool names (wrapper names)")
+    ins.add_argument("--chain", help="feeding chain whose tools to pull (hw-esp, hw-iot, hw-audio, hw-ble, ...)")
+    ins.add_argument("--machine", help="where to install: 'local' (this box) or a relay node name")
+    ins.add_argument("--dry-run", action="store_true", help="print the install plan, never execute")
     sub.add_parser("verify", help="self-check")
     a = ap.parse_args(raw)
     a.json = json_flag
     a.scope_file = scope_file
     return {"list": cmd_list, "plan": cmd_plan, "run": cmd_run,
-            "verify": cmd_verify}[a.cmd](a)
+            "install": cmd_install, "verify": cmd_verify}[a.cmd](a)
 
 
 def main_with(argv):

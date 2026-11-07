@@ -53,7 +53,7 @@ Commands:
                           machine-checkable estate gate every live probe honors
   doctor                  health check: engines · scope · campaigns · canon · ledger
   bench                   offline route-level benchmark (route accuracy)
-  arsenal  list|plan|run  scope-gated execution layer (13 tool wrappers)
+  arsenal  list|plan|run|install  scope-gated execution layer + acquisition lane
   fleet    --goal G ...   PARALLEL multi-agent dispatch: one agent per mandate
   + bench_live.py         LIVE exploitation bench: stdlib vulnerable mini-targets
                           on localhost, real engines scored (sub-task completion)
@@ -98,7 +98,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "7.1.1"
+VERSION = "7.2.0"
 SCHEMA = 4
 
 
@@ -255,7 +255,7 @@ def _kw_hit(kw, goal):
 
 
 CMDS = {name: meta["handoff"] for name, meta in MANDATES.items()}
-CMDS["arsenal"] = "arsenal list && arsenal plan --target <t> && arsenal run --target <t>"
+CMDS["arsenal"] = "arsenal list && arsenal install --chain <c> && arsenal plan --target <t> && arsenal run --target <t>"
 CMDS["spy"] = "spydermonkey gate run … | testers run … | ledger triage --target <t> | mission …"
 
 
@@ -1693,6 +1693,15 @@ def _exec_arsenal(a):
         argv += ["--target", a.target]
     if a.action in ("plan", "run") and getattr(a, "wordlist", None):
         argv += ["--wordlist", a.wordlist]
+    if a.action == "install":
+        if getattr(a, "tool", None):
+            argv += ["--tool", a.tool]
+        if getattr(a, "chain", None):
+            argv += ["--chain", a.chain]
+        if getattr(a, "machine", None):
+            argv += ["--machine", a.machine]
+        if getattr(a, "dry_run", False):
+            argv += ["--dry-run"]
     if a.action == "run":
         if getattr(a, "only", None):
             argv += ["--only", a.only]
@@ -6905,11 +6914,14 @@ def _build_parser() -> argparse.ArgumentParser:
 
     sub.add_parser("bench", help="offline route-level benchmark (route accuracy)")
 
-    ar = sub.add_parser("arsenal", help="scope-gated execution layer (13 tool wrappers)")
-    ar.add_argument("action", choices=("list", "plan", "run", "verify"), nargs="?",
+    ar = sub.add_parser("arsenal", help="scope-gated execution layer + acquisition lane")
+    ar.add_argument("action", choices=("list", "plan", "run", "install", "verify"), nargs="?",
                     default="list")
     ar.add_argument("--target")
     ar.add_argument("--only")
+    ar.add_argument("--chain", help="feeding chain (run) or chain to pull (install)")
+    ar.add_argument("--tool", help="arsenal install: comma-separated tools")
+    ar.add_argument("--machine", help="arsenal install: 'local' or a relay node name")
     ar.add_argument("--dry-run", action="store_true")
     ar.add_argument("--wordlist")
     ar.add_argument("--timeout", type=int, default=300)
