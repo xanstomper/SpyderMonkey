@@ -13,7 +13,7 @@
 
 ## Context
 
-- platform: family probes cover the class
+- platform: the client is another principal — storage/permission surface, own device only
 - auth state: the principal is a SERVICE identity (API key, SA token, CI secret, webhook signing key): the differential is the KEY's resource scope — key-level vs user-level objects, cross-tenant reach, unscoped keys, and which audit trail the key leaves; the human account model does not apply
 
 ## The technique

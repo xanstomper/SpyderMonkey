@@ -98,7 +98,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "5.17.0"
+VERSION = "6.0.0"
 SCHEMA = 4
 
 
@@ -6787,7 +6787,133 @@ def _build_parser() -> argparse.ArgumentParser:
     fl.add_argument("--dry-run", action="store_true")
     fl.add_argument("--timeout", type=int, default=45)
     fl.add_argument("--retries", type=int, default=0)
+
+    # v6.0 — the 32 domain commands (5 subactions each): 40 → 200 subcommands
+    for _d in DOMAINS:
+        dp = sub.add_parser(_d, help=f"DOMAIN {_d}: list|show|tools|chains|plan (registry views + dry-run plans)")
+        da = dp.add_subparsers(dest="domain_action", required=True)
+        p2 = da.add_parser("list", help="catalog of domains")
+        p2.add_argument("--cat", help="optional class filter")
+        p3 = da.add_parser("show", help="domain summary: classes × tools × chains")
+        p4 = da.add_parser("tools", help="registered tools of this domain")
+        p4.add_argument("--query", help="substring filter")
+        p4.add_argument("--installed", action="store_true", help="only installed tools")
+        p5 = da.add_parser("chains", help="feeding chains touching this domain")
+        p6 = da.add_parser("plan", help="dry-run per-tool argv for this domain (scope-checked)")
+        p6.add_argument("--target", required=True)
+        p6.add_argument("--wordlist")
     return ap
+
+
+# ── v6.0: the 32 domain commands — registry views over the live arsenal ─────
+DOMAINS = ["recon", "dns", "web", "api", "cms", "osint", "net", "services",
+           "tls", "crypto", "packet", "fuzz", "exploit", "payload", "c2",
+           "privesc", "win", "ad", "mail", "db", "cloud", "container",
+           "scada", "iot", "hw", "mobile", "stego", "forensics", "malware",
+           "social", "vuln", "brute"]
+
+_DOMAIN_CLASSES = {
+    "recon": ["recon", "dns", "osint", "domtake"], "dns": ["dns", "domtake"],
+    "web": ["web", "harvest", "edge"], "api": ["api", "graphql", "socket"],
+    "cms": ["cms"], "osint": ["osint", "breach", "opsec"],
+    "net": ["net", "packet"], "services": ["services", "brute"],
+    "tls": ["tls", "crypto"], "crypto": ["crypto"],
+    "packet": ["packet"], "fuzz": ["fuzz"],
+    "exploit": ["exploit", "msf"], "payload": ["payload"],
+    "c2": ["c2"], "privesc": ["privesc", "linux"],
+    "win": ["win"], "ad": ["ad", "win"], "mail": ["mail"],
+    "db": ["db"], "cloud": ["cloud"],
+    "container": ["container", "ci-cd", "iac"],
+    "scada": ["scada"], "iot": ["iot", "esp"],
+    "hw": ["hardware", "wifi", "ble", "rfid", "sdr", "esp", "audio"],
+    "mobile": ["mobile"], "stego": ["stego"],
+    "forensics": ["forensics"], "malware": ["malware"],
+    "social": ["social", "phish"], "vuln": ["vuln", "nse"],
+    "brute": ["brute"],
+}
+
+
+def _domain_tools(domain: str, arsenal_reg) -> list:
+    want = set(_DOMAIN_CLASSES.get(domain, [domain]))
+    out = []
+    for tn, (cap, cls, plan, tpl) in arsenal_reg.items():
+        if isinstance(cls, (tuple, list)) and any(c in want for c in cls):
+            out.append(tn)
+    return sorted(out)
+
+
+def _domain_chains(domain: str, chains_reg) -> list:
+    want = set(_DOMAIN_CLASSES.get(domain, [domain]))
+    out = []
+    for cn, stages in chains_reg.items():
+        tags = " ".join(stages)
+        if any(c in tags for c in want):
+            out.append(cn)
+    return sorted(out)
+
+
+def cmd_domain(a) -> int:
+    try:
+        import arsenal as _ar
+    except Exception:
+        print("✗ arsenal registry unavailable", file=sys.stderr)
+        return 1
+    act = getattr(a, "domain_action", None)
+    if act == "list":
+        rows = []
+        for d in DOMAINS:
+            nt = len(_domain_tools(d, _ar.ARSENAL))
+            nc = len(_domain_chains(d))
+            rows.append(f"  ▸ {d:10s} {nt:4d} tools · {nc:3d} chains")
+        print(f"═══ {len(DOMAINS)} DOMAINS (v6.0) ═══\n" + "\n".join(rows))
+        return 0
+    tools = _domain_tools(a.cmd, _ar.ARSENAL)
+    chains = _domain_chains(a.cmd, _ar.CHAINS)
+    if act == "show":
+        print(f"═══ DOMAIN {a.cmd.upper()} ═══")
+        print(f"  classes: {', '.join(sorted(_DOMAIN_CLASSES.get(a.cmd, [a.cmd])))}")
+        print(f"  tools: {len(tools)} · chains: {len(chains)}")
+        return 0
+    if act == "tools":
+        q = (getattr(a, "query", "") or "").lower()
+        inst = getattr(a, "installed", False)
+        sel = [t for t in tools if q in t.lower()] if q else tools
+        if inst:
+            sel = [t for t in sel if shutil.which(t)]
+        print(f"═══ {a.cmd} tools: {len(sel)} ═══")
+        for t in sel[:200]:
+            cap = _ar.ARSENAL[t][0]
+            print(f"  {t:28s} {cap}")
+        if len(sel) > 200:
+            print(f"  … {len(sel) - 200} more (use --query)")
+        return 0
+    if act == "chains":
+        print(f"═══ {a.cmd} chains: {len(chains)} ═══")
+        for c in chains:
+            print(f"  ▸ {c:22s} {' → '.join(_ar.CHAINS[c][:5])}{' …' if len(_ar.CHAINS[c]) > 5 else ''}")
+        return 0
+    if act == "plan":
+        tgt = getattr(a, "target")
+        try:
+            sa.gate(tgt, getattr(a, "scope_file", None))
+            ok, why = True, "in scope"
+        except sa.ScopeError as e:
+            ok, why = False, str(e)
+        if not ok:
+            print(f"✗ {tgt} OUT OF SCOPE — {why}")
+            return 1
+        rows = []
+        for t in tools:
+            cap, cls, plan, tpl = _ar.ARSENAL[t]
+            if callable(tpl):
+                argv = [t] + list(tpl(tgt, getattr(a, "wordlist", None) or None))
+            else:
+                argv = [t] + [x.replace("{t}", tgt).replace(
+                    "{x}", str(getattr(a, "wordlist", "") or "")) for x in (tpl or [])]
+            rows.append(f"  {t:28s} {' '.join(map(str, argv[:6]))}…")
+        print(f"═══ {a.cmd} plan for {tgt} — {len(tools)} tools (DRY RUN, scope ✓) ═══\n" + "\n".join(rows[:120]))
+        return 0
+    return 2
 
 
 def _dispatch(a) -> int:
@@ -6888,6 +7014,8 @@ def _dispatch(a) -> int:
         return cmd_bench(a)
     if a.cmd == "fleet":
         return cmd_fleet(a)
+    if a.cmd in DOMAINS:
+        return cmd_domain(a)
     return 2
 
 

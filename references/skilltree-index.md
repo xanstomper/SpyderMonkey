@@ -758,6 +758,13 @@ _WSTG/CWE/ATT&CK-bound, lazy-loaded. regenerate: skilltree.py_
 - [WSTG Information Gathering (WSTG-INFO)](skills/spydermonkey/attack-canon/spydermonkey-attack-canon-wstg-information-gathering-wstg-in.md) — `spydermonkey/attack-canon` · WSTG-INFO · CWE-200 · T1592
 - [WSTG Input Validation Testing (WSTG-INPT)](skills/spydermonkey/attack-canon/spydermonkey-attack-canon-wstg-input-validation-testing-wstg.md) — `spydermonkey/attack-canon` · WSTG-INPV · CWE-74 · T1190
 - [WSTG Session Management Testing (WSTG-SESS)](skills/spydermonkey/attack-canon/spydermonkey-attack-canon-wstg-session-management-testing-ws.md) — `spydermonkey/attack-canon` · WSTG-SESS · CWE-384 · T1550
+- [Channel classes](skills/spydermonkey/c2-canon/spydermonkey-c2-canon-channel-classes.md) — `spydermonkey/c2-canon` · WSTG-CLNT-05 · CWE-345 · T1557
+- [Infrastructure discipline](skills/spydermonkey/c2-canon/spydermonkey-c2-canon-infrastructure-discipline.md) — `spydermonkey/c2-canon` · WSTG-INPV-06 · CWE-601 · T1190
+- [Pivot & tunnel classes](skills/spydermonkey/c2-canon/spydermonkey-c2-canon-pivot-tunnel-classes.md) — `spydermonkey/c2-canon` · MASTG-RES · CWE-288 · T1557
+- [Azure data-plane surface](skills/spydermonkey/cloud-azure-gcp-canon/spydermonkey-cloud-azure-gcp-canon-azure-data-plane-surface.md) — `spydermonkey/cloud-azure-gcp-canon` · WSTG-SESS · CWE-287 · T1528
+- [Azure identity surface](skills/spydermonkey/cloud-azure-gcp-canon/spydermonkey-cloud-azure-gcp-canon-azure-identity-surface.md) — `spydermonkey/cloud-azure-gcp-canon` · WSTG-ATHN · CWE-287 · T1111
+- [Cross-cloud attack paths (own estate)](skills/spydermonkey/cloud-azure-gcp-canon/spydermonkey-cloud-azure-gcp-canon-cross-cloud-attack-paths-.md) — `spydermonkey/cloud-azure-gcp-canon` · WSTG-BUSL-08 · CWE-841 · T1574
+- [GCP identity surface](skills/spydermonkey/cloud-azure-gcp-canon/spydermonkey-cloud-azure-gcp-canon-gcp-identity-surface.md) — `spydermonkey/cloud-azure-gcp-canon` · MASTG-RES · CWE-494 · T1601
 - [Cloud Assume-Role Trust Confusion (CLOUD-IAM-03)](skills/spydermonkey/cloud-canon/spydermonkey-cloud-canon-cloud-assume-role-trust-confusion-c.md) — `spydermonkey/cloud-canon` · WSTG-INFO · CWE-200 · T1592
 - [Cloud Azure AD App Registration Overreach (CLOUD-AZ-03)](skills/spydermonkey/cloud-canon/spydermonkey-cloud-canon-cloud-azure-ad-app-registration-ove.md) — `spydermonkey/cloud-canon` · WSTG-CRYPTO-04 · CWE-329 · T1573
 - [Cloud Azure Managed Identity Abuse Surface (CLOUD-AZ-01)](skills/spydermonkey/cloud-canon/spydermonkey-cloud-canon-cloud-azure-managed-identity-abuse-.md) — `spydermonkey/cloud-canon` · WSTG-SESS · CWE-287 · T1528
@@ -782,6 +789,19 @@ _WSTG/CWE/ATT&CK-bound, lazy-loaded. regenerate: skilltree.py_
 - [Cloud Object Storage Public Exposure (CLOUD-OBJ-01)](skills/spydermonkey/cloud-canon/spydermonkey-cloud-canon-cloud-object-storage-public-exposur.md) — `spydermonkey/cloud-canon` · WSTG-BUSL-08 · CWE-841 · T1574
 - [Cloud Serverless Event Injection (CLOUD-LAMBDA-01)](skills/spydermonkey/cloud-canon/spydermonkey-cloud-canon-cloud-serverless-event-injection-cl.md) — `spydermonkey/cloud-canon` · WSTG-INPV · CWE-74 · T1190
 - [Cloud Serverless Secrets in Environment (CLOUD-LAMBDA-02)](skills/spydermonkey/cloud-canon/spydermonkey-cloud-canon-cloud-serverless-secrets-in-environ.md) — `spydermonkey/cloud-canon` · WSTG-CONF-04 · CWE-530 · T1552
+- [Attack-path classes (validation)](skills/spydermonkey/container-canon/spydermonkey-container-canon-attack-path-classes-validation.md) — `spydermonkey/container-canon` · WSTG-SESS · CWE-287 · T1528
+- [Container host surface](skills/spydermonkey/container-canon/spydermonkey-container-canon-container-host-surface.md) — `spydermonkey/container-canon` · MASTG-RES · CWE-288 · T1557
+- [Kubernetes surface](skills/spydermonkey/container-canon/spydermonkey-container-canon-kubernetes-surface.md) — `spydermonkey/container-canon` · WSTG-BUSL-06 · CWE-294 · T1550
+- [Cipher-mode & padding classes](skills/spydermonkey/crypto-canon/spydermonkey-crypto-canon-cipher-mode-padding-classes.md) — `spydermonkey/crypto-canon` · WSTG-SESS · CWE-287 · T1528
+- [Crypto inventory — what the estate uses](skills/spydermonkey/crypto-canon/spydermonkey-crypto-canon-crypto-inventory-what-the-estate-u.md) — `spydermonkey/crypto-canon` · WSTG-BUSL-08 · CWE-841 · T1574
+- [Hashing & password storage](skills/spydermonkey/crypto-canon/spydermonkey-crypto-canon-hashing-password-storage.md) — `spydermonkey/crypto-canon` · MASTG-RES · CWE-288 · T1557
+- [JWT & session-token crypto](skills/spydermonkey/crypto-canon/spydermonkey-crypto-canon-jwt-session-token-crypto.md) — `spydermonkey/crypto-canon` · WSTG-SESS · CWE-287 · T1528
+- [Known-key & entity attacks (own keys)](skills/spydermonkey/crypto-canon/spydermonkey-crypto-canon-known-key-entity-attacks-own-keys.md) — `spydermonkey/crypto-canon` · WSTG-CONF-04 · CWE-530 · T1552
+- [RNG & entropy](skills/spydermonkey/crypto-canon/spydermonkey-crypto-canon-rng-entropy.md) — `spydermonkey/crypto-canon` · WSTG-BUSL-08 · CWE-841 · T1574
+- [TLS protocol-layer classes](skills/spydermonkey/crypto-canon/spydermonkey-crypto-canon-tls-protocol-layer-classes.md) — `spydermonkey/crypto-canon` · MASTG-RES · CWE-288 · T1557
+- [Fingerprint inventory](skills/spydermonkey/domtake-canon/spydermonkey-domtake-canon-fingerprint-inventory.md) — `spydermonkey/domtake-canon` · MASTG-RES · CWE-288 · T1557
+- [Takeover classes](skills/spydermonkey/domtake-canon/spydermonkey-domtake-canon-takeover-classes.md) — `spydermonkey/domtake-canon` · MASTG-RES · CWE-288 · T1557
+- [Verification discipline](skills/spydermonkey/domtake-canon/spydermonkey-domtake-canon-verification-discipline.md) — `spydermonkey/domtake-canon` · WSTG-BUSL-08 · CWE-841 · T1574
 - [Auth-backend mint lanes: probe state-creation oracles; clear the captcha-free ATO primitives with evidence](skills/spydermonkey/engagement-ops/spydermonkey-engagement-ops-auth-backend-mint-lanes-probe-st.md) — `spydermonkey/engagement-ops` · WSTG-BUSL-08 · CWE-841 · T1574
 - [Background delegation: pin a working provider or the fan-out dies silently](skills/spydermonkey/engagement-ops/spydermonkey-engagement-ops-background-delegation-pin-a-work.md) — `spydermonkey/engagement-ops` · WSTG-BUSL-08 · CWE-841 · T1574
 - [Bridging the holyleadger into the spydermonkey control plane](skills/spydermonkey/engagement-ops/spydermonkey-engagement-ops-bridging-the-holyleadger-into-th.md) — `spydermonkey/engagement-ops` · WSTG-BUSL-08 · CWE-841 · T1574
@@ -825,6 +845,13 @@ _WSTG/CWE/ATT&CK-bound, lazy-loaded. regenerate: skilltree.py_
 - [Real campaigns vs engine artifacts](skills/spydermonkey/ledger-dump/spydermonkey-ledger-dump-real-campaigns-vs-engine-artifacts.md) — `spydermonkey/ledger-dump` · WSTG-BUSL · CWE-200 · T1005
 - [Sister brands have no own files](skills/spydermonkey/ledger-dump/spydermonkey-ledger-dump-sister-brands-have-no-own-files.md) — `spydermonkey/ledger-dump` · WSTG-CONF-04 · CWE-530 · T1552
 - [The two stores](skills/spydermonkey/ledger-dump/spydermonkey-ledger-dump-the-two-stores.md) — `spydermonkey/ledger-dump` · WSTG-INFO · CWE-200 · T1592
+- [Delivery & spoof classes](skills/spydermonkey/mail-canon/spydermonkey-mail-canon-delivery-spoof-classes.md) — `spydermonkey/mail-canon` · WSTG-BUSL-08 · CWE-841 · T1574
+- [DNS posture](skills/spydermonkey/mail-canon/spydermonkey-mail-canon-dns-posture.md) — `spydermonkey/mail-canon` · WSTG-CONF-09 · CWE-350 · T1584
+- [SMTP surface](skills/spydermonkey/mail-canon/spydermonkey-mail-canon-smtp-surface.md) — `spydermonkey/mail-canon` · WSTG-ATHN · CWE-287 · T1111
+- [Campaign linkage](skills/spydermonkey/malware-canon/spydermonkey-malware-canon-campaign-linkage.md) — `spydermonkey/malware-canon` · WSTG-BUSL-08 · CWE-841 · T1574
+- [Dynamic analysis (own sandbox)](skills/spydermonkey/malware-canon/spydermonkey-malware-canon-dynamic-analysis-own-sandbox.md) — `spydermonkey/malware-canon` · WSTG-CONF-04 · CWE-530 · T1552
+- [Persistence & evasion classes](skills/spydermonkey/malware-canon/spydermonkey-malware-canon-persistence-evasion-classes.md) — `spydermonkey/malware-canon` · WSTG-INPV · CWE-74 · T1190
+- [Static triage](skills/spydermonkey/malware-canon/spydermonkey-malware-canon-static-triage.md) — `spydermonkey/malware-canon` · WSTG-CONF-04 · CWE-530 · T1552
 - [Capability Announcement (deliver on entry)](skills/spydermonkey/mandate/spydermonkey-mandate-capability-announcement-deliver-on-entr.md) — `spydermonkey/mandate` · WSTG-ATHZ-04 · CWE-639 · T1068
 - [What was adopted from kimiko (and what was not)](skills/spydermonkey/mandate/spydermonkey-mandate-what-was-adopted-from-kimiko-and-what-w.md) — `spydermonkey/mandate` · WSTG-ATHN · CWE-287 · T1111
 - [MASTG Anti-Tampering (MASTG-RESILIENCE-02)](skills/spydermonkey/mobile-canon/spydermonkey-mobile-canon-mastg-anti-tampering-mastg-resilie.md) — `spydermonkey/mobile-canon` · WSTG-INFO · CWE-200 · T1592
@@ -845,9 +872,27 @@ _WSTG/CWE/ATT&CK-bound, lazy-loaded. regenerate: skilltree.py_
 - [MASTG Session Handling on Mobile (MASTG-AUTH-01)](skills/spydermonkey/mobile-canon/spydermonkey-mobile-canon-mastg-session-handling-on-mobile-m.md) — `spydermonkey/mobile-canon` · WSTG-ATHN · CWE-287 · T1111
 - [MASTG Weak Cryptography (MASTG-CRYPTO-02)](skills/spydermonkey/mobile-canon/spydermonkey-mobile-canon-mastg-weak-cryptography-mastg-cryp.md) — `spydermonkey/mobile-canon` · MASTG-RES · CWE-288 · T1557
 - [MASTG WebView JS Bridge (MASTG-PLATFORM-05)](skills/spydermonkey/mobile-canon/spydermonkey-mobile-canon-mastg-webview-js-bridge-mastg-plat.md) — `spydermonkey/mobile-canon` · MASTG-PLATFORM · CWE-749 · T1557
+- [Collection hygiene](skills/spydermonkey/osint-deep-canon/spydermonkey-osint-deep-canon-collection-hygiene.md) — `spydermonkey/osint-deep-canon` · WSTG-ATHN · CWE-287 · T1111
+- [Discovery layer (authorized/bfe)](skills/spydermonkey/osint-deep-canon/spydermonkey-osint-deep-canon-discovery-layer-authorized-bfe.md) — `spydermonkey/osint-deep-canon` · WSTG-ATHN · CWE-287 · T1111
+- [Identity layer](skills/spydermonkey/osint-deep-canon/spydermonkey-osint-deep-canon-identity-layer.md) — `spydermonkey/osint-deep-canon` · WSTG-ATHN-09 · CWE-287 · T1111
+- [Infrastructure layer](skills/spydermonkey/osint-deep-canon/spydermonkey-osint-deep-canon-infrastructure-layer.md) — `spydermonkey/osint-deep-canon` · WSTG-ATHN · CWE-287 · T1111
+- [Linux — escalation classes (validation-only)](skills/spydermonkey/privesc-canon/spydermonkey-privesc-canon-linux-escalation-classes-validati.md) — `spydermonkey/privesc-canon` · MASTG-RES · CWE-288 · T1557
+- [Linux — identity & permissions inventory](skills/spydermonkey/privesc-canon/spydermonkey-privesc-canon-linux-identity-permissions-invent.md) — `spydermonkey/privesc-canon` · WSTG-SESS · CWE-384 · T1550
+- [Windows — escalation classes (validation-only)](skills/spydermonkey/privesc-canon/spydermonkey-privesc-canon-windows-escalation-classes-valida.md) — `spydermonkey/privesc-canon` · WSTG-SESS · CWE-287 · T1528
+- [Windows — identity & posture](skills/spydermonkey/privesc-canon/spydermonkey-privesc-canon-windows-identity-posture.md) — `spydermonkey/privesc-canon` · WSTG-SESS · CWE-287 · T1528
+- [Discovery & identity](skills/spydermonkey/scada-canon/spydermonkey-scada-canon-discovery-identity.md) — `spydermonkey/scada-canon` · WSTG-INPV-05 · CWE-89 · T1190
+- [Field-bus & embedded](skills/spydermonkey/scada-canon/spydermonkey-scada-canon-field-bus-embedded.md) — `spydermonkey/scada-canon` · WSTG-BUSL-06 · CWE-294 · T1550
+- [Protocol-logic classes (read-only)](skills/spydermonkey/scada-canon/spydermonkey-scada-canon-protocol-logic-classes-read-only.md) — `spydermonkey/scada-canon` · WSTG-ATHN · CWE-287 · T1111
+- [Campaign surfaces (authorized only)](skills/spydermonkey/social-canon/spydermonkey-social-canon-campaign-surfaces-authorized-only.md) — `spydermonkey/social-canon` · WSTG-ATHN · CWE-287 · T1111
+- [Human-layer indicators (OSINT only)](skills/spydermonkey/social-canon/spydermonkey-social-canon-human-layer-indicators-osint-only.md) — `spydermonkey/social-canon` · WSTG-BUSL-08 · CWE-841 · T1574
+- [Simulated-campaign protocol](skills/spydermonkey/social-canon/spydermonkey-social-canon-simulated-campaign-protocol.md) — `spydermonkey/social-canon` · WSTG-ATHN · CWE-287 · T1111
 - [A. String-table decoder replay (javascript-obfuscator)](skills/spydermonkey/spa-bundle-extraction/spydermonkey-spa-bundle-extraction-a-string-table-decoder-re.md) — `spydermonkey/spa-bundle-extraction` · WSTG-BUSL-06 · CWE-294 · T1550
 - [B. Plaintext support files are a free feature map](skills/spydermonkey/spa-bundle-extraction/spydermonkey-spa-bundle-extraction-b-plaintext-support-files.md) — `spydermonkey/spa-bundle-extraction` · WSTG-ATHN · CWE-287 · T1111
 - [C. Wildcard certs hide hosts from CT logs — DNS wordlist instead](skills/spydermonkey/spa-bundle-extraction/spydermonkey-spa-bundle-extraction-c-wildcard-certs-hide-hos.md) — `spydermonkey/spa-bundle-extraction` · WSTG-ATHN · CWE-287 · T1111
+- [Audio carriers](skills/spydermonkey/stego-canon/spydermonkey-stego-canon-audio-carriers.md) — `spydermonkey/stego-canon` · WSTG-INFO · CWE-200 · T1592
+- [Detection & hygiene classes](skills/spydermonkey/stego-canon/spydermonkey-stego-canon-detection-hygiene-classes.md) — `spydermonkey/stego-canon` · WSTG-INFO · CWE-200 · T1592
+- [Image carriers](skills/spydermonkey/stego-canon/spydermonkey-stego-canon-image-carriers.md) — `spydermonkey/stego-canon` · MASTG-RES · CWE-288 · T1557
+- [Other carriers](skills/spydermonkey/stego-canon/spydermonkey-stego-canon-other-carriers.md) — `spydermonkey/stego-canon` · PTES-OPSEC · CWE-200 · T1070
 - [.git /.env /backup discovery discipline](skills/spydermonkey/technique-canon/spydermonkey-technique-canon-git-env-backup-discovery-discip.md) — `spydermonkey/technique-canon` · WSTG-CONF-04 · CWE-530 · T1552
 - [Basic-auth and form brute geometry](skills/spydermonkey/technique-canon/spydermonkey-technique-canon-basic-auth-and-form-brute-geome.md) — `spydermonkey/technique-canon` · WSTG-ATHN · CWE-287 · T1111
 - [CI pipeline config exposure (.circleci/.github workflows)](skills/spydermonkey/technique-canon/spydermonkey-technique-canon-ci-pipeline-config-exposure-cir.md) — `spydermonkey/technique-canon` · WSTG-CONF-04 · CWE-538 · T1552

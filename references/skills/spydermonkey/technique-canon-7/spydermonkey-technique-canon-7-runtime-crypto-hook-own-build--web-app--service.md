@@ -1,0 +1,37 @@
+# Runtime crypto hook (own-build/lab) — web-app / service
+
+- source canon: `spydermonkey/technique-canon-7.md`
+- base technique: `spydermonkey-technique-canon-7-runtime-crypto-hook-own-build.md`
+- bindings: **WSTG-BUSL** · **CWE-200** · **ATT&CK T1005**
+- context: **web-app** · auth **service** · chain role **pivot**
+
+## Route
+
+- probes: `sslscan`, `sslyze`, `testssl`, `tlsx`, `ssh-audit`, `openssl`, `nmap-ssl-ciphers`, `nmap-script-ssl`, `ssh-keyscan`
+- chains: `tls`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
+## Context
+
+- platform: strike through the browser/proxy path; the 3-gate differential runs on the reflected/accepted value
+- auth state: a daemon/listener identity — the probe targets what the service can see and invoke, not what a human session can
+
+## The technique
+
+Hooking crypto APIs of YOUR OWN build to observe signing material flow (the mkey/securityKey class) — the dataflow map is the finding; the hook runs on your device only.
+
+## Probe adjustment (web-app × service)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

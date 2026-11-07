@@ -5,6 +5,41 @@ the dispatcher release (`SKILL.md` frontmatter).
 
 
 
+## v6.0.0 — THE QUINTUPLE (2026-11-07)
+
+- **Arsenal 293 → 1,600 real tool wrappers (5.46x).** New `arsenal_domain.py`:
+  ~700 curated real tools (web/cms/api/cloud/container/mobile/privesc/forensics/
+  stego/c2/tunnel/SCADA/osint depth), the FULL nmap NSE tier (725 wrappers —
+  273 curated + 387 verified against nmap/master scripts/script.db, fetched
+  live), the impacket suite (41), and 78 documented Metasploit module
+  wrappers. Discovery-based, scope-gated, never overwrites an existing entry.
+- **Feeding chains 30 → 150 (5x exactly).** 120 new: 78 curated
+  (ad-kerberos, cloud-aws, wifi-wpa, ble-gatt, stego-images, forensics-memory,
+  malware-static, privesc-linux, c2-callback, osint-people, web-ssti …) +
+  per-class (cls-*) + per-class full sweeps. Deterministic, asserted == 150.
+- **MCP 86 → 430 tools (5x exactly).** Single source of truth: mcp_server
+  imports the live arsenal registry. 150 `arsenal_chain_*` + 60
+  `arsenal_class_*` sweeps + 165 `arsenal_tool_*` per-binary + 55 fixed.
+- **CLI 40 → 72 top-level (232 dispatchable) commands.** 32 new domain
+  commands × 5 actions (list|show|tools|chains|plan) — live registry views +
+  scope-checked dry-run plans.
+- **Catalog 1,053 → 1,686 (real sources).** +14 hw (v5.17) + 619 canonical
+  nmap script.db entries fetched from nmap/nmap@master.
+- **Corpus 33,687 → ~178k files (5.3x).** Generator dimensions scaled: auth
+  states 5 → 9 (unauth/low/high/federated/machine/root/service/guest/expired),
+  platform lists per pattern grew to include the full surface set (+7
+  cross-platform dims: browser/gateway/worker/wasm/iot-edge/mesh/edge-node),
+  and 12 new canon volumes authored (crypto, privesc, container, scada,
+  malware, c2, social, mail, cloud-azure-gcp, stego, domtake, osint-deep).
+  skilltree --verify ALL PASS, 0 orphans.
+- **Dojo 16 → 80 classes (5x).** The surface tier: 16 flaw archetypes × 4
+  delivery surfaces (API/MQTT/DEVICE/CLOUD) = 64 generated replicas, all
+  bench-CONFIRMED live on 127.0.0.1 (0 failures).
+- Verified: selftest · ci_smoke · skilltree verify · dojo 80-class bench ·
+  tests. Both trees pushed; origin verified.
+
+
+
 ## v5.17.0 — THE HARDWARE DOMAIN (2026-11-07)
 
 - **`arsenal_hw.py` — the real hardware execution layer.** 35 new scope-gated

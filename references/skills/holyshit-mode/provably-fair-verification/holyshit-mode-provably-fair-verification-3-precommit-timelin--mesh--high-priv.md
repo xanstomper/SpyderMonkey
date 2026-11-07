@@ -1,0 +1,49 @@
+# 3. Precommit-timeline check (the structural finding) — mesh / high-priv
+
+- source canon: `holyshit-mode/provably-fair-verification.md`
+- base technique: `holyshit-mode-provably-fair-verification-3-precommit-timelin.md`
+- bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
+- context: **mesh** · auth **high-priv** · chain role **pivot**
+
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
+## Context
+
+- platform: service-mesh sidecar surface — own mesh, read-only mTLS posture
+- auth state: the baseline IS the privileged session; test downgrade paths (mass-assign, state-bypass)
+
+## The technique
+
+Inventory the pre-round event payloads (`game_starting`, `game_started`, ...). ZERO
+hash/seed/commitment fields pre-round = nothing publicly binds the outcome before bets
+close. Phrase it precisely: "not verifiable on any publicly-checkable channel" — the
+burden of proof inverts to the operator (they claimed PF; the public wire can't show
+it). A hash delivered in the SAME event as the outcome is unfalsifiable by construction.
+
+**Semantics check before scoring any pre-round value as a commitment:** verify what the
+value MEANS in the game rules, not just that it appears pre-round. Some pre-round values
+are the game's public STATE by design — hilo publishes the current reference card
+(`apriori {color, number}`) so players can bet higher/lower AGAINST it; calling that an
+outcome pre-commit manufactures a fake finding (and the correction later undermines the
+whole report). Only a value that binds the OUTCOME (seed/hash/randomness consumed by the
+result) counts. Read the game's rules chunk or the operator's PF explainer before rating.
+
+## Probe adjustment (mesh × high-priv)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

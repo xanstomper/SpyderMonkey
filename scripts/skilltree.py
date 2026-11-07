@@ -364,6 +364,7 @@ def emit(args):
             f"# {title}\n\n"
             f"- source canon: `{src}.md`\n- bindings: **{w}** · **{c}** · **ATT&CK {a}**\n"
             f"- generated: {generated}\n\n"
+            f"{_route_md(f'{title} {body}')}\n"
             f"## The technique\n\n{body}\n\n"
             f"## Family use\n\n- decisive-test shape lives in the source canon\n"
             f"- walls: validation-only · NO-GAIN · documented-class adaptation only\n")
@@ -388,61 +389,65 @@ LINK_RE = re.compile(
 
 # ── the corpus expander (scale): technique × platform × auth = the 7k+ library ─
 
+EXTRA_PLATFORMS = ["browser", "gateway", "worker", "wasm", "iot-edge",
+                  "mesh", "edge-node"]
+
 DOMAIN_PLATFORMS = [
     (r"firmware|uart|flash|ota|\bble\b|radio|rfid|nfc|hardware|jtag|keychain|webview|deep.?link|allowbackup|android|ios|mastg",
-     ["android", "ios", "firmware", "iot"]),
+     ["android", "ios", "firmware", "iot", "embedded", "mobile", "wireless"] + EXTRA_PLATFORMS),
     (r"container|kubernetes|docker|kube|pod|ci|pipeline|registry|etcd|kubelet|service.?account",
-     ["container", "kubernetes", "cloud", "ci-cd"]),
+     ["container", "kubernetes", "cloud", "ci-cd", "host", "linux"] + EXTRA_PLATFORMS),
     (r"kerberos|windows|active.?directory|domain controller|samr|null.?session|as-rep|kerberoast|smb|rpcclient",
-     ["windows", "host", "cloud"]),
+     ["windows", "host", "cloud", "linux", "macos"] + EXTRA_PLATFORMS),
     (r"\baws\b|\bs3\b|bucket|azure|\bgcp\b|cloud|iam|lambda|terraform|iac|imds|metadata|sas|blob|gcs|lambda",
-     ["aws", "azure", "gcp", "kubernetes", "iac"]),
+     ["aws", "azure", "gcp", "kubernetes", "iac", "serverless", "cloud", "host"] + EXTRA_PLATFORMS),
     (r"graphql|api|websocket|jwt|session|auth|token|oauth|sso|cookie|grpc|cswsh|h2c|http2|continuation|ja3|deserial|pickle|viewstate|mongo|cassandra",
-     ["web-app", "api", "graphql", "websocket", "mobile-api", "grpc"]),
+     ["web-app", "api", "graphql", "websocket", "mobile-api", "grpc", "host", "windows", "linux"] + EXTRA_PLATFORMS),
     (r"sudo|suid|privesc|lateral|kernel|linux|\bssh\b|\bhost\b|systemd",
-     ["linux", "windows", "container"]),
+     ["linux", "windows", "container", "macos", "host"] + EXTRA_PLATFORMS),
     (r"dns|subdomain|takeover|domtake|cname|edge|cache|cdn|header|smuggl|mail|spf|dmarc|dkim|smtp|mta-sts|bimi|caa|dnssec",
-     ["edge", "dns", "web-app", "mail"]),
+     ["edge", "dns", "web-app", "mail", "host", "container"] + EXTRA_PLATFORMS),
     (r"cors|xss|csrf|clickjacking|prototype|dom\b|postmessage|service.?worker|xs.?leak|css",
-     ["web-app", "api"]),
+     ["web-app", "api", "host", "mobile"] + EXTRA_PLATFORMS),
     (r"sql|nosql|injection|ldap|\bcmd\b|ssti|deserial|upload|traversal|xxe|mysql|postgres|mssql|sqlite|oracle|nosql|ssrf|gopher|rebind",
-     ["web-app", "api", "container"]),
+     ["web-app", "api", "container", "db", "host", "cloud", "windows", "linux"] + EXTRA_PLATFORMS),
     (r"payment|price|coupon|cart|logic|math|rounding|race|replay|idempoten|webhook|voucher|subscription|referral|cashback|concurrent|entitle",
-     ["web-app", "api", "mobile"]),
+     ["web-app", "api", "mobile", "host"] + EXTRA_PLATFORMS),
     (r"backup|dump|\.env|\.git|secret|harvest|sourcemap|disclosure|info|linkfinder|artifact",
-     ["web-app", "api", "container"]),
-    (r"rate|brute|password|reset|\bmfa\b|\botp\b", ["web-app", "api", "mobile"]),
+     ["web-app", "api", "container", "db", "host", "cloud", "windows", "linux"] + EXTRA_PLATFORMS),
+    (r"rate|brute|password|reset|\bmfa\b|\botp\b", ["web-app", "api", "mobile", "host"] + EXTRA_PLATFORMS),
     (r"wordpress|joomla|drupal|\bcms\b|wp-json|plugin|theme",
-     ["web-app", "api"]),
+     ["web-app", "api", "host", "mobile"] + EXTRA_PLATFORMS),
     (r"sanitize|vantage|timeline|trail|opsec|anonym|alias|artifact",
-     ["external", "host"]),
+     ["external", "host", "mobile"] + EXTRA_PLATFORMS),
     (r"nginx|apache|iis|tomcat|spring|django|rails|laravel|express|next|nuxt|actuator|framework|server",
-     ["web-app", "api", "host"]),
+     ["web-app", "api", "host", "container"] + EXTRA_PLATFORMS),
     (r"elasticsearch|memcached|clickhouse|couchdb|influxdb|psql|mysql|mongosh|\bdb\b|database",
-     ["db", "container", "host"]),
+     ["db", "container", "host", "cloud"] + EXTRA_PLATFORMS),
     (r"rabbitmq|kafka|queue|pub.?sub|stream|amqp",
-     ["queue", "container", "api"]),
+     ["queue", "container", "api", "host"] + EXTRA_PLATFORMS),
     (r"rdp|vnc|openvpn|wireguard|vpn|bastion|remote.?access|\bnla\b",
-     ["host", "windows", "linux"]),
+     ["host", "windows", "linux", "macos"] + EXTRA_PLATFORMS),
     (r"ble|sdr|nfc|rfid|wifi|wpa|uart|jtag|spi|glitch|hardware|radio",
-     ["iot", "wireless", "embedded"]),
+     ["iot", "wireless", "embedded", "mobile", "firmware"] + EXTRA_PLATFORMS),
     (r"modbus|bacnet|scada|ics|hmi|historian|plc",
-     ["embedded", "host"]),
+     ["embedded", "host", "scada", "network"] + EXTRA_PLATFORMS),
     (r"dependency|supply.?chain|confusion|pipeline|cache.?poison|action",
-     ["ci-cd", "container", "web-app"]),
+     ["ci-cd", "container", "web-app", "cloud"] + EXTRA_PLATFORMS),
     (r"padding|ecb|\biv\b|crypto|cipher|hmac|prng|entropy|length.?extension|key.?material|signature",
-     ["web-app", "api", "host"]),
+     ["web-app", "api", "host", "container"] + EXTRA_PLATFORMS),
     (r"logcat|clipboard|keychain|webview|deep.?link|allowbackup|apk|assetlinks|mastg|app.?link|backup.?sync",
-     ["android", "ios", "mobile"]),
+     ["android", "ios", "mobile", "firmware"] + EXTRA_PLATFORMS),
     (r"bundle|chunk|string.?table|wire.?format|packet.?type|wasm|loader|sdk|decompile",
-     ["web-app", "api", "host"]),
+     ["web-app", "api", "host", "container"] + EXTRA_PLATFORMS),
     (r"vhost|origin.?cert|526|geoblock|edge|cdn|cache.?key|header.?posture",
-     ["edge", "web-app", "lb"]),
+     ["edge", "web-app", "lb", "host"] + EXTRA_PLATFORMS),
     (r"dedupe|grading|ceiling|hypothesis|ledger.?discipline|report",
-     ["external", "host"]),
+     ["external", "host", "mobile"] + EXTRA_PLATFORMS),
 ]
 DEFAULT_PLATFORMS = ["web-app", "api", "host"]
-AUTH_STATES = ("unauth", "low-priv", "high-priv", "federated", "machine")
+AUTH_STATES = ("unauth", "low-priv", "high-priv", "federated", "machine",
+               "root", "service", "guest", "expired")
 # the hardened state is REAL, not filler: it only applies to technique families
 # where a WAF/filter tier actually changes the probe shape
 _HARDENED_RE = re.compile(
@@ -486,6 +491,18 @@ PLATFORM_ADJ = {
     "lb": "routing/header-trust differentials at the edge tier — the treatment matrix is the finding",
     "wireless": "LAB-ONLY — your own radios and stations; third-party airwaves are the absolute wall",
     "embedded": "banner/identity reads only on in-scope industrial tiers — control writes are the absolute wall",
+    "macos": "darwin surface — read-only inventory first; the documented class applies to the same daemon/services layer",
+    "serverless": "function identity + env surface — read-only enumeration, crowns as the control-plane class",
+    "scada": "protocol banners and register READS on own controllers only — writes are the absolute wall",
+    "network": "infrastructure-plane inventory (routes, ACL reachability) — read-only, no traffic manipulation",
+    "mobile": "the client is another principal — storage/permission surface, own device only",
+    "browser": "the CLIENT is the boundary — same-origin, extension, and postMessage trust are the probe shape",
+    "gateway": "api/front-door tier — routing and authn decisions here are the differential",
+    "worker": "edge/background runtime — the check runs where the caller has no visible context",
+    "wasm": "sandbox internals — memory/import surface, own compiled artifact only",
+    "iot-edge": "device-adjacent runtime at the edge — own devices, lab network",
+    "mesh": "service-mesh sidecar surface — own mesh, read-only mTLS posture",
+    "edge-node": "cdn/origin edge — cache key and origin-pull trust are the class surface",
     "desktop": "thick-client IPC/update channels — characterize from your own installed build",
 }
 AUTH_ADJ = {
@@ -498,12 +515,71 @@ AUTH_ADJ = {
     "machine": "the principal is a SERVICE identity (API key, SA token, CI secret, webhook signing key): the "
                "differential is the KEY's resource scope — key-level vs user-level objects, cross-tenant reach, "
                "unscoped keys, and which audit trail the key leaves; the human account model does not apply",
+    "expired": "the credential/session has lapsed — the class probes reuse, reactivation, and the no-revoke gap",
+    "root": "the highest local principal — confirm the class from the top down (downgrade/view-as tests, "
+            "no-gain reads are the crown)",
+    "service": "a daemon/listener identity — the probe targets what the service can see and invoke, "
+               "not what a human session can",
 }
 CHAIN_ROLES = {
     "entry": "opens the kill chain (first blood) — pairs with the info/harvest/recon findings",
     "pivot": "combines with a prior finding — chain detect pairs same-origin findings",
     "final": "the impact leg — shukaku prices what this rung reaches",
 }
+
+# v5.13 — THE ROUTE TABLE: class keyword → arsenal probes + chains. Every
+# generated technique file carries its exact routing so a model reads the
+# technique and immediately knows which live probes fire it.
+ROUTE = [
+    ("harvest", ["nmap-http-backup", "nmap-robots", "nmap-sitemap", "snallygaster",
+                 "wget-mirror", "httrack", "gau", "git-dumper", "trufflehog",
+                 "gitleaks"], ["exposure-sweep", "content"]),
+    ("crypto", ["sslscan", "sslyze", "testssl", "tlsx", "ssh-audit", "openssl",
+                "nmap-ssl-ciphers", "nmap-script-ssl", "ssh-keyscan"],
+                ["tls"]),
+    ("network", ["nmap", "masscan", "naabu", "zmap", "nc", "fping", "nmap-allports"],
+                ["net"]),
+    ("directory", ["gobuster", "ffuf", "dirsearch", "dirb", "feroxbuster", "wfuzz",
+                   "dirhunt"], ["content"]),
+    ("xss", ["dalfox", "xsstrike", "xsser"], ["web", "api"]),
+    ("domtake", ["subfinder", "amass", "dnsx", "subzy", "dnstwist", "dig-cname",
+                 "dig-axfr", "nuclei-takeover", "urlcrazy", "assetfinder",
+                 "findomain"], ["dns", "takeover-full", "osint"]),
+    ("mail", ["nmap-smtp-commands", "nmap-smtp-enum-users", "swaks", "dig-mx",
+              "dig-txt"], ["mail-full"]),
+    ("injection", ["sqlmap", "nosqlmap", "tplmap", "commix", "crlfuzz", "dotdotpwn",
+                   "nmap-http-sqli", "nmap-shellshock"], ["fuzz"]),
+    ("cms", ["wpscan", "cmseek", "droopescan", "cmsmap", "nmap-wp-plugins",
+             "nmap-drupal-enum"], ["cms-full"]),
+    ("cloud", ["s3scanner", "cloudbrute", "cloudlist", "kube-hunter", "shodan"],
+              ["cloud-full"]),
+    ("windows", ["smbclient", "rpcclient", "ldapsearch", "netexec", "enum4linux",
+                 "kerbrute", "smbmap", "nmap-smb-security"], ["win"]),
+    ("auth", ["httpx", "nuclei-tokens", "arjun", "kiterunner"], ["recon"]),
+    ("rate", ["nmap-slowloris-check", "curl"], ["web"]),
+    ("web", ["httpx", "whatweb", "webanalyze", "nmap-waf-fingerprint", "katana",
+             "gospider", "hakrawler"], ["recon", "web"]),
+]
+DEFAULT_ROUTE = (["nmap-script-default", "httpx", "whatweb", "webanalyze"],
+                 ["recon"])
+
+
+def _route_for(text):
+    t = text.lower()
+    for kw, probes, chains in ROUTE:
+        if kw in t:
+            return probes, chains
+    return DEFAULT_ROUTE
+
+
+def _route_md(text):
+    probes, chains = _route_for(text)
+    lines = ["## Route\n",
+             "- probes: " + ", ".join(f"`{p}`" for p in probes),
+             "- chains: " + ", ".join(f"`{c}`" for c in chains),
+             "- gate: every probe runs through the shared scope authority "
+             "(rc=1 out of estate); the 3-gate differential turns output into a finding\n"]
+    return "\n".join(lines)
 
 
 def _platforms_for(text):
@@ -561,6 +637,7 @@ def expand(json_mode=False, min_count=0):
                 f"# {title} — chain composition\n\n"
                 f"- source canon: `{src}.md`\n- base technique: `{base_slug}.md`\n"
                 f"- chain role: **{c_role}**\n\n"
+                f"{_route_md(f'{title} {body}')}\n"
                 f"## Chain roles\n\n- {c_role}\n\n"
                 f"## Pairing rule\n\n"
                 f"chain detect pairs same-origin findings (the `_origin()` key: "
@@ -595,6 +672,7 @@ def expand(json_mode=False, min_count=0):
                     f"- source canon: `{src}.md`\n- base technique: `{base_slug}.md`\n"
                     f"- bindings: **{w}** · **{c}** · **ATT&CK {a}**\n"
                     f"- context: **{plat}** · auth **{auth}** · chain role **{roles}**\n\n"
+                    f"{_route_md(f'{title} {body}')}\n"
                     f"## Context\n\n"
                     f"- platform: {PLATFORM_ADJ.get(plat, 'family probes cover the class')}\n"
                     f"- auth state: {AUTH_ADJ.get(auth, _HARDENED_ADJ)}\n\n"

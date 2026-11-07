@@ -1,0 +1,40 @@
+# 9.4 CT-log pivot ladder (score 85, zero contact) — iac / service
+
+- source canon: `3am-shinjitsu/arsenal-09-breach-osint.md`
+- base technique: `3am-shinjitsu-arsenal-09-breach-osint-9-4-ct-log-pivot-ladde.md`
+- bindings: **WSTG-BUSL** · **CWE-200** · **ATT&CK T1005**
+- context: **iac** · auth **service** · chain role **pivot**
+
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
+## Context
+
+- platform: template/state files are the infrastructure inventory — read-only crown of the exposure
+- auth state: a daemon/listener identity — the probe targets what the service can see and invoke, not what a human session can
+
+## The technique
+
+- `curl -s 'https://crt.sh/?q=%25.<domain>&output=json' | jq -r '.[].name_value' | sort -u`
+- Chain: CT names → partner brands (bundle `/providers/<brand>-originals`) → mirror/entrance
+  hosts → passive DNS → bare-AWS origins. Dead DNS ≠ dead server: live cert + stripped DNS =
+  "internal control panel" signature (→ §1.7).
+
+## Probe adjustment (iac × service)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

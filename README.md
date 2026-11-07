@@ -10,14 +10,14 @@
 the tree, the router, the autonomous kernel, the published benchmarks, and the full
 engagement pipeline in one stdlib-only CLI.**
 
-[![Version](https://img.shields.io/badge/version-5.17.0-blueviolet?style=for-the-badge)](#the-cli)
+[![Version](https://img.shields.io/badge/version-6.0.0-blueviolet?style=for-the-badge)](#the-cli)
 [![Python](https://img.shields.io/badge/python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](#quickstart)
 [![Platform](https://img.shields.io/badge/platform-Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](#quickstart)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?style=for-the-badge)](#why-its-so-powerful)
-[![Corpus](https://img.shields.io/badge/skill%20corpus-33%2C687%20files-blue?style=for-the-badge)](#the-skill-corpus-11683-files)
+[![Corpus](https://img.shields.io/badge/skill%20corpus-178k%20files-blue?style=for-the-badge)](#the-skill-corpus-11683-files)
 [![Self-play](https://img.shields.io/badge/self--play-14%2F14%20classes-success?style=for-the-badge)](#training--the-selfplay-loop)
 [![Bench](https://img.shields.io/badge/benchmark-100%25%20self%20·%2090.6%25%20cross--range-orange?style=for-the-badge)](#the-benchmarks)
-[![MCP](https://img.shields.io/badge/MCP-86%20tools-9146FF?style=for-the-badge)](#mcp--50-tools-for-every-client)
+[![MCP](https://img.shields.io/badge/MCP-430%20tools-9146FF?style=for-the-badge)](#mcp--50-tools-for-every-client)
 [![Discipline](https://img.shields.io/badge/discipline-model--agnostic%20·%20any%20LLM-9146FF?style=for-the-badge)](#the-mandate-discipline)
 [![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
 [![CI](https://github.com/xanstomper/spydermonkey/actions/workflows/verify.yml/badge.svg)](https://github.com/xanstomper/spydermonkey/actions/workflows/verify.yml)

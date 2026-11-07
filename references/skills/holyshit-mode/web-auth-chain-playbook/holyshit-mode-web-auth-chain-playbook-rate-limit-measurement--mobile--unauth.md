@@ -13,7 +13,7 @@
 
 ## Context
 
-- platform: family probes cover the class
+- platform: the client is another principal — storage/permission surface, own device only
 - auth state: no credential material — the classic differential applies as-is; absent auth = the authn-bypass class
 
 ## The technique

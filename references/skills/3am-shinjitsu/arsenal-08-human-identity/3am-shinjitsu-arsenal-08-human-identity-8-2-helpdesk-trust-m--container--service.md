@@ -1,0 +1,40 @@
+# 8.2 Helpdesk trust model (score 60, documentation only) — container / service
+
+- source canon: `3am-shinjitsu/arsenal-08-human-identity.md`
+- base technique: `3am-shinjitsu-arsenal-08-human-identity-8-2-helpdesk-trust-m.md`
+- bindings: **WSTG-ATHN-08** · **CWE-521** · **ATT&CK T1110**
+- context: **container** · auth **service** · chain role **pivot**
+
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
+## Context
+
+- platform: namespace/capability surface — read-only inventory, no escape execution
+- auth state: a daemon/listener identity — the probe targets what the service can see and invoke, not what a human session can
+
+## The technique
+
+- Public-facing support channels, documented identity-verification requirements (or their
+  absence), password-reset-over-phone policy in public docs.
+- Findings are PROSE ratings: "helpdesk reset requires account number only = MFA bypass
+  exposure" — no contact is ever made.
+
+## Probe adjustment (container × service)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

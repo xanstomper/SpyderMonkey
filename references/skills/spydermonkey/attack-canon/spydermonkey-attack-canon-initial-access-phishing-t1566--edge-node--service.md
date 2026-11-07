@@ -1,0 +1,39 @@
+# Initial Access Phishing (T1566) — edge-node / service
+
+- source canon: `spydermonkey/attack-canon.md`
+- base technique: `spydermonkey-attack-canon-initial-access-phishing-t1566.md`
+- bindings: **WSTG-BUSL-06** · **CWE-294** · **ATT&CK T1550**
+- context: **edge-node** · auth **service** · chain role **pivot**
+
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
+## Context
+
+- platform: cdn/origin edge — cache key and origin-pull trust are the class surface
+- auth state: a daemon/listener identity — the probe targets what the service can see and invoke, not what a human session can
+
+## The technique
+
+- class: spearphish attachment/link into a user
+- probe: LAB ONLY — the dojo replays the pattern; kage rules detect the trace
+- wall: REFUSED live against real users, no exceptions
+
+## Probe adjustment (edge-node × service)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

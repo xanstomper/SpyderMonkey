@@ -21,7 +21,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-VERSION = "5.17.0"
+import arsenal  # noqa: E402  (single source of truth for tools + chains)
+import arsenal_domain as ad  # noqa: E402  (class vocabulary / priority order)
+
+VERSION = "6.0.0"
 PROTOCOL = "2024-11-05"
 SM = str(Path(__file__).resolve().parent / "spydermonkey.py")
 NAME_RE = re.compile(r"^[a-z][a-z0-9_]{1,63}$")
@@ -715,12 +718,7 @@ def h_arsenal_run(a):
     return h_arsenal_chain(a)
 
 
-_CHAINS = ["recon", "web", "tls", "net", "dns", "content", "api", "services",
-           "cms", "win", "osint", "db", "takeover", "cloud", "packet", "fuzz",
-           "cve-sweep", "exposure-sweep", "takeover-full", "cloud-full",
-           "db-full", "mail-full", "cms-full",
-           "hw-wifi", "hw-ble", "hw-rfid", "hw-sdr", "hw-esp", "hw-iot",
-           "hw-audio"]
+_CHAINS = sorted(arsenal.CHAIN_NAMES)   # live registry — 150 at v6.0
 _CHAIN_INPUT = {
     "type": "object",
     "properties": {
@@ -744,6 +742,101 @@ for _c in _CHAINS:
                                  f"scope authority; dry_run=true plans without executing).",
                   "inputSchema": dict(_CHAIN_INPUT)})
     HANDLERS[f"arsenal_chain_{_c.replace('-', '_')}"] = h_arsenal_chain
+
+# v6.0 — class-sweep tier: one MCP tool per technique class (fires every
+# registered tool of that class through the shared scope gate).
+_MEMBERS = {}
+for _tn, (_cap, _cls, _plan, _tpl) in arsenal.ARSENAL.items():
+    for _c in (_cls if isinstance(_cls, (tuple, list)) else ()):
+        if isinstance(_c, str):
+            _MEMBERS.setdefault(_c, []).append(_tn)
+_CLASS_ORDER = list(dict.fromkeys(ad._CLASS_CHAIN_ORDER +
+                                  sorted(_MEMBERS)))
+_CLASS_SEL = []
+for _c in _CLASS_ORDER:
+    if _c in _MEMBERS and len(_CLASS_SEL) < 60:
+        _CLASS_SEL.append(_c)
+for _c in _CLASS_SEL:
+    TOOLS.append({"name": f"arsenal_class_{_c}",
+                  "description": f"Scope-gated sweep of every registered tool in the "
+                                 f"'{_c}' class ({len(_MEMBERS[_c])} tools; only "
+                                 f"installed ones fire; dry_run=true plans only).",
+                  "inputSchema": dict(_CHAIN_INPUT)})
+    _ONLY = ",".join(sorted(_MEMBERS[_c])[:24])
+    HANDLERS[f"arsenal_class_{_c}"] = (
+        lambda a, _o=_ONLY: _run_arsenal_only(a, _o))
+
+# v6.0 — tool-level tier: one MCP tool per named binary (web/dns/osint/hw
+# priority classes first, deterministic).
+_TOOL_LEVEL = []
+for _c in _CLASS_ORDER:
+    for _tn in sorted(_MEMBERS.get(_c, [])):
+        if _tn not in _TOOL_LEVEL:
+            _TOOL_LEVEL.append(_tn)
+_TOOL_LEVEL = _TOOL_LEVEL[:165]
+for _tn in _TOOL_LEVEL:
+    TOOLS.append({"name": f"arsenal_tool_{_tn.replace('-', '_').replace('.', '_')}",
+                  "description": f"Scope-gated execution of ONE tool: {_tn} "
+                                 f"({arsenal.ARSENAL[_tn][0]}).",
+                  "inputSchema": dict(_CHAIN_INPUT)})
+    HANDLERS[f"arsenal_tool_{_tn.replace('-', '_').replace('.', '_')}"] = (
+        lambda a, _t=_tn: _run_arsenal_only(a, _t))
+
+
+def _run_arsenal_only(a, only: str) -> dict:
+    _need(a, "target")
+    argv = ["arsenal", "run", "--target", a["target"], "--only", only, "--json"]
+    if a.get("dry_run"):
+        argv += ["--dry-run"]
+    if a.get("wordlist"):
+        argv += ["--wordlist", a["wordlist"]]
+    if a.get("timeout"):
+        argv += ["--timeout", str(int(a["timeout"]))]
+    return _run_sm(argv, timeout=max(60, int(a.get("timeout") or 300) + 30))
+
+
+# v6.0 — registry utility tier (in-process, honest helpers)
+def _h_arsenal_search(a):
+    q = (a.get("q") or "").lower()
+    rows = []
+    for _tn, (_cap, _cls, _plan, _tpl) in arsenal.ARSENAL.items():
+        if q in _tn.lower() or q in _cap.lower() or q in " ".join(_cls if isinstance(_cls, (tuple, list)) else ()):
+            rows.append(_tn)
+    return _tool_text(f"arsenal search '{q}': {len(rows)} tools\n" +
+                      "\n".join(sorted(rows)[:80]))
+
+
+def _h_chain_show(a):
+    c = a.get("chain") or ""
+    if c not in arsenal.CHAINS:
+        return _tool_text(f"✗ unknown chain '{c}' — 150 registered")
+    stages = arsenal.CHAINS[c]
+    lines = [f"chain {c} — {len(stages)} stages"]
+    for s in stages:
+        cap, cls, plan, tpl = arsenal.ARSENAL.get(s, ("?", (), "?", []))
+        lines.append(f"  ▸ {s}: {plan}")
+    return _tool_text("\n".join(lines))
+
+
+def _h_class_members(a):
+    c = a.get("class") or ""
+    mem = _MEMBERS.get(c, [])
+    return _tool_text(f"class '{c}': {len(mem)} registered tools\n" +
+                      "\n".join(sorted(mem)[:200]))
+
+
+TOOLS.append({"name": "arsenal_search",
+              "description": "Find arsenal tools by name/capability/class (registry query).",
+              "inputSchema": _props(q=_s("search term")), "required": ["q"]})
+HANDLERS["arsenal_search"] = _h_arsenal_search
+TOOLS.append({"name": "chain_show",
+              "description": "Show one feeding chain's stages + each tool's plan line.",
+              "inputSchema": _props(chain=_s("chain name")), "required": ["chain"]})
+HANDLERS["chain_show"] = _h_chain_show
+TOOLS.append({"name": "class_members",
+              "description": "List every registered tool of a technique class.",
+              "inputSchema": _props(class_=_s("class name")), "required": ["class_"]})
+HANDLERS["class_members"] = _h_class_members
 
 TOOLS.append({"name": "arsenal_run",
               "description": "Scope-gated execution of ONE OR MORE named arsenal tools "

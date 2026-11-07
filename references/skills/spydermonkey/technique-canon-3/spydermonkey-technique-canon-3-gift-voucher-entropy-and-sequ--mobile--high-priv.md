@@ -13,7 +13,7 @@
 
 ## Context
 
-- platform: family probes cover the class
+- platform: the client is another principal — storage/permission surface, own device only
 - auth state: the baseline IS the privileged session; test downgrade paths (mass-assign, state-bypass)
 
 ## The technique

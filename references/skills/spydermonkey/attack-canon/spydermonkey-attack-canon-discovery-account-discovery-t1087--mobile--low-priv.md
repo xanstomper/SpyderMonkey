@@ -13,7 +13,7 @@
 
 ## Context
 
-- platform: family probes cover the class
+- platform: the client is another principal — storage/permission surface, own device only
 - auth state: hold ONE low-priv principal; swap object ids/roles upward only (idor/authz classes)
 
 ## The technique

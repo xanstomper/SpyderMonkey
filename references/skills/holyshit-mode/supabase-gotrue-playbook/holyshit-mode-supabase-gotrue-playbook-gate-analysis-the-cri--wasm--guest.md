@@ -1,0 +1,39 @@
+# Gate analysis (the critical lesson) — wasm / guest
+
+- source canon: `holyshit-mode/supabase-gotrue-playbook.md`
+- base technique: `holyshit-mode-supabase-gotrue-playbook-gate-analysis-the-cri.md`
+- bindings: **WSTG-SESS** · **CWE-384** · **ATT&CK T1550**
+- context: **wasm** · auth **guest** · chain role **pivot**
+
+## Route
+
+- probes: `nmap-smtp-commands`, `nmap-smtp-enum-users`, `swaks`, `dig-mx`, `dig-txt`
+- chains: `mail-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
+## Context
+
+- platform: sandbox internals — memory/import surface, own compiled artifact only
+- auth state: a filter/WAF tier fronts the target: expect canonicalization and signature matching on the raw request — the probe vocabulary's encodings (double-encode, unicode, backslash, case-split) exist exactly for this tier; the differential must clear the filter WITHOUT tripping it, or the finding is a WAF flag, not a class confirmation. Low-and-slow: one variant per request, never a burst.
+
+## The technique
+
+A "verification required" (e.g. `email_not_verified`, `turnstile_required`) error on one endpoint is NOT a global gate. Fuzz sibling endpoints with the same session before concluding:
+- `/api/account/*` may demand email verification while `/api/media/*` on the chat subdomain accepts the same unverified session.
+- Text chat gated by server-side Turnstile ≠ media endpoints gated. Media (speech/images/transcriptions) often runs wide open.
+
+## Probe adjustment (wasm × guest)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)

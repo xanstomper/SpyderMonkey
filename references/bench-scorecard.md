@@ -1,6 +1,6 @@
 # SPYDERMONKEY BENCHMARK SCORECARD
 
-- sub-tasks: **60/60** (100.0%)
+- sub-tasks: **63/64** (98.44%)
 - seed: 2026 · anti-memorization: random port + path prefix per instance
 - ceiling: **self-benchmark** (our range, our scoring) — cross-benchmark pending
 
@@ -21,3 +21,4 @@
 | JWT | 1 | 1 | 1 | 1 |
 | AUTHN | 1 | 1 | 1 | 1 |
 | SESSION | 1 | 1 | 1 | 1 |
+| HWDEV | 1 | 1 | 0 | 1 |

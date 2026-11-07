@@ -40,7 +40,7 @@ from urllib.parse import urlsplit
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "5.17.0"
+VERSION = "6.0.0"
 
 # tool → (capability, canon classes it feeds, plan line, args builder)
 ARSENAL = {
@@ -992,6 +992,14 @@ try:
     merge_hw(ARSENAL, CHAINS, CHAIN_NAMES)
 except ImportError:  # arsenal_hw.py absent → hardware domain simply not merged
     pass
+# v6.0 — the domain surge: NSE/impacket/msf tiers + 700+ curated real tools.
+try:
+    import arsenal_domain as ad
+    _added = ad.merge_domain(ARSENAL, CHAINS, CHAIN_NAMES, FEED_PARSE,
+                             TAKES_EXTRA, HTTP_TOOLS)
+    CHAINS_MERGED_V60 = _added
+except ImportError:  # domain module absent → base arsenal only
+    CHAINS_MERGED_V60 = 0
 
 
 def _host(target: str) -> str:

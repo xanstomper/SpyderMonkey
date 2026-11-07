@@ -13,7 +13,7 @@
 
 ## Context
 
-- platform: family probes cover the class
+- platform: the client is another principal — storage/permission surface, own device only
 - auth state: identity rides an external IdP (OAuth/OIDC/SAML/SSO): the differential is the TOKEN — audience, issuer, redirect_uri, scope downgrades, code/state reuse, and the exchange at the resource server; the local session may be fine while the trust boundary is not
 
 ## The technique

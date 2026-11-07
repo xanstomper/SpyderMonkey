@@ -1,10 +1,10 @@
 {
   "benchmark": "spydermonkey-selfbench",
   "seed": 2026,
-  "classes": 15,
-  "sub_tasks": 60,
-  "completed": 60,
-  "completion_rate": 100.0,
+  "classes": 16,
+  "sub_tasks": 64,
+  "completed": 63,
+  "completion_rate": 98.44,
   "anti_memorization": "random port + random path prefix per instance",
   "ceiling": "self-benchmark \u2014 cross-benchmark adaptation pending",
   "results": [
@@ -127,6 +127,14 @@
       "confirm": 1,
       "detect": 1,
       "score": 4
+    },
+    {
+      "class": "HWDEV",
+      "surface": 1,
+      "identify": 1,
+      "confirm": 0,
+      "detect": 1,
+      "score": 3
     }
   ]
 }

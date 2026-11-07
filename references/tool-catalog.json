@@ -7467,5 +7467,4338 @@
   "desc": "Data-over-audio modem (AFSK/FSK) TX/RX for lab research",
   "mode": "active",
   "root": 1
+ },
+ {
+  "name": "nmap-acarsd-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): acarsd-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-address-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): address-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-afp-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): afp-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-afp-ls",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): afp-ls",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-afp-path-vuln",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): afp-path-vuln",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-afp-serverinfo",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): afp-serverinfo",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-afp-showmount",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): afp-showmount",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ajp-auth",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ajp-auth",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ajp-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ajp-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ajp-headers",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ajp-headers",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ajp-methods",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ajp-methods",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ajp-request",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ajp-request",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-allseeingeye-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): allseeingeye-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-amqp-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): amqp-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-asn-query",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): asn-query",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-auth-owners",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): auth-owners",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-auth-spoof",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): auth-spoof",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-backorifice-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): backorifice-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-backorifice-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): backorifice-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-bacnet-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): bacnet-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-banner",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): banner",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-bitcoin-getaddr",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): bitcoin-getaddr",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-bitcoin-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): bitcoin-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-bitcoinrpc-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): bitcoinrpc-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-bittorrent-discovery",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): bittorrent-discovery",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-bjnp-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): bjnp-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-ataoe-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-ataoe-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-avahi-dos",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-avahi-dos",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-bjnp-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-bjnp-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-db2-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-db2-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-dhcp-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-dhcp-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-dhcp6-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-dhcp6-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-dns-service-discovery",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-dns-service-discovery",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-dropbox-listener",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-dropbox-listener",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-eigrp-discovery",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-eigrp-discovery",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-hid-discoveryd",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-hid-discoveryd",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-igmp-discovery",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-igmp-discovery",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-jenkins-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-jenkins-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-listener",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-listener",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-ms-sql-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-ms-sql-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-netbios-master-browser",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-netbios-master-browser",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-networker-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-networker-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-novell-locate",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-novell-locate",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-ospf2-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-ospf2-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-pc-anywhere",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-pc-anywhere",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-pc-duo",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-pc-duo",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-pim-discovery",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-pim-discovery",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-ping",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-ping",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-pppoe-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-pppoe-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-rip-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-rip-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-ripng-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-ripng-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-sonicwall-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-sonicwall-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-sybase-asa-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-sybase-asa-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-tellstick-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-tellstick-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-upnp-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-upnp-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-versant-locate",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-versant-locate",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-wake-on-lan",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-wake-on-lan",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-wpad-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-wpad-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-wsdd-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-wsdd-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-broadcast-xdmcp-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): broadcast-xdmcp-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-cassandra-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): cassandra-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-cassandra-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): cassandra-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-cccam-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): cccam-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-cics-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): cics-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-cics-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): cics-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-cics-user-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): cics-user-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-cics-user-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): cics-user-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-citrix-brute-xml",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): citrix-brute-xml",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-citrix-enum-apps",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): citrix-enum-apps",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-citrix-enum-apps-xml",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): citrix-enum-apps-xml",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-citrix-enum-servers",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): citrix-enum-servers",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-citrix-enum-servers-xml",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): citrix-enum-servers-xml",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-clamav-exec",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): clamav-exec",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-clock-skew",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): clock-skew",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-coap-resources",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): coap-resources",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-couchdb-databases",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): couchdb-databases",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-couchdb-stats",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): couchdb-stats",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-creds-summary",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): creds-summary",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-cups-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): cups-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-cups-queue-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): cups-queue-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-cvs-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): cvs-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-cvs-brute-repository",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): cvs-brute-repository",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-daap-get-library",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): daap-get-library",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-daytime",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): daytime",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-db2-das-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): db2-das-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-deluge-rpc-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): deluge-rpc-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dhcp-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dhcp-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dicom-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dicom-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dicom-cfind-ls",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dicom-cfind-ls",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dicom-cmove",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dicom-cmove",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dicom-get",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dicom-get",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dicom-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dicom-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dicom-ping",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dicom-ping",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dicom-slowloris",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dicom-slowloris",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dicom-store-fuzzer",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dicom-store-fuzzer",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dicom-store-inject",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dicom-store-inject",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dicom-web-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dicom-web-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dict-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dict-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-distcc-cve2004-2687",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): distcc-cve2004-2687",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-blacklist",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-blacklist",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-cache-snoop",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-cache-snoop",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-check-zone",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-check-zone",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-client-subnet-scan",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-client-subnet-scan",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-fuzz",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-fuzz",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-ip6-arpa-scan",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-ip6-arpa-scan",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-nsec-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-nsec-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-nsec3-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-nsec3-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-nsid",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-nsid",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-random-srcport",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-random-srcport",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-random-txid",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-random-txid",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-recursion",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-recursion",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-service-discovery",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-service-discovery",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-srv-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-srv-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-update",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-update",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-zeustracker",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-zeustracker",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dns-zone-transfer",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dns-zone-transfer",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-docker-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): docker-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-domcon-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): domcon-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-domcon-cmd",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): domcon-cmd",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-domino-enum-users",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): domino-enum-users",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-dpap-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): dpap-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-drda-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): drda-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-drda-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): drda-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-duplicates",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): duplicates",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-eap-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): eap-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-enip-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): enip-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-epmd-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): epmd-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-eppc-enum-processes",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): eppc-enum-processes",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-fcrdns",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): fcrdns",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-finger",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): finger",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-fingerprint-strings",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): fingerprint-strings",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-firewalk",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): firewalk",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-firewall-bypass",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): firewall-bypass",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-flume-master-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): flume-master-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-fox-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): fox-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-freelancer-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): freelancer-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ftp-anon",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ftp-anon",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ftp-bounce",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ftp-bounce",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ftp-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ftp-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ftp-libopie",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ftp-libopie",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ftp-proftpd-backdoor",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ftp-proftpd-backdoor",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ftp-syst",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ftp-syst",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ftp-vsftpd-backdoor",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ftp-vsftpd-backdoor",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ftp-vuln-cve2010-4221",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ftp-vuln-cve2010-4221",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ganglia-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ganglia-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-giop-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): giop-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-gkrellm-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): gkrellm-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-gopher-ls",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): gopher-ls",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-gpsd-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): gpsd-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-hadoop-datanode-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): hadoop-datanode-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-hadoop-jobtracker-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): hadoop-jobtracker-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-hadoop-namenode-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): hadoop-namenode-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-hadoop-secondary-namenode-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): hadoop-secondary-namenode-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-hadoop-tasktracker-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): hadoop-tasktracker-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-hartip-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): hartip-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-hbase-master-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): hbase-master-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-hbase-region-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): hbase-region-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-hddtemp-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): hddtemp-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-hnap-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): hnap-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-hostmap-crtsh",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): hostmap-crtsh",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-hostmap-robtex",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): hostmap-robtex",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-adobe-coldfusion-apsa1301",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-adobe-coldfusion-apsa1301",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-affiliate-id",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-affiliate-id",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-apache-negotiation",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-apache-negotiation",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-apache-server-status",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-apache-server-status",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-aspnet-debug",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-aspnet-debug",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-auth",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-auth",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-auth-finder",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-auth-finder",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-avaya-ipoffice-users",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-avaya-ipoffice-users",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-awstatstotals-exec",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-awstatstotals-exec",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-axis2-dir-traversal",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-axis2-dir-traversal",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-backup-finder",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-backup-finder",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-barracuda-dir-traversal",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-barracuda-dir-traversal",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-bigip-cookie",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-bigip-cookie",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-cakephp-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-cakephp-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-chrono",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-chrono",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-cisco-anyconnect",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-cisco-anyconnect",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-coldfusion-subzero",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-coldfusion-subzero",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-comments-displayer",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-comments-displayer",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-config-backup",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-config-backup",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-cookie-flags",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-cookie-flags",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-cors",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-cors",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-cross-domain-policy",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-cross-domain-policy",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-csrf",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-csrf",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-date",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-date",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-default-accounts",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-default-accounts",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-devframework",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-devframework",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-dlink-backdoor",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-dlink-backdoor",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-dombased-xss",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-dombased-xss",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-domino-enum-passwords",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-domino-enum-passwords",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-drupal-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-drupal-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-drupal-enum-users",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-drupal-enum-users",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-errors",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-errors",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-exif-spider",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-exif-spider",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-favicon",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-favicon",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-feed",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-feed",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-fetch",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-fetch",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-fileupload-exploiter",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-fileupload-exploiter",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-form-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-form-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-form-fuzzer",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-form-fuzzer",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-frontpage-login",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-frontpage-login",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-generator",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-generator",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-git",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-git",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-gitweb-projects-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-gitweb-projects-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-google-malware",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-google-malware",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-grep",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-grep",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-headers",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-headers",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-hp-ilo-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-hp-ilo-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-huawei-hg5xx-vuln",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-huawei-hg5xx-vuln",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-icloud-findmyiphone",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-icloud-findmyiphone",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-icloud-sendmsg",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-icloud-sendmsg",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-iis-short-name-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-iis-short-name-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-iis-webdav-vuln",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-iis-webdav-vuln",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-internal-ip-disclosure",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-internal-ip-disclosure",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-joomla-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-joomla-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-jsonp-detection",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-jsonp-detection",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-litespeed-sourcecode-download",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-litespeed-sourcecode-download",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-ls",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-ls",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-majordomo2-dir-traversal",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-majordomo2-dir-traversal",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-malware-host",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-malware-host",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-mcmp",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-mcmp",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-method-tamper",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-method-tamper",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-methods",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-methods",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-mobileversion-checker",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-mobileversion-checker",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-ntlm-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-ntlm-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-open-proxy",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-open-proxy",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-open-redirect",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-open-redirect",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-passwd",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-passwd",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-php-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-php-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-phpmyadmin-dir-traversal",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-phpmyadmin-dir-traversal",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-phpself-xss",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-phpself-xss",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-proxy-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-proxy-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-put",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-put",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-qnap-nas-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-qnap-nas-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-referer-checker",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-referer-checker",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-rfi-spider",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-rfi-spider",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-robots.txt",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-robots.txt",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-robtex-reverse-ip",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-robtex-reverse-ip",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-robtex-shared-ns",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-robtex-shared-ns",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-sap-netweaver-leak",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-sap-netweaver-leak",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-security-headers",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-security-headers",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-server-header",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-server-header",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-shellshock",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-shellshock",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-sitemap-generator",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-sitemap-generator",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-slowloris",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-slowloris",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-slowloris-check",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-slowloris-check",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-sql-injection",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-sql-injection",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-stored-xss",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-stored-xss",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-svn-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-svn-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-svn-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-svn-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-title",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-title",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-tplink-dir-traversal",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-tplink-dir-traversal",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-trace",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-trace",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-traceroute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-traceroute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-trane-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-trane-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-unsafe-output-escaping",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-unsafe-output-escaping",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-useragent-tester",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-useragent-tester",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-userdir-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-userdir-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vhosts",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vhosts",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-virustotal",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-virustotal",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vlcstreamer-ls",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vlcstreamer-ls",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vmware-path-vuln",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vmware-path-vuln",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2006-3392",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2006-3392",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2009-3960",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2009-3960",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2010-0738",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2010-0738",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2010-2861",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2010-2861",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2011-3192",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2011-3192",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2011-3368",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2011-3368",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2012-1823",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2012-1823",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2013-0156",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2013-0156",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2013-6786",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2013-6786",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2013-7091",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2013-7091",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2014-2126",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2014-2126",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2014-2127",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2014-2127",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2014-2128",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2014-2128",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2014-2129",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2014-2129",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2014-3704",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2014-3704",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2014-8877",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2014-8877",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2015-1427",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2015-1427",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2015-1635",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2015-1635",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2017-1001000",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2017-1001000",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2017-5638",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2017-5638",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2017-5689",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2017-5689",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-cve2017-8917",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-cve2017-8917",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-misfortune-cookie",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-misfortune-cookie",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-vuln-wnr1000-creds",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-vuln-wnr1000-creds",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-waf-detect",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-waf-detect",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-waf-fingerprint",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-waf-fingerprint",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-webdav-scan",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-webdav-scan",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-wordpress-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-wordpress-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-wordpress-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-wordpress-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-wordpress-users",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-wordpress-users",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-http-xssed",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): http-xssed",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-https-redirect",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): https-redirect",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-iax2-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): iax2-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-iax2-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): iax2-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-icap-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): icap-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-iec-identify",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): iec-identify",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-iec61850-mms",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): iec61850-mms",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ike-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ike-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-imap-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): imap-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-imap-capabilities",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): imap-capabilities",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-imap-ntlm-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): imap-ntlm-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-impress-remote-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): impress-remote-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-informix-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): informix-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-informix-query",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): informix-query",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-informix-tables",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): informix-tables",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ip-forwarding",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ip-forwarding",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ip-geolocation-geoplugin",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ip-geolocation-geoplugin",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ip-geolocation-ipinfodb",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ip-geolocation-ipinfodb",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ip-geolocation-map-bing",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ip-geolocation-map-bing",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ip-geolocation-map-google",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ip-geolocation-map-google",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ip-geolocation-map-kml",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ip-geolocation-map-kml",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ip-geolocation-maxmind",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ip-geolocation-maxmind",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ip-https-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ip-https-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ipidseq",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ipidseq",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ipmi-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ipmi-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ipmi-cipher-zero",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ipmi-cipher-zero",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ipmi-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ipmi-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ipv6-multicast-mld-list",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ipv6-multicast-mld-list",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ipv6-node-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ipv6-node-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ipv6-ra-flood",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ipv6-ra-flood",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-irc-botnet-channels",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): irc-botnet-channels",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-irc-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): irc-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-irc-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): irc-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-irc-sasl-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): irc-sasl-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-irc-unrealircd-backdoor",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): irc-unrealircd-backdoor",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-iscsi-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): iscsi-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-iscsi-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): iscsi-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-isns-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): isns-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-jdwp-exec",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): jdwp-exec",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-jdwp-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): jdwp-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-jdwp-inject",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): jdwp-inject",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-jdwp-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): jdwp-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-knx-gateway-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): knx-gateway-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-knx-gateway-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): knx-gateway-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-krb5-enum-users",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): krb5-enum-users",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ldap-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ldap-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ldap-novell-getpass",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ldap-novell-getpass",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ldap-rootdse",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ldap-rootdse",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ldap-search",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ldap-search",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-lexmark-config",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): lexmark-config",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-llmnr-resolve",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): llmnr-resolve",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-lltd-discovery",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): lltd-discovery",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-lu-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): lu-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-maxdb-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): maxdb-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mcafee-epo-agent",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mcafee-epo-agent",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-membase-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): membase-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-membase-http-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): membase-http-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-memcached-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): memcached-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-metasploit-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): metasploit-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-metasploit-msgrpc-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): metasploit-msgrpc-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-metasploit-xmlrpc-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): metasploit-xmlrpc-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mikrotik-routeros-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mikrotik-routeros-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mikrotik-routeros-username-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mikrotik-routeros-username-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mikrotik-routeros-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mikrotik-routeros-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mmouse-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mmouse-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mmouse-exec",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mmouse-exec",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-modbus-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): modbus-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mongodb-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mongodb-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mongodb-databases",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mongodb-databases",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mongodb-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mongodb-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mqtt-subscribe",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mqtt-subscribe",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mrinfo",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mrinfo",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ms-sql-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ms-sql-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ms-sql-config",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ms-sql-config",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ms-sql-dac",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ms-sql-dac",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ms-sql-dump-hashes",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ms-sql-dump-hashes",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ms-sql-empty-password",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ms-sql-empty-password",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ms-sql-hasdbaccess",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ms-sql-hasdbaccess",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ms-sql-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ms-sql-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ms-sql-ntlm-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ms-sql-ntlm-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ms-sql-query",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ms-sql-query",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ms-sql-tables",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ms-sql-tables",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ms-sql-xp-cmdshell",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ms-sql-xp-cmdshell",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-msrpc-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): msrpc-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mtrace",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mtrace",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-multicast-profinet-discovery",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): multicast-profinet-discovery",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-murmur-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): murmur-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mysql-audit",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mysql-audit",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mysql-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mysql-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mysql-databases",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mysql-databases",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mysql-dump-hashes",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mysql-dump-hashes",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mysql-empty-password",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mysql-empty-password",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mysql-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mysql-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mysql-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mysql-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mysql-query",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mysql-query",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mysql-users",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mysql-users",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mysql-variables",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mysql-variables",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-mysql-vuln-cve2012-2122",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): mysql-vuln-cve2012-2122",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nat-pmp-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nat-pmp-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nat-pmp-mapport",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nat-pmp-mapport",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nbd-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nbd-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nbns-interfaces",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nbns-interfaces",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nbstat",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nbstat",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ncp-enum-users",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ncp-enum-users",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ncp-serverinfo",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ncp-serverinfo",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ndmp-fs-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ndmp-fs-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ndmp-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ndmp-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nessus-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nessus-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nessus-xmlrpc-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nessus-xmlrpc-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-netbus-auth-bypass",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): netbus-auth-bypass",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-netbus-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): netbus-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-netbus-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): netbus-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-netbus-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): netbus-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nexpose-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nexpose-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nfs-ls",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nfs-ls",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nfs-showmount",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nfs-showmount",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nfs-statfs",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nfs-statfs",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nje-node-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nje-node-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nje-pass-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nje-pass-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nntp-ntlm-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nntp-ntlm-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nping-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nping-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-nrpe-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): nrpe-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ntp-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ntp-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ntp-monlist",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ntp-monlist",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-omp2-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): omp2-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-omp2-enum-targets",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): omp2-enum-targets",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-omron-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): omron-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-openflow-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): openflow-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-openlookup-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): openlookup-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-openvas-otp-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): openvas-otp-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-openwebnet-discovery",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): openwebnet-discovery",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-oracle-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): oracle-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-oracle-brute-stealth",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): oracle-brute-stealth",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-oracle-enum-users",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): oracle-enum-users",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-oracle-sid-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): oracle-sid-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-oracle-tns-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): oracle-tns-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ovs-agent-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ovs-agent-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-p2p-conficker",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): p2p-conficker",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-path-mtu",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): path-mtu",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-pcanywhere-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): pcanywhere-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-pcworx-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): pcworx-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-pgsql-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): pgsql-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-pjl-ready-message",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): pjl-ready-message",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-pop3-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): pop3-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-pop3-capabilities",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): pop3-capabilities",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-pop3-ntlm-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): pop3-ntlm-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-port-states",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): port-states",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-pptp-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): pptp-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-profinet-cm-lookup",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): profinet-cm-lookup",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-puppet-naivesigning",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): puppet-naivesigning",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-qconn-exec",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): qconn-exec",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-qscan",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): qscan",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-quake1-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): quake1-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-quake3-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): quake3-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-quake3-master-getservers",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): quake3-master-getservers",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rdp-enum-encryption",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rdp-enum-encryption",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rdp-ntlm-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rdp-ntlm-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rdp-vuln-ms12-020",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rdp-vuln-ms12-020",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-realvnc-auth-bypass",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): realvnc-auth-bypass",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-redis-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): redis-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-redis-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): redis-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-resolveall",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): resolveall",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-reverse-index",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): reverse-index",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rexec-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rexec-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rfc868-time",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rfc868-time",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-riak-http-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): riak-http-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rlogin-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rlogin-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rmi-dumpregistry",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rmi-dumpregistry",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rmi-vuln-classloader",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rmi-vuln-classloader",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rpc-grind",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rpc-grind",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rpcap-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rpcap-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rpcap-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rpcap-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rpcinfo",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rpcinfo",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rsa-vuln-roca",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rsa-vuln-roca",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rsync-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rsync-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rsync-list-modules",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rsync-list-modules",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rtsp-methods",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rtsp-methods",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rtsp-url-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rtsp-url-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-rusers",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): rusers",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-s7-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): s7-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-samba-vuln-cve-2012-1182",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): samba-vuln-cve-2012-1182",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-servicetags",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): servicetags",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-shodan-api",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): shodan-api",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-sip-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): sip-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-sip-call-spoof",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): sip-call-spoof",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-sip-enum-users",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): sip-enum-users",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-sip-methods",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): sip-methods",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-skypev2-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): skypev2-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-double-pulsar-backdoor",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-double-pulsar-backdoor",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-enum-domains",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-enum-domains",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-enum-groups",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-enum-groups",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-enum-processes",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-enum-processes",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-enum-services",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-enum-services",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-enum-sessions",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-enum-sessions",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-enum-shares",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-enum-shares",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-enum-users",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-enum-users",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-flood",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-flood",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-ls",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-ls",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-mbenum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-mbenum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-os-discovery",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-os-discovery",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-print-text",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-print-text",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-protocols",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-protocols",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-psexec",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-psexec",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-security-mode",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-security-mode",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-server-stats",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-server-stats",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-system-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-system-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-vuln-conficker",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-vuln-conficker",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-vuln-cve-2017-7494",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-vuln-cve-2017-7494",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-vuln-cve2009-3103",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-vuln-cve2009-3103",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-vuln-ms06-025",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-vuln-ms06-025",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-vuln-ms07-029",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-vuln-ms07-029",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-vuln-ms08-067",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-vuln-ms08-067",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-vuln-ms10-054",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-vuln-ms10-054",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-vuln-ms10-061",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-vuln-ms10-061",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-vuln-ms17-010",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-vuln-ms17-010",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-vuln-regsvc-dos",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-vuln-regsvc-dos",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-vuln-webexec",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-vuln-webexec",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb-webexec-exploit",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb-webexec-exploit",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb2-capabilities",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb2-capabilities",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb2-security-mode",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb2-security-mode",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb2-time",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb2-time",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smb2-vuln-uptime",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smb2-vuln-uptime",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smtp-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smtp-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smtp-commands",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smtp-commands",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smtp-enum-users",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smtp-enum-users",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smtp-ntlm-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smtp-ntlm-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smtp-open-relay",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smtp-open-relay",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smtp-strangeport",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smtp-strangeport",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smtp-vuln-cve2010-4344",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smtp-vuln-cve2010-4344",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smtp-vuln-cve2011-1720",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smtp-vuln-cve2011-1720",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-smtp-vuln-cve2011-1764",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): smtp-vuln-cve2011-1764",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-sniffer-detect",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): sniffer-detect",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-snmp-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): snmp-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-snmp-hh3c-logins",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): snmp-hh3c-logins",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-snmp-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): snmp-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-snmp-interfaces",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): snmp-interfaces",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-snmp-ios-config",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): snmp-ios-config",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-snmp-netstat",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): snmp-netstat",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-snmp-processes",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): snmp-processes",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-snmp-sysdescr",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): snmp-sysdescr",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-snmp-win32-services",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): snmp-win32-services",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-snmp-win32-shares",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): snmp-win32-shares",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-snmp-win32-software",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): snmp-win32-software",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-snmp-win32-users",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): snmp-win32-users",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-socks-auth-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): socks-auth-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-socks-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): socks-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-socks-open-proxy",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): socks-open-proxy",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssh-auth-methods",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssh-auth-methods",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssh-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssh-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssh-hostkey",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssh-hostkey",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssh-publickey-acceptance",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssh-publickey-acceptance",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssh-run",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssh-run",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssh2-enum-algos",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssh2-enum-algos",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-sshv1",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): sshv1",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssl-ccs-injection",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssl-ccs-injection",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssl-cert",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssl-cert",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssl-cert-intaddr",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssl-cert-intaddr",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssl-date",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssl-date",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssl-dh-params",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssl-dh-params",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssl-enum-ciphers",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssl-enum-ciphers",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssl-heartbleed",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssl-heartbleed",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssl-known-key",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssl-known-key",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ssl-poodle",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ssl-poodle",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-sslv2",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): sslv2",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-sslv2-drown",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): sslv2-drown",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-sstp-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): sstp-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-stun-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): stun-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-stun-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): stun-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-stuxnet-detect",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): stuxnet-detect",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-supermicro-ipmi-conf",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): supermicro-ipmi-conf",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-svn-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): svn-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-targets-asn",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): targets-asn",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-targets-ipv6-eui64",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): targets-ipv6-eui64",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-targets-ipv6-map4to6",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): targets-ipv6-map4to6",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-targets-ipv6-multicast-echo",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): targets-ipv6-multicast-echo",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-targets-ipv6-multicast-invalid-dst",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): targets-ipv6-multicast-invalid-dst",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-targets-ipv6-multicast-mld",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): targets-ipv6-multicast-mld",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-targets-ipv6-multicast-slaac",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): targets-ipv6-multicast-slaac",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-targets-ipv6-wordlist",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): targets-ipv6-wordlist",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-targets-sniffer",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): targets-sniffer",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-targets-traceroute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): targets-traceroute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-targets-xml",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): targets-xml",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-teamspeak2-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): teamspeak2-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-telnet-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): telnet-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-telnet-encryption",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): telnet-encryption",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-telnet-ntlm-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): telnet-ntlm-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-tftp-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): tftp-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-tftp-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): tftp-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-tls-alpn",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): tls-alpn",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-tls-nextprotoneg",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): tls-nextprotoneg",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-tls-ticketbleed",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): tls-ticketbleed",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-tn3270-screen",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): tn3270-screen",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-tor-consensus-checker",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): tor-consensus-checker",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-traceroute-geolocation",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): traceroute-geolocation",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-tso-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): tso-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-tso-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): tso-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ubiquiti-discovery",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ubiquiti-discovery",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-unittest",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): unittest",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-unusual-port",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): unusual-port",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-upnp-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): upnp-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-uptime-agent-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): uptime-agent-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-url-snarf",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): url-snarf",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-ventrilo-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): ventrilo-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-versant-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): versant-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-vmauthd-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): vmauthd-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-vmware-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): vmware-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-vnc-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): vnc-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-vnc-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): vnc-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-vnc-title",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): vnc-title",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-voldemort-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): voldemort-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-vtam-enum",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): vtam-enum",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-vulners",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): vulners",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-vuze-dht-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): vuze-dht-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-wdb-version",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): wdb-version",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-weblogic-t3-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): weblogic-t3-info",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-whois-domain",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): whois-domain",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-whois-ip",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): whois-ip",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-wsdd-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): wsdd-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-x11-access",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): x11-access",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-xdmcp-discover",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): xdmcp-discover",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-xmlrpc-methods",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): xmlrpc-methods",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-xmpp-brute",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): xmpp-brute",
+  "mode": "active",
+  "root": 1
+ },
+ {
+  "name": "nmap-xmpp-info",
+  "cat": "nse",
+  "desc": "nmap NSE script (canonical script.db): xmpp-info",
+  "mode": "active",
+  "root": 1
  }
 ]

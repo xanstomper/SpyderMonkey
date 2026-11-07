@@ -1,0 +1,66 @@
+# Pack-opening / mystery-box class: the fixed-seed documentation tell — wireless / machine
+
+- source canon: `holyshit-mode/provably-fair-verification.md`
+- base technique: `holyshit-mode-provably-fair-verification-pack-opening-myster.md`
+- bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
+- context: **wireless** · auth **machine** · chain role **pivot**
+
+## Route
+
+- probes: `nmap`, `masscan`, `naabu`, `zmap`, `nc`, `fping`, `nmap-allports`
+- chains: `net`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
+## Context
+
+- platform: LAB-ONLY — your own radios and stations; third-party airwaves are the absolute wall
+- auth state: the principal is a SERVICE identity (API key, SA token, CI secret, webhook signing key): the differential is the KEY's resource scope — key-level vs user-level objects, cross-tenant reach, unscoped keys, and which audit trail the key leaves; the human account model does not apply
+
+## The technique
+
+For case-opener / pack sites, the operator's OWN fairness page is the spec AND the
+first exploit lead. Mine it for the VERBATIM algorithm (they publish it: ticket =
+`(int(sha512(f"{clientSeed}:{serverSeed}:{nonce}"), 16) % 1_000_000) + 1`) and for
+mechanic wording that reveals the seed-rotation policy:
+
+- A nonce described as "auto-incrementing… to provide a unique random result when
+  server seeds and client seeds remain unchanged, as is the case when opening multiple
+  packs in a single purchase" = seeds do NOT rotate — the nonce exists because the
+  seed is stable. Combined with an account-level commitment ("our server seed hash
+  before purchase, found in your account profile. After your purchase, we expose the
+  unhashed server seed"), the architecture is fixed-seed-per-account: after ONE reveal,
+  every future ticket is computable before paying (player controls clientSeed and the
+  nonce increments) → open only tickets whose public range EV > price = guaranteed-win
+  grind against the house. That wording is the finding's first half — it upgrades the
+  hypothesis before any account exists.
+- **Minimum decisive test (2 opens, cheapest packs, operator account):** record the
+  profile server-seed hash BEFORE purchase 1 (H0), then revealed seed S1 + client seed
+  + nonce after open 1; hash check `sha512(S1) == H0` (commitment discipline); record
+  profile hash H1 before purchase 2 and revealed S2. `S2 == S1` = CONFIRMED
+  predictable-outcome grind (build the verifier from their published function and the
+  public per-item ticket ranges — grid the +EV nonces). `S2 != S1` = rotating, clean.
+  Ship this as a ready-to-run verify script (`ticket` / `commit-check` / `grind` CLIs).
+- The DEMO button on such sites is usually inert for guests (multiple click
+  sequences, zero state change, zero network) — do not burn rounds on it; the account
+  test is the gate. If it does call a server action, running it unauth is the free
+  version of the same test.
+- **House edge is computable unauth** from the public odds table: EV = Σ(pct × price)
+  vs pack price (a 13% edge was confirmed on one target; "odds tightened after update"
+  complaints corroborate the direction). Quantify it — it is both a finding and the
+  EV baseline that the grind exploit flips.
+
+## Probe adjustment (wireless × machine)
+
+1. baseline first: the request/session with NOTHING changed
+2. attack: the documented class probe, adjusted per context above
+3. diff: measurable only — status/length/body — or it is not a finding
+
+## Chain roles
+
+- combines with a prior finding — chain detect pairs same-origin findings
+- pairs-with: see `skilltree-index.md` for the sibling techniques
+
+## Walls
+
+- validation-only · NO-GAIN · documented-class adaptation only
+- in-scope only: the scope authority refuses everything else (rc=1)
