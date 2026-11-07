@@ -330,7 +330,8 @@ exercised, not asserted.
 - `bench` — offline route-level benchmark (29/29 = 100% at v4.0.0)
 - `arsenal list|plan|run|install|verify` — 1,605 tool wrappers + 158 feeding chains (recon/web/dns/osint/net + 120+ v6.0 domain chains incl. hw-*/cls-* + the v7.0 fuzz domain: fuzz-file/fuzz-binary/fuzz-net/fuzz-minimize/fuzz-full) behind the shared scope authority; `run --chain C --out result.json` emits the kernel result schema (`absorb` ingests it); `install --tool T[,T..]|--chain C --machine local|relay` is the ACQUISITION LANE (plan-only until a machine is named, 463 recipes, manager-aware apt/dnf/pacman/apk/brew/url/pip/cargo/go/npm/gem — url = stdlib GitHub-latest static binary, no toolchain)
 - `catalog stats|categories|list|search|show|runbook|materialize` — the tool reference + THE MATERIALIZATION LANE (v7.3): `runbook` prints the execution recipe for any of the 66,569 surge entries (zero side effects); `materialize` fetches the REAL artifact (exploit source / nuclei YAML / msf module) from local mirrors — every surge row carries `how` in show/search JSON
-- `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` — one agent per mandate, dispatched in parallel
+- `fleet --goal G --target T --domain D [--agents a,b] [--sequential]` — one agent per mandate, dispatched in parallel; **v7.4.2 SQUAD BRIEFS**: every agent ships with `<campaign>/fleet/<agent>.brief.md` (one-paste pack + walls + lane knowledge via the context router, path in `SPYDERMONKEY_BRIEF`)
+- `train [--classes C]` — **SELF-PLAY TRAINING**: the family strikes its own dojo range and writes per-class hit rates to the shared weight store; the planner orders probes by what works — and (v7.4.2) real engagements feed the same store through the ledger
 
 Companion scripts (stdlib too):
 - `scripts/scope_authority.py` — the one estate gate (exact/subdomain/wildcard/CIDR/URL/port · deny · expiry · rate · audit · atomic writes)

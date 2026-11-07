@@ -1,3 +1,21 @@
+# v7.4.2 — THE CLOSED LOOP: real engagements feed the weight store · squads ship briefs
+
+- **SHARED WEIGHT STORE WIRING**: every real engagement now writes the priors
+  (`$SPYDERMONKEY_HOME/memory/spydermonkey-priors.json`) — `ledger add` learns
+  per-class hit rates (CONFIRMED = hits+runs, hypothesis = runs) through
+  `_ledger_register`, the one choke point gate/testers/crawl all use. Lab rows
+  (127.0.0.1) stay out — self-play keeps its own `train` lane, no double-count.
+  The planner already orders probes by these priors; the family now gets
+  sharper on REAL targets, not just the range.
+- **SQUAD BRIEFS**: `fleet` writes `<campaign>/fleet/<agent>.brief.md` for every
+  dispatched agent = the one-paste pack + walls + lane-specific retrieval hits
+  (the context router), passed via `SPYDERMONKEY_BRIEF` env. Every agent in the
+  fleet now ships with the persona and the right knowledge — rails 1+2 closing
+  into rail 5. `--dry-run` materializes the briefs too.
+- `bench_public` suite fix note: v7.4.1's `--suite` mode + dojo handler fix
+  (replica crash under py3.14) landed with the 81.67% milestone artifact.
+- README badge → 7.4.0. Tests 76/76.
+
 # v7.4.0 — THE CONTEXT LAYER (retrieval rail: any model, the right knowledge in context)
 
 - **CONTEXT ROUTER** (`scripts/context_router.py` — new): deterministic, read-only

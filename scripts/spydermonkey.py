@@ -1665,6 +1665,33 @@ def cmd_fleet(args):
     seq = _fleet_seq(args.goal, args.agents)
     ctx = {"target": args.target, "domain": args.domain}
     plan = _fleet_plan(seq, ctx)
+    # THE SQUAD BRIEFS (v7.4 — rails closed): every dispatched agent gets a
+    # brief file = one-paste pack + walls + lane-specific retrieval knowledge.
+    # Path rides in SPYDERMONKEY_BRIEF; the briefs are artifacts any agent or
+    # reviewer reads. No model needed — composition is deterministic policy.
+    pack_path = (Path(__file__).resolve().parent.parent
+                 / "references" / "mandate-pack.md")
+    pack_text = pack_path.read_text() if pack_path.exists() else ""
+    brief_root = _camp(args.target) / "fleet"
+    brief_root.mkdir(parents=True, exist_ok=True)
+    brief_paths = {}
+    for name in seq:
+        role, _ = FLEET_BRIEFS[name]
+        knowledge = cr.query(" ".join([args.goal or "", role, name]),
+                             top=4, budget=2400)
+        know_txt = "\n".join(
+            f"[{h['kind']}] {h['title']} — {h['id']}"
+            + (f"\n    {h['snippet'][:160]}" if h["snippet"] else "")
+            for h in knowledge) or "(none yet — run crawl / discover first)"
+        brief = (f"# FLEET AGENT BRIEF — {name} · {role}\n\n"
+                 f"TARGET: {args.target} · DOMAIN: {args.domain or '-'} · "
+                 f"GOAL: {args.goal}\n\n"
+                 f"WALLS: {WALLS_ONELINER}\n\n"
+                 f"## The one-paste pack (persona + rails)\n{pack_text}\n\n"
+                 f"## Lane knowledge (retrieval, deterministic)\n{know_txt}\n")
+        path = brief_root / f"{name}.brief.md"
+        path.write_text(brief)
+        brief_paths[name] = str(path)
     if getattr(args, "dry_run", False):
         payload = {"goal": args.goal, "target": args.target, "domain": args.domain,
                    "plan": plan, "executed": False}
@@ -1696,10 +1723,12 @@ def cmd_fleet(args):
                              "elapsed": 0.0}
             return
         argv = [sys.executable, str(script)] + plan_row["argv"]
+        env = {**os.environ, "SPYDERMONKEY_BRIEF": brief_paths.get(name, "")}
         t0 = time.time()
         out, rc = "", 1
         for attempt in range((getattr(args, "retries", 0) or 0) + 1):
-            out, rc = _run(argv, timeout=getattr(args, "timeout", 45) or 45)
+            out, rc = _run(argv, timeout=getattr(args, "timeout", 45) or 45,
+                           env=env)
             if rc == 0:
                 break
         results[name] = {"agent": name, "role": role, "ok": rc == 0, "rc": rc,
@@ -1758,9 +1787,10 @@ def cmd_fleet(args):
     return 0 if up == len(seq) else 1
 
 
-def _run(argv, timeout=60):
+def _run(argv, timeout=60, env=None):
     try:
-        r = subprocess.run(argv, capture_output=True, text=True, timeout=timeout)
+        r = subprocess.run(argv, capture_output=True, text=True, timeout=timeout,
+                           env=env)
         return r.stdout + r.stderr, r.returncode
     except subprocess.TimeoutExpired:
         return f"error: timed out after {timeout}s", 1
@@ -2759,6 +2789,25 @@ def _entry_new(rows, title, cls, asset, severity, proof, cwe=None,
     }
 
 
+def _priors_learn(cls: str, hits: int, runs: int) -> None:
+    """THE SHARED WEIGHT STORE — per-class hit rates every mandate reads.
+    Real engagements (non-lab ledger rows) write here; self-play (train) writes
+    the same file directly. Merges atomically; never fails a ledger write."""
+    cls = (cls or "").upper()
+    if not cls:
+        return
+    try:
+        pr = _priors()
+        d = pr.setdefault(cls, {"hits": 0, "runs": 0})
+        d["hits"] = d.get("hits", 0) + hits
+        d["runs"] = d.get("runs", 0) + runs
+        MEM_ROOT.mkdir(parents=True, exist_ok=True)
+        _atomic_write(MEM_ROOT / "spydermonkey-priors.json",
+                      json.dumps(pr, indent=2) + "\n")
+    except Exception:
+        pass  # priors are advisory — the ledger write must never fail for them
+
+
 def _ledger_register(c, title, cls, asset, severity=None, proof="", cwe=None,
                      cvss=None, attack=None, wstg=None,
                      require_scope=True, dry_run=False, **kw) -> dict:
@@ -2791,6 +2840,8 @@ def _ledger_register(c, title, cls, asset, severity=None, proof="", cwe=None,
             if status == "confirmed" and dup.get("status") != "CONFIRMED":
                 dup["status"], dup["confidence"] = "CONFIRMED", conf
                 dup["evidence_quality"] = "3-gate"
+                if not _is_lab(dup.get("asset", asset)):
+                    _priors_learn(cls, 1, 1)
             elif force_status and force_status.lower() != "confirmed" \
                     and dup.get("status") != "CONFIRMED":
                 dup["status"], dup["confidence"] = force_status.upper(), 0.4
@@ -2803,6 +2854,8 @@ def _ledger_register(c, title, cls, asset, severity=None, proof="", cwe=None,
         entry = _entry_new(rows, title, cls, asset, severity, proof, cwe,
                            cvss, attack, wstg, **kw)
         rows.append(entry)
+        if not _is_lab(asset):
+            _priors_learn(cls, 1 if entry["status"] == "CONFIRMED" else 0, 1)
         result.update({"entry": entry, "duplicate": False, "reason": reason,
                        "status": entry["status"], "confidence": entry["confidence"]})
 

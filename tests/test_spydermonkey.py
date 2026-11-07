@@ -232,6 +232,49 @@ class CliTests(unittest.TestCase):
         self.assertTrue(all(h["kind"] in ("canon", "skill", "expanded", "tool")
                             for h in a))
 
+    def test_ledger_feeds_shared_weight_store(self):
+        mem = Path(self.env["SPYDERMONKEY_HOME"]) / "memory" / "spydermonkey-priors.json"
+        if mem.exists():
+            mem.unlink()
+        proof = ("baseline: GET /api/x?org=acme -> 200 acme; "
+                 "attack: GET /api/x?org=other -> 200 other; "
+                 "diff: tenant echoed from the query")
+        self.j(["ledger", "add", "--target", "t1", "--title", "tenant read",
+                "--cls", "IDOR", "--asset", "https://example.test/api/x",
+                "--proof", proof, "--json"])
+        pr = json.loads(mem.read_text())
+        self.assertEqual(pr["IDOR"], {"hits": 1, "runs": 1})
+        self.j(["ledger", "add", "--target", "t1", "--title", "weak guess",
+                "--cls", "IDOR", "--asset", "https://example.test/api/x",
+                "--proof", "same response both ways", "--json"])
+        pr = json.loads(mem.read_text())
+        self.assertEqual(pr["IDOR"]["runs"], 2)
+        self.assertEqual(pr["IDOR"]["hits"], 1)
+        self.j(["ledger", "add", "--target", "t1", "--title", "tenant read",
+                "--cls", "IDOR", "--asset", "https://example.test/api/x",
+                "--proof", proof, "--json"])
+        pr = json.loads(mem.read_text())
+        self.assertEqual(pr["IDOR"], {"hits": 1, "runs": 2},
+                         "duplicates must not re-learn")
+        self.j(["ledger", "add", "--target", "t1", "--title", "lab probe",
+                "--cls", "SSRF", "--asset", "http://127.0.0.1:9999/fetch",
+                "--proof", proof, "--json"])
+        pr = json.loads(mem.read_text())
+        self.assertNotIn("SSRF", pr, "lab rows must stay out of the weight store")
+
+    def test_fleet_writes_squad_briefs(self):
+        r = self.cli(["fleet", "--goal", "find api bugs and take them over",
+                      "--target", "camp1", "--domain", "example.test",
+                      "--dry-run", "--json"])
+        self.assertEqual(r.returncode, 0, r.stderr)
+        brief_root = Path(self.env["SPYDERMONKEY_HOME"]) / "campaigns" / "camp1" / "fleet"
+        briefs = list(brief_root.glob("*.brief.md"))
+        self.assertGreaterEqual(len(briefs), 3)
+        txt = briefs[0].read_text()
+        self.assertIn("WALLS: declared estates only", txt)
+        self.assertIn("one-paste pack", txt)
+        self.assertIn("## Lane knowledge", txt)
+
     def test_kernel_next_is_state_driven(self):
         d = self.j(["next", "--target", "camp1", "--domain", "example.test", "--json"])
         self.assertFalse(d["done"])
