@@ -338,3 +338,65 @@ class FlowCardTests(unittest.TestCase):
         base, attacks = self.sm._hypothesis_request_pair(card, [])
         self.assertIsNone(base)
         self.assertEqual(attacks, [])
+
+
+class FlowTokenCarryoverTests(unittest.TestCase):
+    """v5.16 — token carryover: save_as/{{name}} substitution across a live flow."""
+
+    @classmethod
+    def setUpClass(cls):
+        import spydermonkey as sm
+        cls.sm = sm
+        import threading
+        from http.server import BaseHTTPRequestHandler, HTTPServer
+        seen = {}
+
+        class H(BaseHTTPRequestHandler):
+            def log_message(self, *a): pass
+            def _send(self, code, body):
+                self.send_response(code)
+                self.send_header("Content-Length", len(body))
+                self.end_headers()
+                self.wfile.write(body.encode())
+            def do_GET(self):
+                if self.path == "/login":
+                    self._send(200, '{"token": "tkn_deadbeef"}')
+                elif self.path == "/me":
+                    seen["auth"] = self.headers.get("Authorization", "")
+                    ok = seen["auth"] == "Bearer tkn_deadbeef"
+                    self._send(200 if ok else 401,
+                               '{"authenticated": %s}' % str(ok).lower())
+                else:
+                    self._send(404, "{}")
+
+        cls.srv = HTTPServer(("127.0.0.1", 8893), H)
+        threading.Thread(target=cls.srv.serve_forever, daemon=True).start()
+        cls.seen = seen
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.srv.shutdown()
+
+    FLOW = [
+        {"method": "GET", "url": "http://127.0.0.1:8893/login",
+         "save_as": "token", "save_from": "body",
+         "save_pattern": r'"token":\s*"([^"]+)"'},
+        {"method": "GET", "url": "http://127.0.0.1:8893/me",
+         "headers": {"Authorization": "Bearer {{token}}"}},
+    ]
+
+    def test_token_extracted_and_carried(self):
+        out = self.sm._flow_http(self.FLOW, timeout=5)
+        self.assertEqual(out["status"], 200)
+        self.assertEqual(self.seen["auth"], "Bearer tkn_deadbeef")
+        self.assertIn('"authenticated": true', out["body"])
+
+    def test_header_source_extraction(self):
+        flow = [
+            {"method": "GET", "url": "http://127.0.0.1:8893/login",
+             "save_as": "tok", "save_from": "body",
+             "save_pattern": r'"token":\s*"([^"]+)"'},
+            {"method": "GET", "url": "http://127.0.0.1:8893/me?x={{tok}}"},
+        ]
+        out = self.sm._flow_http(flow, timeout=5)
+        self.assertIn("x=tkn_deadbeef", out["url"])

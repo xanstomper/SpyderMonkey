@@ -98,7 +98,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "5.15.0"
+VERSION = "5.16.0"
 SCHEMA = 4
 
 
@@ -5400,35 +5400,61 @@ def cmd_hypothesis(args):
 
 
 def _flow_http(steps, timeout=8):
-    """Run a request SEQUENCE with cookie carryover (stdlib cookiejar opener).
-    Returns the LAST step's response dict ({status, body, url}) — the same shape
-    _http returns — so class verdicts and 3-gate semantics apply to multi-step
-    flows: login → action → result. Fresh session per run."""
+    """Run a request SEQUENCE with cookie carryover (stdlib cookiejar opener)
+    AND token carryover: a step may declare `save_as` (+ `save_from`:
+    body|headers:<name>, `save_pattern`: regex with group 1) and later steps
+    reference `{{name}}` in url/headers/body — substituted per-run. Returns the
+    LAST step's response dict ({status, body, url}) — the same shape _http
+    returns — so class verdicts and 3-gate semantics apply to multi-step flows
+    (login → token → authed action). Fresh session per run."""
     import http.cookiejar as _cj
+    import re as _re
     from urllib.request import Request, build_opener, HTTPCookieProcessor
     from urllib.error import HTTPError
     jar = _cj.CookieJar()
     opener = build_opener(HTTPCookieProcessor(jar))
+    vars_ = {}
+
+    def _sub(value):
+        if not isinstance(value, str):
+            return value
+        for k, v in vars_.items():
+            value = value.replace("{{" + k + "}}", v)
+        return value
+
     last = None
     for st in steps:
-        url = st["url"]
+        url = _sub(st["url"])
         method = st.get("method", "GET")
-        body = st.get("body")
+        body = _sub(st.get("body"))
         data = body.encode() if isinstance(body, str) else body
+        headers = {k: _sub(v) for k, v in (st.get("headers") or {}).items()}
         req = Request(url, data=data, method=method)
-        for k, v in (st.get("headers") or {}).items():
+        for k, v in headers.items():
             req.add_header(k, v)
         try:
             with opener.open(req, timeout=timeout) as r:
                 last = {"status": r.status,
                         "body": r.read(200000).decode("utf-8", "replace"),
-                        "url": url}
+                        "url": url, "headers": dict(r.headers)}
         except HTTPError as e:
             last = {"status": e.code,
                     "body": e.read(200000).decode("utf-8", "replace"),
-                    "url": url}
+                    "url": url, "headers": dict(e.headers)}
         except Exception as e:
-            last = {"status": 0, "body": f"error: {e}", "url": url}
+            last = {"status": 0, "body": f"error: {e}", "url": url,
+                    "headers": {}}
+        if st.get("save_as"):
+            src, pat = st.get("save_from", "body"), st.get("save_pattern")
+            if src == "body" and pat:
+                m = _re.search(pat, last["body"])
+                if m:
+                    vars_[st["save_as"]] = m.group(1) if m.groups() else m.group(0)
+            elif src.startswith("headers:") and pat:
+                hv = last["headers"].get(src.split(":", 1)[1], "")
+                m = _re.search(pat, hv)
+                if m:
+                    vars_[st["save_as"]] = m.group(1) if m.groups() else m.group(0)
     return last
 
 
