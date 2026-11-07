@@ -5,6 +5,12 @@
 - bindings: **WSTG-INPV** · **CWE-74** · **ATT&CK T1190**
 - context: **kubernetes** · auth **high-priv** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-smtp-commands`, `nmap-smtp-enum-users`, `swaks`, `dig-mx`, `dig-txt`
+- chains: `mail-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: RBAC/service-account surface — read-only enumeration, crown the exposure

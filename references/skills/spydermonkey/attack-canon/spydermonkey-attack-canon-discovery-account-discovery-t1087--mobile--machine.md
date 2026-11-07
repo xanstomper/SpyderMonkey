@@ -5,6 +5,12 @@
 - bindings: **WSTG-ATHN-07** · **CWE-640** · **ATT&CK T1078**
 - context: **mobile** · auth **machine** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: family probes cover the class

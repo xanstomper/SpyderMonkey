@@ -5,6 +5,12 @@
 - bindings: **WSTG-INPV** · **CWE-74** · **ATT&CK T1190**
 - context: **mobile-api** · auth **federated** · chain role **pivot**
 
+## Route
+
+- probes: `dalfox`, `xsstrike`, `xsser`
+- chains: `web`, `api`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: the mobile client IS another api principal — same routes, different trust assumptions

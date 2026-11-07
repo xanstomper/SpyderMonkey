@@ -5,6 +5,12 @@
 - bindings: **WSTG-CONF-09** · **CWE-350** · **ATT&CK T1584**
 - context: **cloud** · auth **high-priv** · chain role **pivot**
 
+## Route
+
+- probes: `subfinder`, `amass`, `dnsx`, `subzy`, `dnstwist`, `dig-cname`, `dig-axfr`, `nuclei-takeover`, `urlcrazy`, `assetfinder`, `findomain`
+- chains: `dns`, `takeover-full`, `osint`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: control-plane exposure — read-only, crown the class

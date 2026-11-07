@@ -5,6 +5,12 @@
 - bindings: **MASTG-RES** · **CWE-288** · **ATT&CK T1557**
 - context: **ci-cd** · auth **federated** · chain role **entry**
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: pipeline config/runner surface — secrets and lateral movement ride the runners

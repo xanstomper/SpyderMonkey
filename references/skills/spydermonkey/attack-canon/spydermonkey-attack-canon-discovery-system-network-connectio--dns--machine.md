@@ -5,6 +5,12 @@
 - bindings: **WSTG-PARA** · **CWE-113** · **ATT&CK T1190**
 - context: **dns** · auth **machine** · chain role **pivot**
 
+## Route
+
+- probes: `nmap`, `masscan`, `naabu`, `zmap`, `nc`, `fping`, `nmap-allports`
+- chains: `net`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: record/cname surface — the domtake chain starts here

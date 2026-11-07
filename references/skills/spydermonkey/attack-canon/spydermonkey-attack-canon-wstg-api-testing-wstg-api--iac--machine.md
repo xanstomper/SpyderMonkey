@@ -5,6 +5,12 @@
 - bindings: **WSTG-APIT-10** · **CWE-1321** · **ATT&CK T1190**
 - context: **iac** · auth **machine** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: template/state files are the infrastructure inventory — read-only crown of the exposure

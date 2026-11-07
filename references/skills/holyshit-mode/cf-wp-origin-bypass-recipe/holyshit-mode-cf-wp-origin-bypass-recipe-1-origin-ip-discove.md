@@ -4,6 +4,12 @@
 - bindings: **WSTG-CONF-09** · **CWE-350** · **ATT&CK T1584**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-smtp-commands`, `nmap-smtp-enum-users`, `swaks`, `dig-mx`, `dig-txt`
+- chains: `mail-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 When the HTML surface is a CF JS challenge and you can't reach the origin, the origin IP is

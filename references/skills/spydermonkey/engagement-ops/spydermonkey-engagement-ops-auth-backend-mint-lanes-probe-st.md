@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-08** · **CWE-841** · **ATT&CK T1574**
 - generated: 2026-11-06
 
+## Route
+
+- probes: `sslscan`, `sslyze`, `testssl`, `tlsx`, `ssh-audit`, `openssl`, `nmap-ssl-ciphers`, `nmap-script-ssl`, `ssh-keyscan`
+- chains: `tls`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 Sites that captcha-wall their registration/login UI still expose **login-handshake mint endpoints that allocate server-side state per request, unauthenticated** — the ATO funnel's "open mint / gated verify" asymmetry. Two oracle classes to hunt, both on the same shared auth backend:

@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-06** · **CWE-294** · **ATT&CK T1550**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap`, `masscan`, `naabu`, `zmap`, `nc`, `fping`, `nmap-allports`
+- chains: `net`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 No matter how unfamiliar the technology is, map it to these domains. Probe a domain or

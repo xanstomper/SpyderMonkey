@@ -5,6 +5,12 @@
 - bindings: **WSTG-SESS-01** · **CWE-347** · **ATT&CK T1552**
 - context: **api** · auth **machine** · chain role **entry**
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: strike the JSON body + query string; content-type and parameter placement change the probe shape

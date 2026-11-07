@@ -5,6 +5,12 @@
 - bindings: **WSTG-ATHN-04** · **CWE-307** · **ATT&CK T1110**
 - context: **dns** · auth **unauth** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: record/cname surface — the domtake chain starts here

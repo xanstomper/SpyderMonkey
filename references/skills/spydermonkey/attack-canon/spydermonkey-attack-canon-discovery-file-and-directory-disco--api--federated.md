@@ -5,6 +5,12 @@
 - bindings: **WSTG-PATH** · **CWE-22** · **ATT&CK T1005**
 - context: **api** · auth **federated** · chain role **pivot**
 
+## Route
+
+- probes: `gobuster`, `ffuf`, `dirsearch`, `dirb`, `feroxbuster`, `wfuzz`, `dirhunt`
+- chains: `content`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: strike the JSON body + query string; content-type and parameter placement change the probe shape

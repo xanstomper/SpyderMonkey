@@ -5,6 +5,12 @@
 - bindings: **PTES-OPSEC** · **CWE-200** · **ATT&CK T1070**
 - context: **external** · auth **unauth** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: passive-first; the dossier feeds everything downstream

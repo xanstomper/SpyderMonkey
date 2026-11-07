@@ -5,6 +5,12 @@
 - bindings: **MASTG-RES** · **CWE-494** · **ATT&CK T1601**
 - context: **iot** · auth **machine** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: radio/serial surface — BLE/NFC/UART classes, lab hardware only

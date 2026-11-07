@@ -4,6 +4,12 @@
 - bindings: **WSTG-CONF-04** · **CWE-530** · **ATT&CK T1552**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 Download a candidate backup with a Range header first (`Range: bytes=0-200`), check the magic

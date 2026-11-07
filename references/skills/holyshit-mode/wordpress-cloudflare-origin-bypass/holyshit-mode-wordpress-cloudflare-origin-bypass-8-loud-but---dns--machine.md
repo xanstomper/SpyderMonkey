@@ -5,6 +5,12 @@
 - bindings: **WSTG-CONF-09** · **CWE-350** · **ATT&CK T1584**
 - context: **dns** · auth **machine** · chain role **pivot**
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: record/cname surface — the domtake chain starts here

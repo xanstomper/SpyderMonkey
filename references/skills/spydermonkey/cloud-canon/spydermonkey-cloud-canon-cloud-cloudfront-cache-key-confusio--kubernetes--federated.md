@@ -5,6 +5,12 @@
 - bindings: **WSTG-ADV-01** · **CWE-444** · **ATT&CK T1190**
 - context: **kubernetes** · auth **federated** · chain role **pivot**
 
+## Route
+
+- probes: `s3scanner`, `cloudbrute`, `cloudlist`, `kube-hunter`, `shodan`
+- chains: `cloud-full`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: RBAC/service-account surface — read-only enumeration, crown the exposure

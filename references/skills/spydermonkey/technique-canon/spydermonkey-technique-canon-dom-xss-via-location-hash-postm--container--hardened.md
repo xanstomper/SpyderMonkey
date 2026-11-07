@@ -5,6 +5,12 @@
 - bindings: **WSTG-SESS** · **CWE-384** · **ATT&CK T1550**
 - context: **container** · auth **hardened** · chain role **pivot**
 
+## Route
+
+- probes: `dalfox`, `xsstrike`, `xsser`
+- chains: `web`, `api`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: namespace/capability surface — read-only inventory, no escape execution

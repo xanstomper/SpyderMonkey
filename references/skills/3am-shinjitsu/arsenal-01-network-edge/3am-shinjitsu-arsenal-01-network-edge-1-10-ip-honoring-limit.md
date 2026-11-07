@@ -4,6 +4,12 @@
 - bindings: **MASTG-RES** · **CWE-494** · **ATT&CK T1601**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-slowloris-check`, `curl`
+- chains: `web`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - DECISIVE: same request twice, `X-Forwarded-For: 1.2.3.4` vs without — diff response.

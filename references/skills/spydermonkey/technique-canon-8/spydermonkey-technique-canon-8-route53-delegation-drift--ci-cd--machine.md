@@ -5,6 +5,12 @@
 - bindings: **WSTG-CRYPTO-04** · **CWE-329** · **ATT&CK T1573**
 - context: **ci-cd** · auth **machine** · chain role **pivot**
 
+## Route
+
+- probes: `subfinder`, `amass`, `dnsx`, `subzy`, `dnstwist`, `dig-cname`, `dig-axfr`, `nuclei-takeover`, `urlcrazy`, `assetfinder`, `findomain`
+- chains: `dns`, `takeover-full`, `osint`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## Context
 
 - platform: pipeline config/runner surface — secrets and lateral movement ride the runners

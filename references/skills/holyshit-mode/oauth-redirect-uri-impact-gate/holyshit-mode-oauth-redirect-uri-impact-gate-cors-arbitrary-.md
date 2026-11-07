@@ -4,6 +4,12 @@
 - bindings: **WSTG-ATHN** · **CWE-287** · **ATT&CK T1111**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `dalfox`, `xsstrike`, `xsser`
+- chains: `web`, `api`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 `access-control-allow-origin: https://evil.com` reflected on an OpenAI-compatible API is **only CVSS 9.1 if the API uses cookie-based auth**. When the API uses `Authorization: Bearer <token>` and the SPA stores tokens in `sessionStorage` / `localStorage`:

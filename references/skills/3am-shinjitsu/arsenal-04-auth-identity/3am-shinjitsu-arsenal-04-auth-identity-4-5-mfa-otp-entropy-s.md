@@ -4,6 +4,12 @@
 - bindings: **WSTG-BUSL-01** · **CWE-681** · **ATT&CK T1565**
 - generated: 2026-11-04
 
+## Route
+
+- probes: `nmap-script-default`, `httpx`, `whatweb`, `webanalyze`
+- chains: `recon`
+- gate: every probe runs through the shared scope authority (rc=1 out of estate); the 3-gate differential turns output into a finding
+
 ## The technique
 
 - Throughput calibration: 100-thread curl ≈ 52 req/s effective. 6-digit space (1M): single-
