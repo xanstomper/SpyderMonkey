@@ -100,7 +100,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 import context_router as cr  # noqa: E402
 
-VERSION = "8.0.0"
+VERSION = "8.0.1"
 SCHEMA = 4
 
 
@@ -1917,8 +1917,10 @@ def cmd_fleet(args):
     brief_paths = {}
     for name in seq:
         role, _ = FLEET_BRIEFS[name]
+        # scoped retrieval: fleet briefs need canon+skill only — the scoped
+        # build skips the 138k expanded + 66k tool lanes (ms, not ~30s cold)
         knowledge = cr.query(" ".join([args.goal or "", role, name]),
-                             top=4, budget=2400)
+                             top=4, budget=2400, kinds=("canon", "skill"))
         know_txt = "\n".join(
             f"[{h['kind']}] {h['title']} — {h['id']}"
             + (f"\n    {h['snippet'][:160]}" if h["snippet"] else "")

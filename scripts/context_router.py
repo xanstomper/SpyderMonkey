@@ -71,20 +71,37 @@ def _stamp() -> str:
     sigma_idx = REFERENCES / "sigma-index.json"
     if sigma_idx.exists():
         latest = max(latest, sigma_idx.stat().st_mtime)
+    for extra in ("cve-index.json", "capec-index.json", "gtfobin-index.json"):
+        p = REFERENCES / extra
+        if p.exists():
+            latest = max(latest, p.stat().st_mtime)
     return f"{latest:.0f}"
 
 
-def _index_path() -> Path:
+def _index_path(kinds: tuple[str, ...] | None = None) -> Path:
     home = Path(os.environ.get("SPYDERMONKEY_HOME",
                                str(Path.home() / ".redteam")))
     cache = home / "cache"
     cache.mkdir(parents=True, exist_ok=True)
+    if kinds:
+        # kind-scoped caches share nothing with the full index
+        return cache / ("context-index-" + "-".join(sorted(kinds)) + ".json")
     return cache / "context-index.json"
 
 
-def build_index() -> dict:
-    """Build (or load cached) the corpus index. Read-only on references/."""
-    ipath = _index_path()
+def build_index(kinds: tuple[str, ...] | None = None) -> dict:
+    """Build (or load cached) the corpus index. Read-only on references/.
+
+    kinds=subset → build ONLY those lanes (e.g. ("canon","skill") for fleet
+    briefs): the 138k expanded variants and 66k tool surge are skipped, so
+    scoped builds take milliseconds instead of ~30s of cold build.
+    """
+    allow = set(kinds) if kinds else None
+
+    def _w(k: str) -> bool:
+        return allow is None or k in allow
+
+    ipath = _index_path(kinds)
     stamp = _stamp()
     if ipath.exists():
         try:
@@ -100,6 +117,8 @@ def build_index() -> dict:
     #    glob MUST be *canon*.md — *canon.md silently drops the numbered
     #    technique-canon-N.md volumes (a 12-volume density loss, v7.6 fix).
     for p in sorted(REFERENCES.glob("*canon*.md")):
+        if not _w("canon"):
+            break
         text = p.read_text(errors="replace")
         toks = tokenize(text)
         if not toks:
@@ -114,6 +133,8 @@ def build_index() -> dict:
     LINE_RE = re.compile(r"- \[(.+?)\]\(([^)]+)\) — (.*)$")
     for idx_file, kind in (("skilltree-index.md", "skill"),
                            ("skilltree-expanded-index.md", "expanded")):
+        if not _w(kind):
+            continue
         p = REFERENCES / idx_file
         if not p.exists():
             continue
@@ -131,7 +152,7 @@ def build_index() -> dict:
 
     # 3) tool-catalog surge — name + cat + desc
     surge = REFERENCES / "tool-catalog-surge.json"
-    if surge.exists():
+    if _w("tool") and surge.exists():
         try:
             data = json.loads(surge.read_text())
             for entries in data.get("sections", {}).values():
@@ -153,7 +174,7 @@ def build_index() -> dict:
     #    SigmaHQ rule as a retrievable doc (title + logsource + detection
     #    tags). Generator: scripts/sigma_index.py; artifact ships in-repo.
     sigma_idx = REFERENCES / "sigma-index.json"
-    if sigma_idx.exists():
+    if _w("sigma") and sigma_idx.exists():
         try:
             for e in json.loads(sigma_idx.read_text()).get("rules", []):
                 name = e.get("name", "")
@@ -177,6 +198,8 @@ def build_index() -> dict:
     for fname, kind, weight in (("cve-index.json", "cve", 1.3),
                                 ("capec-index.json", "capec", 1.5),
                                 ("gtfobin-index.json", "gtfobin", 1.2)):
+        if not _w(kind):
+            continue
         p = REFERENCES / fname
         if not p.exists():
             continue
@@ -237,7 +260,7 @@ def query(terms: str, top: int = 8, budget: int | None = None,
     round-robin by kind weight, so the 138k expanded variants can't shout
     over the 30 canon volumes or the sigma/tool lanes (v7.6.3). mix=False:
     pure global ranking."""
-    idx = build_index()
+    idx = build_index(kinds)
     qtoks = tokenize(terms)
     if not qtoks:
         return []

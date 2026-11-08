@@ -1,3 +1,16 @@
+# v8.0.1 — THE FLEET FLAKE KILLED: kind-scoped retrieval (300× faster briefs)
+
+- **context_router: kind-scoped index builds** (`build_index(kinds=...)`) —
+  subset builds load ONLY the requested lanes, with separate caches per kind
+  set. Fleet squad briefs now retrieve canon+skill only: cold cost
+  **29.5s → 0.09s (~300×)**, warm rebuild 6.3s → ms. The suite's
+  `test_fleet_writes_squad_briefs` hang-under-load class is eliminated
+  (3/3 consecutive passes vs the earlier 1/3 flake).
+- **Freshness fix**: the index stamp now includes the cve/capec/gtfobin
+  corpus mtimes (previously a corpus update could serve a stale cached index).
+- The standalone `context-router.py` CLI already passed `--kinds` through —
+  it now pays only for the lanes it asks.
+
 # v8.0.0 — THE PRODUCT-READINESS RELEASE: semver · packaging · audit · hardening
 
 - **VERSION DISCIPLINE**: engine version unified to **8.0.0** across all five
