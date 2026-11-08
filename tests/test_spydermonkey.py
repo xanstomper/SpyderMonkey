@@ -232,7 +232,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(a, b)
         self.assertTrue(a)
         self.assertTrue(all(h["kind"] in ("canon", "skill", "expanded", "tool",
-                                          "sigma")
+                                          "sigma", "cve", "capec", "gtfobin")
                             for h in a))
         idx = crr.build_index()
         counts = {}
@@ -242,6 +242,8 @@ class CliTests(unittest.TestCase):
                                 "numbered technique-canon volumes must be indexed")
         self.assertGreaterEqual(counts.get("sigma", 0), 3000,
                                 "sigma knowledge lane must be present")
+        self.assertGreaterEqual(counts.get("gtfobin", 0), 400,
+                                "gtfobin lane must be present")
 
     def test_ledger_feeds_shared_weight_store(self):
         mem = Path(self.env["SPYDERMONKEY_HOME"]) / "memory" / "spydermonkey-priors.json"

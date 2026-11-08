@@ -29,9 +29,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 REFERENCES = ROOT / "references"
 
-KINDS = ("canon", "skill", "expanded", "tool", "sigma")
+KINDS = ("canon", "skill", "expanded", "tool", "sigma", "capec", "cve",
+         "gtfobin")
 KIND_WEIGHT = {"canon": 3.0, "skill": 2.2, "expanded": 1.6, "tool": 1.0,
-               "sigma": 1.4}
+               "sigma": 1.4, "capec": 1.5, "cve": 1.3, "gtfobin": 1.2}
 
 STOP = {
     "the", "a", "an", "and", "or", "for", "to", "of", "in", "on", "with",
@@ -169,6 +170,50 @@ def build_index() -> dict:
                              "ttoks": sorted(tokenize(title or name))})
         except Exception:
             pass
+
+    # 5) THE CORPUS SURGE LANE (v7.6.6): official corpora fetched by
+    #    corpus_surge.py — cve (NVD) · capec (MITRE) · gtfobin (privesc).
+    #    Artifacts ship in-repo when fetched; absent file = kind absent.
+    for fname, kind, weight in (("cve-index.json", "cve", 1.3),
+                                ("capec-index.json", "capec", 1.5),
+                                ("gtfobin-index.json", "gtfobin", 1.2)):
+        p = REFERENCES / fname
+        if not p.exists():
+            continue
+        try:
+            data = json.loads(p.read_text())
+        except Exception:
+            continue
+        if kind == "cve":
+            for e in data.get("cves", []):
+                toks = tokenize(" ".join([e.get("id", ""), e.get("desc", ""),
+                                          " ".join(e.get("cwe", []))]))
+                if not toks:
+                    continue
+                docs.append({"k": kind, "id": e.get("id", ""), "t": e.get("id", ""),
+                             "tags": " ".join(e.get("cwe", [])) + " " + e.get("sev", ""),
+                             "snip": e.get("desc", ""), "toks": sorted(toks),
+                             "ttoks": sorted(tokenize(e.get("id", "")))})
+        elif kind == "capec":
+            for e in data.get("patterns", []):
+                toks = tokenize(" ".join([e.get("id", ""), e.get("name", ""),
+                                          e.get("desc", "")]))
+                if not toks:
+                    continue
+                docs.append({"k": kind, "id": e.get("id", ""), "t": e.get("name", ""),
+                             "tags": e.get("id", ""), "snip": e.get("desc", ""),
+                             "toks": sorted(toks),
+                             "ttoks": sorted(tokenize(e.get("name", "")))})
+        elif kind == "gtfobin":
+            for e in data.get("bins", []):
+                toks = tokenize(" ".join([e.get("bin", ""), " ".join(e.get("functions", []))]))
+                if not toks:
+                    continue
+                docs.append({"k": kind, "id": e.get("bin", ""), "t": e.get("bin", ""),
+                             "tags": " ".join(e.get("functions", [])),
+                             "snip": "privesc/sandbox-escape functions: " + " ".join(e.get("functions", [])),
+                             "toks": sorted(toks),
+                             "ttoks": sorted(tokenize(e.get("bin", "")))})
 
     df: dict[str, int] = {}
     for d in docs:

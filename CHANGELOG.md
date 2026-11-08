@@ -1,3 +1,21 @@
+# v7.6.4 — THE OFFICIAL CORPUS LANE: NVD CVEs · CAPEC · GTFOBins
+
+- **corpus_surge.py** — the official-knowledge fetch lane: NVD API 2.0
+  paging (resumable, incremental flush per batch, 3× retry per request,
+  NVD_API_KEY env for the 50/30s rate), CAPEC (official json, UA fallback),
+  GTFOBins (git clone → the Jekyll collections — extension-less files,
+  YAML function keys parsed). A blocked source is REPORTED, never faked.
+- **GTFOBins landed: 476 binaries** (functions parsed: file-read/sudo/
+  shell/...) → kind gtfobin — the kaisha battery's knowledge floor.
+- **NVD CVE lane LIVE**: 421,074 total CVEs on the API; the background
+  fetch is resumable (re-run picks up where it left; incremental flush
+  every batch). First run: 68k fetched before a read timeout — lost, then
+  the incremental fix landed and the re-run accumulates.
+- The context router retrieves all of it: kinds cve/capec/gtfobin with
+  weights 1.3/1.5/1.2; "sudo vim shell escape" → canon + skill + sigma +
+  gtfobin in one query. CAPEC still source-blocked (both http/https).
+- Tests 86/86.
+
 # v7.6.3 — THE CAPABILITY BATCH: fuzz lane · artifact gate · loop knowledge · decay
 
 - **A4 THE FUZZ LANE IN THE KERNEL**: the planner emits `fuzz-lane`

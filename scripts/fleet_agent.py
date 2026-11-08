@@ -273,6 +273,50 @@ def cmd_agent(args):
         time.sleep(args.interval)
 
 
+def cmd_run_once(args):
+    """THE RELAY ENTRY POINT (C1): execute ONE task (inline json or file) in
+    the node home and print the kernel-schema result. This is what a push
+    over ssh runs — the relay's scope gate audits the command before it
+    ever reaches here."""
+    home = Path(args.home).expanduser()
+    home.mkdir(parents=True, exist_ok=True)
+    if args.task_json:
+        task = json.loads(args.task_json)
+    else:
+        task = json.loads(Path(args.task_file).read_text())
+    result = _run_task(home, task, secret=args.secret)
+    print(json.dumps(result, indent=2))
+    return 0 if result.get("ok") else 1
+
+
+_PUSH_ARGV_CACHE = None
+
+
+def _push_argv(relay: str, home: str, task: dict, secret: str | None = None) -> list[str]:
+    """The C1 BRIDGE command: push a signed task to a relay node by wrapping
+    `spydermonkey relay exec` — the dispatcher's estate gate audits every
+    host token in the wrapped command, so a push to an out-of-estate relay
+    is REFUSED before ssh ever runs."""
+    import shlex as _shlex
+    if secret:
+        task = {**task, "sig": _task_sig(task, secret)}
+    remote = (f"python3 $HOME/spydermonkey/scripts/fleet_agent.py run-once "
+              f"--task-json {_shlex.quote(json.dumps(task))} --home {_shlex.quote(home)}")
+    return [sys.executable, str(DISPATCHER), "relay", "exec",
+            "--name", relay, "--relay-cmd", remote]
+
+
+def cmd_push(args):
+    task = {"id": args.task_id, "node": args.relay,
+            "command": [c.strip() for c in args.command.split(",") if c.strip()]}
+    argv = _push_argv(args.relay, args.home, task, args.secret)
+    if args.dry_run:
+        print("═══ FLEET PUSH (dry-run) — through the relay estate gate ═══")
+        print("  " + " ".join(a if a != "" else "''" for a in argv)[:400])
+        return 0
+    return subprocess.run(argv).returncode
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(prog="fleet_agent", description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -293,9 +337,25 @@ def main() -> int:
     a.add_argument("--no-verify", action="store_true", help="skip TLS verification (lab only)")
     a.add_argument("--interval", type=int, default=30)
     a.add_argument("--home")
+    ro = sub.add_parser("run-once", help="relay entry point: run ONE task (inline json/file) in the node home")
+    ro.add_argument("--task-json", help="the task as inline json")
+    ro.add_argument("--task-file", help="the task as a json file")
+    ro.add_argument("--home", required=True)
+    ro.add_argument("--secret")
+    pu = sub.add_parser("push", help="C1 BRIDGE: push a signed task to a relay node through the dispatcher's relay exec (estate-gated)")
+    pu.add_argument("--relay", required=True)
+    pu.add_argument("--home", required=True, help="the node home path ON THE RELAY")
+    pu.add_argument("--task-id", required=True)
+    pu.add_argument("--command", required=True, help="dispatcher argv, comma-separated")
+    pu.add_argument("--secret")
+    pu.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
     if args.cmd == "controller":
         return cmd_controller(args)
+    if args.cmd == "run-once":
+        return cmd_run_once(args)
+    if args.cmd == "push":
+        return cmd_push(args)
     return cmd_agent(args)
 
 
