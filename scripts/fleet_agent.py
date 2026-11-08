@@ -20,8 +20,11 @@ stdlib only; tasks are the dispatcher's own argv, results are absorb-ready.
 from __future__ import annotations
 
 import argparse
+import hashlib
+import hmac
 import json
 import os
+import ssl
 import subprocess
 import sys
 import threading
@@ -35,21 +38,40 @@ DISPATCHER = Path(__file__).resolve().parent / "spydermonkey.py"
 
 
 def _http_json(url: str, payload=None, token: str | None = None,
-               timeout: int = 30) -> dict:
+               timeout: int = 30, ctx: ssl.SSLContext | None = None) -> dict:
     data = json.dumps(payload).encode() if payload is not None else None
     req = urllib.request.Request(url, data=data,
                                  method="POST" if data else "GET")
     req.add_header("Content-Type", "application/json")
     if token:
         req.add_header("X-Fleet-Token", token)
-    with urllib.request.urlopen(req, timeout=timeout) as r:
+    with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
         return json.loads(r.read().decode("utf-8", "replace"))
 
 
-def _run_task(home: Path, task: dict, timeout: int = 600) -> dict:
+def _task_sig(task: dict, secret: str) -> str:
+    """HMAC-SHA256 over the canonical task body — volatile transport fields
+    (sig itself, and state, which the controller mutates after signing) are
+    excluded; the node verifies the same canonical form."""
+    body = {k: v for k, v in task.items() if k not in ("sig", "state")}
+    canon = json.dumps(body, sort_keys=True, separators=(",", ":"))
+    return hmac.new(secret.encode(), canon.encode(), hashlib.sha256).hexdigest()
+
+
+def _run_task(home: Path, task: dict, timeout: int = 600,
+              secret: str | None = None) -> dict:
     """Execute ONE queued task under the node home. The task command is the
     dispatcher's argv WITHOUT the interpreter prefix; results match the
-    kernel result schema (absorb ingests them)."""
+    kernel result schema (absorb ingests them).
+    v7.6.4 HARDENING: with a secret set, unsigned/bad-signature tasks are
+    REFUSED before execution — the node never runs unauthenticated work."""
+    if secret:
+        want = _task_sig(task, secret)
+        if not task.get("sig") or not hmac.compare_digest(task.get("sig", ""),
+                                                          want):
+            return {"task_id": task.get("id", "?"), "ok": False, "rc": 2,
+                    "refused": "bad-signature",
+                    "output": "task signature missing/invalid — REFUSED"}
     cmd = task.get("command") or task.get("cmd") or []
     if not isinstance(cmd, list) or not cmd:
         return {"task_id": task.get("id", "?"), "ok": False, "rc": 2,
@@ -101,8 +123,11 @@ class _Controller(BaseHTTPRequestHandler):
                 self.server.inflight.append(nxt)
             return self._reply(200, nxt or {})
         if self.path.startswith("/status"):
+            hb = {p.parent.name: json.loads(p.read_text()).get("at", "")
+                  for p in Path(self.server.node_dir).glob("*/heartbeat.json")}
             return self._reply(200, {"queue": len(self.server.queue),
-                                     "inflight": len(self.server.inflight)})
+                                     "inflight": len(self.server.inflight),
+                                     "nodes_last_seen": hb})
         return self._reply(404, {"error": "unknown route"})
 
     def do_POST(self):
@@ -117,11 +142,22 @@ class _Controller(BaseHTTPRequestHandler):
             node = body.get("node", "")
             if not body.get("command"):
                 return self._reply(400, {"error": "task needs a command"})
+            if getattr(self.server, "secret", None):
+                body["sig"] = _task_sig(body, self.server.secret)
             with self.server.lock:
                 self.server.queue.append({"id": body.get("id") or f"T{len(self.server.queue)+1}",
                                           "node": node, "command": body["command"],
+                                          "sig": body.get("sig", ""),
                                           "state": "queued"})
             return self._reply(201, {"queued": True, "queue": len(self.server.queue)})
+        if self.path.startswith("/heartbeat"):
+            node = body.get("node", "") or "anon"
+            outdir = Path(self.server.node_dir) / node
+            outdir.mkdir(parents=True, exist_ok=True)
+            (outdir / "heartbeat.json").write_text(json.dumps(
+                {"node": node, "at": body.get("at", ""),
+                 "version": body.get("version", "")}, indent=2) + "\n")
+            return self._reply(200, {"seen": True})
         if self.path.startswith("/result"):
             node = body.get("node", "")
             with self.server.lock:
@@ -141,12 +177,31 @@ def cmd_controller(args):
     srv = ThreadingHTTPServer(("127.0.0.1", args.port), _Controller)
     srv.queue, srv.inflight, srv.lock = [], [], threading.Lock()
     srv.node_dir, srv.token = str(node_dir), args.token
-    print(f"▸ fleet controller on 127.0.0.1:{args.port} · queue in {node_dir}",
-          flush=True)
+    srv.secret = args.secret
+    if args.cert and args.key:
+        ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        ctx.load_cert_chain(args.cert, args.key)
+        srv.socket = ctx.wrap_socket(srv.socket, server_side=True)
+        print(f"▸ fleet controller (TLS) on 127.0.0.1:{args.port} · queue in {node_dir}",
+              flush=True)
+    else:
+        print(f"▸ fleet controller on 127.0.0.1:{args.port} · queue in {node_dir}",
+              flush=True)
     if args.once:
         srv.handle_request()
         return 0
     srv.serve_forever()
+
+
+def _client_ctx(ca: str | None, no_verify: bool) -> ssl.SSLContext | None:
+    if ca:
+        return ssl.create_default_context(cafile=ca)
+    if no_verify:
+        c = ssl.create_default_context()
+        c.check_hostname = False
+        c.verify_mode = ssl.CERT_NONE
+        return c
+    return None
 
 
 def cmd_agent(args):
@@ -157,10 +212,12 @@ def cmd_agent(args):
               "ungated (copy the node's scope.json into the node home first)",
               file=sys.stderr)
         return 1
+    ctx = _client_ctx(args.ca, args.no_verify)
     if args.serve:
         srv = ThreadingHTTPServer(("127.0.0.1", args.serve), _Controller)
         srv.queue, srv.inflight, srv.lock = [], [], threading.Lock()
         srv.node_dir, srv.token = str(home), "node-local"
+        srv.secret = args.secret
         print(f"▸ fleet agent (serve) on 127.0.0.1:{args.serve} · home {home}",
               flush=True)
         # standalone node: the listener queues, this loop executes
@@ -171,7 +228,7 @@ def cmd_agent(args):
                     task = _http_json(f"{base}/task?node={home.name}",
                                       timeout=5)
                     if task and task.get("command"):
-                        result = _run_task(home, task)
+                        result = _run_task(home, task, secret=args.secret)
                         result["node"] = home.name
                         try:
                             _http_json(f"{base}/result", payload=result,
@@ -192,17 +249,24 @@ def cmd_agent(args):
     while True:
         try:
             task = _http_json(f"{url}/task?node={home.name}", token=args.token,
-                              timeout=10)
+                              timeout=10, ctx=ctx)
             if task and task.get("command"):
-                result = _run_task(home, task)
+                result = _run_task(home, task, secret=args.secret)
                 result["node"] = home.name
                 try:
                     _http_json(f"{url}/result", payload=result,
-                               token=args.token, timeout=15)
+                               token=args.token, timeout=15, ctx=ctx)
                     print(f"✓ {result['task_id']} rc={result['rc']} "
                           f"({result['elapsed']}s)", flush=True)
                 except Exception as e:
                     print(f"✗ result post failed: {e}", flush=True)
+            else:
+                # HEARTBEAT: the controller knows this node is alive + version
+                _http_json(f"{url}/heartbeat",
+                           payload={"node": home.name, "at": time.strftime(
+                               "%Y-%m-%dT%H:%M:%S"),
+                               "version": "fleet-agent/1"},
+                           token=args.token, timeout=10, ctx=ctx)
         except Exception:
             time.sleep(args.interval)
             continue
@@ -216,11 +280,17 @@ def main() -> int:
     c.add_argument("--port", type=int, default=9440)
     c.add_argument("--node-dir", default=str(Path.home() / ".redteam" / "fleet-nodes"))
     c.add_argument("--token")
+    c.add_argument("--secret", help="HMAC-SHA256 task-signing secret — nodes with the same secret refuse unsigned tasks")
+    c.add_argument("--cert", help="TLS cert (with --key) — the controller speaks https")
+    c.add_argument("--key", help="TLS key")
     c.add_argument("--once", action="store_true", help="handle ONE request then exit (tests)")
     a = sub.add_parser("agent", help="the node-side runner")
     a.add_argument("--controller", help="beacon mode: controller base URL")
     a.add_argument("--serve", type=int, help="listener mode: local port")
     a.add_argument("--token")
+    a.add_argument("--secret", help="verify task HMAC signatures (must match the controller)")
+    a.add_argument("--ca", help="CA bundle for https beacons")
+    a.add_argument("--no-verify", action="store_true", help="skip TLS verification (lab only)")
     a.add_argument("--interval", type=int, default=30)
     a.add_argument("--home")
     args = ap.parse_args()
