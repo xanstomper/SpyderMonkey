@@ -1,4 +1,4 @@
-"""Tests for the /spydermonkey session-hijack mandate (v5.4.0).
+"""Tests for the /spydermonkey session-hijack mandate (v8 — the fusion contract).
 
 The contract is the interface other agents inject (opencode agent, claude
 command, hermes skill, cline wrapper). If it drifts — wording, walls,
