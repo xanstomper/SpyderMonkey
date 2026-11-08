@@ -44,7 +44,7 @@ from urllib.parse import urlsplit
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 
-VERSION = "7.5.0"
+VERSION = "8.0.0"
 
 # tool → (capability, canon classes it feeds, plan line, args builder)
 ARSENAL = {
@@ -1441,12 +1441,20 @@ def url_downloader():
     return _install
 
 
+_TOOL_NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]*$")
+
+
 def resolve_install(tool: str) -> dict:
     """tool → plan entry: {tool, installed, managed, guess, cmds, bin, note}.
 
     cmds = [{"manager": m, "command": str}] in execution order. Unknown tools
     fall back to a same-name apt guess (flagged guess=True) or a manual note.
     """
+    if not _TOOL_NAME_RE.match(tool):
+        return {"tool": tool, "installed": False, "managed": False,
+                "guess": False, "cmds": [], "bin": tool, "note":
+                "rejected: tool name fails the ^[A-Za-z0-9._+-]+$ gate — "
+                "refusing to interpolate it into shell commands"}
     m = _install_map().get(tool, {})
     note = m.get("note", "")
     bin_name = m.get("bin", tool)
@@ -1579,6 +1587,9 @@ def cmd_install(args):
                     if ok:
                         break
                     continue
+                # product-audit: reviewed 2026-11-07 — shell=True is fed ONLY
+                # by catalog recipes (references/arsenal-install-map.json) and
+                # tool names validated by _TOOL_NAME_RE; operator-initiated.
                 rc = subprocess.run(c["command"], shell=True).returncode
                 if rc == 0:
                     break

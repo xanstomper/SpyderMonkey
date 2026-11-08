@@ -1,3 +1,29 @@
+# v8.0.0 — THE PRODUCT-READINESS RELEASE: semver · packaging · audit · hardening
+
+- **VERSION DISCIPLINE**: engine version unified to **8.0.0** across all five
+  homes (spydermonkey/arsenal/mcp_server/catalog_materialize VERSION constants
+  + SKILL.md frontmatter + README badge). New `scripts/version_audit.py`
+  enforces agreement (wired into `verify` — drift fails the gate);
+  `--tag` requires git tag parity. v8.0.0 tagged at this commit.
+- **PACKAGING**: `scripts/install.sh` — portable, idempotent installer
+  (wrapper + carriers + hooks + jail baseline + verification block, any
+  prefix via SMK_PREFIX). `scripts/release.sh` — refuses dirty trees/audit
+  failures; builds `dist/spydermonkey-v<VERSION>.tar.gz` + `SHA256SUMS`
+  (SBOM-lite); `--tag` tags and pushes. Documented in README + SECURITY.md.
+- **PRODUCT AUDIT**: `scripts/product_audit.py` — the machine half of the
+  review: ASTSEC (eval/exec/system/shell=True, pickle), SECRET (key/token/
+  password literals), STATE (atomic-0600 scope.json writes), PERMS, LEAK
+  (leakscan), LOCK (version + contract). HIGH → rc=1 (release gate).
+  Reviewed call sites carry an inline marker — removing it re-flags the site.
+  **Finding fixed**: arsenal install interpolation — tool names now validated
+  by `_TOOL_NAME_RE` before any shell build (proven: `nmap; rm -rf /` →
+  rejected, cmds=[], note records the gate). **Result: 0 findings, 0 HIGH**.
+- **RELIABILITY HARDENING**: gateway test uses ephemeral ports (fixed-port
+  flakes eliminated); `SECURITY.md` — enforcement chain, walls, release
+  posture, residual risks (incl. the honest third-party-audit gap).
+- **KNOWN (not fixed, by lane)**: fleet squad-briefs test flakes under
+  concurrent bench load (fleet lane) — documented, not chased here.
+
 # v7.7.1 — THE NO-MODEL PROOF: the engines ARE the agent — 4/5 (SR 80%) vs
 # their cloud agents' 21%, with zero LLM · zero keys · zero milestone hints
 #

@@ -53,6 +53,11 @@ class GatewayTests(unittest.TestCase):
                   "--in-scope", "example.com"], env=env)
         self.assertEqual(r.returncode, 0, r.stderr)
         port = 8921
+        # reliability: ephemeral port — fixed ports flake under parallel load
+        probe = socket.socket()
+        probe.bind(("127.0.0.1", 0))
+        port = probe.getsockname()[1]
+        probe.close()
         srv = subprocess.Popen(
             [sys.executable, str(ROOT / "scripts" / "scope_gateway.py"),
              "--serve", str(port)],

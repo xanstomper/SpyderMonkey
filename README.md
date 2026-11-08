@@ -10,7 +10,7 @@
 the tree, the router, the autonomous kernel, the published benchmarks, and the full
 engagement pipeline in one stdlib-only CLI.**
 
-[![Version](https://img.shields.io/badge/version-7.5.0-blueviolet?style=for-the-badge)](#the-cli)
+[![Version](https://img.shields.io/badge/version-8.0.0-blueviolet?style=for-the-badge)](#the-cli)
 [![Python](https://img.shields.io/badge/python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](#quickstart)
 [![Platform](https://img.shields.io/badge/platform-Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](#quickstart)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?style=for-the-badge)](#why-its-so-powerful)
