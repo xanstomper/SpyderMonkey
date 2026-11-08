@@ -254,7 +254,9 @@ class CliTests(unittest.TestCase):
                 "--cls", "IDOR", "--asset", "https://example.test/api/x",
                 "--proof", proof, "--json"])
         pr = json.loads(mem.read_text())
-        self.assertEqual(pr["IDOR"], {"hits": 1, "runs": 1})
+        self.assertEqual(pr["IDOR"]["hits"], 1)
+        self.assertEqual(pr["IDOR"]["runs"], 1)
+        self.assertIn("last", pr["IDOR"])  # v7.6.3: decay timestamp stamped
         self.j(["ledger", "add", "--target", "t1", "--title", "weak guess",
                 "--cls", "IDOR", "--asset", "https://example.test/api/x",
                 "--proof", "same response both ways", "--json"])
@@ -265,8 +267,8 @@ class CliTests(unittest.TestCase):
                 "--cls", "IDOR", "--asset", "https://example.test/api/x",
                 "--proof", proof, "--json"])
         pr = json.loads(mem.read_text())
-        self.assertEqual(pr["IDOR"], {"hits": 1, "runs": 2},
-                         "duplicates must not re-learn")
+        self.assertEqual(pr["IDOR"]["hits"], 1)
+        self.assertEqual(pr["IDOR"]["runs"], 2)  # duplicates must not re-learn
         self.j(["ledger", "add", "--target", "t1", "--title", "lab probe",
                 "--cls", "SSRF", "--asset", "http://127.0.0.1:9999/fetch",
                 "--proof", proof, "--json"])
@@ -417,6 +419,55 @@ class CliTests(unittest.TestCase):
         self.assertTrue(pure)  # mix=False still returns ranked hits
         # determinism holds under mix
         self.assertEqual(hits, crr.query("kerberos", top=8, budget=None, mix=True))
+
+    def test_planner_fuzz_lane_and_artifact_verify(self):
+        """v7.6.3 — materialized artifacts route the planner into the fuzz
+        lane; artifacts verify well-formed."""
+        import spydermonkey as smod
+        d = Path(self.tmp) / "artcheck"
+        d.mkdir()
+        (d / "t.yml").write_text("id: x\ninfo:\n  name: y\n")
+        (d / "bad.py").write_text("def (:\n")
+        self.assertTrue(smod._verify_artifact(d / "t.yml")[0])
+        self.assertFalse(smod._verify_artifact(d / "bad.py")[0])
+        # planner: walk directives to fixed point; fuzz-lane must fire.
+        # IN-PROCESS ISOLATION: smod reads the real env — wrap it or the walk
+        # pollutes ~/.redteam (the live-engagement home) and cross-run state
+        # makes the test order-dependent.
+        old_home = os.environ.get("SPYDERMONKEY_HOME")
+        old_scope = os.environ.get("SPYDERMONKEY_SCOPE")
+        os.environ["SPYDERMONKEY_HOME"] = str(self.env["SPYDERMONKEY_HOME"])
+        os.environ["SPYDERMONKEY_SCOPE"] = str(self.env["SPYDERMONKEY_SCOPE"])
+        try:
+            camp = Path(self.env["SPYDERMONKEY_HOME"]) / "campaigns" / "fz"
+            (camp / "materialized").mkdir(parents=True, exist_ok=True)
+            (camp / "materialized" / "x.bin").write_bytes(b"\x00\x01")
+            seen = set()
+            for _ in range(40):
+                dv = smod._planner_directive("fz", url="http://127.0.0.1:9",
+                                             domain="example.test")
+                if dv is None:
+                    break
+                if dv["directive_id"] == "fuzz-lane":
+                    self.assertIn("fuzz-file", " ".join(dv["argv"]))
+                    break
+                seen.add(dv["directive_id"])
+                st = smod._kernel_state("fz")
+                st["steps"].append({"directive_id": dv["directive_id"],
+                                    "absorbed": True})
+                smod._kernel_save("fz", st)
+            else:
+                self.fail(f"fuzz-lane never emitted; saw {sorted(seen)}")
+            self.assertIn("barbican-posture", seen)  # the walk advanced
+        finally:
+            if old_home is None:
+                os.environ.pop("SPYDERMONKEY_HOME", None)
+            else:
+                os.environ["SPYDERMONKEY_HOME"] = old_home
+            if old_scope is None:
+                os.environ.pop("SPYDERMONKEY_SCOPE", None)
+            else:
+                os.environ["SPYDERMONKEY_SCOPE"] = old_scope
 
     def test_kernel_next_is_state_driven(self):
         d = self.j(["next", "--target", "camp1", "--domain", "example.test", "--json"])

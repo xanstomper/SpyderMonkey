@@ -1,3 +1,26 @@
+# v7.6.3 — THE CAPABILITY BATCH: fuzz lane · artifact gate · loop knowledge · decay
+
+- **A4 THE FUZZ LANE IN THE KERNEL**: the planner emits `fuzz-lane`
+  (`arsenal run --chain fuzz-file`) the moment `<campaign>/materialized/`
+  holds artifacts — afl/honggfuzz/radamsa/boofuzz/jazzer chains hammer
+  materialized artifacts under the same gates. Fixed-point test walks the
+  planner to the directive.
+- **A3 MATERIALIZE → VERIFY → REGISTER**: `catalog materialize --register
+  --target T` verifies the artifact well-formed (`_verify_artifact`: nuclei
+  yaml id+info · python compiles · C/C++ syntax-check) and registers a
+  CAPABILITY ledger row — hypothesis-grade by the evidence gate (a real
+  artifact is not a finding). Verified: yml/py/bad-py 3/3.
+- **C2 LOOP AUTO-INJECTION**: every `loop --agent-cmd` turn now composes the
+  CONTEXT PACKET (route · directive · state · knowledge) into the prompt AND
+  writes `loop-packet-stepN.json` with `SPYDERMONKEY_BRIEF` env — the
+  reasoning layer consumes the knowledge layer every turn.
+- **B5 PRIORS TIME-DECAY**: the shared weight store stamps `last` on every
+  write; the planner's ordering decays stale rates toward neutral 0.5 with a
+  30-day half-life — old evidence keeps its voice, stops shouting.
+- Carries the parallel lane's in-tree work (agent --driver kernel-first
+  launcher, shlex) — suite-proven green with both changesets.
+- Tests 81/81.
+
 # v7.6.2 — CALLSITE-PARAM TAINT: the inter-procedural recall lane
 
 - The source lane's last structural blind spot closed: "request.args.get(…)
