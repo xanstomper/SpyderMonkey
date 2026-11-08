@@ -50,13 +50,16 @@ GRAMMAR_SEEDS = [
 ]
 
 
-def run_variant(tag: str, target: Path, seconds: int, orchestrated: bool) -> dict:
+def run_variant(tag: str, target: Path, seconds: int, orchestrated: bool,
+                seeds_file: Path | None = None,
+                dict_file: Path | None = None) -> dict:
     work = tempfile.mkdtemp(prefix="ff-" + tag + "-")
     corpus = Path(work) / "corpus"
     corpus.mkdir()
-    if orchestrated:
-        for i, seed in enumerate(GRAMMAR_SEEDS):
-            (corpus / f"seed{i:02d}").write_bytes(seed)
+    if orchestrated and seeds_file:
+        for i, seed in enumerate(seeds_file.read_bytes().split(b"\n--\n")):
+            if seed.strip():
+                (corpus / f"seed{i:02d}").write_bytes(seed)
     crashes = Path(work) / "crashes"
     crashes.mkdir()
     t0 = time.time()
@@ -70,7 +73,10 @@ def run_variant(tag: str, target: Path, seconds: int, orchestrated: bool) -> dic
            # stops at the first crash, which would waste the budget and
            # undercount BOTH sides
            "-fork=1", "-ignore_crashes=1", "-ignore_ooms=1",
-           "-ignore_timeouts=1"] + workers + [str(corpus)]
+           "-ignore_timeouts=1"]
+    if dict_file:   # the FAIR baseline: vanilla runs the target's OWN dict
+        cmd += ["-dict=" + str(dict_file)]
+    cmd += workers + [str(corpus)]
     p = subprocess.run(cmd, capture_output=True, text=True, timeout=seconds + 90,
                        env={**os.environ, "UBSAN_OPTIONS": "silence_unsigned_overflow=1"})
     elapsed = time.time() - t0
@@ -119,11 +125,16 @@ def run_variant(tag: str, target: Path, seconds: int, orchestrated: bool) -> dic
 def main() -> int:
     target = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("/tmp/range-target")
     seconds = int(sys.argv[2]) if len(sys.argv) > 2 else 60
+    seeds_file = Path(sys.argv[3]) if len(sys.argv) > 3 and sys.argv[3] != "-" \
+        else None
+    dict_file = Path(sys.argv[4]) if len(sys.argv) > 4 else None
     if not target.exists():
         print("✗ target binary missing: " + str(target), file=sys.stderr)
         return 2
-    van = run_variant("vanilla", target, seconds, orchestrated=False)
-    orch = run_variant("orchestrated", target, seconds, orchestrated=True)
+    van = run_variant("vanilla", target, seconds, orchestrated=False,
+                      dict_file=dict_file)
+    orch = run_variant("orchestrated", target, seconds, orchestrated=True,
+                       seeds_file=seeds_file)
     ratio = round(orch["class_count"] / max(1, van["class_count"]), 2)
     ttfc = (van["time_to_first_crash_s"], orch["time_to_first_crash_s"])
     payload = {
