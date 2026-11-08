@@ -9,6 +9,7 @@ import socket
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from pathlib import Path
 
@@ -123,6 +124,56 @@ class DensityTests(unittest.TestCase):
         self.assertIn("findings_per_hour", d)
         self.assertIn("confirmed", d)
         self.assertGreaterEqual(d["total"], 1)
+
+
+class FleetScaleTests(unittest.TestCase):
+    def test_partition_deterministic_and_plan(self):
+        r = _run(["fleetscale", "--dry-run", "--json",
+                  "--goal", "find api bugs and take them over",
+                  "--shards", "3"], timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual(d["count"], 6, "2 lanes × 3 shards = 6 tasks")
+        self.assertEqual(d["tasks"][0]["lane"], "holyshit")
+        r2 = _run(["fleetscale", "--dry-run", "--json",
+                   "--goal", "find api bugs and take them over",
+                   "--shards", "3"], timeout=120)
+        self.assertEqual(r.stdout, r2.stdout, "partition must be deterministic")
+        r = _run(["fleetscale", "--plan", "--json"], timeout=120)
+        d = json.loads(r.stdout)
+        self.assertGreaterEqual(d["capacity"]["worker_ceiling_per_box"], 8)
+        self.assertIn("nodes_needed_for_1000", d["capacity"])
+
+    def test_worker_pool_runs_partition(self):
+        r = _run(["fleetscale", "--workers", "4", "--shards", "1",
+                  "--goal", "find api bugs and take them over",
+                  "--target", "scl", "--json"], timeout=300)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual(d["tasks"], 2)
+        self.assertEqual(d["ok"], 2)
+        self.assertIn("rate_governor_rps", d)
+
+    def test_rate_governor_math(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "fleet_scale", ROOT / "scripts" / "fleet_scale.py")
+        fs = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(fs)
+        b = fs.TokenBucket(10.0)
+        t0 = time.monotonic()
+        for _ in range(10):
+            b.take(1)
+        wall = time.monotonic() - t0
+        self.assertLess(wall, 2.0, "10 tokens at 10 rps drain instantly")
+        b2 = fs.TokenBucket(2.0)
+        t0 = time.monotonic()
+        for _ in range(2):
+            b2.take(1)
+        t1 = time.monotonic()
+        b2.take(1)  # third token must wait ~0.5s
+        t2 = time.monotonic()
+        self.assertGreaterEqual(t2 - t1, 0.4, "over-cap take must throttle")
 
 
 if __name__ == "__main__":

@@ -1,3 +1,20 @@
+# v8.1.0 — THE 1000-AGENT FLEET LAYER: partition · worker pool · rate governor · honest capacity math
+
+- **`smk fleetscale`** (NEW, `scripts/fleet_scale.py`): the scale-out layer
+  over the existing HMAC controller/beacon channel.
+  - TASK PARTITION: goal's route → (lane × shard) tasks, deterministic.
+  - LOCAL WORKER POOL: ThreadPoolExecutor bounded by the box.
+  - RATE GOVERNOR: shared token bucket from scope.json max_rate_rps — a
+    thousand agents can never become a flood; the walls stay walls at scale.
+  - `--controller URL`: enqueue the partition to a fleet_agent controller;
+    beacon nodes execute node-side (the distributed 1000 shape).
+  - `--plan`: THE HONEST MATH — on this box: 4 cpus → 64-worker ceiling,
+    1000 agents = 16 nodes × 64 workers, est. ~23,352 f/h at 10 workers
+    (labeled estimate from the density baseline, to be measured not promised).
+- External delegation learns fleetscale (argv drop + --json re-append; pure
+  JSON output verified). Tests: partition determinism, pool run, governor
+  throttling math (3 new).
+
 # v8.0.1 — THE FLEET FLAKE KILLED: kind-scoped retrieval (300× faster briefs)
 
 - **context_router: kind-scoped index builds** (`build_index(kinds=...)`) —

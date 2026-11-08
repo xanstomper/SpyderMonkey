@@ -100,7 +100,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 import context_router as cr  # noqa: E402
 
-VERSION = "8.0.1"
+VERSION = "8.1.0"
 SCHEMA = 4
 
 
@@ -751,6 +751,7 @@ _EXTERNAL_SCRIPTS = {
     "gateway": "scope_gateway.py",
     "density": "ops_tools.py",
     "ticket": "ops_tools.py",
+    "fleetscale": "fleet_scale.py",
 }
 
 
@@ -896,7 +897,7 @@ def cmd_verify(args):
                  "crawl", "takeover", "capabilities", "protect", "train",
                  "memory", "remediate", "watch", "serve", "version", "catalog",
                  "inject", "foundation", "inmandate", "agent", "jail", "gateway",
-                 "density", "ticket"):
+                 "density", "ticket", "fleetscale"):
         if want not in help_out:
             bad.append(f"subcommand {want}")
     mandate = self.parent.parent / "references" / "mandate.md"
@@ -4512,6 +4513,16 @@ def _tester_verdict(t: dict, payload: str, b: dict, a: dict) -> tuple[bool, bool
         if any(s in low for s in ("root:x:0:0", "root:*:0:0", "daemon:")):
             return True, True, "passwd content returned"
         return True, False, "differential without file-content evidence"
+    if name == "XSS":
+        # v7.7.1 — DECISIVE = the RAW TAG OPENER reflected (a browser context
+        # would execute it). The event-handler TEXT (onload=/onerror=) does
+        # NOT count — it survives HTML-encoding (spy&lt;svg onload=x&gt; is
+        # INERT) and counting it manufactured false decisives.
+        if any(s in low for s in ("<svg", "<img", "<iframe", "<script",
+                                  "javascript:")):
+            return True, True, "raw markup reflected — executes in a browser context"
+        return True, False, ("encoded reflection without raw markup"
+                             if reflected else "differential without raw-markup evidence")
     if name == "SSRF":
         if any(s in low for s in ("internal-banner", "internal-config", "169.254",
                                   "metadata", "root:x", "internal service",
@@ -4616,7 +4627,11 @@ def _tester_verdict(t: dict, payload: str, b: dict, a: dict) -> tuple[bool, bool
         if e_b is None and e_a is None:
             return False, False, "no countable effect on this endpoint"
         return True, False, "state changed without a countable effect"
-    return True, True, "differential"
+    # v7.7.1 — the default is DIFF-ONLY: a body delta without class-specific
+    # evidence is a HYPOTHESIS, never decisive (the false-decisive class is
+    # exactly what the walls forbid — "a claim without a decisive test is a
+    # hypothesis, never a finding")
+    return True, False, "differential without class evidence"
 
 
 # ── v4.2 THE TAKEOVER ENGINE — deterministic DOMTAKE, fully zero-gain ─────────
@@ -5689,7 +5704,13 @@ def cmd_testers(args):
     ctx = _load_json(camp / "context.json", {})
     endpoints = ctx.get("endpoints", [])
     if endpoints and not args.demo and urls:
-        urls = [u if "://" in u else urls[0].rstrip("/") + u for u in endpoints] or urls
+        # v7.7.1 — UNION semantics: the operator's DECLARED urls lead and are
+        # never discarded; the crawl-mined context endpoints JOIN them (the
+        # old replacement let a stale context retarget the strike past the
+        # operator's urls — the remediation lane caught it live)
+        ctx_urls = [u if "://" in u else urls[0].rstrip("/") + u
+                    for u in endpoints]
+        urls = list(dict.fromkeys(urls + ctx_urls))
     for u in urls:
         if not _scope_gate(u, quiet=json_mode):
             if srv:
@@ -7195,7 +7216,8 @@ def _build_parser() -> argparse.ArgumentParser:
     for _ext, _help in (("jail", "jail security: status · arm · check · watch (takeover-stack integrity)"),
                         ("gateway", "scope gateway: start · stop · status · netdist (transport-level estate gate)"),
                         ("density", "finding-density scorecard: bench_live/suite → findings/hour (measured)"),
-                        ("ticket", "industrial interface: push CONFIRMED ledger findings to issue trackers (gh)")):
+                        ("ticket", "industrial interface: push CONFIRMED ledger findings to issue trackers (gh)"),
+                        ("fleetscale", "1000-AGENT FLEET layer: partition · worker pool · rate governor · capacity plan")):
         _p = sub.add_parser(_ext, help=_help)
         _p.add_argument("rest", nargs=argparse.REMAINDER, help=argparse.SUPPRESS)
 
@@ -7806,8 +7828,8 @@ def _main(argv: list[str] | None = None) -> int:
     # External family scripts take the raw argv untouched — no argparse in
     # between (their parsers own their flags).
     if raw and raw[0] in _EXTERNAL_SCRIPTS:
-        tail = raw[1:] if raw[0] in ("jail", "gateway") else raw
-        if json_flag and raw[0] in ("jail", "density", "ticket") \
+        tail = raw[1:] if raw[0] in ("jail", "gateway", "fleetscale") else raw
+        if json_flag and raw[0] in ("jail", "density", "ticket", "fleetscale") \
                 and "--json" not in tail:
             tail = list(tail) + ["--json"]
         script = Path(__file__).resolve().parent / _EXTERNAL_SCRIPTS[raw[0]]

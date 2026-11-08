@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 8.0.1
+version: 8.1.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -332,6 +332,7 @@ exercised, not asserted.
 - `gateway start|stop|status|netdist` — THE TRANSPORT GATE: local forward proxy, every CONNECT/forward scope-checked before it leaves the box (403 + audit out-of-estate); `netdist` = nftables egress generator (kernel depth, opt-in)
 - `density [--bench live|suite] [--json]` — THE MEASURED SCORECARD: confirmed · accuracy · findings/hour (lab); baseline 10/10 · ~3,336 f/h
 - `ticket --target T [--provider gh] [--dry-run]` — INDUSTRIAL HANDOFF: CONFIRMED ledger rows → GitHub issues (evidence attached); hypotheses never filed
+- `fleetscale --workers N [--nodes N] [--shards S] [--rps N] [--controller URL] [--plan]` — THE 1000-AGENT LAYER: (lane×shard) partition · worker pool · shared rate governor (the walls at scale) · controller enqueue for beacons · honest capacity math (`--plan`: workers/box ceiling, nodes for 1000, f/h estimate)
 - `agent --driver claude|opencode|codex|gemini|cline --goal G [--target T] [--dry-run]` — THE KERNEL-FIRST LAUNCHER: spawn any agent pre-injected with the current contract; `--target` puts it under the kernel loop (the model executes `next` directives, it does not free-run)
 - `verify [--fast] [--no-selftest]` — meta self-check: subcommands · contracts · ten engines · selftest · LIVE gate proof
 - `selftest [--quick]` — 27-check end-to-end test in a throwaway HOME
