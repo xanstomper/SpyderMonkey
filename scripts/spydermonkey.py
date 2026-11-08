@@ -283,6 +283,23 @@ def _campaigns_root() -> Path:
     return sa.campaigns_root()
 
 
+def _deploy_ambient_takeover(camp: Path) -> str | None:
+    """Drop the ambient takeover brief into a campaign dir (idempotent).
+
+    Any agent (Claude Code/OpenCode) started from the campaign dir then
+    auto-loads AGENTS.md — in-mandate by construction — and the campaign-CWD
+    rule arms the host-level mechanical gates.
+    """
+    src = Path(__file__).resolve().parent.parent / "agents" / "AGENTS.md"
+    if not src.exists():
+        return None
+    dst = camp / "AGENTS.md"
+    if dst.exists():
+        return None
+    shutil.copyfile(src, dst)
+    return str(dst)
+
+
 def _camp(target: str, create: bool = True) -> Path:
     try:
         name = sa.safe_name(target, "target")
@@ -1068,6 +1085,7 @@ def cmd_campaign(args):
             old.update({k: v for k, v in data.items() if v or k in ("created", "status")})
             data = old
         _save_manifest(args.target, data)
+        ambient = _deploy_ambient_takeover(camp)
         _event(args.target, "campaign.init" if not exists else "campaign.reinit",
                args.objective or "engagement opened")
         payload = {"campaign": _campaign_summary(camp), "created": not exists}
@@ -1078,6 +1096,9 @@ def cmd_campaign(args):
             print(f"▸ campaign {verb}: '{args.target}'")
             print(f"  engagement: {engagement or '—'} · objective: {args.objective or '—'}")
             print(f"  path: {camp}")
+            if ambient:
+                print(f"  ambient takeover: AGENTS.md deployed — any agent started")
+                print(f"    in this dir is in-mandate (host gates armed)")
         return 0
     if action == "list":
         rows = [_campaign_summary(d) for d in _campaign_dirs()]

@@ -305,7 +305,7 @@ exercised, not asserted.
 - `route --goal "<words>"` — goal → the mandate sequence to load/run
 - `run --target T --url U --domain D [--bundle P] [--boundary-url U2] [--probe-ids 1,2] [--parallel] [--resume] [--close] [--dry-run]` — the full pipeline (delegates to SHIKI assault)
 - `mission --target T --url U --domain D [--skip-fleet] [--plan] [--resume] [--close]` — one command: fleet + intelligence layer + war report
-- `campaign init|list|show|timeline|archive|purge|close --target T` — the campaign lifecycle (manifest · events · closeout · guarded purge)
+- `campaign init|list|show|timeline|archive|purge|close --target T` — the campaign lifecycle (manifest · events · closeout · guarded purge). **`init` auto-deploys `agents/AGENTS.md` into the campaign dir** — any agent started there is in-mandate by construction (ambient load + armed host gates)
 - `mandates list|show|verify [--name N]` — the ten machine-checked contracts
 - `next --target T [--url U] [--domain D]` — the kernel's one state-driven directive
 - `absorb --target T --file result.json` — validate a result through scope + ledger + evidence

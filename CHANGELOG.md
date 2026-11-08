@@ -30,6 +30,23 @@
   measured, never promised.
 - Tests 79/79.
 
+# v7.5.6 — AMBIENT BY CONSTRUCTION: campaign init auto-deploys the takeover brief
+
+- **`campaign init` now deploys `agents/AGENTS.md` into the new campaign dir**
+  (idempotent — never clobbers a hand-edited brief). Any agent started from a
+  campaign dir is in-mandate by construction: Claude Code/OpenCode auto-load
+  AGENTS.md AND the campaign-CWD rule arms both host gates (SessionStart
+  injection + PreToolUse scope block) with zero markers typed.
+- **End-to-end proven** (scratch home): campaign init → AGENTS.md present →
+  SessionStart hook injects the 2.1k brief via campaign-CWD alone → scope hook
+  blocks an out-of-estate curl via campaign-CWD alone.
+- **Deployed to the live estate**: all 209 existing campaign dirs under
+  ~/.redteam/campaigns/ now carry the brief.
+- Test: campaign init deploy + --force idempotency (custom brief preserved).
+- OpenCode parity note: AGENTS.md is auto-loaded by OpenCode v2.2.x (prompt
+  layer); the mechanical hook layer remains Claude Code's (no hook surface in
+  OpenCode's config).
+
 # v7.5.5 — THE OPERATOR CONSOLE + SESSIONSTART MECHANICAL INJECTION: drift detection + no-trigger takeover
 
 - **`inmandate` subcommand** (NEW): one command answers "is this session under

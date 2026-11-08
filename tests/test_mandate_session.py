@@ -8,8 +8,10 @@ Stdlib unittest — same style as the rest of the suite so CI's
 """
 
 import os
+import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -89,6 +91,37 @@ class SessionMandateTests(unittest.TestCase):
         )
         self.assertEqual(r.returncode, 0)
         self.assertIn("AMBIENT TAKEOVER", r.stdout)
+
+    def test_campaign_init_deploys_ambient_takeover(self):
+        home = Path(tempfile.mkdtemp(prefix="sm-camp-"))
+        env = dict(os.environ)
+        env["SPYDERMONKEY_HOME"] = str(home)
+        env.pop("SPYDERMONKEY_MANDATE", None)
+        try:
+            r = subprocess.run(
+                [sys.executable, "scripts/spydermonkey.py", "campaign", "init",
+                 "--target", "amb-e2e", "--objective", "ambient"],
+                capture_output=True, text=True, cwd=ROOT, stdin=subprocess.DEVNULL,
+                timeout=60, env=env,
+            )
+            self.assertEqual(r.returncode, 0, r.stderr)
+            camp = home / "campaigns" / "amb-e2e"
+            self.assertTrue((camp / "AGENTS.md").exists(),
+                            "campaign init must deploy the ambient takeover brief")
+            self.assertIn("AMBIENT TAKEOVER", (camp / "AGENTS.md").read_text(encoding="utf-8"))
+            # idempotent: re-init (--force) must not clobber a hand-edited brief
+            (camp / "AGENTS.md").write_text("OPERATOR CUSTOM", encoding="utf-8")
+            r = subprocess.run(
+                [sys.executable, "scripts/spydermonkey.py", "campaign", "init", "--force",
+                 "--target", "amb-e2e", "--objective", "ambient"],
+                capture_output=True, text=True, cwd=ROOT, stdin=subprocess.DEVNULL,
+                timeout=60, env=env,
+            )
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertEqual((camp / "AGENTS.md").read_text(encoding="utf-8"),
+                             "OPERATOR CUSTOM", "re-init must not overwrite the brief")
+        finally:
+            shutil.rmtree(home, ignore_errors=True)
 
 
 if __name__ == "__main__":
