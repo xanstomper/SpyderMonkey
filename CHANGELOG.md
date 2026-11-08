@@ -1,3 +1,12 @@
+# v7.6.5 — THE RANGE GROWS: dojo v3.1 replicas close kairo's NO-REPLICA class
+#
+# (repo dojo, b286cf2): three new hand-built replicas — STATEBYPASS
+# (order-flow transition guard missing, CWE-354) · MATH (float rounding
+# drift, CWE-1335) · HWFLASH (client-declared signature skip, CWE-494) —
+# all bench-CONFIRMED live. kairo validate: the NO-REPLICA class is EXTINCT
+# (STATEBYPASS/MATH/HWFLASH vectors 3/3 VALIDATED). Every kairo taxonomy
+# class now range-proves before distribution.
+
 # v7.6.4 — THE OFFICIAL CORPUS LANE: NVD CVEs · CAPEC · GTFOBins
 
 - **corpus_surge.py** — the official-knowledge fetch lane: NVD API 2.0
