@@ -22,6 +22,12 @@ operates under the same walls in one step.
 | Hermes | the skill loads from `SKILL.md`; the session contract is `references/mandate-session.md` |
 | raw API loop | `agents/AGENT.md` as the system prompt; drive `scripts/spydermonkey.py` with the kernel loop |
 
+**After every contract change, re-deploy the carriers**: `./agents/deploy.sh`
+(re-writes `~/.claude/commands/spydermonkey.md` and
+`~/.config/opencode/agents/spydermonkey.md` from the current
+`references/mandate-session.md`, idempotent). Both deployed agents pin the
+contract ID — `grep 'Contract ID:'` tells you which revision a carrier ships.
+
 ## The one command that changes how the agent works
 
 ```bash
