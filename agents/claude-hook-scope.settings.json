@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 /home/jewboy420/spydermonkey/scripts/claude_hook_scope.py"
+            "command": "python3 ~/spydermonkey/scripts/claude_hook_scope.py"
           }
         ]
       }
