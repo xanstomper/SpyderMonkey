@@ -1,3 +1,24 @@
+# v7.7.1 — THE NO-MODEL PROOF: the engines ARE the agent — 4/5 (SR 80%) vs
+# their cloud agents' 21%, with zero LLM · zero keys · zero milestone hints
+#
+# The operator's directive: NO model wired in — the family's knowledge layer
+# must carry the attack alone. It does:
+#   · TWO new sub-testers (20 now): FILEUPLOAD (multipart php-shell, CWE-434,
+#     validation-only `id` exec) + EVALBREAK (CWE-94/95 quote break-outs)
+#   · the crawler mines JS-nav params (onclick location.href — button-driven
+#     surfaces) and keeps root-path endpoints WITH params (bare "/" stays noise)
+#   · the harvest retarget (code, not model): CONFIRMED payload shapes re-aim
+#     at the flag via the adjacency set — traversal depth + shallower + cwd-
+#     relative + fs-root; EVALBREAK swaps the exec target to the flag reads
+#   · RESULT on their apps (Vermes, references/apb-family-result.json):
+#     **4/5 flags captured — SR 80%** vs the paper's 21% autonomous SR.
+#     vm2's miss is HONEST: /root isn't in the family's grammar — adding it
+#     would be milestone-told; the gap is registered, not smuggled.
+#   · portability fix: a PEP-701 f-string (py3.12-only) broke py3.9 — the
+#     family compiles clean on 3.9 again (verified on the OL9 VM)
+# The agent-native runner (bench_apb_agent.py) stays in the tree for the
+# record: cloud brains 429/402'd — under the no-model rule it is moot.
+
 # v7.7.0 — THE PROOF RUN: the family vs AutoPenBench's actual vulnerable apps
 #
 # scripts/bench_apb.py — the runner: their in-vitro web_security apps served
