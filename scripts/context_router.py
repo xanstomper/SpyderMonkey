@@ -29,8 +29,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 REFERENCES = ROOT / "references"
 
-KINDS = ("canon", "skill", "expanded", "tool")
-KIND_WEIGHT = {"canon": 3.0, "skill": 2.2, "expanded": 1.6, "tool": 1.0}
+KINDS = ("canon", "skill", "expanded", "tool", "sigma")
+KIND_WEIGHT = {"canon": 3.0, "skill": 2.2, "expanded": 1.6, "tool": 1.0,
+               "sigma": 1.4}
 
 STOP = {
     "the", "a", "an", "and", "or", "for", "to", "of", "in", "on", "with",
@@ -66,6 +67,9 @@ def _stamp() -> str:
     surge = REFERENCES / "tool-catalog-surge.json"
     if surge.exists():
         latest = max(latest, surge.stat().st_mtime)
+    sigma_idx = REFERENCES / "sigma-index.json"
+    if sigma_idx.exists():
+        latest = max(latest, sigma_idx.stat().st_mtime)
     return f"{latest:.0f}"
 
 
@@ -91,8 +95,10 @@ def build_index() -> dict:
 
     docs = []
 
-    # 1) canon volumes — full text tokenized, first-350-char snippet
-    for p in sorted(REFERENCES.glob("*canon.md")):
+    # 1) canon volumes — full text tokenized, first-350-char snippet.
+    #    glob MUST be *canon*.md — *canon.md silently drops the numbered
+    #    technique-canon-N.md volumes (a 12-volume density loss, v7.6 fix).
+    for p in sorted(REFERENCES.glob("*canon*.md")):
         text = p.read_text(errors="replace")
         toks = tokenize(text)
         if not toks:
@@ -139,6 +145,28 @@ def build_index() -> dict:
                                  "tags": cat, "snip": desc[:220],
                                  "toks": sorted(toks),
                                  "ttoks": sorted(tokenize(name))})
+        except Exception:
+            pass
+
+    # 4) SIGMA knowledge lane (v7.6): the detection corpus — every public
+    #    SigmaHQ rule as a retrievable doc (title + logsource + detection
+    #    tags). Generator: scripts/sigma_index.py; artifact ships in-repo.
+    sigma_idx = REFERENCES / "sigma-index.json"
+    if sigma_idx.exists():
+        try:
+            for e in json.loads(sigma_idx.read_text()).get("rules", []):
+                name = e.get("name", "")
+                title = e.get("title", "")
+                toks = tokenize(" ".join([name, title,
+                                          e.get("logsource", ""),
+                                          e.get("tags", "")]))
+                if not toks:
+                    continue
+                docs.append({"k": "sigma", "id": name, "t": title or name,
+                             "tags": e.get("logsource", ""),
+                             "snip": (e.get("detection", "") or "")[:220],
+                             "toks": sorted(toks),
+                             "ttoks": sorted(tokenize(title or name))})
         except Exception:
             pass
 

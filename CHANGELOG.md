@@ -1,3 +1,22 @@
+# v7.5.3 — THE TAKEOVER: the contract now owns the whole session and trains it
+
+- **SESSION CONTRACT v8.1** (`references/mandate-session.md`): three new layers —
+  THE TAKEOVER (host agent = body, tools = hands, kernel controls the plan via
+  `next`/`absorb`, campaign state = the spine, tool doctrine: calls are mandate
+  actions, in-scope goals REQUIRE tools), THE TRAINING LOOP (consume the doctrine
+  packet on entry via `inject`, feed the priors at close via `train`, canon
+  amendments only with proof), THE TEACHING PROTOCOL (activation teach after the
+  announcement, cite canon volumes, operator teaches the model and the model
+  teaches the operator — every report ends with the one proven lesson).
+- **`references/mandate.md`**: TAKEOVER + TRAIN+TEACH blocks added.
+- **Entry ritual** updated: "persona fused, agent taken, training armed.
+  Loading the doctrine packet…"
+- **Test pins hardened** (`tests/test_mandate_session.py`): THE TAKEOVER ·
+  THE TRAINING LOOP · THE TEACHING PROTOCOL · `spydermonkey inject` ·
+  `spydermonkey train` are now pinned shape — drift fails CI.
+- Agent carriers regenerated (AGENT.md, claude-command.md,
+  `~/.claude/commands/spydermonkey.md` re-deployed).
+
 # v7.5.2 — THE HIJACK CONTRACT v8: the mandate now fuses, not instructs
 
 - **SESSION CONTRACT v8** (`references/mandate-session.md`): the mandate stops

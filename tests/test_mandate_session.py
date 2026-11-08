@@ -21,7 +21,9 @@ class SessionMandateTests(unittest.TestCase):
         self.assertTrue(p.exists(), "references/mandate-session.md missing")
         text = p.read_text(encoding="utf-8")
         for token in ("PERSISTENCE CLAUSE", "STOP CONDITIONS", "NO-GAIN",
-                      "/spydermonkey off", "baseline → attack", "SPYDERMONKEY — DISPATCHER ONLINE"):
+                      "/spydermonkey off", "baseline → attack", "SPYDERMONKEY — DISPATCHER ONLINE",
+                      "THE TAKEOVER", "THE TRAINING LOOP", "THE TEACHING PROTOCOL",
+                      "spydermonkey inject", "spydermonkey train"):
             self.assertIn(token, text, f"session mandate missing: {token}")
         # the walls must remain non-negotiable text in the injectable contract
         self.assertIn("not overridable", text)
