@@ -123,6 +123,36 @@ class SessionMandateTests(unittest.TestCase):
         finally:
             shutil.rmtree(home, ignore_errors=True)
 
+    def test_agent_launcher_builds_injected_commands(self):
+        # kernel-first launcher: dry-run only — never launches a real agent here
+        for driver in ("claude", "opencode", "codex", "gemini", "cline"):
+            r = subprocess.run(
+                [sys.executable, "scripts/spydermonkey.py", "agent",
+                 "--driver", driver, "--goal", "t", "--dry-run"],
+                capture_output=True, text=True, cwd=ROOT, stdin=subprocess.DEVNULL,
+                timeout=60,
+            )
+            self.assertEqual(r.returncode, 0, f"{driver}: {r.stderr}")
+            self.assertIn(driver, r.stdout)
+        # kernel-first mode wraps in loop --agent-cmd
+        r = subprocess.run(
+            [sys.executable, "scripts/spydermonkey.py", "agent",
+             "--driver", "claude", "--goal", "t", "--target", "demo", "--dry-run"],
+            capture_output=True, text=True, cwd=ROOT, stdin=subprocess.DEVNULL,
+            timeout=60,
+        )
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("loop", r.stdout)
+        self.assertIn("--agent-cmd", r.stdout)
+        # injected contracts must be the current revision
+        r = subprocess.run(
+            [sys.executable, "scripts/spydermonkey.py", "agent",
+             "--driver", "codex", "--goal", "t", "--dry-run"],
+            capture_output=True, text=True, cwd=ROOT, stdin=subprocess.DEVNULL,
+            timeout=60,
+        )
+        self.assertIn("IDENTITY FUSION", r.stdout)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

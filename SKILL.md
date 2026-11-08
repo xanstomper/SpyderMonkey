@@ -328,6 +328,7 @@ exercised, not asserted.
 - `relay init|list|exec|remove` — remote execution nodes (Ed25519 ssh pairs, scope-gated)
 - `status [--target T] [--fast]` — family meta-status: versions + engine presence + campaign states + ledger counts
 - `inmandate` — takeover-state console: marker (env/file/campaign-CWD) · wired host gates · scope authority · contract ID
+- `agent --driver claude|opencode|codex|gemini|cline --goal G [--target T] [--dry-run]` — THE KERNEL-FIRST LAUNCHER: spawn any agent pre-injected with the current contract; `--target` puts it under the kernel loop (the model executes `next` directives, it does not free-run)
 - `verify [--fast] [--no-selftest]` — meta self-check: subcommands · contracts · ten engines · selftest · LIVE gate proof
 - `selftest [--quick]` — 27-check end-to-end test in a throwaway HOME
 - `foundation [--file]` — print THE FOUNDATION spec (v7.5): the seven-layer agent red-teaming protocol — the new shape, adoptable by any model (L0 paste), any node (L6 agent), any defender (L7 export)

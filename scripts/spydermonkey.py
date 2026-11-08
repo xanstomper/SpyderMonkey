@@ -81,6 +81,7 @@ import json
 import os
 import re
 import shutil
+import shlex
 import subprocess
 import sys
 import tarfile
@@ -479,6 +480,69 @@ WALLS_ONELINER = ("declared estates only · documented-PoC adaptation · "
                   "zero documents · destructive end-states refused → disclosure")
 
 
+def _verify_artifact(p: Path) -> tuple[bool, str]:
+    """A materialized artifact is verified WELL-FORMED (not a finding):
+    nuclei yaml carries id+info · python compiles · C/C++ syntax-checks ·
+    anything else just exists."""
+    ext = p.suffix.lower()
+    try:
+        if ext in (".yml", ".yaml"):
+            t = p.read_text(errors="replace")
+            if "id:" in t and "info:" in t:
+                return True, "yaml well-formed (id+info present)"
+            return False, "yaml missing id/info keys"
+        if ext == ".py":
+            import py_compile
+            py_compile.compile(str(p), doraise=True, cfile=p.with_suffix(".pyc"))
+            return True, "python compiles"
+        if ext in (".c", ".cpp", ".cc", ".h"):
+            if shutil.which("gcc") or shutil.which("g++"):
+                cc = shutil.which("g++") if ext != ".c" else shutil.which("gcc")
+                r = subprocess.run([cc, "-fsyntax-only", str(p)],
+                                   capture_output=True, timeout=60)
+                return (r.returncode == 0,
+                        "C syntax OK" if r.returncode == 0
+                        else r.stderr.decode(errors="replace")[:120])
+            return True, "C source present (no compiler on box)"
+        return True, f"exists ({p.suffix or 'no-ext'})"
+    except Exception as e:
+        return False, str(e)[:120]
+
+
+def _context_packet(target: str, goal: str, top: int = 6,
+                    budget: int = 3500) -> dict:
+    """THE CONTEXT PACKET builder (shared by `inject` and the kernel loop's
+    agent turns — v7.6.5): route verdict + directive + state + knowledge."""
+    route = _route_goal(goal)
+    nxt = _planner_directive(target)
+    ctx = _load_json(_camp(target) / "context.json",
+                     {"endpoints": [], "roles": [], "credentials": [],
+                      "functions": []})
+    ledger = _ledger_load(target)
+    confirmed = [r for r in ledger if r.get("status") == "CONFIRMED"]
+    classes = sorted({str(r.get("cls", "")).upper() for r in confirmed
+                      if r.get("cls")})
+    terms = " ".join([goal, route["primary"], *classes]).strip()
+    hits = cr.query(terms, top=top, budget=budget)
+    directive = None
+    if nxt is not None:
+        real = _autopilot_argv(nxt)
+        directive = {"id": nxt.get("directive_id") or nxt.get("id"),
+                     "mandate": nxt.get("mandate"),
+                     "command": (" ".join(real) if real
+                                 else "spydermonkey " + " ".join(nxt.get("argv", [])))}
+    return {
+        "target": target, "goal": goal,
+        "route": {"primary": route["primary"], "sequence": route["sequence"]},
+        "directive": directive,
+        "state": {"endpoints": len(ctx.get("endpoints", [])),
+                  "roles": len(ctx.get("roles", [])),
+                  "confirmed": len(confirmed), "classes": classes},
+        "walls": WALLS_ONELINER,
+        "knowledge": hits, "terms": terms,
+    }
+
+
 def cmd_inject(args):
     """THE CONTEXT PACKET (v7.4 — the retrieval layer): route verdict + kernel
     directive + session state + the top canon/skill/tool knowledge for the goal,
@@ -682,6 +746,56 @@ def cmd_status(args):
     return 0
 
 
+def cmd_agent(args):
+    """KERNEL-FIRST LAUNCHER: spawn any agent pre-injected with the mandate.
+
+    `spydermonkey agent --driver <claude|opencode|codex|gemini|cline>
+    --goal "..." [--target T] [--dry-run]` — with --target the agent becomes
+    the reasoning cell of the kernel loop (plan → execute → absorb): the
+    model executes `next` directives, it does not free-run.
+    """
+    repo = Path(__file__).resolve().parent.parent
+    session = repo / "references" / "mandate-session.md"
+    persona = repo / "references" / "mandate.md"
+    goal = args.goal
+    driver = args.driver
+
+    if driver == "claude":
+        argv = ["claude", "-p", goal, "--append-system-prompt", str(session)]
+    elif driver == "opencode":
+        argv = ["opencode", "run", "--agent", "spydermonkey", goal]
+    elif driver == "codex":
+        argv = ["codex", "exec", "--system-prompt",
+                persona.read_text(encoding="utf-8"), goal]
+    elif driver == "gemini":
+        argv = ["gemini", "-p",
+                session.read_text(encoding="utf-8")
+                + "\n\n## OPERATOR GOAL\n" + goal]
+    elif driver == "cline":
+        argv = ["spydermonkey-cline", goal]
+    else:
+        raise UsageError(f"unknown driver '{driver}' "
+                         f"(claude | opencode | codex | gemini | cline)")
+
+    if args.target:  # kernel-first: the loop drives, the agent reasons
+        argv = [sys.executable, str(Path(__file__).resolve()), "loop",
+                "--target", args.target, "--agent-cmd", shlex.join(argv)]
+
+    if _json_mode(args):
+        _emit(args, {"driver": driver, "target": args.target,
+                     "argv": argv, "dry_run": bool(getattr(args, "dry_run", False))})
+        return 0
+    if args.dry_run:
+        print(f"⚙ AGENT LAUNCH · driver={driver}"
+              + (f" · kernel target={args.target}" if args.target else ""))
+        print(f"  {shlex.join(argv)}")
+        return 0
+    print(f"▸ {driver} launch"
+          + (f" under kernel loop (target={args.target})" if args.target else "")
+          + " — in-mandate contract loaded at call time")
+    return subprocess.run(argv).returncode
+
+
 def cmd_inmandate(args):
     """Takeover state report: marker · host gates · scope · contract ID.
 
@@ -759,7 +873,7 @@ def cmd_verify(args):
                  "report", "relay", "campaign", "mandates", "next", "selftest",
                  "crawl", "takeover", "capabilities", "protect", "train",
                  "memory", "remediate", "watch", "serve", "version", "catalog",
-                 "inject", "foundation", "inmandate"):
+                 "inject", "foundation", "inmandate", "agent"):
         if want not in help_out:
             bad.append(f"subcommand {want}")
     mandate = self.parent.parent / "references" / "mandate.md"
@@ -2094,6 +2208,20 @@ def _planner_directive(target, url=None, domain=None, include_planned: bool = Fa
                  "identical → an honest DISPROVEN",
                  "a ledger row (CONFIRMED/HYPOTHESIS) or a clean DISPROVEN",
                  ["declared estates only", "validation-only · NO-GAIN"])
+    # 7.7 THE FUZZ LANE — materialized artifacts get hammered (v7.6.3)
+    mat_dir = camp / "materialized"
+    try:
+        mat_ready = mat_dir.is_dir() and any(mat_dir.iterdir())
+    except OSError:
+        mat_ready = False
+    if mat_ready and "fuzz-lane" not in done_ids:
+        return d("fuzz-lane", "input_validation", "arsenal", "run",
+                 ["arsenal", "run", "--chain", "fuzz-file", "--target", target,
+                  "--out", str(camp / "result-fuzz.json")],
+                 "materialized artifacts exist — the fuzz lane (afl/honggfuzz/"
+                 "radamsa/boofuzz/jazzer chains) exercises them under the gates",
+                 "result-fuzz.json — kernel result, absorb ingests",
+                 ["declared estates only", "validation-only · NO-GAIN"])
     # 8. detection — the purple leg
     if any(r["status"] == "CONFIRMED" for r in ledger) and "kage-mirror" not in done_ids:
         return d("kage-mirror", "reporting", "kage", "mirror",
@@ -2258,14 +2386,33 @@ def cmd_loop(args):
         result_path = str(_camp(args.target) / f"result-step{step}.json")
         exit_code = 0
         if args.agent_cmd:
+            # v7.6.5: EVERY agent turn gets the context packet — route,
+            # directive, state, and retrieval knowledge — as env brief +
+            # appended section. The reasoning layer consumes the knowledge
+            # layer every single turn.
+            packet = _context_packet(args.target, f"{dv['why']} {argv_str}")
+            packet_file = _camp(args.target) / f"loop-packet-step{step}.json"
+            try:
+                packet_file.write_text(json.dumps(packet, indent=2) + "\n")
+            except Exception:
+                pass
+            know = json.dumps(packet.get("knowledge", [])[:4],
+                              indent=1)[:1800]
             prompt = _AGENT_PROMPT.format(step=step, phase=dv["phase"],
                                           mandate=dv["mandate"], argv=argv_str,
                                           why=dv["why"], expect=dv["expect"],
                                           walls=" · ".join(dv["walls"]),
                                           result_path=result_path, did=dv["directive_id"])
+            prompt += ("\n\nCONTEXT PACKET (walls: " + packet["walls"] + ")\n"
+                       "route: " + packet["route"]["primary"]
+                       + " · state: " + json.dumps(packet["state"])
+                       + "\nKNOWLEDGE (canon/skill/tool/sigma hits — read before acting):\n"
+                       + know)
             try:
+                env = {**os.environ,
+                       "SPYDERMONKEY_BRIEF": str(packet_file)}
                 r = subprocess.run(args.agent_cmd.split() + [prompt],
-                                   timeout=args.agent_timeout)
+                                   timeout=args.agent_timeout, env=env)
                 exit_code = r.returncode
             except subprocess.TimeoutExpired:
                 print(f"  ✗ agent timed out after {args.agent_timeout}s — stopping",
@@ -2891,7 +3038,8 @@ def _entry_new(rows, title, cls, asset, severity, proof, cwe=None,
 def _priors_learn(cls: str, hits: int, runs: int) -> None:
     """THE SHARED WEIGHT STORE — per-class hit rates every mandate reads.
     Real engagements (non-lab ledger rows) write here; self-play (train) writes
-    the same file directly. Merges atomically; never fails a ledger write."""
+    the same file directly. Merges atomically; never fails a ledger write.
+    v7.6.3: every write stamps `last` — the reader decays stale rates."""
     cls = (cls or "").upper()
     if not cls:
         return
@@ -2900,6 +3048,7 @@ def _priors_learn(cls: str, hits: int, runs: int) -> None:
         d = pr.setdefault(cls, {"hits": 0, "runs": 0})
         d["hits"] = d.get("hits", 0) + hits
         d["runs"] = d.get("runs", 0) + runs
+        d["last"] = _now()
         MEM_ROOT.mkdir(parents=True, exist_ok=True)
         _atomic_write(MEM_ROOT / "spydermonkey-priors.json",
                       json.dumps(pr, indent=2) + "\n")
@@ -4610,13 +4759,27 @@ def _priors():
 
 
 def _prior_order(cls_list):
-    """Order classes by prior hit-rate (desc), untrained classes in the middle."""
+    """Order classes by prior hit-rate (desc), untrained classes in the middle.
+    v7.6.3 TIME DECAY: stale priors pull toward the neutral 0.5 with a 30-day
+    half-life — old evidence keeps its voice but stops shouting; fresh
+    evidence keeps full weight."""
     pr = _priors()
+    now = time.time()
+
     def rate(c):
         d = pr.get(c)
         if not d or not d.get("runs"):
             return 0.5          # unknown — middle
-        return d["hits"] / d["runs"]
+        r = d["hits"] / d["runs"]
+        last = d.get("last")
+        if last:
+            try:
+                age_d = (now - datetime.fromisoformat(last).timestamp()) / 86400.0
+                decay = 0.5 ** (max(0.0, age_d) / 30.0)
+                r = r * decay + 0.5 * (1.0 - decay)
+            except Exception:
+                pass
+        return r
     return sorted(cls_list, key=lambda c: -rate(c))
 
 
@@ -4928,7 +5091,30 @@ def cmd_catalog(args) -> int:
                 argv += ["--dry-run"]
         if getattr(args, "json", False):
             argv += ["--json"]
-        return subprocess.run(argv).returncode
+        rc = subprocess.run(argv).returncode
+        # v7.6.3 MATERIALIZE → VERIFY → REGISTER (the artifact lane closes):
+        # a materialized artifact is verified well-formed (yaml keys / py
+        # compile / c syntax) and registered as a CAPABILITY row —
+        # hypothesis-grade by the evidence gate (a real artifact is not a
+        # finding); fuzz lane picks it up from <campaign>/materialized/.
+        if (action == "materialize" and rc == 0 and not getattr(args, "dry_run", False)
+                and getattr(args, "register", False)):
+            art_dir = Path(getattr(args, "out", None) or Path.cwd())
+            newest = max(art_dir.glob("*"), key=lambda p: p.stat().st_mtime,
+                         default=None)
+            if newest is not None and newest.is_file():
+                ok_v, note = _verify_artifact(newest)
+                proof = (f"materialized: {newest} ({newest.stat().st_size}B); "
+                         f"verified: {note if ok_v else 'FAILED — ' + note}")
+                _ledger_register(args.target or "materialized",
+                                 f"capability: {args.kind}:{args.id}",
+                                 "CAPABILITY",
+                                 getattr(args, "asset", None)
+                                 or "http://127.0.0.1/materialized",
+                                 proof=proof, quiet=not _json_mode(args))
+                if not _json_mode(args):
+                    print(f"▸ capability row registered ({note})")
+        return rc
     cat = _catalog()
     cat_filter = (getattr(args, "cat", None) or "").lower().strip()
     limit = max(1, int(getattr(args, "limit", 50) or 50))
@@ -6918,6 +7104,13 @@ def _build_parser() -> argparse.ArgumentParser:
     sub.add_parser("version", help="version · data root · scope path · engine presence")
     sub.add_parser("inmandate", help="takeover state: marker · host gates · scope · contract ID")
 
+    ag = sub.add_parser("agent", help="KERNEL-FIRST LAUNCHER: spawn pre-injected agents (claude · opencode · codex · gemini · cline)")
+    ag.add_argument("--driver", required=True,
+                    choices=("claude", "opencode", "codex", "gemini", "cline"))
+    ag.add_argument("--goal", required=True, help="the operator goal for the agent")
+    ag.add_argument("--target", help="give it: run under the kernel loop with this campaign target")
+    ag.add_argument("--dry-run", action="store_true", help="print the launch command; execute nothing")
+
     r = sub.add_parser("route", help="goal → mandate sequence")
     r.add_argument("--goal", required=True)
 
@@ -7254,6 +7447,10 @@ def _build_parser() -> argparse.ArgumentParser:
     cg.add_argument("--out", help="materialize: target dir (default: cwd)")
     cg.add_argument("--dry-run", action="store_true",
                     help="materialize: print every command, touch nothing")
+    cg.add_argument("--register", action="store_true",
+                    help="materialize: verify the artifact + register a CAPABILITY ledger row (v7.6.3)")
+    cg.add_argument("--target", help="materialize --register: campaign for the ledger row")
+    cg.add_argument("--asset", help="materialize --register: in-scope asset the artifact targets")
 
     fl = sub.add_parser("fleet", help="PARALLEL multi-agent dispatch: one agent per mandate")
     fl.add_argument("--goal", required=True)
@@ -7398,6 +7595,8 @@ def _dispatch(a) -> int:
         return cmd_tree(a)
     if a.cmd == "version":
         return cmd_version(a)
+    if a.cmd == "agent":
+        return cmd_agent(a)
     if a.cmd == "inmandate":
         return cmd_inmandate(a)
     if a.cmd == "route":
