@@ -36,6 +36,33 @@ SOURCE_RX = re.compile(
     r"|\bkwargs\b)",
 )
 
+# ── THE BOUNDARY PASS (v7.5.1) — where did the taint START? ────────────────
+# request/input seeds are attacker-reachable → hot. cli/env seeds are the
+# OPERATOR's own boundary (sys.argv, argparse args.*, click, os.environ) — a
+# CLI pass-through wrapper is NOT an injection unless an untrusted input
+# crosses that boundary. This kills the dominant FP class found in the
+# llama-stack OSS hunts (19 cards → 0 real, all cli/env pass-throughs).
+REQUEST_BOUNDARY = re.compile(
+    r"request\.|flask\.request|_GET|_POST|_REQUEST|_COOKIE|"
+    r"\breq(?:uest)?\.|\.get_json|self\.request|\.params|\.query\b|"
+    r"\binput\s*\(|\.recv\(|kwargs")
+CLI_BOUNDARY = re.compile(
+    r"sys\.argv|\bargs\.[A-Za-z_][A-Za-z0-9_]*|\bclick\.|@click")
+ENV_BOUNDARY = re.compile(r"os\.environ|\benviron\b")
+BOUNDARY_DOWNGRADE = {"cmdi"}
+
+
+def classify_boundary(seed: str) -> str:
+    """Boundary of a taint chain's first hop: request (attacker-reachable) ·
+    cli (operator argv/argparse/click) · env (os.environ) · unknown."""
+    if REQUEST_BOUNDARY.search(seed):
+        return "request"
+    if CLI_BOUNDARY.search(seed):
+        return "cli"
+    if ENV_BOUNDARY.search(seed):
+        return "env"
+    return "unknown"
+
 # ── sinks: call shapes → (cls, severity, why, citation) ────────────────────
 # matched against the dotted name of a Call func.
 SINKS: dict[str, tuple[str, str, str, list[str]]] = {
@@ -279,15 +306,24 @@ def analyze(text: str, filename: str, max_cards: int = 200) -> list[dict]:
                             break
             if chain:
                 line = getattr(node, "lineno", 0)
+                boundary = classify_boundary(chain[0])
+                sev_hit = sev
+                score_hit = {"critical": 6, "high": 5,
+                             "medium": 3, "low": 2}[sev]
+                if boundary in ("cli", "env") and cls in BOUNDARY_DOWNGRADE:
+                    # operator-boundary pass-through (argv/env-fed sink): not
+                    # attacker input crossing the boundary — downgrade, don't
+                    # delete (the hypothesis stays on the record)
+                    sev_hit, score_hit = "low", 2
                 hits.append({
-                    "cls": cls, "lang": "python-ast", "sev": sev,
+                    "cls": cls, "lang": "python-ast", "sev": sev_hit,
                     "file": filename, "line": line,
                     "sym": name,
                     "why": why,
                     "flow": chain[-4:],
                     "citations": cites,
-                    "tainted": 1, "score": {"critical": 6, "high": 5,
-                                            "medium": 3, "low": 2}[sev],
+                    "tainted": 1, "score": score_hit,
+                    "boundary": boundary,
                 })
                 if len(hits) >= max_cards:
                     return

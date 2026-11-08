@@ -1,3 +1,19 @@
+# v7.5.1 — THE BOUNDARY PASS + ATT&CK-NATIVE REPORT: precision, not volume
+
+- **TAINT BOUNDARY PASS** (`discover_taint.py` + `discover.py`): every taint
+  chain now carries a boundary — request (attacker-reachable, hot) · cli
+  (sys.argv/argparse args.*/click) · env (os.environ) · unknown. CLI/env-fed
+  cmdi sinks are DOWNGRADED (low, score 2, never deleted — hypothesis stays
+  on the record). This is the llama-stack hunt's FP class, fixed in the
+  grammar: the four pass-through cmdi cards dropped from high/critical to
+  low while the request-fed probe stays high. Verified on the real estate:
+  7 cards resurfaces ranked by true signal.
+- **ATT&CK-NATIVE WAR REPORT**: `report` now carries the operational coverage
+  board — every finding grouped under its technique tag (`attack_coverage`),
+  rendered as an ATT&CK table in markdown, exposed in the JSON payload
+  (`techniques` count).
+- Tests 79/79 (boundary fixtures: env→low, cli→low, request→hot).
+
 # v7.5.0 — THE FLEET LANE + THE FOUNDATION: real agent control channel · the protocol shape
 
 - **REAL AGENT FLEET** (`scripts/fleet_agent.py` — THE NODE-SIDE RUNNER):

@@ -6057,6 +6057,14 @@ def _report_data(target: str) -> dict:
         scope_summary = sa.summary(scope) if scope else None
     except Exception:
         scope_summary = None
+    # ATT&CK-NATIVE OPERATIONS (v7.5.1): every finding grouped under its
+    # technique tag — the operational coverage board, in the report itself.
+    attack_coverage: dict[str, dict] = {}
+    for r in rows:
+        tech = (str(r.get("attack") or "T-UNKNOWN")).upper()
+        cell = attack_coverage.setdefault(tech, {"findings": 0, "confirmed": 0})
+        cell["findings"] += 1
+        cell["confirmed"] += 1 if r.get("status") == "CONFIRMED" else 0
     return {
         "schema": SCHEMA,
         "generator": f"SPYDERMONKEY {VERSION}",
@@ -6071,6 +6079,7 @@ def _report_data(target: str) -> dict:
         "phases": _phase_board(target),
         "detection_rules": kage.get("rules", []),
         "harvest": harvest.get("crown", []),
+        "attack_coverage": attack_coverage,
         "events": _load_events(target, 50),
     }
 
@@ -6101,6 +6110,15 @@ def _report_markdown(data: dict) -> str:
          f"- methodology: {sum(1 for p in data['phases'] if p['status'] == 'completed')}"
          f"/{len(data['phases'])} phases complete",
          ""]
+    ac = data.get("attack_coverage") or {}
+    if ac:
+        L += ["## ATT&CK coverage (operational)", "",
+              "| technique | findings | confirmed |", "|---|---|---|"]
+        for tech in sorted(ac):
+            c = ac[tech]
+            L.append(f"| {tech} | {c['findings']} | {c['confirmed']} |")
+        L += ["", f"_{len(ac)} technique(s) touched by the engagement's "
+                  f"registered findings_", ""]
     if rows:
         L += ["## Findings", "",
               "| id | severity | cvss | status | class | title | asset |",
@@ -6177,6 +6195,7 @@ def cmd_report(args):
                                 if r.get("status") == "CONFIRMED"),
                "chains": len(data["chains"]),
                "detection_rules": len(data["detection_rules"]),
+               "techniques": len(data.get("attack_coverage") or {}),
                "stats": data["stats"]}
     if _json_mode(args):
         _emit(args, payload)

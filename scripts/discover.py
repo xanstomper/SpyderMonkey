@@ -265,6 +265,21 @@ class _Budget:
         return True
 
 
+def _boundary_of(text: str) -> str:
+    """Raw-lane fallback for the boundary pass (the AST lane uses
+    discover_taint.classify_boundary; this mirrors it when the module is
+    unavailable)."""
+    if re.search(r"request\.|flask\.request|_GET|_POST|_REQUEST|_COOKIE|"
+                 r"\breq(?:uest)?\.|\.get_json|self\.request|\.params|"
+                 r"\.query\b|input\s*\(|\.recv\(|kwargs", text):
+        return "request"
+    if re.search(r"sys\.argv|\bargs\.[A-Za-z_][A-Za-z0-9_]*|\bclick\.", text):
+        return "cli"
+    if re.search(r"os\.environ|\benviron\b", text):
+        return "env"
+    return "unknown"
+
+
 def scan_tree(source: Path, lang_filter: str | None = None,
               max_files: int = MAX_FILES) -> list[dict]:
     """Walk the tree read-only; return raw rule hits with taint scoring.
@@ -315,11 +330,19 @@ def scan_tree(source: Path, lang_filter: str | None = None,
                         sym = (m.group(0)[:48] or cls)
                         base = {"critical": 4, "high": 3, "medium": 2, "low": 1}[sev]
                         score = base + tainted * 2 + risky
+                        boundary = (dt.classify_boundary(window)
+                                    if dt is not None else _boundary_of(window))
+                        if boundary in ("cli", "env") and cls == "cmdi":
+                            # THE BOUNDARY PASS: argv/env-fed pass-through
+                            # sinks are the operator's own boundary, not
+                            # attacker input — downgrade, never delete
+                            score -= 2
                         hits.append({
                             "cls": cls, "lang": lang_rules, "sev": sev,
                             "file": str(p), "line": i + 1, "sym": sym,
                             "why": why, "citations": cites,
                             "tainted": tainted, "score": score,
+                            "boundary": boundary,
                         })
     # ── v7.1 deep lane: AST dataflow for Python ───────────────────────────
     if dt:
@@ -422,10 +445,13 @@ def run(target: str, source: str, lang: str | None = None, limit: int = 200,
             "title": f"{h['cls']} candidate at {asset}",
             "why": [h["why"],
                     f"taint-source within ±1 line: {'yes' if h['tainted'] else 'no'}",
+                    f"boundary: {h.get('boundary', 'unknown')} — cli/env-fed "
+                    "sinks are operator-boundary pass-throughs (downgraded)",
                     "not yet confirmed — fire the probe through `gate`"],
             "probe": pr, "citations": h["citations"], "walls": WALLS,
             "severity_guess": h["sev"], "score": float(h["score"]),
             "lang": h["lang"],
+            "boundary": h.get("boundary", "unknown"),
         })
 
     # campaign-scoped state, same convention as arsenal/hypothesis

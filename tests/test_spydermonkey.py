@@ -354,6 +354,32 @@ class CliTests(unittest.TestCase):
         finally:
             ctrl.terminate(); ag.terminate()
 
+    def test_taint_boundary_pass(self):
+        """THE BOUNDARY PASS (v7.5.1): cli/env-fed sinks downgrade, request-fed
+        stays hot — the llama-stack FP class, fixed."""
+        import discover_taint as dtt
+        fps = {
+            "env": ('def fetch(self, base_url, api_key):\n'
+                    '    env = {**os.environ, "OPENAI_API_KEY": api_key}\n'
+                    '    result = subprocess.run(["codex"], env=env)\n'),
+            "cli": ('def install():\n'
+                    '    subprocess.run(["sh", script_path] + sys.argv[1:])\n'),
+        }
+        for key, src in fps.items():
+            hits = dtt.analyze(src, f"{key}.py")
+            self.assertTrue(hits, key)
+            for h in hits:
+                self.assertEqual(h["boundary"], key, key)
+                self.assertEqual(h["score"], 2, key)
+                self.assertEqual(h["sev"], "low", key)
+        hot = ('def handler():\n'
+               '    host = request.args.get("host")\n'
+               '    subprocess.run(["sh", "-c", "ping " + host])\n')
+        hits = dtt.analyze(hot, "hot.py")
+        self.assertTrue(hits)
+        self.assertEqual(hits[0]["boundary"], "request")
+        self.assertGreaterEqual(hits[0]["score"], 5)
+
     def test_kernel_next_is_state_driven(self):
         d = self.j(["next", "--target", "camp1", "--domain", "example.test", "--json"])
         self.assertFalse(d["done"])
