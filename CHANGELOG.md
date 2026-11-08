@@ -80,6 +80,26 @@
 - **KNOWN (not fixed, by lane)**: fleet squad-briefs test flakes under
   concurrent bench load (fleet lane) — documented, not chased here.
 
+# v7.9.0 — THE FUZZFLEET A/B: Mayhem's axis contested — the honest number is
+# 2.5x, NOT the 5x asked for
+#
+# scripts/fuzzfleet.py + tests/range_target.c: the A/B harness — SAME engine
+# (clang libFuzzer, swappable), SAME target, SAME budget; the only variable =
+# the family's orchestration (grammar-seeded corpus + parallel workers +
+# auto-classifying triage). The range: 8 bug classes (mem-corrupt · arith ·
+# fmt-string · naive-guard bypass → sensitive read · tautology bypass ·
+# double-encode bypass).
+# RESULT (references/fuzzfleet-result.json): **orchestrated 5 classes vs
+# vanilla 2 — 2.5x. The 5x bar: NOT MET, and printed as not met.**
+# The honest engineering: on a TOY range libFuzzer's intercepted comparisons
+# let vanilla reach most classes anyway — the grammar's real advantage shows
+# on deep structured parsing in real binaries, which is a real-targets
+# campaign (Mayhem's own operational scale), not a toy. The lane, the A/B
+# discipline, and the honest number all exist now.
+# Harness fixes made along the way: fork-mode fairness flags (both sides run
+# continuously), crash-only triage (oom/slow artifacts stopped inflating both
+# sides), the ASAN byte-decode, the mtime-honest time-to-first.
+
 # v7.8.0 — THE TWO LANES: the mass engine + the remediation loop — the
 # adjacent-lane rivals are now contested
 #

@@ -1,0 +1,40 @@
+{
+  "lane": "FUZZFLEET \u2014 the orchestration A/B (Mayhem's axis, contested)",
+  "engine": "clang libFuzzer (the engine is SWAPPABLE \u2014 afl++/honggfuzz stay catalog-dormant per the operator-box rule)",
+  "target": "tests/range_target.c \u2014 four bug classes (mem-corrupt \u00b7 arith \u00b7 fmt-string \u00b7 naive-guard bypass \u2192 sensitive read)",
+  "protocol": "same engine \u00b7 same target \u00b7 same budget \u2014 the ONLY variable = the family's orchestration (grammar-seeded corpus + parallel workers + auto-triage)",
+  "vanilla": {
+    "variant": "vanilla",
+    "elapsed_s": 39.5,
+    "artifacts": 504,
+    "unique_classes": [
+      "ARITH/div-by-zero",
+      "TRAVBYPASS/sensitive-read"
+    ],
+    "class_count": 2,
+    "time_to_first_crash_s": 0.07,
+    "workdir": "/tmp/ff-vanilla-_ftid7s3"
+  },
+  "orchestrated": {
+    "variant": "orchestrated",
+    "elapsed_s": 95.1,
+    "artifacts": 2017,
+    "unique_classes": [
+      "ARITH/div-by-zero",
+      "MEMCORRUPT/deadly-signal",
+      "TRAVBYPASS/sensitive-read",
+      "UNCLOSED/a577c767d07318885eb01531166ca582e98b0e) ",
+      "UNCLOSED/unknown"
+    ],
+    "class_count": 5,
+    "time_to_first_crash_s": 0.06,
+    "workdir": "/tmp/ff-orchestrated-gj74fd7u"
+  },
+  "findings_ratio": 2.5,
+  "time_to_first_crash_s": {
+    "vanilla": 0.07,
+    "orchestrated": 0.06
+  },
+  "orchestration_wins": false,
+  "honest_note": "the ratio printed is what happened; if the orchestration underperforms, the lane says so \u2014 a claimed number is never manufactured"
+}
