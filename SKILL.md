@@ -350,6 +350,7 @@ Companion scripts (stdlib too):
 - `scripts/discover.py` — the v7.0 source-discovery engine (sink grammars · taint scoring · HYP-schema cards · optional semgrep lane on fleet)
 - `scripts/context_router.py` — **THE RETRIEVAL LAYER (v7.4)**: deterministic 205k-doc index (canon · skilltree · expanded corpus · catalog surge) with rarity-weighted ranking; read-only, cached under `$SPYDERMONKEY_HOME/cache/`
 - `scripts/fleet_agent.py` — **THE FLEET LANE (v7.5)**: controller ↔ beacon agents over HTTP; nodes execute tasks in their own gated homes, results are kernel-schema; listener mode = standalone node; node without scope.json refuses to run
+- `scripts/sigma_index.py` — **THE SIGMA KNOWLEDGE LANE (v7.6)**: stdlib parser builds `references/sigma-index.json` (3,164 SigmaHQ rules) → the context router retrieves detection rules alongside canon/techniques/tools (`kind: sigma`)
 - `scripts/attack_map.py` — regenerate `references/attack-coverage.json` (corpus → ATT&CK, live ART comparison)
 - `scripts/catalog_surge.py` — regenerate `references/tool-catalog-surge.json` (Exploit-DB · Nuclei · Metasploit public indexes)
 - `scripts/arsenal_fuzz.py` — the v7.0 fuzz domain (afl/honggfuzz/radamsa/boofuzz/jazzer wrappers + chains, discovery-based)

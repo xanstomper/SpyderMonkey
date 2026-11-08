@@ -1,3 +1,24 @@
+# v7.6.0 — THE KNOWLEDGE SURGE: the recovered canon + the detection corpus
+
+- **INDEX BUG FIX (density recovery)**: context_router globbed `*canon.md`,
+  silently dropping all 12 numbered `technique-canon-N.md` volumes — the core
+  technique corpus was 40% invisible to retrieval. Fixed (`*canon*.md`):
+  canon docs 18 → 30; index vocabulary 129,853 → 135,907 terms.
+- **THE SIGMA KNOWLEDGE LANE**: `scripts/sigma_index.py` (stdlib line parser,
+  no yaml dep) indexes the public SigmaHQ detection corpus → committed
+  `references/sigma-index.json` (3,164/3,164 rules) → the context router now
+  retrieves rule-level detections alongside canon/techniques/tools
+  (`kind: sigma`): "log4shell jndi" → the exact JNDI-injection rule;
+  "webshell iis" → 3 precise detection rules; kerberos queries surface both
+  the canon volume AND the RC4-ticket rules. Knowledge index: 205,809 →
+  208,985 docs (+3,176) with 5 kinds.
+- Honest ceiling on the 5-10x ask, in the changelog itself: the official CVE
+  corpus (NVD), CAPEC, and GTFOBins are QUEUED — their bulk sources were
+  unreachable from this box (HTML-blocked); the ingestion lane is the same
+  one used here (fetch → index → measure). Every density claim stays
+  measured, never promised.
+- Tests 79/79.
+
 # v7.5.3 — THE TAKEOVER: the contract now owns the whole session and trains it
 
 - **SESSION CONTRACT v8.1** (`references/mandate-session.md`): three new layers —

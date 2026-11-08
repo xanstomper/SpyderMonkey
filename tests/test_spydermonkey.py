@@ -231,8 +231,17 @@ class CliTests(unittest.TestCase):
         b = crr.query("jwt forge", top=4)
         self.assertEqual(a, b)
         self.assertTrue(a)
-        self.assertTrue(all(h["kind"] in ("canon", "skill", "expanded", "tool")
+        self.assertTrue(all(h["kind"] in ("canon", "skill", "expanded", "tool",
+                                          "sigma")
                             for h in a))
+        idx = crr.build_index()
+        counts = {}
+        for d in idx["docs"]:
+            counts[d["k"]] = counts.get(d["k"], 0) + 1
+        self.assertGreaterEqual(counts.get("canon", 0), 29,
+                                "numbered technique-canon volumes must be indexed")
+        self.assertGreaterEqual(counts.get("sigma", 0), 3000,
+                                "sigma knowledge lane must be present")
 
     def test_ledger_feeds_shared_weight_store(self):
         mem = Path(self.env["SPYDERMONKEY_HOME"]) / "memory" / "spydermonkey-priors.json"
