@@ -665,6 +665,72 @@ def cmd_status(args):
     return 0
 
 
+def cmd_inmandate(args):
+    """Takeover state report: marker · host gates · scope · contract ID.
+
+    Answers 'is this session under the mandate right now, and are the
+    mechanical gates armed?' — the operator's drift-detection console.
+    """
+    cwd = Path.cwd()
+    env_marker = os.environ.get("SPYDERMONKEY_MANDATE") == "1"
+    file_marker = (cwd / ".spydermonkey-active").exists()
+    try:
+        in_camp = _campaigns_root().resolve() in cwd.resolve().parents
+    except Exception:
+        in_camp = False
+    active = env_marker or file_marker or in_camp
+
+    hooks = []
+    settings_p = Path.home() / ".claude" / "settings.json"
+    if settings_p.exists():
+        try:
+            s = json.loads(settings_p.read_text(encoding="utf-8"))
+            for ev, entries in (s.get("hooks") or {}).items():
+                for e in entries:
+                    for h in e.get("hooks", []):
+                        cmd = h.get("command", "")
+                        if "claude_hook_scope" in cmd:
+                            hooks.append(f"claude:{ev}:scope-gate")
+                        if "claude_hook_sessionstart" in cmd:
+                            hooks.append(f"claude:{ev}:sessionstart-inject")
+        except Exception:
+            pass
+
+    contract_id = "unknown"
+    try:
+        m = Path(__file__).resolve().parent.parent / "references" / "mandate-session.md"
+        for line in m.read_text(encoding="utf-8").splitlines():
+            if line.startswith("Contract ID:"):
+                contract_id = line.split(":", 1)[1].strip()
+                break
+    except Exception:
+        pass
+
+    scope = sa.load_scope()
+    payload = {
+        "in_mandate": active,
+        "markers": {"env": env_marker, "file": file_marker, "campaign_cwd": in_camp},
+        "host_gates": hooks,
+        "scope_authority": bool(scope),
+        "scope_engagement": (scope or {}).get("engagement"),
+        "contract_id": contract_id,
+    }
+    if _json_mode(args):
+        _emit(args, payload)
+        return 0
+    print("═══ SPYDERMONKEY — mandate/takeover state ═══")
+    print(f"  in mandate:  {'YES' if active else 'no'}"
+          f"  (env={env_marker} file={file_marker} campaign-cwd={in_camp})")
+    if hooks:
+        for h in hooks:
+            print(f"  host gate:   ✓ {h}")
+    else:
+        print("  host gate:   ✗ none wired (see agents/claude-hook-scope.settings.json)")
+    print(f"  scope auth:  {'✓ ' + str(payload['scope_engagement']) if scope else '✗ none — live probes default-deny'}")
+    print(f"  contract:    {contract_id}")
+    return 0
+
+
 def cmd_verify(args):
     bad, warnings = [], []
     self = Path(__file__).resolve()
@@ -676,7 +742,7 @@ def cmd_verify(args):
                  "report", "relay", "campaign", "mandates", "next", "selftest",
                  "crawl", "takeover", "capabilities", "protect", "train",
                  "memory", "remediate", "watch", "serve", "version", "catalog",
-                 "inject", "foundation"):
+                 "inject", "foundation", "inmandate"):
         if want not in help_out:
             bad.append(f"subcommand {want}")
     mandate = self.parent.parent / "references" / "mandate.md"
@@ -6829,6 +6895,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     sub.add_parser("tree", help="the family + roles + chain")
     sub.add_parser("version", help="version · data root · scope path · engine presence")
+    sub.add_parser("inmandate", help="takeover state: marker · host gates · scope · contract ID")
 
     r = sub.add_parser("route", help="goal → mandate sequence")
     r.add_argument("--goal", required=True)
@@ -7310,6 +7377,8 @@ def _dispatch(a) -> int:
         return cmd_tree(a)
     if a.cmd == "version":
         return cmd_version(a)
+    if a.cmd == "inmandate":
+        return cmd_inmandate(a)
     if a.cmd == "route":
         return cmd_route(a)
     if a.cmd == "run":

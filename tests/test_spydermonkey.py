@@ -389,6 +389,20 @@ class CliTests(unittest.TestCase):
         self.assertEqual(hits[0]["boundary"], "request")
         self.assertGreaterEqual(hits[0]["score"], 5)
 
+    def test_hypothesis_cards_cite_cve_instances(self):
+        """v7.6.1 — cve-map cards cite REAL catalog instances: the reasoning
+        carries CVE→exploit evidence from the committed 66.5k corpus."""
+        import hypothesis as hp
+        state = {"arsenal": {"runs": [{"findings": ["php"]}]},
+                 "context": {"fingerprints": ["php"]}}
+        cards = hp.cve_hypotheses(state, "smoke.example.test", limit=10)
+        self.assertTrue(cards)
+        for c in cards:
+            self.assertIn("instances", c)
+        cited = [c for c in cards if c.get("instances")]
+        self.assertTrue(cited, "php fingerprints must surface catalog CVE cites")
+        self.assertIn("CVE-", cited[0]["instances"][0])
+
     def test_kernel_next_is_state_driven(self):
         d = self.j(["next", "--target", "camp1", "--domain", "example.test", "--json"])
         self.assertFalse(d["done"])

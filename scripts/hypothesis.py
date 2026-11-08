@@ -491,6 +491,54 @@ def surface_hypotheses(state: dict, target: str, url: str | None = None,
 
 # ── generator 2: fingerprints → documented CVE-class families ────────────────
 
+_CVE_INSTANCES_CACHE = None
+
+
+def _cve_instances() -> dict[str, list[str]]:
+    """The catalog surge → CVE token → evidence entries map (lazy, cached).
+    Every documented family card now cites REAL public CVE-indexed instances
+    from the 66.5k-entry corpus — density in the reasoning, not just in the
+    index (v7.6.1)."""
+    global _CVE_INSTANCES_CACHE
+    if _CVE_INSTANCES_CACHE is not None:
+        return _CVE_INSTANCES_CACHE
+    out = {}
+    p = Path(__file__).resolve().parent.parent / "references" \
+        / "tool-catalog-surge.json"
+    try:
+        data = json.loads(p.read_text())
+        for entries in data.get("sections", {}).values():
+            for e in entries:
+                blob = f"{e.get('name', '')} {e.get('desc', '')}"
+                for tok in re.findall(r"CVE-\d{4}-\d{4,7}", blob):
+                    out.setdefault(tok.upper(), []).append(
+                        f"{e.get('name', '')}: {e.get('desc', '')[:60]} "
+                        f"[{e.get('src', '')}]")
+    except Exception:
+        out = {}
+    _CVE_INSTANCES_CACHE = out
+    return out
+
+
+def _family_instances(fam: dict, spec: dict, fp: str = "", limit: int = 3) -> list[str]:
+    """Real public instances for a documented family: catalog entries whose
+    CVE token AND a family/fingerprint keyword co-occur. Strict — no
+    keywords, no cites."""
+    kws = [w for w in re.split(r"[^a-z0-9]+",
+                               f"{fam.get('cve_class', '')} {spec.get('tech', '')} "
+                               f"{fp}".lower()) if len(w) >= 4]
+    if not kws:
+        return []
+    out = []
+    for cve, refs in _cve_instances().items():
+        for r in refs:
+            if any(k in r.lower() for k in kws):
+                out.append(f"{cve} → {r}")
+                if len(out) >= limit:
+                    return out
+    return out
+
+
 def _fingerprints(state: dict) -> list[str]:
     fps = []
     for r in state["arsenal"].get("runs", []):
@@ -521,13 +569,18 @@ def cve_hypotheses(state: dict, target: str, limit: int = 32) -> list[dict]:
                 seen_pairs.add(key)
                 n += 1
                 probe = dict(fam.get("probe", {}))
+                inst = _family_instances(fam, spec, fp=fp)
+                why = [f"fingerprint '{fp}' matches {spec['tech']}",
+                       f"documented family: {fam['cve_class']}",
+                       "adapt the published PoC pattern to this estate"]
+                if inst:
+                    why.append(f"{len(inst)} CVE-indexed catalog instance(s) cited")
                 cards.append({
                     "id": f"HYP-C{n:03d}", "kind": "cve-map", "cls": fam["cls"],
                     "asset": target, "param": (probe.get("params") or ("(none)",))[0],
                     "title": f"{fam['cve_class']} ({fam['cwe']}) — {spec['tech']} fingerprint",
-                    "why": [f"fingerprint '{fp}' matches {spec['tech']}",
-                            f"documented family: {fam['cve_class']}",
-                            "adapt the published PoC pattern to this estate"],
+                    "why": why,
+                    "instances": inst,
                     "probe": probe,
                     "citations": CITATIONS.get(fam["cls"], []),
                     "walls": WALLS + [fam.get("note", "documented-PoC adaptation only")],

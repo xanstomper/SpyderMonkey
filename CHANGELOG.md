@@ -1,3 +1,14 @@
+# v7.6.1 — CVE INSTANCES IN THE REASONING: cards cite real evidence
+
+- **cve-map hypothesis cards now carry `instances`** — REAL CVE→exploit
+  entries from the committed 66.5k catalog whenever a family keyword
+  co-occurs with a CVE token (verified live: php fingerprint → TRAVERSAL
+  card cites CVE-2023-46455/edb-51851; CRLF card cites CVE-2026-80428/
+  edb-52682).
+- Honest companion finding: the catalog's CVE-token density is 4,641 — the
+  NVD corpus lane (queued, source-blocked from this box) is the multiplier.
+- Tests 80/80.
+
 # v7.6.0 — THE KNOWLEDGE SURGE: the recovered canon + the detection corpus
 
 - **INDEX BUG FIX (density recovery)**: context_router globbed `*canon.md`,
@@ -18,6 +29,25 @@
   one used here (fetch → index → measure). Every density claim stays
   measured, never promised.
 - Tests 79/79.
+
+# v7.5.5 — THE OPERATOR CONSOLE + SESSIONSTART MECHANICAL INJECTION: drift detection + no-trigger takeover
+
+- **`inmandate` subcommand** (NEW): one command answers "is this session under
+  the mandate right now, and are the mechanical gates armed?" — marker state
+  (env / `.spydermonkey-active` / campaign CWD), wired host gates, scope
+  authority + engagement, contract ID. `--json` for machine use. Registered in
+  verify's help-list.
+- **`scripts/claude_hook_sessionstart.py`** (NEW): SessionStart hook — when a
+  marker is active, the ambient takeover brief (`agents/AGENTS.md`) is injected
+  into the session context at start. Takeover engages with ZERO trigger typed
+  and without depending on the model self-discovering the contract. Verified:
+  silent pass-through without marker; 2.1k brief injected with marker. Wired
+  into `~/.claude/settings.json` SessionStart.
+- **Contract v8.3**: version bump + **Contract ID: SM8.3** fingerprint line —
+  `inmandate` reports it; a mismatch with the announcement means a stale
+  injection, re-inject before acting.
+- **Test pins**: Contract ID · `inmandate` end-to-end (off/on marker + SM8.3
+  report) · SessionStart hook emits only in-mandate.
 
 # v7.5.4 — THE MECHANICAL GATE + AMBIENT TAKEOVER + MARKER PROTOCOL: enforcement leaves the prompt
 

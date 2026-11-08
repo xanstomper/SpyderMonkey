@@ -327,6 +327,7 @@ exercised, not asserted.
 - `report --target T [--format md|json|sarif] [--output F]` — the joint war report (campaign dir by default)
 - `relay init|list|exec|remove` — remote execution nodes (Ed25519 ssh pairs, scope-gated)
 - `status [--target T] [--fast]` — family meta-status: versions + engine presence + campaign states + ledger counts
+- `inmandate` — takeover-state console: marker (env/file/campaign-CWD) · wired host gates · scope authority · contract ID
 - `verify [--fast] [--no-selftest]` — meta self-check: subcommands · contracts · ten engines · selftest · LIVE gate proof
 - `selftest [--quick]` — 27-check end-to-end test in a throwaway HOME
 - `foundation [--file]` — print THE FOUNDATION spec (v7.5): the seven-layer agent red-teaming protocol — the new shape, adoptable by any model (L0 paste), any node (L6 agent), any defender (L7 export)
@@ -354,6 +355,21 @@ Companion scripts (stdlib too):
 - `scripts/attack_map.py` — regenerate `references/attack-coverage.json` (corpus → ATT&CK, live ART comparison)
 - `scripts/catalog_surge.py` — regenerate `references/tool-catalog-surge.json` (Exploit-DB · Nuclei · Metasploit public indexes)
 - `scripts/arsenal_fuzz.py` — the v7.0 fuzz domain (afl/honggfuzz/radamsa/boofuzz/jazzer wrappers + chains, discovery-based)
+- `scripts/claude_hook_scope.py` — THE MECHANICAL GATE (host-level): Claude Code
+  PreToolUse/Bash hook; while a mandate marker is active (env
+  `SPYDERMONKEY_MANDATE=1`, `.spydermonkey-active` in CWD, or CWD inside a
+  campaign dir) every connective command is checked against the shared scope
+  authority and out-of-estate targets are BLOCKED at the host — no prompt can
+  override the gate. Pass-through outside mandate sessions. Wire:
+  `agents/claude-hook-scope.settings.json` → `~/.claude/settings.json`.
+- `scripts/claude_hook_sessionstart.py` — THE NO-TRIGGER INJECTOR (host-level):
+  Claude Code SessionStart hook; while a marker is active the ambient takeover
+  brief (`agents/AGENTS.md`) is injected into the session context at start —
+  the takeover engages without anyone typing the trigger. Wired into
+  `~/.claude/settings.json` SessionStart.
+- `agents/AGENTS.md` — THE AMBIENT TAKEOVER template: auto-loaded by Claude
+  Code + OpenCode from any working dir; short-form contract + marker
+  protocol. Copy into engagement dirs (or the whole estate root).
 
 ## Files
 
