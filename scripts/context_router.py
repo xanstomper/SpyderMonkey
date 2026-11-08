@@ -184,9 +184,14 @@ def build_index() -> dict:
 
 
 def query(terms: str, top: int = 8, budget: int | None = None,
-          kinds: tuple[str, ...] | None = None) -> list[dict]:
+          kinds: tuple[str, ...] | None = None, mix: bool = True) -> list[dict]:
     """Ranked retrieval. Deterministic: score = rarity-weighted term overlap
-    with a 2× title boost, kind weight, then (score desc, id)."""
+    with a 2× title boost, kind weight, then (score desc, id).
+
+    mix=True (default): KIND-BALANCED — each kind gets ~top/K seats in
+    round-robin by kind weight, so the 138k expanded variants can't shout
+    over the 30 canon volumes or the sigma/tool lanes (v7.6.3). mix=False:
+    pure global ranking."""
     idx = build_index()
     qtoks = tokenize(terms)
     if not qtoks:
@@ -210,6 +215,25 @@ def query(terms: str, top: int = 8, budget: int | None = None,
         scored.append((s, d))
 
     scored.sort(key=lambda x: (-x[0], x[1]["id"]))
+    if mix and len(allow) > 1:
+        buckets: dict[str, list] = {}
+        for sd in scored:
+            buckets.setdefault(sd[1]["k"], []).append(sd)
+        order = sorted(buckets, key=lambda k: -KIND_WEIGHT[k])
+        picked = []
+        added = 0
+        while added < top:
+            progressed = False
+            for k in order:
+                if buckets[k]:
+                    picked.append(buckets[k].pop(0))
+                    added += 1
+                    progressed = True
+                    if added >= top:
+                        break
+            if not progressed:
+                break
+        scored = picked
     hits = []
     used = 0
     for s, d in scored:

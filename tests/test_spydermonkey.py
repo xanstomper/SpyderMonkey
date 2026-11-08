@@ -403,6 +403,21 @@ class CliTests(unittest.TestCase):
         self.assertTrue(cited, "php fingerprints must surface catalog CVE cites")
         self.assertIn("CVE-", cited[0]["instances"][0])
 
+    def test_retrieval_kind_balancing(self):
+        """v7.6.3 — mix=True: canon/skill/tool/sigma each get seats; the 138k
+        expanded corpus can't shout over the curated lanes."""
+        import context_router as crr
+        hits = crr.query("kerberos", top=8, budget=None, mix=True)
+        self.assertTrue(hits)
+        kinds_present = {h["kind"] for h in hits}
+        # a multi-lane term must surface more than the expanded flood
+        self.assertGreaterEqual(len(kinds_present), 2,
+                                f"kind-balancing failed: {kinds_present}")
+        pure = crr.query("kerberos", top=8, budget=None, mix=False)
+        self.assertTrue(pure)  # mix=False still returns ranked hits
+        # determinism holds under mix
+        self.assertEqual(hits, crr.query("kerberos", top=8, budget=None, mix=True))
+
     def test_kernel_next_is_state_driven(self):
         d = self.j(["next", "--target", "camp1", "--domain", "example.test", "--json"])
         self.assertFalse(d["done"])
