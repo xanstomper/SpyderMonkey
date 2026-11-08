@@ -186,6 +186,8 @@ def main() -> int:
                     help="global rate cap (default: scope.json max_rate_rps, else 5)")
     ap.add_argument("--controller", default="",
                     help="fleet_agent controller URL — enqueue instead of local pool")
+    ap.add_argument("--node-names", default="",
+                    help="distributed: comma node names to round-robin across (default: any)")
     ap.add_argument("--plan", action="store_true", help="capacity math only")
     ap.add_argument("--dry-run", action="store_true", help="print the partition; run nothing")
     ap.add_argument("--json", action="store_true")
@@ -230,17 +232,36 @@ def main() -> int:
         return 0
 
     if a.controller:
-        # distributed: enqueue to the controller; beacons execute node-side
+        # distributed: POST each task to the controller (schema:
+        # {"id","node","command"}); beacon nodes poll their node name and
+        # execute node-side, then POST /result back.
         import urllib.request
-        payload = json.dumps({"tasks": tasks}).encode()
-        req = urllib.request.Request(a.controller.rstrip("/") + "/task",
-                                     data=payload, method="POST",
-                                     headers={"Content-Type": "application/json"})
-        with urllib.request.urlopen(req, timeout=30) as r:
-            resp = json.loads(r.read())
-        print(f"▸ enqueued {len(tasks)} task(s) to {a.controller} "
-              f"(result: {resp.get('ok')})")
-        return 0
+        import urllib.error
+        node_names = [n.strip() for n in (a.node_names or "").split(",") if n.strip()]
+        dispatched, failed = 0, []
+        for i, t in enumerate(tasks):
+            node = node_names[i % len(node_names)] if node_names else ""
+            # controller schema: command = dispatcher argv WITHOUT the
+            # interpreter prefix (get-task nodes run: python DISPATCHER + cmd)
+            payload = json.dumps({"id": f"{t['lane']}-{t['shard']}",
+                                  "node": node, "command": list(t["argv"])}).encode()
+            req = urllib.request.Request(a.controller.rstrip("/") + "/task",
+                                         data=payload, method="POST",
+                                         headers={"Content-Type": "application/json"})
+            try:
+                with urllib.request.urlopen(req, timeout=30) as r:
+                    resp = json.loads(r.read())
+                dispatched += 1
+            except (urllib.error.URLError, urllib.error.HTTPError) as e:
+                failed.append(f"{t['lane']}-{t['shard']}: {e}")
+        print(f"▸ enqueued {dispatched}/{len(tasks)} task(s) to {a.controller}"
+              + (f" · nodes: {node_names or 'any'}" if node_names else "")
+              + (f" · failures: {failed}" if failed else ""))
+        if a.json:
+            print(json.dumps({"controller": a.controller, "enqueued": dispatched,
+                              "total": len(tasks), "node_names": node_names,
+                              "failures": failed}, indent=2))
+        return 0 if not failed else 1
 
     home = Path(os.environ.get("SPYDERMONKEY_HOME", str(Path.home() / ".redteam")))
     home.mkdir(parents=True, exist_ok=True)

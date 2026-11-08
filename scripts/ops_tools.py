@@ -14,6 +14,7 @@ trackers (GitHub via gh CLI today; Jira via API when creds are configured).
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import time
@@ -150,9 +151,31 @@ def cmd_ticket(args) -> int:
             else:
                 print(f"    ✗ gh failed: {res.stderr.strip()[:300]}", file=sys.stderr)
         elif args.provider == "jira":
-            print("    ✗ Jira not configured — set JIRA_URL/JIRA_TOKEN/JIRA_PROJECT "
-                  "and wire the API call (see ticket --help)", file=sys.stderr)
-            return 1
+            jurl = os.environ.get("JIRA_URL", "").rstrip("/")
+            jtok = os.environ.get("JIRA_TOKEN", "")
+            jproj = os.environ.get("JIRA_PROJECT", "")
+            if not (jurl and jtok and jproj):
+                print("✗ Jira not configured — set JIRA_URL, JIRA_TOKEN, "
+                      "JIRA_PROJECT", file=sys.stderr)
+                return 1
+            import urllib.request
+            body = {
+                "fields": {
+                    "project": {"key": jproj},
+                    "summary": title,
+                    "description": _ticket_body(r),
+                    "issuetype": {"name": "Bug"},
+                }
+            }
+            req = urllib.request.Request(
+                f"{jurl}/rest/api/2/issue",
+                data=json.dumps(body).encode(),
+                method="POST",
+                headers={"Content-Type": "application/json",
+                         "Authorization": f"Bearer {jtok}"})
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                created = json.loads(resp.read())
+            print(f"    → {jurl}/browse/{created.get('key', '?')}")
     return 0
 
 

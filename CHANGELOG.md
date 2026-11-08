@@ -1,3 +1,29 @@
+# v8.2.0 — THE STRENGTH PASS: distributed fleet proven · CI gate · ASM lane · model router · Jira · audit package
+
+- **DISTRIBUTED FLEET PROVEN END-TO-END**: fleetscale --controller now posts
+  the controller's real schema ({id,node,command}-list); verified live with
+  controller + 2 HMAC beacons: 2/2 tasks dispatched round-robin (n1/n2),
+  executed NODE-SIDE, results returned (holyshit-0 rc=0 · 0.82s,
+  undercroft-0 rc=0 · 0.74s), heartbeats + /status healthy. The 1000-agent
+  topology is now demonstrated, not designed. `--node-names` round-robins
+  across named beacons.
+- **CI GATE** (`smk cigate`): one command = version audit + product audit +
+  leakscan + jail check + full suite; any failure → rc=1. `--fast` (triad
+  only) and `--install-precommit` (opt-in repo hook — gates every commit).
+- **ASM LANE** (`smk asm`): passive exposure discovery (crt.sh certificate
+  transparency, read-only) → catalogs every host into the campaign context
+  as endpoints, ready for scope-gated testing. No live probes fire; deeper
+  ASM stays in the recon lanes. Refuses to catalog without scope authority.
+- **MODEL ROUTER** (`smk model set|list|resolve`): per-lane provider/model
+  orchestration (XBOW-style, self-hosted) in ~/.redteam/models.json (0600);
+  unknown lanes refused; agent/fleet lanes consume `resolve`.
+- **JIRA PROVIDER LIVE** (`smk ticket --provider jira`): real REST v2 issue
+  creation via JIRA_URL/JIRA_TOKEN/JIRA_PROJECT.
+- **AUDIT PACKAGE** (`references/audit-package.md`): the third-party review
+  onboarding kit — review order, standing questions, honest scope.
+- Tests: model router + asm scope-refusal (2 new, local-only). Suite local
+  modules green.
+
 # v8.1.0 — THE 1000-AGENT FLEET LAYER: partition · worker pool · rate governor · honest capacity math
 
 - **`smk fleetscale`** (NEW, `scripts/fleet_scale.py`): the scale-out layer

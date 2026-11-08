@@ -100,7 +100,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 import context_router as cr  # noqa: E402
 
-VERSION = "8.1.0"
+VERSION = "8.2.0"
 SCHEMA = 4
 
 
@@ -752,6 +752,9 @@ _EXTERNAL_SCRIPTS = {
     "density": "ops_tools.py",
     "ticket": "ops_tools.py",
     "fleetscale": "fleet_scale.py",
+    "cigate": "cigate.py",
+    "asm": "asm_surface.py",
+    "model": "model_router.py",
 }
 
 
@@ -897,7 +900,7 @@ def cmd_verify(args):
                  "crawl", "takeover", "capabilities", "protect", "train",
                  "memory", "remediate", "watch", "serve", "version", "catalog",
                  "inject", "foundation", "inmandate", "agent", "jail", "gateway",
-                 "density", "ticket", "fleetscale"):
+                 "density", "ticket", "fleetscale", "cigate", "asm", "model"):
         if want not in help_out:
             bad.append(f"subcommand {want}")
     mandate = self.parent.parent / "references" / "mandate.md"
@@ -7217,7 +7220,10 @@ def _build_parser() -> argparse.ArgumentParser:
                         ("gateway", "scope gateway: start · stop · status · netdist (transport-level estate gate)"),
                         ("density", "finding-density scorecard: bench_live/suite → findings/hour (measured)"),
                         ("ticket", "industrial interface: push CONFIRMED ledger findings to issue trackers (gh)"),
-                        ("fleetscale", "1000-AGENT FLEET layer: partition · worker pool · rate governor · capacity plan")):
+                        ("fleetscale", "1000-AGENT FLEET layer: partition · worker pool · rate governor · capacity plan"),
+                        ("cigate", "CI GATE: version+product+leak+jail+suite in one command (every code delta)"),
+                        ("asm", "ASM lane: passive exposure discovery (crt.sh) → campaign endpoint catalog"),
+                        ("model", "model router: per-lane provider/model orchestration (set · list · resolve)")):
         _p = sub.add_parser(_ext, help=_help)
         _p.add_argument("rest", nargs=argparse.REMAINDER, help=argparse.SUPPRESS)
 
@@ -7828,8 +7834,9 @@ def _main(argv: list[str] | None = None) -> int:
     # External family scripts take the raw argv untouched — no argparse in
     # between (their parsers own their flags).
     if raw and raw[0] in _EXTERNAL_SCRIPTS:
-        tail = raw[1:] if raw[0] in ("jail", "gateway", "fleetscale") else raw
-        if json_flag and raw[0] in ("jail", "density", "ticket", "fleetscale") \
+        tail = raw[1:] if raw[0] in ("jail", "gateway", "fleetscale", "cigate", "asm", "model") else raw
+        if json_flag and (raw[0] in ("jail", "density", "ticket", "fleetscale", "asm")
+                          or (raw[0] == "model" and "resolve" in tail)) \
                 and "--json" not in tail:
             tail = list(tail) + ["--json"]
         script = Path(__file__).resolve().parent / _EXTERNAL_SCRIPTS[raw[0]]

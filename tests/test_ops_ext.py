@@ -175,6 +175,34 @@ class FleetScaleTests(unittest.TestCase):
         t2 = time.monotonic()
         self.assertGreaterEqual(t2 - t1, 0.4, "over-cap take must throttle")
 
+    def test_model_router_set_list_resolve(self):
+        home = tempfile.mkdtemp(prefix="sm-model-")
+        env = dict(os.environ)
+        env["SPYDERMONKEY_HOME"] = home
+        r = _run(["model", "set", "--lane", "holyshit",
+                  "--provider", "vyceai", "--model", "glm-5.3-flash"], env=env)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        r = _run(["model", "resolve", "--lane", "holyshit", "--json"], env=env)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual(d["provider"], "vyceai")
+        self.assertEqual(d["model"], "glm-5.3-flash")
+        r = _run(["model", "set", "--lane", "nonsense",
+                  "--provider", "x", "--model", "y"], env=env)
+        self.assertEqual(r.returncode, 1, "unknown lane must be refused")
+        import shutil
+        shutil.rmtree(home, ignore_errors=True)
+
+    def test_asm_refuses_without_scope_for_catalog(self):
+        home = tempfile.mkdtemp(prefix="sm-asm-")
+        env = dict(os.environ)
+        env["SPYDERMONKEY_HOME"] = home
+        r = _run(["asm", "--domain", "example.test", "--target", "t",
+                  "--limit", "1"], env=env)
+        self.assertEqual(r.returncode, 1, "asm catalog without scope must refuse")
+        import shutil
+        shutil.rmtree(home, ignore_errors=True)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
