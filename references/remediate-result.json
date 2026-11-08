@@ -1,0 +1,45 @@
+{
+  "lane": "REMEDIATION \u2014 find \u2192 fix \u2192 verify (the AIxCC axis, lab-only)",
+  "protocol": "the battery confirms the flaw \u2192 the guarding proxy applies the class's canonical remediation \u2192 the SAME battery re-fires and the class's hits must drop to zero",
+  "fixes_verified": 4,
+  "fixes_total": 5,
+  "results": [
+    {
+      "class": "TRAVERSAL",
+      "flaw": "path traversal (CWE-22) \u2014 realpath containment",
+      "decisive_before": true,
+      "decisive_after": false,
+      "fix_verified": true
+    },
+    {
+      "class": "XSS",
+      "flaw": "reflected markup (CWE-79) \u2014 context-encode",
+      "decisive_before": true,
+      "decisive_after": false,
+      "fix_verified": true
+    },
+    {
+      "class": "REDIRECT",
+      "flaw": "open redirect (CWE-601) \u2014 same-site allowlist",
+      "decisive_before": true,
+      "decisive_after": false,
+      "fix_verified": true
+    },
+    {
+      "class": "CRLF",
+      "flaw": "header injection (CWE-113) \u2014 strip CR/LF",
+      "decisive_before": true,
+      "decisive_after": false,
+      "fix_verified": true
+    },
+    {
+      "class": "INJECTION",
+      "flaw": "interpreter injection (CWE-94/89) \u2014 metachar reject",
+      "decisive_before": false,
+      "decisive_after": false,
+      "fix_verified": false
+    }
+  ],
+  "walls": "no third-party patching, no persistence, 127.0.0.1 lab only \u2014 validation-only holds; the fix SHAPES come from the family's own testers' remediation vocab",
+  "honest_ceiling": "the 5 core input-validation classes verified; logic classes (REPLAY/STATEBYPASS/MATH) need app-level fixes \u2014 queued"
+}

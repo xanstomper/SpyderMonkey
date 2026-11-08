@@ -1,0 +1,14 @@
+{
+  "lane": "MASS \u2014 stdlib mutation fuzzer, family-native seeds",
+  "strike_surface": "dojo TRAVERSAL replica (127.0.0.1, lab-bound)",
+  "inputs_fired": 45082,
+  "transport_errors": 37901,
+  "elapsed_s": 45.0,
+  "throughput_ips": 1001.8,
+  "unique_findings": {
+    "transport-error": 37901,
+    "TRAVERSAL/passwd-read": 7181
+  },
+  "classified_note": "every hit arrives NAMED (documented class) \u2014 the sieves' triage step is already done",
+  "honest_ceiling": "lab throughput only \u2014 Mayhem's real-world mass needs real targets; the capability + number on the range is the claim, not parity with their fleet"
+}
