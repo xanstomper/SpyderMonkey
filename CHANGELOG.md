@@ -19,6 +19,30 @@
   measured, never promised.
 - Tests 79/79.
 
+# v7.5.4 — THE MECHANICAL GATE + AMBIENT TAKEOVER + MARKER PROTOCOL: enforcement leaves the prompt
+
+- **HOST-LEVEL ENFORCEMENT** (`scripts/claude_hook_scope.py` — NEW): Claude
+  Code PreToolUse/Bash hook. While a mandate marker is active (env
+  `SPYDERMONKEY_MANDATE=1` · `.spydermonkey-active` in CWD · CWD inside a
+  campaign dir) every connective command's targets are run through the shared
+  scope authority — out-of-estate is BLOCKED at the host (exit 2, feedback
+  with the exact unlock). No prompt can override it; only scope.json can.
+  Pass-through outside mandate sessions. Verified: block evil.com / scp-form,
+  allow lab + in-scope, pass without marker. Wired into
+  `~/.claude/settings.json` (Bash-scoped, alongside the existing lc-hook).
+- **AMBIENT TAKEOVER** (`agents/AGENTS.md` — NEW): short-form contract that
+  Claude Code + OpenCode auto-load from the working dir — takeover without
+  typing the trigger. Copy into engagement dirs.
+- **CONTRACT v8.2** (`references/mandate-session.md`): AMBIENT LAYER (write
+  `.spydermonkey-active` on entry — the switch that engages the mechanical
+  gate), SESSION MARKER protocol (`⚙ IN-MANDATE · <directive|phase> · <next>`
+  opens every reply — drift becomes visible and machine-checkable), RE-ANCHOR
+  CADENCE (every ~8 turns, on summary, after restart, before briefings — not
+  just compaction), RELEASE ALWAYS WRITES (close sequence = `train` + `memory`
+  + marker removal BEFORE the persona drops).
+- **Test pins hardened**: IN-MANDATE · AMBIENT LAYER · `.spydermonkey-active`.
+- Carriers regenerated (AGENT.md, claude-command.md, `~/.claude/commands/`).
+
 # v7.5.3 — THE TAKEOVER: the contract now owns the whole session and trains it
 
 - **SESSION CONTRACT v8.1** (`references/mandate-session.md`): three new layers —
