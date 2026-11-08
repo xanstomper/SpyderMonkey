@@ -173,6 +173,16 @@ def analyze(text: str, filename: str, max_cards: int = 200) -> list[dict]:
     lines = text.splitlines()
     hits: list[dict] = []
     tainted_helpers = _tainted_returns(tree, text)
+    # v7.6.2 CALLSITE-PARAM TAINT (the inter-procedural recall lane):
+    # a source-tainted argument AT THE CALL SITE taints the callee's parameter
+    # — the flow "request.args.get(...) → helper(param) → sink(param)" was
+    # structurally invisible (source and sink in different scopes).
+    local_fns: dict[str, ast.FunctionDef | ast.AsyncFunctionDef] = {}
+    for n in ast.walk(tree):
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            local_fns.setdefault(n.name, n)
+    tainted_params: dict[str, dict[str, list[str]]] = {}
+    processed_fns: set[str] = set()
 
     def seg(node) -> str:
         s = ast.get_source_segment(text, node)
@@ -276,6 +286,37 @@ def analyze(text: str, filename: str, max_cards: int = 200) -> list[dict]:
         base = name.split(".")[-1]
         if base in SANITIZERS or name in SANITIZERS:
             return
+        # ── callsite-param collection: source-tainted args taint the local
+        #    callee's parameters (positional → param name via the def) ──────
+        callee = local_fns.get(base)
+        if callee is not None and base not in processed_fns:
+            def_params = [a.arg for a in callee.args.args]
+            kwonly = [a.arg for a in callee.args.kwonlyargs]
+            for idx, arg in enumerate(node.args):
+                asrc = seg(arg)
+                ch = None
+                if SOURCE_RX.search(asrc):
+                    ch = [f"{asrc[:60]} → {base}(param {idx})"]
+                else:
+                    for nm, c in scope.tainted.items():
+                        if re.search(rf"\b{re.escape(nm)}\b", asrc):
+                            ch = c + [f"→ {base}(param {idx})"]
+                            break
+                if ch and idx < len(def_params) and def_params[idx] not in ("self", "cls"):
+                    tainted_params.setdefault(base, {}).setdefault(
+                        def_params[idx], ch)
+            for kw in node.keywords:
+                asrc = seg(kw.value)
+                ch = None
+                if SOURCE_RX.search(asrc):
+                    ch = [f"{asrc[:60]} → {base}({kw.arg})"]
+                else:
+                    for nm, c in scope.tainted.items():
+                        if re.search(rf"\b{re.escape(nm)}\b", asrc):
+                            ch = c + [f"→ {base}({kw.arg})"]
+                            break
+                if ch and kw.arg and (kw.arg in def_params or kw.arg in kwonly):
+                    tainted_params.setdefault(base, {}).setdefault(kw.arg, ch)
         spec = SINKS.get(name) or SINKS.get(base)
         if not spec:
             return
@@ -333,6 +374,19 @@ def analyze(text: str, filename: str, max_cards: int = 200) -> list[dict]:
             _check_call(a, scope)
 
     walk_scope(tree.body, _Scope("<module>"))
+
+    # ── pass B: re-walk functions whose parameters were tainted at call sites
+    for fname, params in list(tainted_params.items()):
+        if fname in processed_fns or len(hits) >= max_cards:
+            continue
+        fn_ast = local_fns.get(fname)
+        if fn_ast is None:
+            continue
+        processed_fns.add(fname)
+        scope2 = _Scope(fname)
+        for pname, ch in params.items():
+            scope2.taint(pname, ch)
+        walk_scope(fn_ast.body, scope2)
     return hits
 
 

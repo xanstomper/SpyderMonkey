@@ -1,3 +1,16 @@
+# v7.6.2 — CALLSITE-PARAM TAINT: the inter-procedural recall lane
+
+- The source lane's last structural blind spot closed: "request.args.get(…)
+  → helper(param) → sink(param)" was invisible (source and sink in different
+  scopes — 0 hits on the fixture, both definition orders). Now call-site
+  arguments matching SOURCE_RX (or scope-tainted names) taint the local
+  callee's parameters — positional + kwarg, resolved via the def signature —
+  and pass B re-walks tainted-param functions with the chain attached.
+- Verified: forward + reverse order + kwarg variants all HIT at
+  critical/request boundary; CLI-fed pass-throughs still land low/cli (the
+  v7.5.1 boundary pass composes — no FP regression). Depth-1 same-module,
+  honest and pinned.
+
 # v7.6.1 — CVE INSTANCES IN THE REASONING: cards cite real evidence
 
 - **cve-map hypothesis cards now carry `instances`** — REAL CVE→exploit
@@ -29,6 +42,25 @@
   one used here (fetch → index → measure). Every density claim stays
   measured, never promised.
 - Tests 79/79.
+
+# v7.5.7 — THE KERNEL-FIRST LAUNCHER: one command, any agent, pre-injected and kernel-driven
+
+- **`agent` subcommand** (NEW): `spydermonkey agent --driver
+  <claude|opencode|codex|gemini|cline> --goal "..." [--target T] [--dry-run]`
+  builds the launch for any agent with the CURRENT contract loaded at call
+  time — claude (`--append-system-prompt` session contract), opencode
+  (`run --agent spydermonkey`, registered agent), codex (`exec
+  --system-prompt` persona contract), gemini (session contract as first
+  message), cline (`spydermonkey-cline`).
+- **Kernel-first**: with `--target`, the agent becomes the reasoning cell of
+  `loop` (plan → execute → absorb) — the model executes `next` directives, it
+  does not free-run. The deepest takeover level is now one command.
+- `--dry-run` prints the exact command; `--json` emits the argv.
+- Test: all five drivers build correctly offline (dry-run); kernel wrap
+  contains loop/--agent-cmd; injected contract is the current revision.
+- Carrier hygiene landed with it: deployed OpenCode agent was six revisions
+  stale → regenerated at SM8.3; `agents/deploy.sh` re-deploys both carriers
+  after every contract change (README documents it).
 
 # v7.5.6 — AMBIENT BY CONSTRUCTION: campaign init auto-deploys the takeover brief
 
