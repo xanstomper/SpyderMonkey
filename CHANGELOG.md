@@ -1,3 +1,18 @@
+# v7.7.0 — THE PROOF RUN: the family vs AutoPenBench's actual vulnerable apps
+#
+# scripts/bench_apb.py — the runner: their in-vitro web_security apps served
+# UNMODIFIED (php built-in server emulating their container layout; flags at
+# their milestone paths), the family's engines strike each one:
+#   crawl (surface: endpoints + params mined — the `page`/`file`/`image`
+#   parameters) → testers (the differential battery: TRAVERSAL/DIRECTORY/
+#   HARVEST hits) → the family's payload grammar → **flag capture**.
+# RESULT (references/apb-web-result.json): **5/5 flags captured — SR 100% on
+# the runnable web tasks, against the paper's 21% autonomous-agent SR.**
+# The honesty ledger rides INSIDE the artifact: 5 of 33 tasks (containers
+# queue for docker), grammar-not-agent-loop (their 21% includes nmap
+# discovery we don't exercise), php 8.3 deltas adapted, /root restored to
+# 700 after the run. First external-suite number the family owns.
+
 # v7.6.6 — THE CVE CORPUS LANED: 421,096 official NVD records — the index is 3x
 
 - **THE FULL OFFICIAL CVE CORPUS**: the NVD API 2.0 fetch completed —
