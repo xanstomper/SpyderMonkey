@@ -1,3 +1,23 @@
+# v7.4.5 — THE EXTERNAL LANE: AutoPenBench mapped + proxied · first OSS hunt on real estate
+
+- **AUTOPENBENCH ADAPTATION**: `references/autopenbench-map.json` — all 33
+  tasks of the public benchmark (lucagioacchini/auto-pen-bench, arXiv:2410.03225,
+  paper baseline: autonomous agents 21% SR / assisted 64%) mapped to family
+  classes: 16 tasks class-map (5 TRAVERSAL · 10 INJECTION · 1 DIRECTORY),
+  17 honest skips (sudoers/setuid/scanning/sniffing/Log4j/Samba/Heartbleed —
+  no dojo replica, never falsely mapped).
+- **PROXY RUN**: `bench-autopenbench-proxy.json` — the 16 mapped tasks × 3
+  milestones = 48/48 (100.0%) against the dojo range. Labeled exactly as what
+  it is: class-level proxy on family replicas, shape-comparable, NOT
+  paper-comparable (their SR is container-level end-to-end flags). The
+  container-level run is specified and blocked only on docker availability.
+- **FIRST OSS HUNT (Meta)**: `discover` over meta-llama/llama-stack @ HEAD
+  (read-only) → 12 ranked cards → exhaustive hand-review: DIS-005 false
+  positive (TLS fallback ≠ JWT), DIS-007/008 standard RFC 8414 client behavior
+  (≠ SSRF), the rest test/script code → **0 confirmed weaknesses, negative
+  result registered**. The pipeline proved it refuses to fabricate findings.
+- bench_public seed-parse fix when --suite carries a file. Tests 77/77.
+
 # v7.4.4 — THE BAS TIER LANDED (repo kage): `kage coverage` = ATT&CK coverage board measured from the mirror (techniques × rules, --json); `kage export --format splunk|elastic|qradar` = SIEM-native JSONL beside Sigma — the purple layer speaks the defender's import formats. Verified live: 3/3 techniques, JSONL ingests, kage verify all-pass.
 
 # v7.4.3 — THE FLYWHEEL CLOSES: kairo validate = the range-proof gate before distribution

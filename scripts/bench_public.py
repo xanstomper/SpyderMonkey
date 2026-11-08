@@ -372,11 +372,11 @@ def _sh_rmtree(p):
 
 
 def main():
-    argv = [a for a in sys.argv[1:] if a != "--suite"]
     suite = None
     if "--suite" in sys.argv:
         i = sys.argv.index("--suite")
         suite = sys.argv[i + 1] if i + 1 < len(sys.argv) else None
+    argv = [a for a in sys.argv[1:] if a != "--suite" and a != suite]
     seed = int(argv[0]) if argv else 2026
     if "--suite" in sys.argv:
         # bare --suite = the dojo-derived cases in the public milestone shape;
