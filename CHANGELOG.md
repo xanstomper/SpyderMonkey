@@ -80,6 +80,26 @@
 - **KNOWN (not fixed, by lane)**: fleet squad-briefs test flakes under
   concurrent bench load (fleet lane) — documented, not chased here.
 
+# v7.9.3 — THE SYNTHESIS AXIS MATCHED + THE CHAIN BENCH: 3/3 generated fixes
+# verified · 3/3 chain hops closed
+#
+# synthesize.py — the fix GENERATOR (the AIxCC synthesis axis, class level):
+# the generate → test → refine loop ran for real — the battery CAUGHT the
+# synthesized guards' own bypasses and the generator upgraded them:
+# REDIRECT = 3 iterations (v1 allowlist → the backslash bypass → v2
+# normalize → the DOUBLE-ENCODED bypass (the guard must see what the browser
+# sees) → v3 decode-before-guard) · CRLF = 2 sinks + 2 iterations (the
+# \r-strip left the \n split vector — the guard = the VALUE-level strip at
+# every header sink) · XSS = v1 (the multi-sink rule: both echo sites).
+# 3/3 verified by re-fire, decisive-evidence-dies semantics; the
+# iterations-to-pass metric = the synthesis depth. Kernel-scale patch
+# synthesis stays the AIxCC teams' axis.
+#
+# chainbench.py — the Pwn2Own DEPTH axis on the range: a 3-hop composite
+# (recon leak → hint-guided descend → guard-order bypass → flag) closed 3/3
+# end-to-end, zero model, every hop evidenced — with the grammar-vs-agent
+# caveat pinned; XBOW's record stays theirs (hunt-hours, not a build gap).
+
 # v7.9.0 — THE FUZZFLEET A/B: Mayhem's axis contested — the honest number is
 # 2.5x, NOT the 5x asked for
 #
