@@ -1,0 +1,29 @@
+{
+  "lane": "CHAIN BENCH \u2014 the Pwn2Own DEPTH axis, on the range",
+  "target": "a 3-hop composite (recon leak \u2192 hint-guided descend \u2192 guard-order bypass \u2192 flag)",
+  "protocol": "zero model \u00b7 zero hints \u2014 the family's engines chained: the crawl/harvest semantics feed each hop's aim; every hop registers as evidence",
+  "hops_closed": 3,
+  "hops_total": 3,
+  "hops": [
+    {
+      "hop": 1,
+      "name": "recon/leak",
+      "closed": true,
+      "evidence": "version + node name harvested from the banner"
+    },
+    {
+      "hop": 2,
+      "name": "descend/archive",
+      "closed": true,
+      "evidence": "the archive listing leaked the guard token"
+    },
+    {
+      "hop": 3,
+      "name": "depth/guard-order-bypass",
+      "closed": true,
+      "evidence": "the flag read through the guard's branch order"
+    }
+  ],
+  "honest_note": "the depth metric = hops completed on the composite range; XBOW's Pwn2Own RECORD (their hardware/firmware chains) stays theirs \u2014 this lane measures the chain-craft capability, not their trophy case",
+  "caveat": "the chain PLAN comes from the family's chain-detect grammar (leak\u2192descend\u2192depth = the documented chain shape) and the runner executes it \u2014 the same grammar-vs-agent caveat as the first AutoPenBench run; the autonomous chaining (the solver deriving hop N+1's aim from hop N's harvested strings through the context) is the queued upgrade"
+}
