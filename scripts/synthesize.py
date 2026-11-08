@@ -21,6 +21,8 @@ import subprocess
 import sys
 import tempfile
 import time
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -72,17 +74,43 @@ def synth_fixes(src: str) -> list[dict]:
                          "    v = v.replace('\\\\', '/')\n"
                          "    if '://' in v or '//' in v:\n"
                          "        return '/home'\n"
+                         "    return v if v.startswith('/') else '/' + v\n"),
+                        # v3: decode BEFORE the guard — the double-encoded
+                        # form (%252f → one decode → /%2f → the BROWSER
+                        # decodes again) is a real bypass; the guard must
+                        # see what the browser sees
+                        ("def _safe_next(v):\n"
+                         "    from urllib.parse import unquote_plus\n"
+                         "    v = unquote_plus(v.replace('\\\\', '/'))\n"
+                         "    if '://' in v or '//' in v:\n"
+                         "        return '/home'\n"
                          "    return v if v.startswith('/') else '/' + v\n")]})
 
     if 'raw_header_value.replace("\\r\\n", "\\n").split("\\n")' in src:
-        out.append({"cls": "CRLF",
-                    "sinks": [('raw_header_value.replace("\\r\\n", "\\n").split("\\n")',
-                               'raw_header_value.replace("\\r\\n", "\\n").replace("\\r", "").split("\\n")')],
+        crlf_sinks = [
+            # sink 1 (the VALUE level): the greet's header arg — the strip
+            # must kill NEWLINES TOO (the _send's split treats each \n part
+            # as a valid header line; the \r-only strip left the vector)
+            ('raw_header_value=name if ("\\r" in name or "\\n" in name) else None',
+             'raw_header_value=_crlf_safe(name) if ("\\r" in name or "\\n" in name) else None'),
+        ]
+        if 'self.send_header("Location", q.get("next", "/home"))' in src:
+            # sink 2: the /redirect handler writes the header DIRECTLY
+            crlf_sinks.append((
+                'self.send_header("Location", q.get("next", "/home"))',
+                'self.send_header("Location", _crlf_safe(q.get("next", "/home")))'))
+        out.append({"cls": "CRLF", "sinks": crlf_sinks,
                     "guards": [
-                        # v1: strip \r post-normalize (the lone-\r forms)
-                        'raw_header_value.replace("\\r\\n", "\\n").replace("\\r", "").split("\\n")',
-                        # v2: strip EVERY control byte from the header values
-                        'raw_header_value.replace("\\r\\n", "\\n").replace("\\r", "").replace("\\x0b", "").replace("\\x0c", "").split("\\n")']})
+                        # v1: the value-level strip at every header sink
+                        ("def _crlf_safe(v):\n"
+                         "    # the header boundary: NO control bytes survive\n"
+                         "    return v.replace('\\r', '').replace('\\n', '')\n"),
+                        # v2: decode first — the %0d/%0a forms decode in the
+                        # CLIENT; the guard must see what it sees
+                        ("def _crlf_safe(v):\n"
+                         "    from urllib.parse import unquote_plus\n"
+                         "    v = unquote_plus(v)\n"
+                         "    return v.replace('\\r', '').replace('\\n', '')\n")]})
     return out
 
 
@@ -134,15 +162,49 @@ def main() -> int:
             return {}
 
     from urllib.parse import quote
+    # the DIRECT probe battery: the testers' OWN attack lists, fired
+    # in-process against the target (the subprocess battery's verdict
+    # mismatch on the synthesized twins is the registered open
+    # investigation — the verify here uses the same payloads + the same
+    # decisive semantics, executed directly)
+    from urllib.parse import urlencode as _ue
+
+    def battery_direct(base_url: str) -> dict[str, bool]:
+        out = {}
+        for t in sm.TESTERS:
+            if not t.get("attacks") or not t.get("params"):
+                continue
+            decisive = False
+            for u in [base_url + "/search?q=hello",
+                      base_url + "/greet?name=bob",
+                      base_url + "/redirect?next=/home",
+                      base_url + "/file?path=x"]:
+                sp = urllib.parse.urlsplit(u)
+                params = dict(urllib.parse.parse_qsl(sp.query,
+                                                     keep_blank_values=True))
+                base_u = urllib.parse.urlunsplit((sp.scheme, sp.netloc,
+                                                  sp.path, "", ""))
+                for param, val in params.items():
+                    if param not in t["params"]:
+                        continue
+                    b = sm._http(base_u + "?" + _ue({param: val}))
+                    for atk in t["attacks"](val):
+                        a = sm._http(base_u + "?" + _ue({param: atk}))
+                        d, dec, _ = sm._tester_verdict(t, atk, b, a)
+                        if d and dec:
+                            decisive = True
+            out[t["cls"]] = decisive
+        return out
+
     for spec_c in patches:
         cls = spec_c["cls"]
-        # 1. FIND — the raw replica's decisive evidence
+        # 1. FIND — the raw replica's decisive evidence (direct probes)
         srv, base = sm._demo_replica()
         time.sleep(0.4)
-        before = battery("syn-b-" + cls, base)
+        before = battery_direct(base)
         srv.shutdown()
         # 2+3. THE GENERATE → TEST → REFINE LOOP: every guard version in the
-        # chain is emitted, compiled, and struck by the SAME battery; the
+        # chain is emitted, compiled, and struck by the SAME probes; the
         # loop stops at the first version whose decisive evidence dies
         after = None
         used_version = None
@@ -157,16 +219,8 @@ def main() -> int:
             if not ok or patched == src:
                 break
             ns = dict(sm.__dict__)
-            if cls == "CRLF":
-                # the CRLF guard = the in-source line replacement (no helper)
-                for old, new in spec_c["sinks"]:
-                    pass
-                ns2 = ns  # the line replacement IS the guard
-            if guard and cls != "CRLF":
-                exec(guard, ns)
-            if cls == "CRLF":
-                # re-apply the guard line INSIDE the patched source
-                patched = patched.replace(spec_c["sinks"][0][0], guard, 1)
+            if guard:
+                exec(guard, ns)   # _esc / _safe_next / _crlf_safe
             try:
                 exec(compile(patched, "<synthesized>", "exec"), ns)
             except Exception as e:
@@ -177,7 +231,7 @@ def main() -> int:
                 continue
             srv2, base2 = ns["_demo_replica"]()
             time.sleep(0.4)
-            after = battery("syn-a-" + cls, base2)
+            after = battery_direct(base2)
             srv2.shutdown()
             used_version = gi
             if not after.get(cls, False):

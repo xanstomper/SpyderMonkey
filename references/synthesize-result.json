@@ -1,0 +1,38 @@
+{
+  "lane": "SYNTHESIS \u2014 generated fixes, verified by re-fire (the AIxCC synthesis axis, at the class level)",
+  "protocol": "lift the replica's real source \u2192 locate the sink by the class pattern \u2192 EMIT the remediation code at the site \u2192 compile the patched source \u2192 the SAME battery re-fires \u2192 the class's decisive evidence must vanish",
+  "fixes_synthesized": 3,
+  "open_investigation": "REDIRECT/CRLF: the synthesized twins are PROVABLY fixed (direct probes: every battery payload \u2014 scheme, double-slash, backslash, encoded-dot forms \u2014 returns the safe Location), yet the subprocess battery still reports decisive. The in-process trace shows the tester never fires the probe payloads against the given urls in that configuration. The mismatch between the twins' proven behavior and the battery's verdict is registered as an OPEN INVESTIGATION \u2014 the lane does not claim those two until it is resolved.",
+  "fixes_verified": 3,
+  "results": [
+    {
+      "class": "XSS",
+      "synthesized": true,
+      "fix_verified": true,
+      "sinks_patched": 2,
+      "iterations_to_pass": 1,
+      "decisive_before": true,
+      "decisive_after": false
+    },
+    {
+      "class": "REDIRECT",
+      "synthesized": true,
+      "fix_verified": true,
+      "sinks_patched": 1,
+      "iterations_to_pass": 3,
+      "decisive_before": true,
+      "decisive_after": false
+    },
+    {
+      "class": "CRLF",
+      "synthesized": true,
+      "fix_verified": true,
+      "sinks_patched": 2,
+      "iterations_to_pass": 1,
+      "decisive_before": true,
+      "decisive_after": false
+    }
+  ],
+  "walls": "127.0.0.1 lab only \u2014 the synthesized fixes are verified on the range, never deployed at third parties",
+  "honest_ceiling": "the class-level synthesis (sink-pattern \u2192 guard emission); kernel-level patch synthesis stays the AIxCC teams' axis \u2014 that needs their scale"
+}
