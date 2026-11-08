@@ -14,7 +14,9 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
+import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -297,6 +299,60 @@ class CliTests(unittest.TestCase):
                       "AUTHBYPASS must range-prove via dojo AUTHN")
         self.assertIsNone(by_id["V-2"]["validated"],
                           "no-replica classes stay honest, never validated")
+
+    def test_fleet_agent_loop_and_foundation(self):
+        """THE FLEET LANE: controller → beacon agent → gated node execution →
+        kernel-schema result, end to end on localhost. Plus the foundation."""
+        f = self.cli(["foundation", "--file"])
+        self.assertEqual(f.returncode, 0)
+        fpath = Path(f.stdout.strip())
+        self.assertTrue(fpath.exists())
+        spec = fpath.read_text()
+        for layer in ("L0 PERSONA", "L1 ESTATE", "L2 EVIDENCE", "L3 ENGINES",
+                      "L4 KNOWLEDGE", "L5 SYNTHESIS", "L6 FLEET", "L7 MIRROR"):
+            self.assertIn(layer, spec)
+
+        import socket as _s
+        agent = Path(ROOT / "scripts" / "fleet_agent.py")
+        if not agent.exists():
+            self.skipTest("fleet_agent not on disk")
+        node_home = Path(self.tmp) / "node-home"
+        ctrl_dir = Path(self.tmp) / "ctrl"
+        node_home.mkdir(); ctrl_dir.mkdir()
+        env = {**os.environ, "SPYDERMONKEY_HOME": str(node_home)}
+        r = run([str(DISPATCHER), "scope", "init", "--engagement", "fleet-test",
+                 "--in-scope", "node.example.test"], env, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+
+        s = _s.socket(); s.bind(("127.0.0.1", 0)); port = s.getsockname()[1]; s.close()
+        ctrl = subprocess.Popen([sys.executable, str(agent), "controller",
+                                 "--port", str(port), "--node-dir", str(ctrl_dir)],
+                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        ag = subprocess.Popen([sys.executable, str(agent), "agent",
+                               "--controller", f"http://127.0.0.1:{port}",
+                               "--interval", "1", "--home", str(node_home)],
+                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        try:
+            time.sleep(2.5)
+            req = urllib.request.Request(
+                f"http://127.0.0.1:{port}/task",
+                data=json.dumps({"id": "T-TEST-1", "node": "node-home",
+                                 "command": ["version", "--json"]}).encode(),
+                headers={"Content-Type": "application/json"}, method="POST")
+            urllib.request.urlopen(req, timeout=5).read()
+            res_path = None
+            for _ in range(20):
+                cand = ctrl_dir / "node-home" / "T-TEST-1.json"
+                if cand.exists():
+                    res_path = cand
+                    break
+                time.sleep(1)
+            self.assertIsNotNone(res_path, "result never landed")
+            res = json.loads(res_path.read_text())
+            self.assertTrue(res["ok"], res.get("output", "")[:300])
+            self.assertEqual(json.loads(res["output"])["version"], sm.VERSION)
+        finally:
+            ctrl.terminate(); ag.terminate()
 
     def test_kernel_next_is_state_driven(self):
         d = self.j(["next", "--target", "camp1", "--domain", "example.test", "--json"])

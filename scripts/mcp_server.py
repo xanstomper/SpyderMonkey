@@ -24,7 +24,7 @@ from pathlib import Path
 import arsenal  # noqa: E402  (single source of truth for tools + chains)
 import arsenal_domain as ad  # noqa: E402  (class vocabulary / priority order)
 
-VERSION = "7.4.0"
+VERSION = "7.5.0"
 PROTOCOL = "2024-11-05"
 SM = str(Path(__file__).resolve().parent / "spydermonkey.py")
 NAME_RE = re.compile(r"^[a-z][a-z0-9_-]{0,62}[a-z0-9]$|[a-z]")  # MCP spec: ^[a-zA-Z0-9_-]{1,64}$ — hyphens legal (class keys like cls-fuzz-java)

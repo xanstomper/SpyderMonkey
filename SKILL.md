@@ -1,7 +1,7 @@
 ---
 name: spydermonkey
 description: "Trigger `spydermonkey`. SPYDERMONKEY — master dispatcher of the HolyShit family: the tree, the router, the full pipeline. Any agent, one skill, the whole war."
-version: 7.4.0
+version: 7.5.0
 author: Hermes Agent
 license: MIT
 platforms: [linux]
@@ -322,6 +322,7 @@ exercised, not asserted.
 - `status [--target T] [--fast]` — family meta-status: versions + engine presence + campaign states + ledger counts
 - `verify [--fast] [--no-selftest]` — meta self-check: subcommands · contracts · ten engines · selftest · LIVE gate proof
 - `selftest [--quick]` — 27-check end-to-end test in a throwaway HOME
+- `foundation [--file]` — print THE FOUNDATION spec (v7.5): the seven-layer agent red-teaming protocol — the new shape, adoptable by any model (L0 paste), any node (L6 agent), any defender (L7 export)
 - `mandate [--file] [--session] [--pack]` — print (or locate) the injectable persona contract; `--pack`
   emits the ONE-PASTE OPERATOR PACK (persona + rails: walls · route table · kernel loop ·
   evidence contract · engine menu — ~2k tokens, injectable into ANY model as system prompt)
@@ -341,6 +342,7 @@ Companion scripts (stdlib too):
 - `scripts/skilltree.py` — regenerate + `--verify` `references/skills/` + `references/skilltree-index.md` (1,410 technique files)
 - `scripts/discover.py` — the v7.0 source-discovery engine (sink grammars · taint scoring · HYP-schema cards · optional semgrep lane on fleet)
 - `scripts/context_router.py` — **THE RETRIEVAL LAYER (v7.4)**: deterministic 205k-doc index (canon · skilltree · expanded corpus · catalog surge) with rarity-weighted ranking; read-only, cached under `$SPYDERMONKEY_HOME/cache/`
+- `scripts/fleet_agent.py` — **THE FLEET LANE (v7.5)**: controller ↔ beacon agents over HTTP; nodes execute tasks in their own gated homes, results are kernel-schema; listener mode = standalone node; node without scope.json refuses to run
 - `scripts/attack_map.py` — regenerate `references/attack-coverage.json` (corpus → ATT&CK, live ART comparison)
 - `scripts/catalog_surge.py` — regenerate `references/tool-catalog-surge.json` (Exploit-DB · Nuclei · Metasploit public indexes)
 - `scripts/arsenal_fuzz.py` — the v7.0 fuzz domain (afl/honggfuzz/radamsa/boofuzz/jazzer wrappers + chains, discovery-based)

@@ -99,7 +99,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import scope_authority as sa  # noqa: E402
 import context_router as cr  # noqa: E402
 
-VERSION = "7.4.0"
+VERSION = "7.5.0"
 SCHEMA = 4
 
 
@@ -676,7 +676,7 @@ def cmd_verify(args):
                  "report", "relay", "campaign", "mandates", "next", "selftest",
                  "crawl", "takeover", "capabilities", "protect", "train",
                  "memory", "remediate", "watch", "serve", "version", "catalog",
-                 "inject"):
+                 "inject", "foundation"):
         if want not in help_out:
             bad.append(f"subcommand {want}")
     mandate = self.parent.parent / "references" / "mandate.md"
@@ -684,6 +684,8 @@ def cmd_verify(args):
         bad.append("mandate file")
     if not (self.parent.parent / "references" / "mandate-pack.md").exists():
         bad.append("mandate pack file")
+    if not (self.parent.parent / "references" / "foundation.md").exists():
+        bad.append("foundation spec file")
     for meta in MANDATES.values():
         contract = self.parent.parent / "references" / "mandates" / meta["contract"]
         if not contract.exists():
@@ -1507,6 +1509,16 @@ def cmd_bench(args):
               f" ({hits}/{len(BENCH_CASES)} first-hop · {seq_hits}/{len(BENCH_SEQUENCES)} sequence) ═══")
         print("  (route-level only — see bench_live.py for the exploitation-level bench)")
     return 0 if pct >= 90 else 1
+
+
+def cmd_foundation(args):
+    fpath = (Path(__file__).resolve().parent.parent / "references"
+             / "foundation.md")
+    if args.file:
+        print(str(fpath))
+        return 0
+    print(fpath.read_text())
+    return 0
 
 
 def cmd_mandate(args):
@@ -7074,6 +7086,9 @@ def _build_parser() -> argparse.ArgumentParser:
     ij.add_argument("--kinds", default=None,
                     help="comma list of canon,skill,expanded,tool (default all)")
 
+    fd = sub.add_parser("foundation", help="print THE FOUNDATION spec (v7.5): the seven-layer agent red-teaming protocol — the new shape")
+    fd.add_argument("--file", action="store_true", help="print path only")
+
     mf = sub.add_parser("mandate", help="print the injectable mandate (persona contract)")
     mf.add_argument("--file", action="store_true", help="print path only")
     mf.add_argument("--session", action="store_true",
@@ -7361,6 +7376,8 @@ def _dispatch(a) -> int:
         return cmd_mandates(a)
     if a.cmd == "inject":
         return cmd_inject(a)
+    if a.cmd == "foundation":
+        return cmd_foundation(a)
     if a.cmd == "mandate":
         return cmd_mandate(a)
     if a.cmd == "arsenal":

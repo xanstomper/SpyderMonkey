@@ -1,3 +1,22 @@
+# v7.5.0 — THE FLEET LANE + THE FOUNDATION: real agent control channel · the protocol shape
+
+- **REAL AGENT FLEET** (`scripts/fleet_agent.py` — THE NODE-SIDE RUNNER):
+  controller (task queue + result store) ↔ beacon agents (poll /task, run in
+  their NODE-LOCAL SPYDERMONKEY_HOME, POST results in the kernel schema) —
+  verified end-to-end on localhost (controller → queued task → gated node
+  execution → result.json). Listener mode = a standalone node (queue + own
+  execute loop). **A node without its own scope.json REFUSES to run anything**
+  — the estate gate lives on the node, and every family engine re-checks it.
+- **THE FOUNDATION** (`references/foundation.md`, `spydermonkey foundation`):
+  agent red-teaming as a PROTOCOL — the seven layers (L0 PERSONA one-paste
+  pack · L1 ESTATE scope authority · L2 EVIDENCE 3-gate/ledger · L3 ENGINES ·
+  L4 KNOWLEDGE retrieval · L5 SYNTHESIS flywheel · L6 FLEET agent channel ·
+  L7 MIRROR kage) + the six invariants + the loop + the four-move adoption
+  shape. The new shape: any model plugs in at L0, any node plugs in at L6,
+  discipline is code, negatives are first-class results.
+- Version → 7.5.0 across dispatcher/arsenal/MCP/materializer/SKILL.md.
+  Tests 78/78 (incl. the live fleet-loop test).
+
 # v7.4.5 — THE EXTERNAL LANE: AutoPenBench mapped + proxied · first OSS hunt on real estate
 
 - **AUTOPENBENCH ADAPTATION**: `references/autopenbench-map.json` — all 33
