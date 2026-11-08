@@ -328,6 +328,10 @@ exercised, not asserted.
 - `relay init|list|exec|remove` — remote execution nodes (Ed25519 ssh pairs, scope-gated)
 - `status [--target T] [--fast]` — family meta-status: versions + engine presence + campaign states + ledger counts
 - `inmandate` — takeover-state console: marker (env/file/campaign-CWD) · wired host gates · scope authority · contract ID
+- `jail status|arm|check|watch` — THE JAIL: integrity monitor for the takeover stack (8 supervised files + hook wiring); tamper → rc=1; `watch --restore` re-wires (opt-in)
+- `gateway start|stop|status|netdist` — THE TRANSPORT GATE: local forward proxy, every CONNECT/forward scope-checked before it leaves the box (403 + audit out-of-estate); `netdist` = nftables egress generator (kernel depth, opt-in)
+- `density [--bench live|suite] [--json]` — THE MEASURED SCORECARD: confirmed · accuracy · findings/hour (lab); baseline 10/10 · ~3,336 f/h
+- `ticket --target T [--provider gh] [--dry-run]` — INDUSTRIAL HANDOFF: CONFIRMED ledger rows → GitHub issues (evidence attached); hypotheses never filed
 - `agent --driver claude|opencode|codex|gemini|cline --goal G [--target T] [--dry-run]` — THE KERNEL-FIRST LAUNCHER: spawn any agent pre-injected with the current contract; `--target` puts it under the kernel loop (the model executes `next` directives, it does not free-run)
 - `verify [--fast] [--no-selftest]` — meta self-check: subcommands · contracts · ten engines · selftest · LIVE gate proof
 - `selftest [--quick]` — 27-check end-to-end test in a throwaway HOME

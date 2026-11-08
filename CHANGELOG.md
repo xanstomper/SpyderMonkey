@@ -126,6 +126,32 @@
   measured, never promised.
 - Tests 79/79.
 
+# v7.5.8 — THE INDUSTRY PASS: jail security · transport-level gateway · density harness · ticket interface
+
+- **JAIL SECURITY** (`scripts/jail_security.py` — NEW, `smk jail`): integrity
+  monitor for the takeover stack. `arm` fingerprints 8 supervised files
+  (contracts · hook scripts · settings.json · both deployed carriers) +
+  hook-wiring baseline; `check` detects tamper/removal (rc=1);
+  `watch` re-checks on an interval, `--restore` re-wires removed hooks
+  (operator opt-in only). Test: arm→check→tamper→flagged, scratch HOME.
+- **SCOPE GATEWAY** (`scripts/scope_gateway.py` — NEW, `smk gateway`):
+  transport-level estate enforcement. Every CONNECT tunnel + absolute-URI
+  forward through 127.0.0.1:8898 is checked against the shared scope authority
+  BEFORE it leaves the box — out-of-estate refused with 403 + audited; the
+  model cannot talk past a network gate. `netdist` generates the nftables
+  egress ruleset from scope.json (kernel depth, opt-in, never auto-applied).
+  Verified e2e: evil.example 403, example.com tunnel 200.
+- **DENSITY HARNESS** (`smk density`): the measured finding-power scorecard —
+  runs bench_live/suite, reports confirmed, accuracy, findings/hour (lab,
+  measured). Baseline: 10/10 · 100% · ~3,336 findings/hour on the live bench.
+  Any density claim now starts from this file.
+- **TICKET INTERFACE** (`smk ticket`): industrial handoff — pushes CONFIRMED
+  ledger rows (evidence attached) to GitHub issues via gh; hypotheses never
+  filed; `--dry-run` previews. Jira: API stub, creds-gated.
+- External-script delegation: raw argv passthrough, global --json re-appended
+  for jail/density/ticket. Tests: 4 new (jail roundtrip+tamper, gateway
+  transport 403/200, ticket confirmed-only, density parse).
+
 # v7.5.7 — THE KERNEL-FIRST LAUNCHER: one command, any agent, pre-injected and kernel-driven
 
 - **`agent` subcommand** (NEW): `spydermonkey agent --driver

@@ -746,6 +746,28 @@ def cmd_status(args):
     return 0
 
 
+_EXTERNAL_SCRIPTS = {
+    "jail": "jail_security.py",
+    "gateway": "scope_gateway.py",
+    "density": "ops_tools.py",
+    "ticket": "ops_tools.py",
+}
+
+
+def cmd_external(a):
+    """Delegate to standalone family scripts, passing the raw sub-argv."""
+    argv = sys.argv[1:]
+    try:
+        i = argv.index(a.cmd)
+    except ValueError:
+        return 2
+    # jail/gateway scripts take the action as the FIRST positional (no
+    # subcommand word); ops_tools keeps "density"/"ticket" in argv.
+    tail = argv[i + 1:] if a.cmd in ("jail", "gateway") else argv[i:]
+    script = Path(__file__).resolve().parent / _EXTERNAL_SCRIPTS[a.cmd]
+    return subprocess.run([sys.executable, str(script)] + tail).returncode
+
+
 def cmd_agent(args):
     """KERNEL-FIRST LAUNCHER: spawn any agent pre-injected with the mandate.
 
@@ -873,7 +895,8 @@ def cmd_verify(args):
                  "report", "relay", "campaign", "mandates", "next", "selftest",
                  "crawl", "takeover", "capabilities", "protect", "train",
                  "memory", "remediate", "watch", "serve", "version", "catalog",
-                 "inject", "foundation", "inmandate", "agent"):
+                 "inject", "foundation", "inmandate", "agent", "jail", "gateway",
+                 "density", "ticket"):
         if want not in help_out:
             bad.append(f"subcommand {want}")
     mandate = self.parent.parent / "references" / "mandate.md"
@@ -7103,6 +7126,12 @@ def _build_parser() -> argparse.ArgumentParser:
     sub.add_parser("tree", help="the family + roles + chain")
     sub.add_parser("version", help="version · data root · scope path · engine presence")
     sub.add_parser("inmandate", help="takeover state: marker · host gates · scope · contract ID")
+    for _ext, _help in (("jail", "jail security: status · arm · check · watch (takeover-stack integrity)"),
+                        ("gateway", "scope gateway: start · stop · status · netdist (transport-level estate gate)"),
+                        ("density", "finding-density scorecard: bench_live/suite → findings/hour (measured)"),
+                        ("ticket", "industrial interface: push CONFIRMED ledger findings to issue trackers (gh)")):
+        _p = sub.add_parser(_ext, help=_help)
+        _p.add_argument("rest", nargs=argparse.REMAINDER, help=argparse.SUPPRESS)
 
     ag = sub.add_parser("agent", help="KERNEL-FIRST LAUNCHER: spawn pre-injected agents (claude · opencode · codex · gemini · cline)")
     ag.add_argument("--driver", required=True,
@@ -7708,6 +7737,15 @@ def _dispatch(a) -> int:
 def _main(argv: list[str] | None = None) -> int:
     raw, json_flag, want_version = _extract_global_flags(
         list(sys.argv[1:] if argv is None else argv))
+    # External family scripts take the raw argv untouched — no argparse in
+    # between (their parsers own their flags).
+    if raw and raw[0] in _EXTERNAL_SCRIPTS:
+        tail = raw[1:] if raw[0] in ("jail", "gateway") else raw
+        if json_flag and raw[0] in ("jail", "density", "ticket") \
+                and "--json" not in tail:
+            tail = list(tail) + ["--json"]
+        script = Path(__file__).resolve().parent / _EXTERNAL_SCRIPTS[raw[0]]
+        return subprocess.run([sys.executable, str(script)] + tail).returncode
     if want_version:
         payload = {"name": "spydermonkey", "version": VERSION, "schema": SCHEMA,
                    "home": str(_root()), "scope": str(sa.scope_path())}
