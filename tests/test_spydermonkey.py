@@ -300,7 +300,7 @@ class CliTests(unittest.TestCase):
         (camp / "hardware-state.json").write_text(json.dumps({"vectors": [
             {"id": "V-1", "class": "AUTHBYPASS", "technique": "t", "proof": "p",
              "delta": "d", "source": "s", "target": "https://example.test/api"},
-            {"id": "V-2", "class": "STATEBYPASS", "technique": "t", "proof": "p",
+            {"id": "V-2", "class": "MOBILEX", "technique": "t", "proof": "p",
              "delta": "d", "source": "s", "target": "device-x"},
         ]}))
         r = run([str(kairo), "validate", "--target", "kfly"],
@@ -311,7 +311,7 @@ class CliTests(unittest.TestCase):
         self.assertIs(by_id["V-1"]["validated"], True,
                       "AUTHBYPASS must range-prove via dojo AUTHN")
         self.assertIsNone(by_id["V-2"]["validated"],
-                          "no-replica classes stay honest, never validated")
+                          "still-no-replica classes stay honest, never validated")
 
     def test_fleet_agent_loop_and_foundation(self):
         """THE FLEET LANE: controller → beacon agent → gated node execution →
