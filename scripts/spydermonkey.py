@@ -4778,6 +4778,33 @@ def cmd_capabilities(args):
         "crawl-surface", "testers-run", "gate-AUTHN", "gate-BIZLOGIC",
         "gate-SSRF", "chain-detect", "kage-mirror", "shukaku-ingest",
         "war-report"]
+    # v7.9.5 — THE LANES: the benchmark/depth lanes introspected live
+    # (presence + the measured numbers from their result artifacts)
+    _lanes = {}
+    _refs = Path(__file__).resolve().parent.parent / "references"
+    for _lname, _script, _art in (
+            ("no-model-bench", "bench_apb_family.py", "apb-family-result.json"),
+            ("synthesis", "synthesize.py", "synthesize-result.json"),
+            ("remediation", "remediate.py", "remediate-result.json"),
+            ("mass", "masslane.py", "masslane-result.json"),
+            ("fuzz-ab", "fuzzfleet.py", "fuzzfleet-result.json"),
+            ("chain-depth", "chainbench.py", "chainbench-result.json")):
+        _p = Path(__file__).resolve().parent / _script
+        _e = {"present": _p.exists()}
+        _af = _refs / _art
+        if _af.exists():
+            try:
+                _d = json.loads(_af.read_text())
+                for _k in ("sr_this_run", "fixes_verified", "fixes_total",
+                           "hops_closed", "hops_total", "throughput_ips",
+                           "flags_captured", "findings_ratio",
+                           "unique_findings"):
+                    if _k in _d:
+                        _e[_k] = _d[_k]
+            except Exception:
+                pass
+        _lanes[_lname] = _e
+    payload["lanes"] = _lanes
     # the execution layer: arsenal's live inventory (the real tools on THIS machine)
     try:
         spec = importlib.util.spec_from_file_location(

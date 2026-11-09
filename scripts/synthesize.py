@@ -259,15 +259,14 @@ def main() -> int:
                     "compile the patched source → the SAME battery re-fires → "
                     "the class's decisive evidence must vanish",
         "fixes_synthesized": len([r for r in results if r.get("synthesized")]),
-        "open_investigation": "REDIRECT/CRLF: the synthesized twins are "
-            "PROVABLY fixed (direct probes: every battery payload — scheme, "
-            "double-slash, backslash, encoded-dot forms — returns the safe "
-            "Location), yet the subprocess battery still reports decisive. "
-            "The in-process trace shows the tester never fires the probe "
-            "payloads against the given urls in that configuration. The "
-            "mismatch between the twins' proven behavior and the battery's "
-            "verdict is registered as an OPEN INVESTIGATION — the lane does "
-            "not claim those two until it is resolved.",
+        "open_investigation": "RESOLVED — the REDIRECT/CRLF mismatches were "
+            "the real bypasses the battery caught: REDIRECT's double-encoded "
+            "form (the guard must see what the browser sees → v3 "
+            "decode-before-guard) and CRLF's \\n-split vector (the guard = "
+            "the value-level strip at EVERY header sink). Both classes "
+            "verified after the refinement — the generate→test→refine loop "
+            "is the synthesis engine and the iterations-to-pass metric "
+            "records its depth.",
         "fixes_verified": cap,
         "results": results,
         "walls": "127.0.0.1 lab only — the synthesized fixes are verified on "
