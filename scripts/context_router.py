@@ -30,9 +30,10 @@ ROOT = Path(__file__).resolve().parent.parent
 REFERENCES = ROOT / "references"
 
 KINDS = ("canon", "skill", "expanded", "tool", "sigma", "capec", "cve",
-         "gtfobin")
+         "gtfobin", "lane")
 KIND_WEIGHT = {"canon": 3.0, "skill": 2.2, "expanded": 1.6, "tool": 1.0,
-               "sigma": 1.4, "capec": 1.5, "cve": 1.3, "gtfobin": 1.2}
+               "sigma": 1.4, "capec": 1.5, "cve": 1.3, "gtfobin": 1.2,
+               "lane": 2.5}
 
 STOP = {
     "the", "a", "an", "and", "or", "for", "to", "of", "in", "on", "with",
@@ -191,6 +192,41 @@ def build_index(kinds: tuple[str, ...] | None = None) -> dict:
                              "ttoks": sorted(tokenize(title or name))})
         except Exception:
             pass
+
+    # 4.5) THE LANE LANE (v7.9.5): the family's OWN measured capabilities —
+    # every benchmark/result artifact becomes a retrievable doc, so any
+    # agent's inject packet CARRIES the family's proven capability floor
+    # (the numbers are the knowledge: the floor is 0.8 SR no-model, 3/3
+    # synthesis, 4/5 remediation, ~1000 ips classified, 3/3 chains)
+    for fname, lane in (("apb-family-result.json", "no-model-bench"),
+                        ("synthesize-result.json", "synthesis"),
+                        ("remediate-result.json", "remediation"),
+                        ("masslane-result.json", "mass"),
+                        ("fuzzfleet-result.json", "fuzz-ab"),
+                        ("chainbench-result.json", "chain-depth")):
+        lf = REFERENCES / fname
+        if _w("lane") and lf.exists():
+            try:
+                d = json.loads(lf.read_text())
+                bits = []
+                for k in ("sr_this_run", "flags_captured", "fixes_verified",
+                          "fixes_total", "hops_closed", "hops_total",
+                          "throughput_ips", "findings_ratio", "paper_baseline_autonomous_sr"):
+                    if k in d:
+                        bits.append(f"{k}={d[k]}")
+                lane_txt = (d.get("lane", "") + " · " + d.get("protocol", "")
+                            + " · " + " ".join(bits)
+                            + " · " + str(d.get("caveats", ""))[:200])
+                toks = tokenize(lane_txt + " " + lane)
+                if toks:
+                    docs.append({"k": "lane", "id": "lane/" + lane,
+                                 "t": f"{lane} — measured capability",
+                                 "tags": "lane bench capability",
+                                 "snip": lane_txt[:220],
+                                 "toks": sorted(toks),
+                                 "ttoks": sorted(tokenize(lane))})
+            except Exception:
+                pass
 
     # 5) THE CORPUS SURGE LANE (v7.6.6): official corpora fetched by
     #    corpus_surge.py — cve (NVD) · capec (MITRE) · gtfobin (privesc).
